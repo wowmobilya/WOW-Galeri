@@ -18,7 +18,6 @@
    
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>WOW Furniture — Invoice System</title>
-      <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#c8a96e">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
@@ -13802,18 +13801,40 @@ function updateDeliveryModeUI() {
 
 
 
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    try {
-      const reg = await navigator.serviceWorker.register('./sw.js');
-      console.log('Service Worker registered:', reg);
-    } catch (err) {
-      console.error('Service Worker registration failed:', err);
-    }
-  });
+/* ============================================================
+   PWA INSTALL HANDLER
+============================================================ */
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const btn = document.getElementById('installAppBtn');
+  if (btn) btn.style.display = 'flex';
+});
+
+async function installApp() {
+  if (!deferredInstallPrompt) {
+    showToast('⚠️ التطبيق مثبت مسبقاً أو غير قابل للتثبيت الآن', 'in');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  if (outcome === 'accepted') {
+    showToast('✅ تم تثبيت التطبيق بنجاح', 'ok');
+  }
+  deferredInstallPrompt = null;
+  const btn = document.getElementById('installAppBtn');
+  if (btn) btn.style.display = 'none';
 }
-</script>
+
+window.addEventListener('appinstalled', () => {
+  showToast('🎉 تم تثبيت WOW Invoice على جهازك', 'ok');
+  const btn = document.getElementById('installAppBtn');
+  if (btn) btn.style.display = 'none';
+  deferredInstallPrompt = null;
+});
+
 
 
 
