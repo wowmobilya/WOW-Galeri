@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wow-invoice-v3';
+const CACHE_NAME = 'wow-invoice-v4';
 
 const ASSETS = [
   './',
