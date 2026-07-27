@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wow-invoice-v2';
+const CACHE_NAME = 'wow-invoice-v3';
 
 const ASSETS = [
   './',
@@ -38,24 +38,36 @@ self.addEventListener('activate', event => {
   );
 });
 
-// ── اعتراض الطلبات: الكاش أولاً ثم الشبكة
+// ── اعتراض الطلبات
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(cached => {
-        if (cached) {
-          console.log('[SW] Serving from cache:', event.request.url);
-          return cached;
-        }
-        return fetch(event.request)
-          .then(response => {
-            // حفظ نسخة في الكاش
-            const clone = response.clone();
-            caches.open(CACHE_NAME)
-              .then(cache => cache.put(event.request, clone));
-            return response;
-          });
+  const url = new URL(event.request.url);
+
+  // ✅ تغطية start_url دائماً
+  if (url.pathname.endsWith('/') || url.pathname.endsWith('index.html')) {
+    event.respondWith(
+      caches.match('./index.html').then(cached => {
+        return cached || fetch(event.request).then(response => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          return response;
+        });
       })
-      .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // ✅ باقي الملفات: الكاش أولاً ثم الشبكة
+  event.respondWith(
+    caches.match(event.request).then(cached => {
+      if (cached) {
+        console.log('[SW] Serving from cache:', event.request.url);
+        return cached;
+      }
+      return fetch(event.request).then(response => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        return response;
+      });
+    }).catch(() => caches.match('./index.html'))
   );
 });
