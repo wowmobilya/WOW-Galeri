@@ -4,13 +4,16 @@
 
 <meta charset="UTF-8">
 
-<link rel="manifest" href="manifest.json">
+<!-- ═══ PWA SETUP ═══ -->
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#c8a96e">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" 
+      content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="WOW Invoice">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+
 
    
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13797,43 +13800,64 @@ function updateDeliveryModeUI() {
 
 
 
+<!-- ═══ PWA INSTALL LOGIC ═══ -->
 <script>
+// ── 1. تسجيل Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js', {scope: './'})
-      .then(r => console.log('✅ SW OK', r.scope))
-      .catch(e => console.error('❌ SW Error', e));
+    navigator.serviceWorker
+      .register('./sw.js')
+      .then(reg => {
+        console.log('✅ SW registered, scope:', reg.scope);
+      })
+      .catch(err => {
+        console.error('❌ SW failed:', err);
+      });
   });
 }
 
-// زر التثبيت اليدوي
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
+// ── 2. التقاط حدث التثبيت
+let installPrompt = null;
 
-  // أظهر زر التثبيت
-  const btn = document.getElementById('installBtn');
-  if (btn) btn.style.display = 'flex';
+window.addEventListener('beforeinstallprompt', e => {
+  console.log('🎉 beforeinstallprompt fired!');
+  e.preventDefault();
+  installPrompt = e;
+
+  // أظهر الزر
+  const btn = document.getElementById('pwaInstallBtn');
+  if (btn) {
+    btn.style.display = 'flex';
+    // أنيميشن لفت الانتباه
+    btn.style.animation = 'blink 1s ease 3';
+  }
 });
 
-function installApp() {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  deferredPrompt.userChoice.then(r => {
-    if (r.outcome === 'accepted') {
-      const btn = document.getElementById('installBtn');
-      if (btn) btn.style.display = 'none';
+// ── 3. دالة التثبيت عند الضغط على الزر
+function triggerInstall() {
+  if (!installPrompt) {
+    alert('⚠️ افتح التطبيق في Chrome وانتظر 30 ثانية ثم حاول مجدداً');
+    return;
+  }
+  installPrompt.prompt();
+  installPrompt.userChoice.then(result => {
+    console.log('User choice:', result.outcome);
+    if (result.outcome === 'accepted') {
+      document.getElementById('pwaInstallBtn').style.display = 'none';
     }
-    deferredPrompt = null;
+    installPrompt = null;
   });
 }
 
+// ── 4. إخفاء الزر بعد التثبيت
 window.addEventListener('appinstalled', () => {
-  const btn = document.getElementById('installBtn');
+  console.log('✅ App installed!');
+  const btn = document.getElementById('pwaInstallBtn');
   if (btn) btn.style.display = 'none';
+  installPrompt = null;
 });
 </script>
+
 
 
 </body>
