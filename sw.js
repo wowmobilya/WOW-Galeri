@@ -1,4 +1,4 @@
-const CACHE = 'wow-v2';
+const CACHE = 'wow-v3';
 
 self.addEventListener('install', e => {
   e.waitUntil(
