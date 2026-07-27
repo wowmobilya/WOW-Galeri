@@ -2,8 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
 
+<meta charset="UTF-8">
 
-<!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#c8a96e">
 <meta name="mobile-web-app-capable" content="yes">
@@ -12,9 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="WOW Invoice">
 <link rel="apple-touch-icon" href="icon-192.png">
 
-
-
-<meta charset="UTF-8">
+   
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>WOW Furniture — Invoice System</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -13800,13 +13798,41 @@ function updateDeliveryModeUI() {
 
 
 <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(() => console.log('✅ SW registered'))
-        .catch(err => console.log('SW error:', err));
-    });
-  }
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js', {scope: './'})
+      .then(r => console.log('✅ SW OK', r.scope))
+      .catch(e => console.error('❌ SW Error', e));
+  });
+}
+
+// زر التثبيت اليدوي
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  // أظهر زر التثبيت
+  const btn = document.getElementById('installBtn');
+  if (btn) btn.style.display = 'flex';
+});
+
+function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(r => {
+    if (r.outcome === 'accepted') {
+      const btn = document.getElementById('installBtn');
+      if (btn) btn.style.display = 'none';
+    }
+    deferredPrompt = null;
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  const btn = document.getElementById('installBtn');
+  if (btn) btn.style.display = 'none';
+});
 </script>
 
 
