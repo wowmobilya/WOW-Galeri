@@ -1,20 +1,20 @@
 {
-  "name": "WOW Furniture Invoice System",
-  "short_name": "WOW Invoice",
+  "name": "WOW Furniture",
+  "short_name": "WOW",
+  "description": "نظام إدارة الفواتير لشركة WOW Furniture",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f0f4f8",
-  "theme_color": "#c8a96e",
-  "orientation": "portrait",
+  "theme_color": "#1a1a2e",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "https://h.top4top.io/p_3861refg81.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "https://h.top4top.io/p_3861refg81.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
