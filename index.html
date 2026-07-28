@@ -255,9 +255,6 @@ input,select,textarea{font-family:inherit}
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 5px 14px;
-  /* ✅ الإضافة الجديدة لإصلاح اتجاه الوقت */
-  direction: ltr;
-  unicode-bidi: plaintext;
 }
 
 /* زر التحديث */
@@ -7964,25 +7961,6 @@ function setLang(l){
 function toggleTheme(){S.theme=S.theme==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',S.theme);document.getElementById('themeBtn').textContent=S.theme==='dark'?'☀️':'🌙';localStorage.setItem('wf_theme',S.theme);}
 function loadTheme(){const th=localStorage.getItem('wf_theme')||'light';S.theme=th;document.documentElement.setAttribute('data-theme',th);document.getElementById('themeBtn').textContent=th==='dark'?'☀️':'🌙';}
 
-
-
-
-
-/* دالة لتنسيق الوقت بناءً على اللغة المحددة */
-function getLocalizedTime() {
-  const now = new Date();
-  if (S.lang === 'ar') {
-    return now.toLocaleTimeString('ar-EG', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  } else if (S.lang === 'tr') {
-    return now.toLocaleTimeString('tr-TR', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  } else {
-    return now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  }
-}
-
-
-
-   
 /* ============================================================
    EXCHANGE RATE
 ============================================================ */
@@ -7997,10 +7975,7 @@ async function fetchRate(){
       if(tryRate&&eurRate){
         S.usdTry=S.settings.manualUsdTry||parseFloat(tryRate.toFixed(4));
         S.usdEur=S.settings.manualUsdEur||parseFloat(eurRate.toFixed(4));
-        
-        // ✅ التعديل هنا: استخدام الدالة المخصصة للوقت
-        S.rateTime = getLocalizedTime(); 
-        
+S.rateTime = new Date().toLocaleTimeString('en-US', { hour12: false });
         updateRateUI();showToast(t('rate_updated'),'ok');
         await dbPut('settings',{id:'usdTry',value:S.usdTry,eur:S.usdEur,time:S.rateTime});
         return;
@@ -8009,7 +7984,6 @@ async function fetchRate(){
   }
   showToast(t('rate_error'),'in');updateRateUI();
 }
-
 function updateRateUI(){
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
   set('usdTryRate',S.usdTry.toFixed(2));
