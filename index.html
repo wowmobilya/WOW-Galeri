@@ -5633,12 +5633,13 @@ html, body {
 ">
   <div style="max-width:380px;margin:0 auto;padding:16px 16px 24px;">
 
-    <!-- بطاقة المنتج -->
-    <div class="card" style="
+        <!-- بطاقة المنتج -->
+    <div class="card" id="qblProductCard" style="
       padding:0;overflow:hidden;
       border-radius:18px;
       box-shadow:0 8px 32px rgba(0,0,0,.15);
     ">
+
 
       <!-- صورة المنتج -->
       <div id="qblFinalImg" style="
@@ -12276,10 +12277,14 @@ function qblBuildResult(p, tier) {
   set('qblRescanLbl',     tx.rescan);
 
 
-  // إخفاء "غير موجود"
+   // إظهار بطاقة المنتج وإخفاء "غير موجود"
+  const pc = document.getElementById('qblProductCard');
+  if (pc) pc.style.display = 'block';
+  
   const nf = document.getElementById('qblNotFound');
   if (nf) nf.style.display = 'none';
 }
+
 
 /* ══════════════════════════════════════════
    إظهار/إخفاء الـ Phases
@@ -12330,13 +12335,24 @@ function qblHidePhase3() {
 ══════════════════════════════════════════ */
 function qblShowNotFound(query) {
   qblHidePhase2(false);
+  
+  // إخفاء بطاقة المنتج الفارغة
+  const pc = document.getElementById('qblProductCard');
+  if (pc) pc.style.display = 'none';
+
+  // إظهار رسالة الخطأ مع الرمز التعبيري
   const nf = document.getElementById('qblNotFound');
-  if (nf) nf.style.display = 'block';
+  if (nf) {
+    nf.style.display = 'block';
+    // تغيير الأيقونة إلى رمز تعبيري معبر
+    const iconDiv = nf.querySelector('div');
+    if (iconDiv) iconDiv.textContent = '🤷‍♂️'; 
+  }
+  
   qblShowPhase3();
-  const addBtn = document.getElementById('qblAddToInvBtn');
-  if (addBtn) addBtn.style.display = 'none';
   showToast(`⚠️ "${query}" — ${qblTx('not_found_t')}`, 'in');
 }
+
 
 /* ══════════════════════════════════════════
    إضافة للفاتورة
