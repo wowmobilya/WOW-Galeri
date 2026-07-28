@@ -4062,7 +4062,7 @@ html, body {
 <!-- ========== SELECT CLIENT TYPE ========== -->
 <section class="page" id="page-select-client-type">
   <div class="sct-sticky-header">
-    <button class="sct-back-btn" onclick="showPage('companies')">← <span id="sct-back">رجوع</span></button>
+<button class="sct-back-btn" onclick="goBack()">← <span id="sct-back">رجوع</span></button>
     <div class="sct-sticky-title">
       <h1 id="sct-title">👤 إضافة عميل</h1>
       <p id="sct-subtitle">اختر نوع العميل للمتابعة</p>
@@ -4099,7 +4099,7 @@ html, body {
 <!-- ========== ADD COMPANY ========== -->
 <section class="page" id="page-add-company">
   <div class="sct-sticky-header">
-    <button class="sct-back-btn" onclick="showPage('select-client-type')">← <span data-i18n="btn_back">رجوع</span></button>
+<button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
     <div class="sct-sticky-title">
       <h1 data-i18n="add_co_title">👤 إضافة عميل</h1>
       <p id="addCoSubtitle">املأ بيانات العميل</p>
@@ -4197,7 +4197,7 @@ html, body {
 <section class="page" id="page-add-product">
   <div id="pr-type-select-view">
     <div class="sct-sticky-header">
-      <button class="sct-back-btn" onclick="showPage('products')">← <span data-i18n="btn_back">رجوع</span></button>
+<button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
       <div class="sct-sticky-title">
         <h1 id="apt-title">📦 إضافة منتج</h1>
         <p id="apt-subtitle">اختر نوع القطعة للمتابعة</p>
@@ -4358,7 +4358,7 @@ html, body {
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn btn-p btn-lg" onclick="savePr()">💾 <span data-i18n="btn_save_pr">حفظ القطعة</span></button>
       <button class="btn btn-s btn-lg" onclick="resetPrForm()">🔄</button>
-      <button class="btn btn-s btn-lg" onclick="showPage('products')">← <span data-i18n="btn_back">رجوع</span></button>
+<button class="btn btn-s btn-lg" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
     </div>
   </div>
 </section>
@@ -4418,7 +4418,7 @@ html, body {
 <!-- ========== SELECT INVOICE TYPE ========== -->
 <section class="page" id="page-select-invoice-type">
   <div class="sct-sticky-header">
-    <button class="sct-back-btn" onclick="showPage('dashboard')">← <span id="sit-back">رجوع</span></button>
+<button class="sct-back-btn" onclick="goBack()">← <span id="sit-back">رجوع</span></button>
     <div class="sct-sticky-title">
       <h1 id="sit-title">✏️ إنشاء فاتورة</h1>
       <p id="sit-subtitle">اختر نوع الفاتورة للمتابعة</p>
@@ -4455,7 +4455,7 @@ html, body {
 <!-- ========== CREATE INVOICE — NEW IMPROVED LAYOUT ========== -->
 <section class="page" id="page-create-invoice">
   <div class="sct-sticky-header">
-    <button class="sct-back-btn" onclick="showPage('select-invoice-type')">← <span data-i18n="btn_back">رجوع</span></button>
+<button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
     <div class="sct-sticky-title">
       <h1 data-i18n="create_title">✏️ إنشاء فاتورة</h1>
       <div class="chip-row">
@@ -5165,7 +5165,7 @@ html, body {
 <!-- ========== PAYMENT MANAGEMENT PAGE — ENHANCED ========== -->
 <section class="page" id="page-payment-management">
   <div class="sct-sticky-header">
-    <button class="sct-back-btn" onclick="showPage('invoices')">← <span data-i18n="btn_back">رجوع</span></button>
+<button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
     <div class="sct-sticky-title">
       <h1>💰 <span data-i18n="pay_mgmt_title">إدارة الدفعات</span></h1>
       <p id="payMgmtInvInfo">—</p>
@@ -5430,9 +5430,8 @@ html, body {
 <!-- ══ PHASE 1: SCAN ══ -->
 <div id="qblPhase1" style="transition:all .5s cubic-bezier(.4,0,.2,1);">
   <div class="sct-sticky-header">
-    <button class="sct-back-btn" onclick="showPage('dashboard')">
-      ← <span id="qblBackTxt">رجوع</span>
-    </button>
+   <button class="sct-back-btn" onclick="goBack()">← <span id="qblBackTxt">رجوع</span></button>
+
     <div class="sct-sticky-title">
       <h1 id="qblPageTitle">📷 باركود سريع</h1>
       <p id="qblPageSub">امسح الباركود أو ابحث باسم الموديل</p>
@@ -8079,10 +8078,59 @@ window.addEventListener('popstate',(e)=>{
   const openModalEl=document.querySelector('.modal-ov.open');
   if(openModalEl){openModalEl.classList.remove('open');if(openModalEl.id==='scannerModal')closeScanner();history.pushState({page:getCurrentPage()},'','#'+getCurrentPage());return;}
   if(document.getElementById('sidebar').classList.contains('open')){closeSidebar();history.pushState({page:getCurrentPage()},'','#'+getCurrentPage());return;}
-  const page=e.state?.page||'dashboard';_isPopState=true;showPage(page,false);_isPopState=false;
+  const cur=getCurrentPage();
+  if(cur==='dashboard'){history.pushState({page:'dashboard'},'','#dashboard');return;}
+  _isPopState=true;goBack();_isPopState=false;
+  history.pushState({page:getCurrentPage()},'','#'+getCurrentPage());
+
 });
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sideOv').classList.toggle('open');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sideOv').classList.remove('open');}
+   /* ============================================================
+   SMART BACK — الرجوع الهرمي الذكي
+============================================================ */
+const PARENT_MAP = {
+  // سلسلة إضافة عميل
+  'add-company':        'select-client-type',
+  'select-client-type': 'dashboard',
+  // سلسلة إنشاء فاتورة
+  'create-invoice':       'select-invoice-type',
+  'select-invoice-type':  'dashboard',
+  // سلسلة الدفعات
+  'payment-management': 'invoices',
+  // الأقسام الرئيسية → الرئيسية
+  'companies':     'dashboard',
+  'products':      'dashboard',
+  'invoices':      'dashboard',
+  'add-product':   'dashboard',
+  'quick-barcode': 'dashboard',
+};
+
+function goBack() {
+  const cur = getCurrentPage();
+
+  // ── حالة خاصة: صفحة إضافة منتج لها خطوتان داخليتان
+  if (cur === 'add-product') {
+    const form = document.getElementById('pr-form-view');
+    if (form && form.style.display !== 'none') {
+      // إذا كنا داخل نموذج المنتج → ارجع لاختيار النوع أولاً
+      backToPrTypeSelect();
+      return;
+    }
+  }
+
+  // ── حالة خاصة: الباركود السريع في مرحلة النتيجة → ارجع للمسح أولاً
+  if (cur === 'quick-barcode' && QBL.phase !== 1) {
+    qblResetToScan();
+    return;
+  }
+
+  // ── الرجوع للأب حسب الخريطة، وإن لم يوجد → الرئيسية
+  const parent = PARENT_MAP[cur] || 'dashboard';
+  if (cur === 'dashboard') return; // نحن في الرئيسية — لا رجوع أبعد
+  showPage(parent);
+}
+
 
 /* ============================================================
    DASHBOARD
