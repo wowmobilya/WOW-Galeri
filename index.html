@@ -4128,9 +4128,9 @@ html, body {
 
   <div class="card">
     <div class="card-hdr">
-      <div class="card-title">📋 <span data-i18n="recent_inv">آخر الفواتير</span></div>
-      <button class="btn btn-s btn-sm" onclick="showPage('invoices')" data-i18n="view_all">عرض الكل</button>
-    </div>
+    <div class="card-title">📋 <span data-i18n="recent_inv">آخر الفواتير</span></div>
+    <button class="btn btn-s btn-sm" onclick="showPage('invoices')" data-i18n="view_all">عرض الكل</button>
+</div>
     <div id="dashRecentInv"></div>
   </div>
 </section>
@@ -8056,7 +8056,7 @@ function applyTr(){
 updatePrintOptsBtnLabel();
 updateSumSectionLabels();
 updateStep1Texts();
-
+updateDash();
   // ✅ موجود مسبقاً
   updateAddCoTypeBadge(S.clientType || 'external');
 
@@ -8352,8 +8352,15 @@ function updateDash(){
   const binv=document.getElementById('badge-inv');if(binv)binv.textContent=S.invoices.length;
   const recent=[...S.invoices].reverse().slice(0,5);
   const c=document.getElementById('dashRecentInv');if(!c)return;
+   const dashTx = {
+    no_inv:     { ar:'لا توجد فواتير',    tr:'Fatura yok',       en:'No invoices'       },
+    btn_create: { ar:'إنشاء فاتورة',      tr:'Fatura Oluştur',   en:'Create Invoice'    },
+    items_lbl:  { ar:'قطعة',              tr:'ürün',             en:'items'             },
+  };
+  const dl = S.lang || 'ar';
+
   if(!recent.length){
-    c.innerHTML=`<div class="empty"><div class="ei">📄</div><h3>${t('no_inv')}</h3><button class="btn btn-p" onclick="showPage('select-invoice-type')">✏️ ${t('btn_create')}</button></div>`;
+    c.innerHTML=`<div class="empty"><div class="ei">📄</div><h3>${dashTx.no_inv[dl]}</h3><button class="btn btn-p" onclick="showPage('select-invoice-type')">✏️ ${dashTx.btn_create[dl]}</button></div>`;
     return;
   }
   c.innerHTML=recent.map(inv=>`
@@ -8361,10 +8368,11 @@ function updateDash(){
       <div class="ih-num">${inv.invNo}</div>
       <div class="ih-info">
         <div class="ih-co">${inv.companyName||'—'}</div>
-        <div class="ih-meta">${inv.province||inv.country||''} · ${inv.date||''} · ${(inv.items||[]).length} items · 🎯${inv.tier||'A'}</div>
+        <div class="ih-meta">${inv.province||inv.country||''} · ${inv.date||''} · ${(inv.items||[]).length} ${dashTx.items_lbl[dl]} · 🎯${inv.tier||'A'}</div>
       </div>
-      <div class="ih-amt">$${(inv.grandTotal||0).toLocaleString('en-US',{minimumFractionDigits:2})}</div>
+      <div class="ih-amt">${fmtCurr(inv.grandTotal||0, inv.currency||'USD')}</div>
     </div>`).join('');
+
 }
 
 /* ============================================================
