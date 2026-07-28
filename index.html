@@ -3565,6 +3565,88 @@ textarea.fc{resize:vertical;min-height:72px}
 
 
 
+/* ============================================================
+   🧠 AI-DRIVEN PERFORMANCE OPTIMIZATION (ULTIMATE SMOOTHNESS)
+============================================================ */
+
+/* 1. العزل الذكي (CSS Containment): منع المتصفح من إعادة حساب الصفحة بالكامل عند تغير عنصر واحد */
+.card, .co-card, .pr-card-new, .inv-card, .client-type-step-card, .modal {
+    contain: layout style paint;
+    content-visibility: auto;
+    contain-intrinsic-size: 250px;
+}
+
+/* 2. تسريع النصوص وإلغاء وميض اللمس المزعج على أندرويد */
+html, body {
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 3. الإلغاء الإجباري لـ (transition: all) المدمر للأداء، وتحديد الخصائص المدعومة من الـ GPU فقط */
+.btn, .nav-item, .curr-item, .stat-card, .co-card, .pr-card-new, .inv-card, 
+.client-type-step-card, .pm-receipt-type, .qbl-cart-item, .bnav-btn, .icon-btn {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.2s ease, 
+                background-color 0.2s ease, 
+                border-color 0.2s ease !important;
+    will-change: transform, opacity;
+    transform: translateZ(0); /* إجبار التفعيل العتادي */
+}
+
+/* 4. استبدال حركات الـ Reflow (مثل top و left) بحركات الـ Composite (مثل transform) */
+/* إصلاح خط المسح الضوئي (Scanner Line) الذي كان يستهلك المعالج */
+.scanner-line, .qbl-scanner-line {
+    top: 0 !important;
+    animation: scanLineGPU 2s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
+    will-change: transform;
+}
+@keyframes scanLineGPU {
+    0%, 100% { transform: translateY(20px); }
+    50% { transform: translateY(180px); }
+}
+
+/* 5. تحسين القوائم القابلة للتمرير لمنع التقطيع */
+.sidebar, .main, .qbl-cart-list, .modal, .inv-tbl-wrap, .ps-list, .qbl-dd-list {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    scroll-behavior: smooth;
+}
+
+/* 6. وضع "التقشف الرسومي" المخصص لشاشات الجوال والتابلت (أندرويد تحديداً) */
+@media (max-width: 900px) {
+    /* إيقاف تأثير الزجاج (Blur) الثقيل جداً واستبداله بشفافية صلبة */
+    .sidebar-overlay, .modal-ov, .delete-modal-ov, .deliver-modal-ov, 
+    .qbl-cart-overlay, .bottom-nav-bg, .co-form-sticky-bar, .pr-card-type-badge {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    
+    /* بدائل لونية أنيقة بدون Blur */
+    .sidebar-overlay, .modal-ov, .delete-modal-ov, .deliver-modal-ov, .qbl-cart-overlay {
+        background: rgba(15, 23, 42, 0.85) !important;
+    }
+    .bottom-nav-bg, .co-form-sticky-bar {
+        background: var(--card) !important;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05) !important;
+    }
+
+    /* إيقاف نبض زر القائمة السفلية المستمر لأنه يستهلك البطارية والمعالج */
+    .bnav-circle::before {
+        animation: none !important;
+        display: none !important;
+    }
+
+    /* تخفيف الظلال المعقدة للبطاقات أثناء التمرير */
+    .co-card, .pr-card-new, .inv-card {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+    }
+    .co-card:hover, .pr-card-new:hover, .inv-card:hover {
+        transform: translateY(-2px) !important; /* تخفيف مسافة القفز */
+        box-shadow: 0 6px 16px rgba(0,0,0,0.08) !important;
+    }
+}
 
    
 
@@ -13868,105 +13950,7 @@ function updateDeliveryModeUI() {
 
 
 
-<!-- ============================================================
-     🚀 AI-DRIVEN PERFORMANCE ENGINE (SMART OPTIMIZATION)
-============================================================ -->
-<script>
-(function initSmartPerformanceEngine() {
-    'use strict';
 
-    console.log("🚀 Starting Smart Performance Engine...");
-
-    // 1️⃣ حقن تنسيقات العزل المتقدمة (CSS Containment & GPU)
-    const style = document.createElement('style');
-    style.innerHTML = `
-        /* عزل العناصر: يمنع المتصفح من إعادة حساب الصفحة بأكملها عند تغير عنصر واحد */
-        .co-card, .pr-card-new, .inv-card, .inv-hist, .ps-item {
-            contain: layout style paint;
-            content-visibility: auto; /* رسم ذكي: لا يرسم العناصر الخارجة عن الشاشة */
-            contain-intrinsic-size: 200px; /* حجم افتراضي لتسريع الحسابات */
-            transform: translateZ(0);
-            will-change: transform, opacity;
-        }
-
-        /* إجبار المتصفح على استخدام كرت الشاشة (GPU) للقوائم القابلة للتمرير */
-        .sidebar, .main, .qbl-cart-list, .modal, .inv-tbl-wrap, .ps-list, #coGrid, #prGrid, #invListContainer {
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior-y: contain;
-            transform: translate3d(0,0,0);
-        }
-
-        /* تخفيف العبء عن معالج الهاتف في التأثيرات البصرية */
-        @media (max-width: 900px) {
-            * {
-                box-shadow: none !important; /* إيقاف الظلال المعقدة أثناء التمرير إذا لزم الأمر */
-            }
-            .sidebar-overlay, .modal-ov, .delete-modal-ov, .deliver-modal-ov, .qbl-cart-overlay {
-                backdrop-filter: none !important;
-                -webkit-backdrop-filter: none !important;
-                background: rgba(15, 15, 20, 0.85) !important;
-            }
-            .co-card, .pr-card-new, .inv-card {
-                border: 1px solid var(--border) !important;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
-            }
-        }
-    `;
-    document.head.appendChild(style);
-
-    // 2️⃣ خوارزمية Debounce الذكية (تأخير التنفيذ حتى يتوقف المستخدم عن الكتابة)
-    // هذه الخوارزمية تمنع التطبيق من التعليق أثناء البحث
-    function smartDebounce(func, wait) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                // استخدام requestAnimationFrame لضمان التزامن مع معدل تحديث الشاشة (60fps)
-                window.requestAnimationFrame(() => func.apply(this, args));
-            }, wait);
-        };
-    }
-
-    // 3️⃣ اعتراض وتغليف الدوال الثقيلة في التطبيق (Overriding Heavy Functions)
-    // ننتظر قليلاً حتى يتم تحميل كل دوال التطبيق الأصلية
-    setTimeout(() => {
-        if (typeof window.renderCo === 'function') {
-            window.renderCo = smartDebounce(window.renderCo, 250);
-        }
-        if (typeof window.renderPr === 'function') {
-            window.renderPr = smartDebounce(window.renderPr, 250);
-        }
-        if (typeof window.renderInvList === 'function') {
-            window.renderInvList = smartDebounce(window.renderInvList, 250);
-        }
-        if (typeof window.renderPrSelector === 'function') {
-            window.renderPrSelector = smartDebounce(window.renderPrSelector, 250);
-        }
-        if (typeof window.onQblInput === 'function') {
-            window.onQblInput = smartDebounce(window.onQblInput, 200);
-        }
-    }, 500);
-
-    // 4️⃣ تحويل أحداث اللمس والتمرير إلى (Passive) لمنع تعليق الشاشة
-    // يخبر المتصفح أننا لن نوقف التمرير (preventDefault)، مما يجعله فائق السلاسة
-    const originalAddEventListener = EventTarget.prototype.addEventListener;
-    EventTarget.prototype.addEventListener = function(type, listener, options) {
-        const passiveEvents = ['touchstart', 'touchmove', 'mousewheel', 'wheel'];
-        if (passiveEvents.includes(type)) {
-            if (typeof options === 'object') {
-                options.passive = true;
-            } else if (options === undefined) {
-                options = { passive: true };
-            }
-        }
-        return originalAddEventListener.call(this, type, listener, options);
-    };
-
-})();
-</script>
-
-
-   
 
    
    
