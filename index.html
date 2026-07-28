@@ -3691,6 +3691,12 @@ textarea.fc{resize:vertical;min-height:72px}
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="side-sec" data-i18n="nav_main">القائمة</div>
+   <!-- يمكنك إضافته داخل <aside class="sidebar" id="sidebar"> -->
+<button class="nav-item" id="installAppBtn" style="display: none; color: var(--gold2);" onclick="installApp()">
+  <span class="nav-icon">📲</span>
+  <span>تثبيت التطبيق</span>
+</button>
+
   <button class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon">🏠</span><span data-i18n="nav_dashboard">لوحة التحكم</span></button>
   <button class="nav-item" onclick="showPage('companies')"><span class="nav-icon">👥</span><span data-i18n="nav_companies">العملاء</span><span class="nav-badge" id="badge-co">0</span></button>
   <button class="nav-item" onclick="showPage('products')"><span class="nav-icon">🛋️</span><span data-i18n="nav_products">المنتجات</span><span class="nav-badge" id="badge-pr">0</span></button>
