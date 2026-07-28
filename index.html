@@ -4062,7 +4062,7 @@ html, body {
 <!-- ========== SELECT CLIENT TYPE ========== -->
 <section class="page" id="page-select-client-type">
   <div class="sct-sticky-header">
-<button class="sct-back-btn" onclick="navBack()">← <span id="sct-back">رجوع</span></button>
+    <button class="sct-back-btn" onclick="showPage('companies')">← <span id="sct-back">رجوع</span></button>
     <div class="sct-sticky-title">
       <h1 id="sct-title">👤 إضافة عميل</h1>
       <p id="sct-subtitle">اختر نوع العميل للمتابعة</p>
@@ -4099,7 +4099,7 @@ html, body {
 <!-- ========== ADD COMPANY ========== -->
 <section class="page" id="page-add-company">
   <div class="sct-sticky-header">
-<button class="sct-back-btn" onclick="navBack()">← <span data-i18n="btn_back">رجوع</span></button>
+    <button class="sct-back-btn" onclick="showPage('select-client-type')">← <span data-i18n="btn_back">رجوع</span></button>
     <div class="sct-sticky-title">
       <h1 data-i18n="add_co_title">👤 إضافة عميل</h1>
       <p id="addCoSubtitle">املأ بيانات العميل</p>
@@ -4197,7 +4197,7 @@ html, body {
 <section class="page" id="page-add-product">
   <div id="pr-type-select-view">
     <div class="sct-sticky-header">
-<button class="sct-back-btn" onclick="navBack()">← <span data-i18n="btn_back">رجوع</span></button>
+      <button class="sct-back-btn" onclick="showPage('products')">← <span data-i18n="btn_back">رجوع</span></button>
       <div class="sct-sticky-title">
         <h1 id="apt-title">📦 إضافة منتج</h1>
         <p id="apt-subtitle">اختر نوع القطعة للمتابعة</p>
@@ -4358,7 +4358,7 @@ html, body {
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn btn-p btn-lg" onclick="savePr()">💾 <span data-i18n="btn_save_pr">حفظ القطعة</span></button>
       <button class="btn btn-s btn-lg" onclick="resetPrForm()">🔄</button>
-<button class="btn btn-s btn-lg" onclick="navBack()">← <span data-i18n="btn_back">رجوع</span></button>
+      <button class="btn btn-s btn-lg" onclick="showPage('products')">← <span data-i18n="btn_back">رجوع</span></button>
     </div>
   </div>
 </section>
@@ -4418,7 +4418,7 @@ html, body {
 <!-- ========== SELECT INVOICE TYPE ========== -->
 <section class="page" id="page-select-invoice-type">
   <div class="sct-sticky-header">
-<button class="sct-back-btn" onclick="navBack()">← <span id="sit-back">رجوع</span></button>
+    <button class="sct-back-btn" onclick="showPage('dashboard')">← <span id="sit-back">رجوع</span></button>
     <div class="sct-sticky-title">
       <h1 id="sit-title">✏️ إنشاء فاتورة</h1>
       <p id="sit-subtitle">اختر نوع الفاتورة للمتابعة</p>
@@ -4455,7 +4455,7 @@ html, body {
 <!-- ========== CREATE INVOICE — NEW IMPROVED LAYOUT ========== -->
 <section class="page" id="page-create-invoice">
   <div class="sct-sticky-header">
-<button class="sct-back-btn" onclick="navBack()">← <span data-i18n="btn_back">رجوع</span></button>
+    <button class="sct-back-btn" onclick="showPage('select-invoice-type')">← <span data-i18n="btn_back">رجوع</span></button>
     <div class="sct-sticky-title">
       <h1 data-i18n="create_title">✏️ إنشاء فاتورة</h1>
       <div class="chip-row">
@@ -5165,7 +5165,7 @@ html, body {
 <!-- ========== PAYMENT MANAGEMENT PAGE — ENHANCED ========== -->
 <section class="page" id="page-payment-management">
   <div class="sct-sticky-header">
-<button class="sct-back-btn" onclick="navBack()">← <span data-i18n="btn_back">رجوع</span></button>
+    <button class="sct-back-btn" onclick="showPage('invoices')">← <span data-i18n="btn_back">رجوع</span></button>
     <div class="sct-sticky-title">
       <h1>💰 <span data-i18n="pay_mgmt_title">إدارة الدفعات</span></h1>
       <p id="payMgmtInvInfo">—</p>
@@ -5430,10 +5430,9 @@ html, body {
 <!-- ══ PHASE 1: SCAN ══ -->
 <div id="qblPhase1" style="transition:all .5s cubic-bezier(.4,0,.2,1);">
   <div class="sct-sticky-header">
-  <button class="sct-back-btn" onclick="navBack()">
-  ← <span id="qblBackTxt">رجوع</span>
-</button>
-
+    <button class="sct-back-btn" onclick="showPage('dashboard')">
+      ← <span id="qblBackTxt">رجوع</span>
+    </button>
     <div class="sct-sticky-title">
       <h1 id="qblPageTitle">📷 باركود سريع</h1>
       <p id="qblPageSub">امسح الباركود أو ابحث باسم الموديل</p>
@@ -6187,38 +6186,6 @@ html, body {
 <script>
 'use strict';
 
-
-
-
-/* ============================================================
-   NAVIGATION STACK — SMART BACK SYSTEM
-============================================================ */
-const NAV_STACK = [];
-const NAV_MAX_DEPTH = 20; // حد أقصى لمنع التراكم
-
-function navPush(pageId) {
-  // لا تضف نفس الصفحة مرتين متتاليتين
-  if (NAV_STACK.length && NAV_STACK[NAV_STACK.length - 1] === pageId) return;
-  NAV_STACK.push(pageId);
-  // حافظ على الحد الأقصى
-  if (NAV_STACK.length > NAV_MAX_DEPTH) NAV_STACK.shift();
-}
-
-function navBack() {
-  // احذف الصفحة الحالية من المكدس
-  NAV_STACK.pop();
-  
-  // إذا يوجد صفحة سابقة → اذهب لها
-  if (NAV_STACK.length > 0) {
-    const prevPage = NAV_STACK[NAV_STACK.length - 1];
-    showPage(prevPage, true, true); // true = pushHistory, true = isBack
-  } else {
-    // المكدس فارغ → ارجع للرئيسية
-    showPage('dashboard', true, true);
-  }
-}
-
-   
 /* ============================================================
    INDEXEDDB
 ============================================================ */
@@ -8058,93 +8025,62 @@ function closeModal(id){document.getElementById(id).classList.remove('open')}
    SIDEBAR / NAVIGATION
 ============================================================ */
 let _isPopState=false;
-
-/* ============================================================
-   NAVIGATION STACK — SMART BACK SYSTEM
-============================================================ */
-const NAV_STACK = [];
-const NAV_MAX_DEPTH = 20;
-
-function navPush(pageId) {
-  if (NAV_STACK.length && NAV_STACK[NAV_STACK.length - 1] === pageId) return;
-  NAV_STACK.push(pageId);
-  if (NAV_STACK.length > NAV_MAX_DEPTH) NAV_STACK.shift();
-}
-
-function navBack() {
-  NAV_STACK.pop();
-  if (NAV_STACK.length > 0) {
-    const prevPage = NAV_STACK[NAV_STACK.length - 1];
-    showPage(prevPage, true, true);
-  } else {
-    showPage('dashboard', true, true);
-  }
-}
-
-function showPage(id, pushHistory=true, isBack=false) {
+function showPage(id,pushHistory=true){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   const pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');
   const map={dashboard:0,companies:1,products:2,invoices:3,'add-company':4,'add-product':5,'create-invoice':6};
   const items=document.querySelectorAll('.nav-item');
   if(map[id]!==undefined&&items[map[id]])items[map[id]].classList.add('active');
-
-  // ══ Navigation Stack ══
-  if (!isBack) {
-    navPush(id);
-  }
-
   if(id==='dashboard')updateDash();
   if(id==='companies')renderCo();
   if(id==='products')renderPr();
-  if(id==='add-product'){
-    document.getElementById('pr-type-select-view').style.display='block';
-    document.getElementById('pr-form-view').style.display='none';
-    renderPrTypeStepCards();
-  }
+if(id==='add-product'){
+  document.getElementById('pr-type-select-view').style.display = 'block';
+  document.getElementById('pr-form-view').style.display = 'none';
+  renderPrTypeStepCards();
+}
+
   if(id==='invoices'){renderInvList();updateInvClientFilterBar();}
   else{S.invClientFilter=null;}
+
   if(id==='create-invoice')initCreateInv();
-  if(id==='quick-barcode'){
-    updateQblTexts();
-    qblStopCamera();
-    setTimeout(()=>initQblPage(),50);
-    const bar=document.getElementById('qblStickyCart');
-    if(bar)bar.classList.remove('visible');
-    const mainEl=document.getElementById('mainContent');
-    if(mainEl)mainEl.classList.remove('cart-bar-visible');
-    qblUpdateCartUI();
-  } else {
-    qblStopCamera();
-    qblCloseCart();
-    setTimeout(()=>qblUpdateCartUI(),100);
-  }
+  if (id === 'quick-barcode') {
+  updateQblTexts();
+  // ✅ أوقف الكاميرا القديمة أولاً قبل إعادة التهيئة
+  qblStopCamera();
+  // ✅ ثم أعد التهيئة
+  setTimeout(() => initQblPage(), 50);
 
-  closeSidebar();
-  updateQabActive(id);
-  window.scrollTo({top:0,behavior:'smooth'});
+  const bar = document.getElementById('qblStickyCart');
+  if (bar) bar.classList.remove('visible');
+  const mainEl = document.getElementById('mainContent');
+  if (mainEl) mainEl.classList.remove('cart-bar-visible');
+  qblUpdateCartUI();
+} else {
+  qblStopCamera();
+  qblCloseCart();
+  setTimeout(() => qblUpdateCartUI(), 100);
+}
 
+
+
+closeSidebar();
+updateQabActive(id); // ✅ أضف هنا
+window.scrollTo({top:0,behavior:'smooth'});
   if(pushHistory&&!_isPopState){
     const url='#'+id;
     if(window.location.hash===url)history.replaceState({page:id},'',url);
     else history.pushState({page:id},'',url);
   }
 }
-
 function getCurrentPage(){const active=document.querySelector('.page.active');return active?active.id.replace('page-',''):'dashboard';}
 window.addEventListener('popstate',(e)=>{
   const openModalEl=document.querySelector('.modal-ov.open');
   if(openModalEl){openModalEl.classList.remove('open');if(openModalEl.id==='scannerModal')closeScanner();history.pushState({page:getCurrentPage()},'','#'+getCurrentPage());return;}
   if(document.getElementById('sidebar').classList.contains('open')){closeSidebar();history.pushState({page:getCurrentPage()},'','#'+getCurrentPage());return;}
-  const page=e.state?.page||'dashboard';
-  _isPopState=true;
-  showPage(page,false,true);
-  _isPopState=false;
-  // مزامنة المكدس مع popstate
-  const idx=NAV_STACK.lastIndexOf(page);
-  if(idx>=0){NAV_STACK.length=idx+1;}
+  const page=e.state?.page||'dashboard';_isPopState=true;showPage(page,false);_isPopState=false;
 });
-
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sideOv').classList.toggle('open');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sideOv').classList.remove('open');}
 
@@ -10967,10 +10903,6 @@ updateQblTexts(); // ✅ أضف هذا السطر
   const validPages=['dashboard','companies','products','invoices','add-company','add-product','create-invoice','select-client-type','select-invoice-type','payment-management'];
   if(hash&&validPages.includes(hash)){showPage(hash,false);history.replaceState({page:hash},'','#'+hash);}
   else{showPage('dashboard',false);history.replaceState({page:'dashboard'},'','#dashboard');}
-     // ── تهيئة المكدس بالصفحة الأولى
-  NAV_STACK.length = 0;
-  NAV_STACK.push(getCurrentPage());
-
   // fetch rate in background
   fetchRate();
 
