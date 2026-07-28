@@ -1,61 +1,76 @@
-const CACHE_NAME = 'wow-invoice-v1';
-const ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
-  'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js'
+const CACHE_NAME = 'wow-invoice-v2';
+
+// ✅ الملفات الأساسية فقط للتخزين المؤقت
+const CORE_ASSETS = [
+  '/index.html',
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
-// تثبيت Service Worker وتخزين الملفات
+// ── تثبيت: خزّن الملفات الأساسية
 self.addEventListener('install', (event) => {
+  console.log('[SW] Installing...');
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS).catch((err) => {
-        console.warn('Cache partial fail:', err);
-      });
-    })
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        // addAll يفشل كلياً إذا فشل ملف واحد
+        // نستخدم حلقة لتجنب الفشل الكلي
+        return Promise.allSettled(
+          CORE_ASSETS.map(url =>
+            cache.add(url).catch(err =>
+              console.warn('[SW] Failed to cache:', url, err)
+            )
+          )
+        );
+      })
+      .then(() => {
+        console.log('[SW] Install complete');
+        return self.skipWaiting(); // تفعيل فوري
+      })
   );
-  self.skipWaiting();
 });
 
-// تفعيل وحذف الكاش القديم
+// ── تفعيل: احذف الكاش القديم
 self.addEventListener('activate', (event) => {
+  console.log('[SW] Activating...');
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => caches.delete(key))
+    caches.keys()
+      .then((cacheNames) =>
+        Promise.all(
+          cacheNames
+            .filter(name => name !== CACHE_NAME)
+            .map(name => {
+              console.log('[SW] Deleting old cache:', name);
+              return caches.delete(name);
+            })
+        )
       )
-    )
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// استراتيجية: Network First ثم Cache
+// ── Fetch: Network First → Cache Fallback
 self.addEventListener('fetch', (event) => {
-  // تجاهل طلبات غير HTTP
+  // تجاهل طلبات غير GET أو غير HTTP
+  if (event.request.method !== 'GET') return;
   if (!event.request.url.startsWith('http')) return;
 
   event.respondWith(
     fetch(event.request)
-      .then((response) => {
-        // حفظ نسخة في الكاش
-        if (response && response.status === 200) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, clone);
-          });
+      .then((networkResponse) => {
+        // ✅ حفظ نسخة جديدة في الكاش
+        if (networkResponse.ok) {
+          const cloned = networkResponse.clone();
+          caches.open(CACHE_NAME)
+            .then(cache => cache.put(event.request, cloned));
         }
-        return response;
+        return networkResponse;
       })
       .catch(() => {
-        // إذا انقطع الإنترنت، استخدم الكاش
-        return caches.match(event.request).then((cached) => {
-          return cached || caches.match('./index.html');
-        });
+        // 📴 بدون إنترنت → استخدم الكاش
+        return caches.match(event.request)
+          .then(cached => cached || caches.match('/index.html'));
       })
   );
 });
