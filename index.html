@@ -4451,32 +4451,37 @@ html, body {
       </div>
     </div>
 
-  <div class="card">
+ <div class="card">
   <div class="card-hdr">
     <div class="card-title">📐 <span data-i18n="dims">الأبعاد</span></div>
-    <button type="button" class="btn btn-p btn-sm" onclick="addDimPiece()" id="addDimBtn">
+    <button type="button" class="btn btn-p btn-sm" onclick="addDimPiece()">
       ➕ <span id="addDimBtnTxt">إضافة قطعة</span>
     </button>
   </div>
 
-  <!-- حاوية القطع الديناميكية -->
+  <!-- القطع الديناميكية -->
   <div id="dimPiecesContainer"></div>
 
   <!-- CBM الإجمالي -->
   <div style="
-    margin-top:10px;
-    background:var(--input);
-    border:1px solid var(--border);
+    margin-top:8px;
+    background:var(--gold-light);
+    border:1.5px solid var(--gold);
     border-radius:var(--rs);
-    padding:10px 14px;
+    padding:10px 16px;
     display:flex;
     align-items:center;
     justify-content:space-between;
   ">
-    <span style="font-size:12px;font-weight:700;color:var(--text2);">📦 CBM الإجمالي</span>
-    <strong id="cbmCalc" style="color:var(--gold2);font-size:14px;">0.0000 m³</strong>
+    <span style="font-size:12px;font-weight:700;color:var(--gold2);">
+      📦 <span id="cbmTotalLabel">CBM الإجمالي</span>
+    </span>
+    <strong id="cbmCalc" style="color:var(--gold2);font-size:16px;">
+      0.0000 m³
+    </strong>
   </div>
 </div>
+
 
      
     <div class="card">
@@ -14253,43 +14258,258 @@ function updateDeliveryModeUI() {
 
 
 /* ============================================================
-   DIMENSIONS — MULTI-PIECE SYSTEM
+   COLOR DATABASE — FURNITURE COLORS × 3 LANGUAGES
 ============================================================ */
+const FURNITURE_COLORS = {
+  ar: [
+    { val:'STANDARD',        label:'⭐ ستاندر (افتراضي)',      group:'default' },
+    { val:'CUSTOM',          label:'✏️ مخصص (اكتب يدوياً)',    group:'default' },
+    { val:'TURKISH_WALNUT',  label:'🌰 جوز تركي',              group:'walnut'  },
+    { val:'AMERICAN_WALNUT', label:'🟫 جوز أمريكي',            group:'walnut'  },
+    { val:'STRIPED_WALNUT',  label:'🪵 جوز مقلَّم',             group:'walnut'  },
+    { val:'INLAID_WALNUT',   label:'✨ جوز معرَّق',             group:'walnut'  },
+    { val:'DARK_WALNUT',     label:'🌑 جوز غامق',               group:'walnut'  },
+    { val:'LIGHT_WALNUT',    label:'🌕 جوز فاتح',               group:'walnut'  },
+    { val:'SMOKED_WALNUT',   label:'🌫️ جوز مدخَّن',             group:'walnut'  },
+    { val:'GOLDEN_WALNUT',   label:'🥇 جوز ذهبي',               group:'walnut'  },
+    { val:'NATURAL_OAK',     label:'🌿 بلوط طبيعي',             group:'oak'     },
+    { val:'WHITE_OAK',       label:'⬜ بلوط أبيض',               group:'oak'     },
+    { val:'SMOKED_OAK',      label:'🌫️ بلوط مدخَّن',             group:'oak'     },
+    { val:'GOLDEN_OAK',      label:'🟡 بلوط ذهبي',              group:'oak'     },
+    { val:'DARK_OAK',        label:'🟤 بلوط غامق',              group:'oak'     },
+    { val:'NATURAL_BEECH',   label:'🌱 زان طبيعي',              group:'beech'   },
+    { val:'DARK_BEECH',      label:'🟫 زان غامق',               group:'beech'   },
+    { val:'MATTE_WHITE',     label:'⬜ أبيض مطفي',               group:'solid'   },
+    { val:'GLOSS_WHITE',     label:'✨ أبيض لامع',               group:'solid'   },
+    { val:'MATTE_BLACK',     label:'⬛ أسود مطفي',               group:'solid'   },
+    { val:'GLOSS_BLACK',     label:'🖤 أسود لامع',               group:'solid'   },
+    { val:'ANTHRACITE',      label:'🩶 أنثراسيت',                group:'solid'   },
+    { val:'CHAMPAGNE',       label:'🥂 شامبانيا',                group:'solid'   },
+    { val:'GOLD',            label:'🥇 ذهبي',                    group:'solid'   },
+    { val:'SILVER',          label:'🪙 فضي',                     group:'solid'   },
+    { val:'CREAM',           label:'🍦 كريمي',                   group:'solid'   },
+    { val:'BEIGE',           label:'🏜️ بيج',                     group:'solid'   },
+    { val:'GRAY',            label:'🩶 رمادي',                   group:'solid'   },
+    { val:'DARK_GRAY',       label:'🌑 رمادي غامق',              group:'solid'   },
+    { val:'BROWN',           label:'🟫 بني',                     group:'solid'   },
+    { val:'DARK_BROWN',      label:'🌑 بني غامق',                group:'solid'   },
+    { val:'LACQUERED',       label:'💎 ملمَّع (لاكيه)',           group:'finish'  },
+    { val:'MATTE_LACQUERED', label:'🔲 لاكيه مطفي',              group:'finish'  },
+    { val:'BRUSHED',         label:'🪮 مصقول (برَّاش)',           group:'finish'  },
+    { val:'AGED',            label:'🏺 معتَّق (أنتيك)',           group:'finish'  },
+    { val:'RUSTIC',          label:'🪵 ريفي (رستيك)',             group:'finish'  },
+    { val:'NATURAL',         label:'🌿 طبيعي',                   group:'finish'  },
+  ],
+  tr: [
+    { val:'STANDARD',        label:'⭐ Standart (Varsayılan)',   group:'default' },
+    { val:'CUSTOM',          label:'✏️ Özel (Manuel Yaz)',       group:'default' },
+    { val:'TURKISH_WALNUT',  label:'🌰 Türk Cevizi',             group:'walnut'  },
+    { val:'AMERICAN_WALNUT', label:'🟫 Amerikan Cevizi',         group:'walnut'  },
+    { val:'STRIPED_WALNUT',  label:'🪵 Çizgili Ceviz',           group:'walnut'  },
+    { val:'INLAID_WALNUT',   label:'✨ Damarlı Ceviz',           group:'walnut'  },
+    { val:'DARK_WALNUT',     label:'🌑 Koyu Ceviz',              group:'walnut'  },
+    { val:'LIGHT_WALNUT',    label:'🌕 Açık Ceviz',              group:'walnut'  },
+    { val:'SMOKED_WALNUT',   label:'🌫️ Füme Ceviz',              group:'walnut'  },
+    { val:'GOLDEN_WALNUT',   label:'🥇 Altın Ceviz',             group:'walnut'  },
+    { val:'NATURAL_OAK',     label:'🌿 Doğal Meşe',              group:'oak'     },
+    { val:'WHITE_OAK',       label:'⬜ Beyaz Meşe',               group:'oak'     },
+    { val:'SMOKED_OAK',      label:'🌫️ Füme Meşe',               group:'oak'     },
+    { val:'GOLDEN_OAK',      label:'🟡 Altın Meşe',              group:'oak'     },
+    { val:'DARK_OAK',        label:'🟤 Koyu Meşe',               group:'oak'     },
+    { val:'NATURAL_BEECH',   label:'🌱 Doğal Kayın',             group:'beech'   },
+    { val:'DARK_BEECH',      label:'🟫 Koyu Kayın',              group:'beech'   },
+    { val:'MATTE_WHITE',     label:'⬜ Mat Beyaz',                group:'solid'   },
+    { val:'GLOSS_WHITE',     label:'✨ Parlak Beyaz',             group:'solid'   },
+    { val:'MATTE_BLACK',     label:'⬛ Mat Siyah',                group:'solid'   },
+    { val:'GLOSS_BLACK',     label:'🖤 Parlak Siyah',             group:'solid'   },
+    { val:'ANTHRACITE',      label:'🩶 Antrasit',                 group:'solid'   },
+    { val:'CHAMPAGNE',       label:'🥂 Şampanya',                 group:'solid'   },
+    { val:'GOLD',            label:'🥇 Altın',                    group:'solid'   },
+    { val:'SILVER',          label:'🪙 Gümüş',                    group:'solid'   },
+    { val:'CREAM',           label:'🍦 Krem',                     group:'solid'   },
+    { val:'BEIGE',           label:'🏜️ Bej',                      group:'solid'   },
+    { val:'GRAY',            label:'🩶 Gri',                      group:'solid'   },
+    { val:'DARK_GRAY',       label:'🌑 Koyu Gri',                 group:'solid'   },
+    { val:'BROWN',           label:'🟫 Kahverengi',               group:'solid'   },
+    { val:'DARK_BROWN',      label:'🌑 Koyu Kahverengi',          group:'solid'   },
+    { val:'LACQUERED',       label:'💎 Parlak Lake',              group:'finish'  },
+    { val:'MATTE_LACQUERED', label:'🔲 Mat Lake',                 group:'finish'  },
+    { val:'BRUSHED',         label:'🪮 Fırçalı',                  group:'finish'  },
+    { val:'AGED',            label:'🏺 Antika (Eskitme)',          group:'finish'  },
+    { val:'RUSTIC',          label:'🪵 Rustik',                   group:'finish'  },
+    { val:'NATURAL',         label:'🌿 Doğal',                    group:'finish'  },
+  ],
+  en: [
+    { val:'STANDARD',        label:'⭐ Standard (Default)',       group:'default' },
+    { val:'CUSTOM',          label:'✏️ Custom (Type Manually)',   group:'default' },
+    { val:'TURKISH_WALNUT',  label:'🌰 Turkish Walnut',           group:'walnut'  },
+    { val:'AMERICAN_WALNUT', label:'🟫 American Walnut',          group:'walnut'  },
+    { val:'STRIPED_WALNUT',  label:'🪵 Striped Walnut',           group:'walnut'  },
+    { val:'INLAID_WALNUT',   label:'✨ Inlaid Walnut',            group:'walnut'  },
+    { val:'DARK_WALNUT',     label:'🌑 Dark Walnut',              group:'walnut'  },
+    { val:'LIGHT_WALNUT',    label:'🌕 Light Walnut',             group:'walnut'  },
+    { val:'SMOKED_WALNUT',   label:'🌫️ Smoked Walnut',            group:'walnut'  },
+    { val:'GOLDEN_WALNUT',   label:'🥇 Golden Walnut',            group:'walnut'  },
+    { val:'NATURAL_OAK',     label:'🌿 Natural Oak',              group:'oak'     },
+    { val:'WHITE_OAK',       label:'⬜ White Oak',                 group:'oak'     },
+    { val:'SMOKED_OAK',      label:'🌫️ Smoked Oak',               group:'oak'     },
+    { val:'GOLDEN_OAK',      label:'🟡 Golden Oak',               group:'oak'     },
+    { val:'DARK_OAK',        label:'🟤 Dark Oak',                 group:'oak'     },
+    { val:'NATURAL_BEECH',   label:'🌱 Natural Beech',            group:'beech'   },
+    { val:'DARK_BEECH',      label:'🟫 Dark Beech',               group:'beech'   },
+    { val:'MATTE_WHITE',     label:'⬜ Matte White',               group:'solid'   },
+    { val:'GLOSS_WHITE',     label:'✨ Gloss White',               group:'solid'   },
+    { val:'MATTE_BLACK',     label:'⬛ Matte Black',               group:'solid'   },
+    { val:'GLOSS_BLACK',     label:'🖤 Gloss Black',               group:'solid'   },
+    { val:'ANTHRACITE',      label:'🩶 Anthracite',                group:'solid'   },
+    { val:'CHAMPAGNE',       label:'🥂 Champagne',                 group:'solid'   },
+    { val:'GOLD',            label:'🥇 Gold',                      group:'solid'   },
+    { val:'SILVER',          label:'🪙 Silver',                    group:'solid'   },
+    { val:'CREAM',           label:'🍦 Cream',                     group:'solid'   },
+    { val:'BEIGE',           label:'🏜️ Beige',                     group:'solid'   },
+    { val:'GRAY',            label:'🩶 Gray',                      group:'solid'   },
+    { val:'DARK_GRAY',       label:'🌑 Dark Gray',                 group:'solid'   },
+    { val:'BROWN',           label:'🟫 Brown',                     group:'solid'   },
+    { val:'DARK_BROWN',      label:'🌑 Dark Brown',                group:'solid'   },
+    { val:'LACQUERED',       label:'💎 Lacquered Gloss',           group:'finish'  },
+    { val:'MATTE_LACQUERED', label:'🔲 Matte Lacquered',           group:'finish'  },
+    { val:'BRUSHED',         label:'🪮 Brushed',                   group:'finish'  },
+    { val:'AGED',            label:'🏺 Aged / Antique',            group:'finish'  },
+    { val:'RUSTIC',          label:'🪵 Rustic',                    group:'finish'  },
+    { val:'NATURAL',         label:'🌿 Natural',                   group:'finish'  },
+  ],
+};
 
-// مصفوفة القطع
-S.dimPieces = [];
-
-/* ── نصوص 3 لغات ── */
-const DIM_TEXTS = {
+const COLOR_GROUP_LABELS = {
   ar: {
-    piece:       'قطعة',
-    add_btn:     'إضافة قطعة',
-    dims_label:  'الأبعاد (ط × ع × ا) سم',
-    weight:      'الوزن (كجم)',
-    packets:     'الباكيت',
-    color:       'اللون',
-    cbm_total:   'CBM الإجمالي',
-    delete_confirm: 'حذف هذه القطعة؟',
+    default:'⭐ الخيارات الأساسية',
+    walnut: '🌰 ألوان الجوز',
+    oak:    '🌿 ألوان البلوط',
+    beech:  '🌱 ألوان الزان',
+    solid:  '🎨 ألوان الموبيليا الأساسية',
+    finish: '✨ تشطيبات خاصة',
   },
   tr: {
-    piece:       'Parça',
-    add_btn:     'Parça Ekle',
-    dims_label:  'Boyutlar (U × G × Y) cm',
-    weight:      'Ağırlık (kg)',
-    packets:     'Paket',
-    color:       'Renk',
-    cbm_total:   'Toplam CBM',
-    delete_confirm: 'Bu parçayı sil?',
+    default:'⭐ Temel Seçenekler',
+    walnut: '🌰 Ceviz Renkleri',
+    oak:    '🌿 Meşe Renkleri',
+    beech:  '🌱 Kayın Renkleri',
+    solid:  '🎨 Temel Mobilya Renkleri',
+    finish: '✨ Özel Yüzeyler',
   },
   en: {
-    piece:       'Piece',
-    add_btn:     'Add Piece',
-    dims_label:  'Dimensions (L × W × H) cm',
-    weight:      'Weight (kg)',
-    packets:     'Packets',
-    color:       'Color',
-    cbm_total:   'Total CBM',
-    delete_confirm: 'Delete this piece?',
+    default:'⭐ Basic Options',
+    walnut: '🌰 Walnut Colors',
+    oak:    '🌿 Oak Colors',
+    beech:  '🌱 Beech Colors',
+    solid:  '🎨 Core Furniture Colors',
+    finish: '✨ Special Finishes',
+  },
+};
+
+/* ── هل القيمة موجودة في القائمة؟ ── */
+function isKnownColor(val) {
+  const lang   = S.lang || 'ar';
+  const colors = FURNITURE_COLORS[lang] || FURNITURE_COLORS.en;
+  return colors.some(c => c.val === val);
+}
+
+/* ── بناء HTML للقائمة المنسدلة ── */
+function buildColorSelectHTML(currentVal) {
+  const lang       = S.lang || 'ar';
+  const colors     = FURNITURE_COLORS[lang] || FURNITURE_COLORS.en;
+  const groupLabels= COLOR_GROUP_LABELS[lang] || COLOR_GROUP_LABELS.en;
+  const groupOrder = ['default','walnut','oak','beech','solid','finish'];
+
+  const grouped = {};
+  groupOrder.forEach(g => { grouped[g] = []; });
+  colors.forEach(c => { if (grouped[c.group]) grouped[c.group].push(c); });
+
+  // إذا كانت القيمة مخصصة (غير موجودة في القائمة) → اختر CUSTOM
+  const selVal = (!currentVal || isKnownColor(currentVal)) ? (currentVal || 'STANDARD') : 'CUSTOM';
+
+  let html = '';
+  groupOrder.forEach(g => {
+    if (!grouped[g].length) return;
+    html += `<optgroup label="${groupLabels[g] || g}">`;
+    grouped[g].forEach(c => {
+      const sel = c.val === selVal ? ' selected' : '';
+      html += `<option value="${c.val}"${sel}>${c.label}</option>`;
+    });
+    html += `</optgroup>`;
+  });
+  return html;
+}
+
+/* ── معالجة تغيير القائمة ── */
+function onDimColorChange(idx, selectEl) {
+  const val        = selectEl.value;
+  const customWrap = document.getElementById(`dimColorCustomWrap_${idx}`);
+  const customInp  = document.getElementById(`dimColorCustom_${idx}`);
+
+  if (val === 'CUSTOM') {
+    if (customWrap) {
+      customWrap.style.display   = 'flex';
+      customWrap.style.animation = 'fadeUp .25s ease';
+    }
+    if (customInp) { customInp.focus(); }
+    // لا تحدّث حتى يكتب المستخدم
+    return;
+  }
+
+  if (customWrap) customWrap.style.display = 'none';
+  if (!S.dimPieces[idx]) return;
+  S.dimPieces[idx].color = val;
+}
+
+/* ── معالجة الكتابة اليدوية ── */
+function onDimColorCustomInput(idx, inputEl) {
+  if (!S.dimPieces[idx]) return;
+  S.dimPieces[idx].color = inputEl.value;
+}
+
+/* ============================================================
+   DIMENSIONS — MULTI-PIECE SYSTEM (COMPLETE)
+============================================================ */
+
+S.dimPieces = S.dimPieces || [];
+
+const DIM_TEXTS = {
+  ar: {
+    piece:          'قطعة',
+    add_btn:        'إضافة قطعة',
+    dims_label:     'الأبعاد (ط × ع × ا) سم',
+    weight:         'الوزن (كجم)',
+    packets:        'الباكيت',
+    color:          'اللون',
+    cbm_total:      'CBM الإجمالي',
+    custom_ph:      'اكتب اللون...',
+    del_confirm:    'حذف هذه القطعة؟',
+    min_one:        '⚠️ يجب أن تبقى قطعة واحدة على الأقل',
+  },
+  tr: {
+    piece:          'Parça',
+    add_btn:        'Parça Ekle',
+    dims_label:     'Boyutlar (U × G × Y) cm',
+    weight:         'Ağırlık (kg)',
+    packets:        'Paket',
+    color:          'Renk',
+    cbm_total:      'Toplam CBM',
+    custom_ph:      'Renk yaz...',
+    del_confirm:    'Bu parçayı sil?',
+    min_one:        '⚠️ En az bir parça kalmalıdır',
+  },
+  en: {
+    piece:          'Piece',
+    add_btn:        'Add Piece',
+    dims_label:     'Dimensions (L × W × H) cm',
+    weight:         'Weight (kg)',
+    packets:        'Packets',
+    color:          'Color',
+    cbm_total:      'Total CBM',
+    custom_ph:      'Type color...',
+    del_confirm:    'Delete this piece?',
+    min_one:        '⚠️ At least one piece must remain',
   },
 };
 
@@ -14298,29 +14518,30 @@ function dimTx(key) {
   return (DIM_TEXTS[lang] || DIM_TEXTS.ar)[key] || key;
 }
 
-/* ── تهيئة القطعة الأولى عند فتح الصفحة ── */
+/* ── تهيئة القطع ── */
 function initDimPieces() {
   S.dimPieces = [];
-  addDimPiece(); // قطعة واحدة افتراضية
+  addDimPiece();
 }
 
-/* ── إضافة قطعة جديدة ── */
+/* ── إضافة قطعة ── */
 function addDimPiece() {
-  const idx = S.dimPieces.length;
-  S.dimPieces.push({ l:0, w:0, h:0, weight:0, packets:1, color:'STANDARD', colorHex:'#8B7355' });
+  S.dimPieces.push({
+    l:0, w:0, h:0,
+    weight:0, packets:1,
+    color:'STANDARD',
+  });
   renderDimPieces();
-
-  // تمرير للقطعة الجديدة
   setTimeout(() => {
-    const el = document.getElementById(`dimPiece_${idx}`);
+    const el = document.getElementById(`dimPiece_${S.dimPieces.length - 1}`);
     if (el) el.scrollIntoView({ behavior:'smooth', block:'nearest' });
-  }, 100);
+  }, 120);
 }
 
 /* ── حذف قطعة ── */
 function removeDimPiece(idx) {
   if (S.dimPieces.length <= 1) {
-    showToast('⚠️ يجب أن تبقى قطعة واحدة على الأقل', 'in');
+    showToast(dimTx('min_one'), 'in');
     return;
   }
   S.dimPieces.splice(idx, 1);
@@ -14328,31 +14549,29 @@ function removeDimPiece(idx) {
   calcTotalCBM();
 }
 
-/* ── تحديث قيمة قطعة ── */
+/* ── تحديث حقل رقمي ── */
 function updateDimPiece(idx, field, value) {
   if (!S.dimPieces[idx]) return;
-  S.dimPieces[idx][field] = field === 'color' || field === 'colorHex'
-    ? value
-    : (parseFloat(value) || 0);
-  calcTotalCBM();
+  if (field === 'color') {
+    S.dimPieces[idx].color = value;
+  } else {
+    S.dimPieces[idx][field] = parseFloat(value) || 0;
+    calcTotalCBM();
+  }
 }
 
 /* ── حساب CBM الإجمالي ── */
 function calcTotalCBM() {
   let total = 0;
   S.dimPieces.forEach((p, i) => {
-    const cbm = p.l && p.w && p.h ? (p.l * p.w * p.h / 1000000) : 0;
+    const cbm = (p.l && p.w && p.h) ? (p.l * p.w * p.h / 1000000) : 0;
     S.dimPieces[i]._cbm = parseFloat(cbm.toFixed(6));
     total += cbm;
-
-    // تحديث CBM القطعة في الواجهة
-    const cbmEl = document.getElementById(`dimCBM_${i}`);
-    if (cbmEl) cbmEl.textContent = cbm.toFixed(4) + ' m³';
+    const el = document.getElementById(`dimCBM_${i}`);
+    if (el) el.textContent = cbm.toFixed(4) + ' m³';
   });
-
   const totalEl = document.getElementById('cbmCalc');
   if (totalEl) totalEl.textContent = total.toFixed(4) + ' m³';
-
   return total;
 }
 
@@ -14365,24 +14584,28 @@ function renderDimPieces() {
   const tx   = DIM_TEXTS[lang] || DIM_TEXTS.ar;
 
   // تحديث نص زر الإضافة
-  const addBtn = document.getElementById('addDimBtnTxt');
-  if (addBtn) addBtn.textContent = tx.add_btn;
+  const addBtnTxt = document.getElementById('addDimBtnTxt');
+  if (addBtnTxt) addBtnTxt.textContent = tx.add_btn;
+
+  // ألوان مميزة لكل قطعة
+  const pieceColors = [
+    { bg:'rgba(200,169,110,.10)', border:'rgba(200,169,110,.45)', num:'var(--gold2)'  },
+    { bg:'rgba(49,130,206,.08)',  border:'rgba(49,130,206,.35)',  num:'#2b6cb0'       },
+    { bg:'rgba(56,161,105,.08)',  border:'rgba(56,161,105,.35)',  num:'#276749'       },
+    { bg:'rgba(128,90,213,.08)', border:'rgba(128,90,213,.35)', num:'#553c9a'       },
+    { bg:'rgba(229,62,62,.06)',  border:'rgba(229,62,62,.30)',  num:'#c53030'       },
+  ];
 
   container.innerHTML = S.dimPieces.map((piece, i) => {
-    const isFirst  = i === 0;
-    const cbm      = piece.l && piece.w && piece.h
+    const pc  = pieceColors[i % pieceColors.length];
+    const cbm = (piece.l && piece.w && piece.h)
       ? (piece.l * piece.w * piece.h / 1000000).toFixed(4)
       : '0.0000';
 
-    // ألوان مختلفة لكل قطعة
-    const pieceColors = [
-      { bg:'rgba(200,169,110,.1)',  border:'rgba(200,169,110,.4)',  num:'var(--gold2)'  },
-      { bg:'rgba(49,130,206,.08)', border:'rgba(49,130,206,.3)',   num:'#2b6cb0'       },
-      { bg:'rgba(56,161,105,.08)', border:'rgba(56,161,105,.3)',   num:'#276749'       },
-      { bg:'rgba(128,90,213,.08)', border:'rgba(128,90,213,.3)',   num:'#553c9a'       },
-      { bg:'rgba(229,62,62,.06)',  border:'rgba(229,62,62,.25)',   num:'#c53030'       },
-    ];
-    const pc = pieceColors[i % pieceColors.length];
+    // هل اللون مخصص (غير موجود في القائمة)؟
+    const isCustomColor = piece.color && !isKnownColor(piece.color);
+    const customVisible = isCustomColor ? 'flex' : 'none';
+    const customValue   = isCustomColor ? piece.color : '';
 
     return `
     <div id="dimPiece_${i}" style="
@@ -14393,31 +14616,24 @@ function renderDimPieces() {
       margin-bottom:10px;
       animation:fadeUp .3s ease both;
       animation-delay:${i * 0.05}s;
-      position:relative;
     ">
 
-      <!-- رأس القطعة -->
+      <!-- ── رأس القطعة ── -->
       <div style="
-        display:flex;
-        align-items:center;
+        display:flex;align-items:center;
         justify-content:space-between;
         margin-bottom:12px;
       ">
-        <div style="
-          display:flex;
-          align-items:center;
-          gap:8px;
-        ">
-          <!-- رقم القطعة -->
+        <div style="display:flex;align-items:center;gap:9px;">
+
+          <!-- رقم دائري ملوَّن -->
           <div style="
-            width:28px;height:28px;
-            border-radius:50%;
-            background:${pc.num};
-            color:#fff;
-            font-size:13px;font-weight:900;
+            width:30px;height:30px;border-radius:50%;
+            background:${pc.num};color:#fff;
+            font-size:14px;font-weight:900;
             display:flex;align-items:center;justify-content:center;
             flex-shrink:0;
-            box-shadow:0 2px 8px ${pc.border};
+            box-shadow:0 3px 10px ${pc.border};
           ">${i + 1}</div>
 
           <div>
@@ -14425,59 +14641,56 @@ function renderDimPieces() {
               ${tx.piece} ${i + 1}
             </div>
             <div style="font-size:10px;color:var(--muted);margin-top:1px;">
-              CBM: <strong id="dimCBM_${i}" style="color:${pc.num};">${cbm} m³</strong>
+              CBM:
+              <strong id="dimCBM_${i}" style="color:${pc.num};">
+                ${cbm} m³
+              </strong>
             </div>
           </div>
         </div>
 
-        <!-- زر الحذف -->
-        ${!isFirst ? `
-        <button
-          type="button"
+        <!-- زر الحذف — مخفي للقطعة الأولى -->
+        ${i > 0 ? `
+        <button type="button"
           onclick="removeDimPiece(${i})"
+          title="${tx.del_confirm}"
           style="
-            width:28px;height:28px;
-            border-radius:8px;
-            border:none;
-            background:rgba(229,62,62,.1);
-            color:var(--red);
-            cursor:pointer;
-            font-size:14px;
+            width:30px;height:30px;border-radius:8px;border:none;
+            background:rgba(229,62,62,.1);color:var(--red);
+            cursor:pointer;font-size:14px;
             display:flex;align-items:center;justify-content:center;
-            transition:all var(--tr);
-            flex-shrink:0;
+            transition:all var(--tr);flex-shrink:0;
           "
           onmouseenter="this.style.background='var(--red)';this.style.color='#fff'"
           onmouseleave="this.style.background='rgba(229,62,62,.1)';this.style.color='var(--red)'"
-          title="${tx.delete_confirm}"
-        >🗑️</button>` : '<div style="width:28px;"></div>'}
+        >🗑️</button>` : '<div style="width:30px;"></div>'}
       </div>
 
-      <!-- حقول الأبعاد -->
-      <div class="fgrid" style="gap:10px;">
-
-        <!-- الأبعاد ط × ع × ا -->
-        <div class="fg full">
-          <label class="fl" style="font-size:11px;">📏 ${tx.dims_label}</label>
-          <div class="dim-row">
-            <input type="number" class="fc" placeholder="ط"
-              value="${piece.l || ''}" min="0"
-              oninput="updateDimPiece(${i},'l',this.value)"
-              style="border-color:${pc.border};">
-            <span class="dim-sep">×</span>
-            <input type="number" class="fc" placeholder="ع"
-              value="${piece.w || ''}" min="0"
-              oninput="updateDimPiece(${i},'w',this.value)"
-              style="border-color:${pc.border};">
-            <span class="dim-sep">×</span>
-            <input type="number" class="fc" placeholder="ا"
-              value="${piece.h || ''}" min="0"
-              oninput="updateDimPiece(${i},'h',this.value)"
-              style="border-color:${pc.border};">
-          </div>
+      <!-- ── الأبعاد ط × ع × ا ── -->
+      <div class="fg" style="margin-bottom:10px;">
+        <label class="fl" style="font-size:11px;">
+          📏 ${tx.dims_label}
+        </label>
+        <div class="dim-row">
+          <input type="number" class="fc" placeholder="ط"
+            value="${piece.l || ''}" min="0"
+            oninput="updateDimPiece(${i},'l',this.value)"
+            style="border-color:${pc.border};">
+          <span class="dim-sep">×</span>
+          <input type="number" class="fc" placeholder="ع"
+            value="${piece.w || ''}" min="0"
+            oninput="updateDimPiece(${i},'w',this.value)"
+            style="border-color:${pc.border};">
+          <span class="dim-sep">×</span>
+          <input type="number" class="fc" placeholder="ا"
+            value="${piece.h || ''}" min="0"
+            oninput="updateDimPiece(${i},'h',this.value)"
+            style="border-color:${pc.border};">
         </div>
+      </div>
 
-        <!-- الوزن -->
+      <!-- ── وزن + باكيت ── -->
+      <div class="fgrid" style="gap:10px;margin-bottom:10px;">
         <div class="fg">
           <label class="fl" style="font-size:11px;">⚖️ ${tx.weight}</label>
           <input type="number" class="fc" placeholder="0.00"
@@ -14485,8 +14698,6 @@ function renderDimPieces() {
             oninput="updateDimPiece(${i},'weight',this.value)"
             style="border-color:${pc.border};">
         </div>
-
-        <!-- الباكيت -->
         <div class="fg">
           <label class="fl" style="font-size:11px;">📦 ${tx.packets}</label>
           <input type="number" class="fc" placeholder="1"
@@ -14494,99 +14705,147 @@ function renderDimPieces() {
             oninput="updateDimPiece(${i},'packets',this.value)"
             style="border-color:${pc.border};">
         </div>
-
-        <!-- اللون -->
-        <div class="fg">
-          <label class="fl" style="font-size:11px;">🎨 ${tx.color}</label>
-          <input type="text" class="fc" placeholder="STANDARD"
-            value="${piece.color || 'STANDARD'}"
-            oninput="updateDimPiece(${i},'color',this.value)"
-            style="border-color:${pc.border};">
-        </div>
-
       </div>
+
+      <!-- ── اللون — قائمة منسدلة ── -->
+      <div class="fg">
+        <label class="fl" style="font-size:11px;">🎨 ${tx.color}</label>
+
+        <select class="fc"
+          id="dimColorSel_${i}"
+          onchange="onDimColorChange(${i}, this)"
+          style="border-color:${pc.border};cursor:pointer;">
+          ${buildColorSelectHTML(piece.color)}
+        </select>
+
+        <!-- حقل الكتابة اليدوية — يظهر عند اختيار "مخصص" -->
+        <div id="dimColorCustomWrap_${i}" style="
+          display:${customVisible};
+          align-items:center;
+          gap:7px;
+          margin-top:7px;
+        ">
+          <span style="font-size:16px;flex-shrink:0;">✏️</span>
+          <input type="text" class="fc"
+            id="dimColorCustom_${i}"
+            placeholder="${tx.custom_ph}"
+            value="${customValue}"
+            oninput="onDimColorCustomInput(${i}, this)"
+            style="border-color:${pc.border};flex:1;">
+        </div>
+      </div>
+
     </div>`;
   }).join('');
 
   calcTotalCBM();
 }
 
-/* ── تعديل savePr لقراءة البيانات من S.dimPieces ── */
-const _origSavePr = savePr;
-savePr = async function() {
-  // جمع بيانات القطعة الأولى للحقول الرئيسية
-  const firstPiece = S.dimPieces[0] || {};
+/* ── معالجة تغيير القائمة ── */
+function onDimColorChange(idx, selectEl) {
+  const val        = selectEl.value;
+  const customWrap = document.getElementById(`dimColorCustomWrap_${idx}`);
+  const customInp  = document.getElementById(`dimColorCustom_${idx}`);
 
-  // تعبئة الحقول القديمة من القطعة الأولى
-  const setVal = (id, v) => {
-    const el = document.getElementById(id);
-    if (el) el.value = v || '';
-  };
-  setVal('dimL', firstPiece.l || 0);
-  setVal('dimW', firstPiece.w || 0);
-  setVal('dimH', firstPiece.h || 0);
-  setVal('prWeight', firstPiece.weight || 0);
-  setVal('prPackets', firstPiece.packets || 1);
-  setVal('prColor', firstPiece.color || 'STANDARD');
+  if (val === 'CUSTOM') {
+    if (customWrap) {
+      customWrap.style.display   = 'flex';
+      customWrap.style.animation = 'fadeUp .25s ease';
+    }
+    if (customInp) setTimeout(() => customInp.focus(), 80);
+    return;
+  }
 
-  // استدعاء الدالة الأصلية
+  if (customWrap) customWrap.style.display = 'none';
+  if (S.dimPieces[idx]) S.dimPieces[idx].color = val;
+}
+
+/* ── معالجة الكتابة اليدوية ── */
+function onDimColorCustomInput(idx, inputEl) {
+  if (S.dimPieces[idx]) S.dimPieces[idx].color = inputEl.value;
+}
+
+/* ── هل القيمة موجودة في القائمة؟ ── */
+function isKnownColor(val) {
+  const lang   = S.lang || 'ar';
+  const colors = FURNITURE_COLORS[lang] || FURNITURE_COLORS.en;
+  return colors.some(c => c.val === val);
+}
+
+/* ============================================================
+   HOOKS — ربط مع الدوال الأصلية
+============================================================ */
+
+/* ── تعديل savePr ── */
+const _origSavePr = window.savePr;
+window.savePr = async function () {
+  const first = S.dimPieces[0] || {};
+  const setV  = (id, v) => { const el = document.getElementById(id); if (el) el.value = v ?? ''; };
+  setV('dimL',      first.l       || 0);
+  setV('dimW',      first.w       || 0);
+  setV('dimH',      first.h       || 0);
+  setV('prWeight',  first.weight  || 0);
+  setV('prPackets', first.packets || 1);
+  setV('prColor',   first.color   || 'STANDARD');
+
   await _origSavePr.call(this);
 
-  // حفظ كل القطع في المنتج
+  // حفظ كل القطع في آخر منتج مُضاف
   const pr = S.products[S.products.length - 1];
   if (pr) {
-    pr.dimPieces = S.dimPieces.map(p => ({ ...p }));
-    pr.totalCBM  = parseFloat(calcTotalCBM().toFixed(4));
-    pr.totalWeight = S.dimPieces.reduce((s, p) => s + (p.weight || 0), 0);
+    pr.dimPieces    = S.dimPieces.map(p => ({ ...p }));
+    pr.totalCBM     = parseFloat(calcTotalCBM().toFixed(4));
+    pr.totalWeight  = S.dimPieces.reduce((s, p) => s + (p.weight  || 0), 0);
     pr.totalPackets = S.dimPieces.reduce((s, p) => s + (p.packets || 1), 0);
     await dbPut('products', pr);
   }
 };
 
-/* ── تعديل resetPrForm لإعادة تهيئة القطع ── */
-const _origResetPrForm = resetPrForm;
-resetPrForm = function() {
+/* ── تعديل resetPrForm ── */
+const _origResetPrForm = window.resetPrForm;
+window.resetPrForm = function () {
   _origResetPrForm.call(this);
   initDimPieces();
 };
 
-/* ── تعديل editPr لتحميل القطع المحفوظة ── */
-const _origEditPr = editPr;
-editPr = function(id) {
+/* ── تعديل editPr ── */
+const _origEditPr = window.editPr;
+window.editPr = function (id) {
   _origEditPr.call(this, id);
   setTimeout(() => {
     const p = S.products.find(x => x.id === id);
     if (p && p.dimPieces && p.dimPieces.length) {
       S.dimPieces = p.dimPieces.map(d => ({ ...d }));
     } else {
-      // إنشاء قطعة واحدة من البيانات القديمة
       S.dimPieces = [{
-        l: p?.dimL || 0,
-        w: p?.dimW || 0,
-        h: p?.dimH || 0,
+        l:       p?.dimL    || 0,
+        w:       p?.dimW    || 0,
+        h:       p?.dimH    || 0,
         weight:  p?.weight  || 0,
         packets: p?.packets || 1,
         color:   p?.color   || 'STANDARD',
-        colorHex: p?.colorHex || '#8B7355',
       }];
     }
     renderDimPieces();
-  }, 150);
+  }, 180);
 };
 
-/* ── تهيئة عند تحميل صفحة إضافة منتج ── */
-const _origSelectPrTypeAndContinue = selectPrTypeAndContinue;
-selectPrTypeAndContinue = function(tp, event) {
-  _origSelectPrTypeAndContinue.call(this, tp, event);
+/* ── تعديل selectPrTypeAndContinue ── */
+const _origSelectPrType = window.selectPrTypeAndContinue;
+window.selectPrTypeAndContinue = function (tp, event) {
+  _origSelectPrType.call(this, tp, event);
   setTimeout(() => {
-    if (!S.dimPieces || !S.dimPieces.length) {
-      initDimPieces();
-    } else {
-      renderDimPieces();
-    }
-  }, 100);
+    if (!S.dimPieces || !S.dimPieces.length) initDimPieces();
+    else renderDimPieces();
+  }, 120);
 };
 
+/* ── تحديث القوائم عند تغيير اللغة ── */
+const _origApplyTr = window.applyTr;
+window.applyTr = function () {
+  _origApplyTr.call(this);
+  if (S.dimPieces && S.dimPieces.length) renderDimPieces();
+};
 
 
 
