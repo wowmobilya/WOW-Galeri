@@ -3647,6 +3647,25 @@ html, body {
         box-shadow: 0 6px 16px rgba(0,0,0,0.08) !important;
     }
 }
+/* ============================================================
+   🛠️ SIDEBAR MOBILE FIX (GPU ACCELERATED)
+============================================================ */
+@media (max-width: 900px) {
+    .sidebar {
+        /* إخفاء القائمة خارج الشاشة + تفعيل كرت الشاشة معاً */
+        transform: translateX(100%) translateZ(0) !important; 
+    }
+    
+    /* دعم اللغة الإنجليزية والتركية (من اليسار لليمين) */
+    [dir="ltr"] .sidebar {
+        transform: translateX(-100%) translateZ(0) !important;
+    }
+    
+    /* إظهار القائمة بسلاسة عند الضغط على زر الهامبرغر */
+    .sidebar.open {
+        transform: translateX(0) translateZ(0) !important; 
+    }
+}
 
    
 
