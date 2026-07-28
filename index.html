@@ -4478,42 +4478,7 @@ html, body {
   </div>
 </div>
 
-      <div class="fgrid">
-        <div class="fg">
-          <label class="fl">📏 <span data-i18n="dims_label">الأبعاد (ط × ع × ا) سم</span></label>
-          <div class="dim-row">
-            <input type="number" class="fc" id="dimL" placeholder="ط" min="0" oninput="calcCBM()">
-            <span class="dim-sep">×</span>
-            <input type="number" class="fc" id="dimW" placeholder="ع" min="0" oninput="calcCBM()">
-            <span class="dim-sep">×</span>
-            <input type="number" class="fc" id="dimH" placeholder="ا" min="0" oninput="calcCBM()">
-          </div>
-          <div style="margin-top:5px;font-size:11px;color:var(--muted);">CBM: <strong id="cbmCalc" style="color:var(--gold2);">0.0000 m³</strong></div>
-        </div>
-        <div class="fg">
-          <label class="fl">⚖️ <span data-i18n="weight">الوزن (كجم)</span></label>
-          <input type="number" class="fc" id="prWeight" placeholder="0.00" min="0" step="0.1">
-        </div>
-        <div class="fg">
-          <label class="fl">📦 <span data-i18n="packets">عدد الباكيت</span></label>
-          <input type="number" class="fc" id="prPackets" placeholder="1" min="1" value="1">
-        </div>
-        <div class="fg">
-          <label class="fl">🎨 <span data-i18n="color">اللون</span></label>
-          <div class="color-opts" id="colorOpts">
-            <div class="cswatch sel" style="background:#8B7355;" onclick="selColor('#8B7355',this)" title="بني"></div>
-            <div class="cswatch" style="background:#F5F5DC;border:1px solid #ddd;" onclick="selColor('#F5F5DC',this)" title="بيج"></div>
-            <div class="cswatch" style="background:#2C2C2C;" onclick="selColor('#2C2C2C',this)" title="أسود"></div>
-            <div class="cswatch" style="background:#FFFFFF;border:1px solid #ddd;" onclick="selColor('#FFFFFF',this)" title="أبيض"></div>
-            <div class="cswatch" style="background:#808080;" onclick="selColor('#808080',this)" title="رمادي"></div>
-            <div class="cswatch" style="background:#D4AF37;" onclick="selColor('#D4AF37',this)" title="ذهبي"></div>
-            <input type="color" style="width:26px;height:26px;border-radius:50%;border:none;cursor:pointer;padding:0;" onchange="selColorCustom(this.value)">
-          </div>
-          <input type="text" class="fc" id="prColor" placeholder="STANDARD" style="margin-top:7px;">
-        </div>
-      </div>
-    </div>
-
+     
     <div class="card">
       <div class="card-hdr"><div class="card-title">🖼️ <span data-i18n="pr_image">صورة القطعة</span></div></div>
       <div class="img-area" id="prImgArea">
