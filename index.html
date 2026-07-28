@@ -14586,6 +14586,9 @@ function renderDimPieces() {
   // تحديث نص زر الإضافة
   const addBtnTxt = document.getElementById('addDimBtnTxt');
   if (addBtnTxt) addBtnTxt.textContent = tx.add_btn;
+  // ✅ تحديث نص CBM الإجمالي بلغة البرنامج
+  const cbmLbl = document.getElementById('cbmTotalLabel');
+  if (cbmLbl) cbmLbl.textContent = tx.cbm_total;
 
   // ألوان مميزة لكل قطعة
   const pieceColors = [
