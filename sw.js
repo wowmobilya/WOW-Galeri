@@ -1,76 +1,27 @@
-const CACHE_NAME = 'wow-invoice-v3';
-
-// ✅ الملفات الأساسية فقط للتخزين المؤقت
-const CORE_ASSETS = [
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+const CACHE_NAME = 'wow-invoice-cache-v1';
+const ASSETS_TO_CACHE = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
+  'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js'
 ];
 
-// ── تثبيت: خزّن الملفات الأساسية
+// تثبيت الـ Service Worker وتخزين الملفات
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing...');
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        // addAll يفشل كلياً إذا فشل ملف واحد
-        // نستخدم حلقة لتجنب الفشل الكلي
-        return Promise.allSettled(
-          CORE_ASSETS.map(url =>
-            cache.add(url).catch(err =>
-              console.warn('[SW] Failed to cache:', url, err)
-            )
-          )
-        );
-      })
-      .then(() => {
-        console.log('[SW] Install complete');
-        return self.skipWaiting(); // تفعيل فوري
-      })
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
+    })
   );
 });
 
-// ── تفعيل: احذف الكاش القديم
-self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating...');
-  event.waitUntil(
-    caches.keys()
-      .then((cacheNames) =>
-        Promise.all(
-          cacheNames
-            .filter(name => name !== CACHE_NAME)
-            .map(name => {
-              console.log('[SW] Deleting old cache:', name);
-              return caches.delete(name);
-            })
-        )
-      )
-      .then(() => self.clients.claim())
-  );
-});
-
-// ── Fetch: Network First → Cache Fallback
+// جلب الملفات من الـ Cache عند انقطاع الإنترنت
 self.addEventListener('fetch', (event) => {
-  // تجاهل طلبات غير GET أو غير HTTP
-  if (event.request.method !== 'GET') return;
-  if (!event.request.url.startsWith('http')) return;
-
   event.respondWith(
-    fetch(event.request)
-      .then((networkResponse) => {
-        // ✅ حفظ نسخة جديدة في الكاش
-        if (networkResponse.ok) {
-          const cloned = networkResponse.clone();
-          caches.open(CACHE_NAME)
-            .then(cache => cache.put(event.request, cloned));
-        }
-        return networkResponse;
-      })
-      .catch(() => {
-        // 📴 بدون إنترنت → استخدم الكاش
-        return caches.match(event.request)
-          .then(cached => cached || caches.match('/index.html'));
-      })
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
   );
 });
