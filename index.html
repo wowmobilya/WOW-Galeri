@@ -4451,8 +4451,33 @@ html, body {
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">📐 <span data-i18n="dims">الأبعاد</span></div></div>
+  <div class="card">
+  <div class="card-hdr">
+    <div class="card-title">📐 <span data-i18n="dims">الأبعاد</span></div>
+    <button type="button" class="btn btn-p btn-sm" onclick="addDimPiece()" id="addDimBtn">
+      ➕ <span id="addDimBtnTxt">إضافة قطعة</span>
+    </button>
+  </div>
+
+  <!-- حاوية القطع الديناميكية -->
+  <div id="dimPiecesContainer"></div>
+
+  <!-- CBM الإجمالي -->
+  <div style="
+    margin-top:10px;
+    background:var(--input);
+    border:1px solid var(--border);
+    border-radius:var(--rs);
+    padding:10px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  ">
+    <span style="font-size:12px;font-weight:700;color:var(--text2);">📦 CBM الإجمالي</span>
+    <strong id="cbmCalc" style="color:var(--gold2);font-size:14px;">0.0000 m³</strong>
+  </div>
+</div>
+
       <div class="fgrid">
         <div class="fg">
           <label class="fl">📏 <span data-i18n="dims_label">الأبعاد (ط × ع × ا) سم</span></label>
@@ -14258,6 +14283,354 @@ function updateDeliveryModeUI() {
 }
 
 
+
+
+
+
+/* ============================================================
+   DIMENSIONS — MULTI-PIECE SYSTEM
+============================================================ */
+
+// مصفوفة القطع
+S.dimPieces = [];
+
+/* ── نصوص 3 لغات ── */
+const DIM_TEXTS = {
+  ar: {
+    piece:       'قطعة',
+    add_btn:     'إضافة قطعة',
+    dims_label:  'الأبعاد (ط × ع × ا) سم',
+    weight:      'الوزن (كجم)',
+    packets:     'الباكيت',
+    color:       'اللون',
+    cbm_total:   'CBM الإجمالي',
+    delete_confirm: 'حذف هذه القطعة؟',
+  },
+  tr: {
+    piece:       'Parça',
+    add_btn:     'Parça Ekle',
+    dims_label:  'Boyutlar (U × G × Y) cm',
+    weight:      'Ağırlık (kg)',
+    packets:     'Paket',
+    color:       'Renk',
+    cbm_total:   'Toplam CBM',
+    delete_confirm: 'Bu parçayı sil?',
+  },
+  en: {
+    piece:       'Piece',
+    add_btn:     'Add Piece',
+    dims_label:  'Dimensions (L × W × H) cm',
+    weight:      'Weight (kg)',
+    packets:     'Packets',
+    color:       'Color',
+    cbm_total:   'Total CBM',
+    delete_confirm: 'Delete this piece?',
+  },
+};
+
+function dimTx(key) {
+  const lang = S.lang || 'ar';
+  return (DIM_TEXTS[lang] || DIM_TEXTS.ar)[key] || key;
+}
+
+/* ── تهيئة القطعة الأولى عند فتح الصفحة ── */
+function initDimPieces() {
+  S.dimPieces = [];
+  addDimPiece(); // قطعة واحدة افتراضية
+}
+
+/* ── إضافة قطعة جديدة ── */
+function addDimPiece() {
+  const idx = S.dimPieces.length;
+  S.dimPieces.push({ l:0, w:0, h:0, weight:0, packets:1, color:'STANDARD', colorHex:'#8B7355' });
+  renderDimPieces();
+
+  // تمرير للقطعة الجديدة
+  setTimeout(() => {
+    const el = document.getElementById(`dimPiece_${idx}`);
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }, 100);
+}
+
+/* ── حذف قطعة ── */
+function removeDimPiece(idx) {
+  if (S.dimPieces.length <= 1) {
+    showToast('⚠️ يجب أن تبقى قطعة واحدة على الأقل', 'in');
+    return;
+  }
+  S.dimPieces.splice(idx, 1);
+  renderDimPieces();
+  calcTotalCBM();
+}
+
+/* ── تحديث قيمة قطعة ── */
+function updateDimPiece(idx, field, value) {
+  if (!S.dimPieces[idx]) return;
+  S.dimPieces[idx][field] = field === 'color' || field === 'colorHex'
+    ? value
+    : (parseFloat(value) || 0);
+  calcTotalCBM();
+}
+
+/* ── حساب CBM الإجمالي ── */
+function calcTotalCBM() {
+  let total = 0;
+  S.dimPieces.forEach((p, i) => {
+    const cbm = p.l && p.w && p.h ? (p.l * p.w * p.h / 1000000) : 0;
+    S.dimPieces[i]._cbm = parseFloat(cbm.toFixed(6));
+    total += cbm;
+
+    // تحديث CBM القطعة في الواجهة
+    const cbmEl = document.getElementById(`dimCBM_${i}`);
+    if (cbmEl) cbmEl.textContent = cbm.toFixed(4) + ' m³';
+  });
+
+  const totalEl = document.getElementById('cbmCalc');
+  if (totalEl) totalEl.textContent = total.toFixed(4) + ' m³';
+
+  return total;
+}
+
+/* ── رسم جميع القطع ── */
+function renderDimPieces() {
+  const container = document.getElementById('dimPiecesContainer');
+  if (!container) return;
+
+  const lang = S.lang || 'ar';
+  const tx   = DIM_TEXTS[lang] || DIM_TEXTS.ar;
+
+  // تحديث نص زر الإضافة
+  const addBtn = document.getElementById('addDimBtnTxt');
+  if (addBtn) addBtn.textContent = tx.add_btn;
+
+  container.innerHTML = S.dimPieces.map((piece, i) => {
+    const isFirst  = i === 0;
+    const cbm      = piece.l && piece.w && piece.h
+      ? (piece.l * piece.w * piece.h / 1000000).toFixed(4)
+      : '0.0000';
+
+    // ألوان مختلفة لكل قطعة
+    const pieceColors = [
+      { bg:'rgba(200,169,110,.1)',  border:'rgba(200,169,110,.4)',  num:'var(--gold2)'  },
+      { bg:'rgba(49,130,206,.08)', border:'rgba(49,130,206,.3)',   num:'#2b6cb0'       },
+      { bg:'rgba(56,161,105,.08)', border:'rgba(56,161,105,.3)',   num:'#276749'       },
+      { bg:'rgba(128,90,213,.08)', border:'rgba(128,90,213,.3)',   num:'#553c9a'       },
+      { bg:'rgba(229,62,62,.06)',  border:'rgba(229,62,62,.25)',   num:'#c53030'       },
+    ];
+    const pc = pieceColors[i % pieceColors.length];
+
+    return `
+    <div id="dimPiece_${i}" style="
+      background:${pc.bg};
+      border:1.5px solid ${pc.border};
+      border-radius:var(--r);
+      padding:14px;
+      margin-bottom:10px;
+      animation:fadeUp .3s ease both;
+      animation-delay:${i * 0.05}s;
+      position:relative;
+    ">
+
+      <!-- رأس القطعة -->
+      <div style="
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        margin-bottom:12px;
+      ">
+        <div style="
+          display:flex;
+          align-items:center;
+          gap:8px;
+        ">
+          <!-- رقم القطعة -->
+          <div style="
+            width:28px;height:28px;
+            border-radius:50%;
+            background:${pc.num};
+            color:#fff;
+            font-size:13px;font-weight:900;
+            display:flex;align-items:center;justify-content:center;
+            flex-shrink:0;
+            box-shadow:0 2px 8px ${pc.border};
+          ">${i + 1}</div>
+
+          <div>
+            <div style="font-size:13px;font-weight:800;color:var(--text);">
+              ${tx.piece} ${i + 1}
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:1px;">
+              CBM: <strong id="dimCBM_${i}" style="color:${pc.num};">${cbm} m³</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- زر الحذف -->
+        ${!isFirst ? `
+        <button
+          type="button"
+          onclick="removeDimPiece(${i})"
+          style="
+            width:28px;height:28px;
+            border-radius:8px;
+            border:none;
+            background:rgba(229,62,62,.1);
+            color:var(--red);
+            cursor:pointer;
+            font-size:14px;
+            display:flex;align-items:center;justify-content:center;
+            transition:all var(--tr);
+            flex-shrink:0;
+          "
+          onmouseenter="this.style.background='var(--red)';this.style.color='#fff'"
+          onmouseleave="this.style.background='rgba(229,62,62,.1)';this.style.color='var(--red)'"
+          title="${tx.delete_confirm}"
+        >🗑️</button>` : '<div style="width:28px;"></div>'}
+      </div>
+
+      <!-- حقول الأبعاد -->
+      <div class="fgrid" style="gap:10px;">
+
+        <!-- الأبعاد ط × ع × ا -->
+        <div class="fg full">
+          <label class="fl" style="font-size:11px;">📏 ${tx.dims_label}</label>
+          <div class="dim-row">
+            <input type="number" class="fc" placeholder="ط"
+              value="${piece.l || ''}" min="0"
+              oninput="updateDimPiece(${i},'l',this.value)"
+              style="border-color:${pc.border};">
+            <span class="dim-sep">×</span>
+            <input type="number" class="fc" placeholder="ع"
+              value="${piece.w || ''}" min="0"
+              oninput="updateDimPiece(${i},'w',this.value)"
+              style="border-color:${pc.border};">
+            <span class="dim-sep">×</span>
+            <input type="number" class="fc" placeholder="ا"
+              value="${piece.h || ''}" min="0"
+              oninput="updateDimPiece(${i},'h',this.value)"
+              style="border-color:${pc.border};">
+          </div>
+        </div>
+
+        <!-- الوزن -->
+        <div class="fg">
+          <label class="fl" style="font-size:11px;">⚖️ ${tx.weight}</label>
+          <input type="number" class="fc" placeholder="0.00"
+            value="${piece.weight || ''}" min="0" step="0.1"
+            oninput="updateDimPiece(${i},'weight',this.value)"
+            style="border-color:${pc.border};">
+        </div>
+
+        <!-- الباكيت -->
+        <div class="fg">
+          <label class="fl" style="font-size:11px;">📦 ${tx.packets}</label>
+          <input type="number" class="fc" placeholder="1"
+            value="${piece.packets || 1}" min="1"
+            oninput="updateDimPiece(${i},'packets',this.value)"
+            style="border-color:${pc.border};">
+        </div>
+
+        <!-- اللون -->
+        <div class="fg">
+          <label class="fl" style="font-size:11px;">🎨 ${tx.color}</label>
+          <input type="text" class="fc" placeholder="STANDARD"
+            value="${piece.color || 'STANDARD'}"
+            oninput="updateDimPiece(${i},'color',this.value)"
+            style="border-color:${pc.border};">
+        </div>
+
+      </div>
+    </div>`;
+  }).join('');
+
+  calcTotalCBM();
+}
+
+/* ── تعديل savePr لقراءة البيانات من S.dimPieces ── */
+const _origSavePr = savePr;
+savePr = async function() {
+  // جمع بيانات القطعة الأولى للحقول الرئيسية
+  const firstPiece = S.dimPieces[0] || {};
+
+  // تعبئة الحقول القديمة من القطعة الأولى
+  const setVal = (id, v) => {
+    const el = document.getElementById(id);
+    if (el) el.value = v || '';
+  };
+  setVal('dimL', firstPiece.l || 0);
+  setVal('dimW', firstPiece.w || 0);
+  setVal('dimH', firstPiece.h || 0);
+  setVal('prWeight', firstPiece.weight || 0);
+  setVal('prPackets', firstPiece.packets || 1);
+  setVal('prColor', firstPiece.color || 'STANDARD');
+
+  // استدعاء الدالة الأصلية
+  await _origSavePr.call(this);
+
+  // حفظ كل القطع في المنتج
+  const pr = S.products[S.products.length - 1];
+  if (pr) {
+    pr.dimPieces = S.dimPieces.map(p => ({ ...p }));
+    pr.totalCBM  = parseFloat(calcTotalCBM().toFixed(4));
+    pr.totalWeight = S.dimPieces.reduce((s, p) => s + (p.weight || 0), 0);
+    pr.totalPackets = S.dimPieces.reduce((s, p) => s + (p.packets || 1), 0);
+    await dbPut('products', pr);
+  }
+};
+
+/* ── تعديل resetPrForm لإعادة تهيئة القطع ── */
+const _origResetPrForm = resetPrForm;
+resetPrForm = function() {
+  _origResetPrForm.call(this);
+  initDimPieces();
+};
+
+/* ── تعديل editPr لتحميل القطع المحفوظة ── */
+const _origEditPr = editPr;
+editPr = function(id) {
+  _origEditPr.call(this, id);
+  setTimeout(() => {
+    const p = S.products.find(x => x.id === id);
+    if (p && p.dimPieces && p.dimPieces.length) {
+      S.dimPieces = p.dimPieces.map(d => ({ ...d }));
+    } else {
+      // إنشاء قطعة واحدة من البيانات القديمة
+      S.dimPieces = [{
+        l: p?.dimL || 0,
+        w: p?.dimW || 0,
+        h: p?.dimH || 0,
+        weight:  p?.weight  || 0,
+        packets: p?.packets || 1,
+        color:   p?.color   || 'STANDARD',
+        colorHex: p?.colorHex || '#8B7355',
+      }];
+    }
+    renderDimPieces();
+  }, 150);
+};
+
+/* ── تهيئة عند تحميل صفحة إضافة منتج ── */
+const _origSelectPrTypeAndContinue = selectPrTypeAndContinue;
+selectPrTypeAndContinue = function(tp, event) {
+  _origSelectPrTypeAndContinue.call(this, tp, event);
+  setTimeout(() => {
+    if (!S.dimPieces || !S.dimPieces.length) {
+      initDimPieces();
+    } else {
+      renderDimPieces();
+    }
+  }, 100);
+};
+
+
+
+
+
+
+
+
+
+   
 
 
 
