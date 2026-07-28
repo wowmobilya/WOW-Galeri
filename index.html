@@ -3559,6 +3559,69 @@ textarea.fc{resize:vertical;min-height:72px}
 
 
 
+
+
+
+
+
+/* ============================================================
+   🚀 PERFORMANCE OPTIMIZATIONS (GPU ACCELERATION)
+============================================================ */
+
+/* 1. إجبار المتصفح على استخدام كرت الشاشة (GPU) للعناصر التفاعلية */
+.co-card, .pr-card-new, .inv-card, .client-type-step-card, 
+.modal, .sidebar, .qbl-cart-bar, .bottom-nav, .toast, .bnav-circle {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* 2. تحسين الانتقالات: منع المتصفح من حساب كل شيء (transition: all) وحساب المهم فقط */
+.btn, .nav-item, .curr-item, .stat-card, .co-card, .pr-card-new, .inv-card, .client-type-step-card {
+    transition: transform 0.25s cubic-bezier(.4,0,.2,1), 
+                box-shadow 0.25s cubic-bezier(.4,0,.2,1), 
+                background-color 0.2s ease, 
+                border-color 0.2s ease !important;
+}
+
+/* 3. إيقاف تأثير التمويه (Blur) الثقيل جداً على أندرويد واستبداله بلون شفاف أنيق */
+@media (max-width: 900px) {
+    .sidebar-overlay, .modal-ov, .delete-modal-ov, .deliver-modal-ov, .qbl-cart-overlay {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: rgba(0, 0, 0, 0.75) !important; /* لون داكن بديل للتمويه */
+    }
+    
+    .bottom-nav-bg, .co-form-sticky-bar {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: var(--card) !important; /* لون صلب لمنع التقطيع أثناء التمرير */
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.1) !important;
+    }
+
+    /* تخفيف الظلال المعقدة على الجوال */
+    .bnav-circle {
+        box-shadow: 0 4px 12px rgba(200,169,110,.4), 0 0 0 4px var(--card) !important;
+    }
+}
+
+/* 4. تسريع التمرير (Scrolling) داخل القوائم والصفحات */
+.sidebar, .main, .qbl-cart-list, .modal, .inv-tbl-wrap, .ps-list {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+}
+
+/* 5. تحسين أداء الصور أثناء التمرير */
+img {
+    content-visibility: auto;
+}
+
+   
+
+
+
 </style>
 </head>
 <body>
