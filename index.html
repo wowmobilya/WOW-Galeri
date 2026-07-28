@@ -3240,21 +3240,12 @@ textarea.fc{resize:vertical;min-height:72px}
 }
 
 /* على الموبايل السايدبار = 0 فلا حاجة لـ margin */
-/* على الموبايل السايدبار = 0 فلا حاجة لـ margin وتعديل المسافات السفلية */
 @media (max-width: 900px) {
   .co-form-sticky-bar {
     margin-right: 0;
     margin-left: 0;
-    bottom: 72px; /* 👈 لرفع الشريط فوق القائمة السفلية */
-  }
-  .qbl-cart-fab {
-    bottom: 96px; /* 👈 لرفع زر السلة العائم فوق القائمة السفلية */
-  }
-  .toast-box {
-    bottom: 90px; /* 👈 لرفع الإشعارات فوق القائمة السفلية */
   }
 }
-
 
 [data-theme="dark"] .co-form-sticky-bar {
   background: rgba(22,25,39,.96);
@@ -3497,7 +3488,7 @@ textarea.fc{resize:vertical;min-height:72px}
     font-weight: 800;
     transform: translateY(2px);
   }
-}
+
 /* ============================================================
    BOTTOM NAV — RTL/LTR FIX
 ============================================================ */
