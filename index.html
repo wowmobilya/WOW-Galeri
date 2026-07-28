@@ -13802,14 +13802,80 @@ function updateDeliveryModeUI() {
 
 
 <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker
-        .register('./sw.js')
-        .then((reg) => console.log('✅ SW registered:', reg.scope))
-        .catch((err) => console.warn('❌ SW failed:', err));
-    });
+// ============================================================
+//  PWA INSTALL — FULL HANDLER
+// ============================================================
+let _pwaPrompt = null;
+
+// ── 1. التقاط حدث التثبيت قبل أن يختفي
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();          // منع الظهور التلقائي
+  _pwaPrompt = e;              // حفظه للاستخدام لاحقاً
+
+  // ✅ إظهار الزر اليدوي
+  const btn = document.getElementById('installAppBtn');
+  if (btn) {
+    btn.style.display = 'flex';
+    console.log('✅ Install prompt captured — button shown');
   }
+});
+
+// ── 2. دالة التثبيت عند الضغط على الزر
+async function installApp() {
+  if (!_pwaPrompt) {
+    // إذا لم يُلتقط الحدث → أرشد المستخدم يدوياً
+    const lang = (typeof S !== 'undefined' && S.lang) ? S.lang : 'ar';
+    const msgs = {
+      ar: '📱 افتح قائمة Chrome ← "إضافة إلى الشاشة الرئيسية"',
+      tr: '📱 Chrome menüsü → "Ana ekrana ekle" seçeneğini kullanın',
+      en: '📱 Open Chrome menu → "Add to Home Screen"',
+    };
+    alert(msgs[lang] || msgs.ar);
+    return;
+  }
+
+  // ✅ عرض نافذة التثبيت الأصلية
+  _pwaPrompt.prompt();
+
+  const { outcome } = await _pwaPrompt.userChoice;
+  console.log('User choice:', outcome);
+
+  if (outcome === 'accepted') {
+    if (typeof showToast === 'function') {
+      showToast('🎉 تم تثبيت التطبيق بنجاح!', 'ok');
+    }
+    // إخفاء الزر بعد التثبيت
+    const btn = document.getElementById('installAppBtn');
+    if (btn) btn.style.display = 'none';
+  }
+
+  _pwaPrompt = null;
+}
+
+// ── 3. إخفاء الزر بعد التثبيت الناجح
+window.addEventListener('appinstalled', () => {
+  console.log('✅ App installed successfully');
+  const btn = document.getElementById('installAppBtn');
+  if (btn) btn.style.display = 'none';
+  _pwaPrompt = null;
+  if (typeof showToast === 'function') {
+    showToast('🎉 WOW Invoice مثبت على جهازك!', 'ok');
+  }
+});
+
+// ── 4. تسجيل Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then((reg) => {
+        console.log('✅ SW registered, scope:', reg.scope);
+      })
+      .catch((err) => {
+        console.error('❌ SW registration failed:', err);
+      });
+  });
+}
 </script>
 
 
