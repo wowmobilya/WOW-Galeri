@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wow-invoice-v2';
+const CACHE_NAME = 'wow-invoice-v3';
 
 // ✅ الملفات الأساسية فقط للتخزين المؤقت
 const CORE_ASSETS = [
