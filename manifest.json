@@ -1,50 +1,23 @@
 {
   "name": "WOW Furniture Invoice System",
   "short_name": "WOW Invoice",
-  "description": "نظام إدارة الفواتير",
-  "start_url": "/index.html",
-  "scope": "/",
+  "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#1a1a2e",
+  "background_color": "#f0f4f8",
   "theme_color": "#c8a96e",
-  "lang": "ar",
-  "dir": "rtl",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
-  ],
-  "screenshots": [
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "WOW Invoice Dashboard"
-    }
-  ],
-  "categories": ["business", "finance"],
-  "prefer_related_applications": false
+  ]
 }
