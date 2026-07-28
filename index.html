@@ -13801,39 +13801,17 @@ function updateDeliveryModeUI() {
 
 
 
-/* ============================================================
-   PWA INSTALL HANDLER
-============================================================ */
-let deferredInstallPrompt = null;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredInstallPrompt = e;
-  const btn = document.getElementById('installAppBtn');
-  if (btn) btn.style.display = 'flex';
-});
-
-async function installApp() {
-  if (!deferredInstallPrompt) {
-    showToast('⚠️ التطبيق مثبت مسبقاً أو غير قابل للتثبيت الآن', 'in');
-    return;
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('./sw.js')
+        .then((reg) => console.log('✅ SW registered:', reg.scope))
+        .catch((err) => console.warn('❌ SW failed:', err));
+    });
   }
-  deferredInstallPrompt.prompt();
-  const { outcome } = await deferredInstallPrompt.userChoice;
-  if (outcome === 'accepted') {
-    showToast('✅ تم تثبيت التطبيق بنجاح', 'ok');
-  }
-  deferredInstallPrompt = null;
-  const btn = document.getElementById('installAppBtn');
-  if (btn) btn.style.display = 'none';
-}
+</script>
 
-window.addEventListener('appinstalled', () => {
-  showToast('🎉 تم تثبيت WOW Invoice على جهازك', 'ok');
-  const btn = document.getElementById('installAppBtn');
-  if (btn) btn.style.display = 'none';
-  deferredInstallPrompt = null;
-});
 
 
 
