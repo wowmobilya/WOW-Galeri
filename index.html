@@ -1566,158 +1566,303 @@ textarea.fc{resize:vertical;min-height:72px}
 
 
 /* ============================================================
-   CURRENCY CALCULATOR MODAL — REDESIGNED
+   CURRENCY CALCULATOR MODAL — KEYBOARD AWARE 2026
 ============================================================ */
-.curr-calc-modal { max-width: 360px; padding: 0; overflow: hidden; border-radius: 20px; }
 
+/* ── الـ Modal Overlay يتكيف مع Visual Viewport ── */
+#currCalcModal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;        /* ← يظهر من الأسفل على الموبايل */
+  justify-content: center;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--tr);
+
+  /* ✅ ارتفاع ديناميكي يستثني شريط المتصفح */
+  height: 100dvh;
+}
+
+#currCalcModal.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ── على التابلت والديسكتوب: توسيط كلاسيكي ── */
+@media (min-width: 600px) {
+  #currCalcModal {
+    align-items: center;
+    padding: 16px;
+  }
+}
+
+/* ── النافذة الرئيسية ── */
+.curr-calc-modal {
+  width: 100%;
+  max-width: 360px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;   /* ← مدور من الأعلى فقط على الموبايل */
+  display: flex;
+  flex-direction: column;
+
+  /* ✅ الحد الأقصى الذكي: يترك مساحة فوق لوحة المفاتيح */
+  max-height: min(92dvh, 600px);
+
+  transform: translateY(20px);
+  transition: transform var(--tr);
+
+  /* ✅ منع التمرير خلف النافذة على iOS */
+  overscroll-behavior: contain;
+}
+
+#currCalcModal.open .curr-calc-modal {
+  transform: translateY(0);
+}
+
+/* ── على التابلت والديسكتوب: شكل مستدير كامل ── */
+@media (min-width: 600px) {
+  .curr-calc-modal {
+    border-radius: 20px;
+    max-height: min(90dvh, 580px);
+    transform: scale(.95) translateY(10px);
+  }
+  #currCalcModal.open .curr-calc-modal {
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ── الهيدر ── */
 .curr-calc-header {
-  display: flex; align-items: center; gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   background: linear-gradient(135deg, #1a1a2e, #2d2d4e);
   padding: 14px 16px;
   border-bottom: 2px solid var(--gold);
   position: relative;
+  flex-shrink: 0;    /* ← لا يتقلص أبداً */
 }
+
 .curr-calc-header::after {
-  content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
-  height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
 }
+
 .curr-calc-icon-wrap {
-  width: 38px; height: 38px; border-radius: 10px;
-  background: rgba(200,169,110,.15); border: 1px solid rgba(200,169,110,.3);
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: rgba(200,169,110,.15);
+  border: 1px solid rgba(200,169,110,.3);
   display: flex; align-items: center; justify-content: center;
   font-size: 18px; flex-shrink: 0;
 }
+
 .curr-calc-header-info { flex: 1; min-width: 0; }
+
 .curr-calc-title {
-  color: #fff; font-size: 13px; font-weight: 800;
+  color: #fff;
+  font-size: 13px; font-weight: 800;
   margin-bottom: 2px; letter-spacing: .3px;
 }
+
 .curr-calc-subtitle {
-  color: var(--gold); font-size: 10px; font-weight: 700;
+  color: var(--gold);
+  font-size: 10px; font-weight: 700;
   letter-spacing: 1.5px; text-transform: uppercase;
 }
+
 .curr-calc-close {
-  width: 28px; height: 28px; border-radius: 8px;
+  width: 28px; height: 28px;
+  border-radius: 8px;
   border: 1px solid rgba(255,255,255,.15);
-  background: rgba(255,255,255,.08); color: rgba(255,255,255,.7);
-  font-size: 12px; cursor: pointer; display: flex;
-  align-items: center; justify-content: center;
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.7);
+  font-size: 12px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
   transition: all var(--tr); flex-shrink: 0;
 }
-.curr-calc-close:hover { background: #e53e3e; color: #fff; border-color: #e53e3e; }
 
-.curr-calc-body { padding: 16px; }
+.curr-calc-close:hover {
+  background: #e53e3e;
+  color: #fff;
+  border-color: #e53e3e;
+}
 
-/* Rate pill */
+/* ── الجسم: قابل للتمرير ← المفتاح الرئيسي ── */
+.curr-calc-body {
+  padding: 16px;
+  overflow-y: auto;
+  flex: 1;                         /* ← يأخذ المساحة المتبقية */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Rate pill ── */
 .curr-calc-rate-pill {
   display: flex; align-items: center; justify-content: center; gap: 6px;
-  background: var(--gold-light); border: 1px solid rgba(200,169,110,.3);
+  background: var(--gold-light);
+  border: 1px solid rgba(200,169,110,.3);
   border-radius: 20px; padding: 5px 14px;
   font-size: 11px; color: var(--gold2); font-weight: 700;
   margin-bottom: 14px; text-align: center;
 }
 
-/* Input section */
+/* ── Input section ── */
 .curr-calc-input-section {
-  background: var(--input); border: 1.5px solid var(--border);
-  border-radius: 12px; padding: 10px 12px; margin-bottom: 10px;
+  background: var(--input);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
   transition: all var(--tr);
 }
+
 .curr-calc-input-section:focus-within {
-  border-color: var(--gold); background: var(--card);
+  border-color: var(--gold);
+  background: var(--card);
   box-shadow: 0 0 0 3px rgba(200,169,110,.1);
 }
+
 .curr-calc-input-top {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 4px;
 }
+
 .curr-calc-from-tag {
   font-size: 9px; font-weight: 800; color: var(--muted);
   letter-spacing: 1.2px; text-transform: uppercase;
 }
+
 .curr-calc-from-sym {
   font-size: 10px; font-weight: 700; color: var(--gold2);
   background: var(--gold-light); padding: 2px 7px;
   border-radius: 6px; border: 1px solid rgba(200,169,110,.2);
 }
+
 .curr-calc-input {
   width: 100%; border: none; background: transparent;
   font-size: 24px; font-weight: 900; color: var(--text);
   outline: none; padding: 0; letter-spacing: .5px;
   font-family: inherit;
 }
+
 .curr-calc-input::placeholder { color: var(--border); }
 
-/* Arrow */
+/* ── Arrow ── */
 .curr-calc-arrow {
   text-align: center; font-size: 16px; margin: 4px 0;
   color: var(--gold2); opacity: .7;
 }
 
-/* Result section */
+/* ── Result section ── */
 .curr-calc-result-section {
   background: linear-gradient(135deg, rgba(200,169,110,.12), rgba(200,169,110,.04));
-  border: 1.5px solid var(--gold); border-radius: 12px;
-  padding: 10px 12px; margin-bottom: 12px;
+  border: 1.5px solid var(--gold);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
 }
+
 .curr-calc-result-top {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 4px;
 }
+
 .curr-calc-to-tag {
   font-size: 9px; font-weight: 800; color: var(--muted);
   letter-spacing: 1.2px; text-transform: uppercase;
 }
+
 .curr-calc-to-sym {
   font-size: 10px; font-weight: 700; color: var(--gold2);
   background: var(--gold-light); padding: 2px 7px;
   border-radius: 6px; border: 1px solid rgba(200,169,110,.2);
 }
+
 .curr-calc-result-val {
   font-size: 24px; font-weight: 900; color: var(--gold2);
   letter-spacing: .5px;
 }
 
-/* Quick amounts */
+/* ── Quick amounts ── */
 .curr-calc-quick-label {
   font-size: 9px; font-weight: 800; color: var(--muted);
   letter-spacing: 1.2px; text-transform: uppercase;
   margin-bottom: 6px;
 }
+
 .curr-calc-quick-btns {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
   margin-bottom: 14px;
 }
+
 .curr-calc-quick-btn {
   padding: 6px 4px; border-radius: 8px;
-  border: 1.5px solid var(--border); background: var(--input);
-  color: var(--text2); font-size: 10px; font-weight: 700;
-  cursor: pointer; transition: all var(--tr); text-align: center;
+  border: 1.5px solid var(--border);
+  background: var(--input);
+  color: var(--text2);
+  font-size: 10px; font-weight: 700;
+  cursor: pointer;
+  transition: all var(--tr);
+  text-align: center;
   font-family: inherit;
 }
+
 .curr-calc-quick-btn:hover {
-  border-color: var(--gold); color: var(--gold2);
-  background: var(--gold-light); transform: translateY(-1px);
+  border-color: var(--gold);
+  color: var(--gold2);
+  background: var(--gold-light);
+  transform: translateY(-1px);
 }
+
 .curr-calc-quick-btn:active { transform: scale(.95); }
 
-/* Footer */
+/* ── Footer ثابت في الأسفل ← لا يختفي أبداً ── */
 .curr-calc-footer {
-  display: flex; gap: 7px; padding: 12px 16px;
+  display: flex;
+  gap: 7px;
+  padding: 12px 16px;
   border-top: 1px solid var(--border);
   background: var(--input);
-}
-.curr-calc-footer .btn { flex: 1; justify-content: center; font-size: 11px; padding: 8px 10px; }
+  flex-shrink: 0;    /* ← المفتاح: لا يتقلص عند ضغط لوحة المفاتيح */
 
-/* hover effect on curr-item */
+  /* ✅ مسافة أمان إضافية لـ iPhone Home Indicator */
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+.curr-calc-footer .btn {
+  flex: 1;
+  justify-content: center;
+  font-size: 11px;
+  padding: 8px 10px;
+}
+
+/* ── hover effect on curr-item ── */
 .curr-item {
-  cursor: pointer; transition: all var(--tr);
-  border-radius: var(--rs); padding: 6px 8px;
+  cursor: pointer;
+  transition: all var(--tr);
+  border-radius: var(--rs);
+  padding: 6px 8px;
   user-select: none;
 }
+
 .curr-item:hover {
-  background: var(--gold-light); transform: translateY(-2px);
+  background: var(--gold-light);
+  transform: translateY(-2px);
 }
+
 .curr-item:active { transform: scale(.96); }
 
 
@@ -8019,6 +8164,67 @@ function showToast(msg,type='ok'){
 ============================================================ */
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
+
+/* ============================================================
+   VISUAL VIEWPORT WATCHER — منع تغطية لوحة المفاتيح
+============================================================ */
+(function initViewportWatcher() {
+  if (!window.visualViewport) return;
+
+  let _rafId = null;
+
+  function adjustCalcModal() {
+    const modal = document.getElementById('currCalcModal');
+    if (!modal || !modal.classList.contains('open')) return;
+
+    const vv = window.visualViewport;
+
+    /* ✅ تطبيق موضع وحجم النافذة بناءً على المساحة المرئية الفعلية */
+    modal.style.top    = vv.offsetTop  + 'px';
+    modal.style.left   = vv.offsetLeft + 'px';
+    modal.style.width  = vv.width      + 'px';
+    modal.style.height = vv.height     + 'px';
+
+    /* ✅ تحديث الحد الأقصى لارتفاع النافذة الداخلية */
+    const inner = modal.querySelector('.curr-calc-modal');
+    if (inner) {
+      const maxH = Math.floor(vv.height * (vv.width < 600 ? 0.92 : 0.88));
+      inner.style.maxHeight = maxH + 'px';
+    }
+  }
+
+  function onViewportChange() {
+    if (_rafId) cancelAnimationFrame(_rafId);
+    _rafId = requestAnimationFrame(adjustCalcModal);
+  }
+
+  /* ✅ مراقبة تغييرات الـ viewport */
+  window.visualViewport.addEventListener('resize', onViewportChange);
+  window.visualViewport.addEventListener('scroll', onViewportChange);
+
+  /* ✅ تطبيق فوري عند فتح الحاسبة */
+  const _origOpenModal = window.openModal;
+  window.openModal = function(id) {
+    _origOpenModal(id);
+    if (id === 'currCalcModal') {
+      setTimeout(adjustCalcModal, 50);
+    }
+  };
+
+  /* ✅ استعادة الموضع عند الإغلاق */
+  const _origCloseModal = window.closeModal;
+  window.closeModal = function(id) {
+    _origCloseModal(id);
+    if (id === 'currCalcModal') {
+      const modal = document.getElementById('currCalcModal');
+      if (modal) {
+        ['top','left','width','height'].forEach(p => modal.style[p] = '');
+        const inner = modal.querySelector('.curr-calc-modal');
+        if (inner) inner.style.maxHeight = '';
+      }
+    }
+  };
+})();
 
 /* ============================================================
    SIDEBAR / NAVIGATION
