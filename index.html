@@ -3667,7 +3667,44 @@ html, body {
     }
 }
 
-   
+
+
+
+
+
+
+
+   /* ============================================================
+   🛠️ إصلاح تداخل القائمة السفلية مع الأزرار والمحتوى (الهواتف والتابلت)
+============================================================ */
+@media (max-width: 900px) {
+  /* 1. إعطاء مساحة فارغة في أسفل جميع الصفحات لضمان ظهور الأزرار السفلية */
+  .main {
+    padding-bottom: calc(100px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* 2. رفع شريط "حفظ الشركة" ليكون فوق القائمة السفلية مباشرة */
+  .co-form-sticky-bar {
+    bottom: calc(72px + env(safe-area-inset-bottom)) !important;
+    z-index: 600;
+  }
+
+  /* 3. رفع الزر العائم للسلة (الباركود السريع) */
+  .qbl-cart-fab {
+    bottom: calc(96px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* 4. رفع نافذة السلة المفتوحة لئلا تغطيها القائمة */
+  .qbl-cart-bar {
+    bottom: calc(72px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* 5. رفع الإشعارات (Toasts) حتى يراها المستخدم بوضوح */
+  .toast-box {
+    bottom: calc(96px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
 
 
 
