@@ -13827,16 +13827,23 @@ function updateDeliveryModeUI() {
 
 
 <script>
-  // تسجيل Service Worker لتفعيل التثبيت
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js')
-        .then(registration => {
-          console.log('تم تسجيل Service Worker بنجاح:', registration);
-        })
-        .catch(error => {
-          console.log('فشل تسجيل Service Worker:', error);
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        
+        // مراقبة أي تحديثات جديدة في ملف sw.js
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // تم العثور على تحديث جديد! إعادة تحميل الصفحة تلقائياً
+              console.log('يوجد تحديث جديد، جاري إعادة التحميل...');
+              window.location.reload();
+            }
+          });
         });
+
+      }).catch(err => console.log('خطأ في Service Worker:', err));
     });
   }
 </script>
