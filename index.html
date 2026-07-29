@@ -8314,7 +8314,15 @@ function goBack() {
   if (cur === 'add-product') {
     const form = document.getElementById('pr-form-view');
     if (form && form.style.display !== 'none') {
-      // إذا كنا داخل نموذج المنتج → ارجع لاختيار النوع أولاً
+
+      // ✅ إذا كنا في وضع التعديل → ارجع لصفحة المنتجات مباشرةً
+      if (S.editPrId || S._editPrReturnToProducts) {
+        S._editPrReturnToProducts = false;
+        showPage('products');
+        return;
+      }
+
+      // إذا كنا في إضافة جديدة → ارجع لاختيار النوع أولاً
       backToPrTypeSelect();
       return;
     }
@@ -8328,7 +8336,7 @@ function goBack() {
 
   // ── الرجوع للأب حسب الخريطة، وإن لم يوجد → الرئيسية
   const parent = PARENT_MAP[cur] || 'dashboard';
-  if (cur === 'dashboard') return; // نحن في الرئيسية — لا رجوع أبعد
+  if (cur === 'dashboard') return;
   showPage(parent);
 }
 
@@ -9119,7 +9127,9 @@ async function savePr(){
   showToast(t('saved_pr'));resetPrForm();updateDash();showPage('products');
 }
 function resetPrForm(){
-  S.editPrId=null;S.prImgData=null;S.prActiveTier='A';
+  S.editPrId=null;
+   S._editPrReturnToProducts=false;
+   S.prImgData=null;S.prActiveTier='A';
   ['prName','prHsCode','prDesc','prPriceA','prPriceB','prPriceC','prPriceTRY','prLabor','prOther','dimL','dimW','dimH','prWeight','prColor'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('prPackets').value='1';
   document.getElementById('cbmCalc').textContent='0.0000 m³';
@@ -9404,7 +9414,9 @@ function renderPr(){
 }
 function editPr(id){
   const p=S.products.find(x=>x.id===id);if(!p)return;
-  S.editPrId=id;S.prImgData=p.image||null;S.prActiveTier=p.activeTier||'A';
+  S.editPrId=id;
+   S._editPrReturnToProducts=true; // ✅ أضف هذا
+   S.prImgData=p.image||null;S.prActiveTier=p.activeTier||'A';
   S.prType=p.type||'coffee_table';
 
   // ✅ انتقل للصفحة لكن أظهر نموذج التعديل مباشرةً
