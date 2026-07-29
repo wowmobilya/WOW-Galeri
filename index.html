@@ -9268,7 +9268,8 @@ function deletePrImg(){
   // ✅ مسح قيمة input الملف
   const inp=document.getElementById('prImgInput');
   if(inp)inp.value='';
-  showToast('🗑️ تم حذف الصورة','in');
+const delMsgs={ar:'🗑️ تم حذف الصورة',tr:'🗑️ Görsel silindi',en:'🗑️ Image deleted'};
+showToast(delMsgs[S.lang]||delMsgs.en,'in');
 }
 
 
