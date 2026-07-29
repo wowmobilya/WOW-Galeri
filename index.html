@@ -3705,41 +3705,32 @@ textarea.fc{resize:vertical;min-height:72px}
 
 
 
-/* ── صور المنتجات في جدول الفاتورة ── */
-table.inv-tbl td.item-img-cell {
-  width: 54px !important;
-  padding: 3px 4px !important;
-  vertical-align: middle !important;
+/* صور جدول الفاتورة — معزولة تماماً */
+#invItemsTbody td:nth-child(2) {
+  width: 54px;
+  padding: 3px 4px;
+  vertical-align: middle;
 }
-
-table.inv-tbl td.item-img-cell img {
-  width: 48px !important;
-  height: 38px !important;
-  object-fit: cover !important;
-  border-radius: 5px !important;
-  display: block !important;
-  border: 1px solid var(--border) !important;
-  transition: transform .25s ease !important;
-  max-width: unset !important;
+#invItemsTbody td:nth-child(2) img {
+  width: 48px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: 5px;
+  display: block;
+  border: 1px solid var(--border);
+  max-width: 48px;
 }
-
-table.inv-tbl tr:hover td.item-img-cell img {
-  transform: scale(1.08) !important;
+#invItemsTbody td:nth-child(2) > div {
+  width: 48px;
+  height: 38px;
+  background: var(--input);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  border: 1px solid var(--border);
 }
-
-table.inv-tbl td.item-img-cell .item-img-placeholder {
-  width: 48px !important;
-  height: 38px !important;
-  background: var(--input) !important;
-  border-radius: 5px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 18px !important;
-  border: 1px solid var(--border) !important;
-  margin: 0 auto !important;
-}
-
 
    
 
@@ -5027,7 +5018,7 @@ html, body {
         <div class="inv-step-body" id="step6Body">
           <div class="inv-tbl-wrap">
             <table class="inv-tbl">
-              <thead>
+<thead>
   <tr>
     <th>#</th>
     <th>🖼️</th>
@@ -5041,16 +5032,16 @@ html, body {
     <th></th>
   </tr>
 </thead>
+<tbody id="invItemsTbody"></tbody>
+<tfoot>
+  <tr>
+    <td colspan="7" style="text-align:right;font-weight:700;" data-i18n="total">الإجمالي</td>
+    <td id="invTblTotal" style="color:var(--gold2);font-weight:800;">$0.00</td>
+    <td id="invTblCBM" style="color:var(--gold2);font-weight:800;">0.00</td>
+    <td></td>
+  </tr>
+</tfoot>
 
-              <tbody id="invItemsTbody"></tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="6" style="text-align:right;font-weight:700;" data-i18n="total">الإجمالي</td>
-                  <td id="invTblTotal" style="color:var(--gold2);font-weight:800;">$0.00</td>
-                  <td id="invTblCBM" style="color:var(--gold2);font-weight:800;">0.00</td>
-                  <td></td>
-                </tr>
-              </tfoot>
             </table>
           </div>
         </div>
