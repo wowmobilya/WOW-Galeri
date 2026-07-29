@@ -3705,35 +3705,6 @@ textarea.fc{resize:vertical;min-height:72px}
 
 
 
-/* صور جدول الفاتورة — معزولة تماماً */
-#invItemsTbody td:nth-child(2) {
-  width: 54px;
-  padding: 3px 4px;
-  vertical-align: middle;
-}
-#invItemsTbody td:nth-child(2) img {
-  width: 48px;
-  height: 38px;
-  object-fit: cover;
-  border-radius: 5px;
-  display: block;
-  border: 1px solid var(--border);
-  max-width: 48px;
-}
-#invItemsTbody td:nth-child(2) > div {
-  width: 48px;
-  height: 38px;
-  background: var(--input);
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  border: 1px solid var(--border);
-}
-
-   
-
 
 
 
@@ -5018,30 +4989,28 @@ html, body {
         <div class="inv-step-body" id="step6Body">
           <div class="inv-tbl-wrap">
             <table class="inv-tbl">
-<thead>
-  <tr>
-    <th>#</th>
-    <th>🖼️</th>
-    <th data-i18n="th_name">الاسم</th>
-    <th data-i18n="th_dims">الأبعاد</th>
-    <th data-i18n="th_color">اللون</th>
-    <th data-i18n="th_qty">الكمية</th>
-    <th data-i18n="th_price">السعر</th>
-    <th data-i18n="th_total">المجموع</th>
-    <th>CBM</th>
-    <th></th>
-  </tr>
-</thead>
-<tbody id="invItemsTbody"></tbody>
-<tfoot>
-  <tr>
-    <td colspan="7" style="text-align:right;font-weight:700;" data-i18n="total">الإجمالي</td>
-    <td id="invTblTotal" style="color:var(--gold2);font-weight:800;">$0.00</td>
-    <td id="invTblCBM" style="color:var(--gold2);font-weight:800;">0.00</td>
-    <td></td>
-  </tr>
-</tfoot>
-
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th data-i18n="th_name">الاسم</th>
+                  <th data-i18n="th_dims">الأبعاد</th>
+                  <th data-i18n="th_color">اللون</th>
+                  <th data-i18n="th_qty">الكمية</th>
+                  <th data-i18n="th_price">السعر</th>
+                  <th data-i18n="th_total">المجموع</th>
+                  <th>CBM</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="invItemsTbody"></tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="6" style="text-align:right;font-weight:700;" data-i18n="total">الإجمالي</td>
+                  <td id="invTblTotal" style="color:var(--gold2);font-weight:800;">$0.00</td>
+                  <td id="invTblCBM" style="color:var(--gold2);font-weight:800;">0.00</td>
+                  <td></td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>
@@ -9755,15 +9724,9 @@ function renderInvTable(){
     const card=document.getElementById('invItemsCard');if(card)card.style.display='none';
     return;
   }
-tbody.innerHTML=S.invItems.map((item,i)=>`
+  tbody.innerHTML=S.invItems.map((item,i)=>`
     <tr>
       <td>${i+1}</td>
-      <td class="item-img-cell">
-        ${item.image
-          ? `<img src="${item.image}" alt="${item.name}">`
-          : `<div class="item-img-placeholder">${(()=>{const icons={coffee_table:'☕',dresser:'🪞',side_table:'🪑',tv_table:'📺',other:'📦'};return icons[item.type]||'📦';})()}</div>`
-        }
-      </td>
       <td style="font-weight:600;text-align:right;">${item.name}</td>
       <td>${item.dimensions||'—'}</td>
       <td>${item.color}</td>
@@ -9779,7 +9742,6 @@ tbody.innerHTML=S.invItems.map((item,i)=>`
       <td>${((item.cbm||0)*item.qty).toFixed(4)}</td>
       <td><button class="btn btn-r btn-icon btn-sm" onclick="removeItem(${i})">🗑️</button></td>
     </tr>`).join('');
-
   const totUSD=S.invItems.reduce((s,i)=>s+i.totalUSD,0);
   const totCBM=S.invItems.reduce((s,i)=>s+(i.cbm*i.qty),0);
   const t1=document.getElementById('invTblTotal');if(t1)t1.textContent=fmtCurr(totUSD,S.invCurrency);
