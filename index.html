@@ -4471,29 +4471,32 @@ html, body {
     </div>
   </div>
 
-  <!-- الطول -->
-  <div class="fg">
-    <label class="fl">📏 <span id="prDimLLbl">الطول (سم)</span></label>
-    <input type="number" class="fc" id="prDimL"
-      placeholder="0" min="0" step="0.1"
-      oninput="onPrDimInput()">
+ <!-- ✅ نظام الأبعاد الديناميكي -->
+<div class="fg" style="grid-column:1 / -1;">
+  <label class="fl">📐 <span id="prDimSectionLbl">الأبعاد (سم)</span></label>
+
+  <!-- حاوية الصفوف -->
+  <div id="prDimRowsWrap" style="
+    display:flex;flex-direction:column;gap:8px;margin-top:6px;">
   </div>
 
-  <!-- العرض -->
-  <div class="fg">
-    <label class="fl">📐 <span id="prDimWLbl">العرض (سم)</span></label>
-    <input type="number" class="fc" id="prDimW"
-      placeholder="0" min="0" step="0.1"
-      oninput="onPrDimInput()">
-  </div>
+  <!-- زر الإضافة -->
+  <button type="button" id="prDimAddBtn"
+    onclick="addPrDimRow()"
+    style="
+      margin-top:10px;
+      display:inline-flex;align-items:center;gap:6px;
+      padding:7px 16px;border-radius:var(--rs);
+      border:1.5px dashed var(--gold);
+      background:transparent;color:var(--gold);
+      font-size:13px;font-weight:600;
+      cursor:pointer;transition:all var(--tr);"
+    onmouseenter="this.style.background='rgba(var(--gold-rgb),.1)'"
+    onmouseleave="this.style.background='transparent'">
+    ＋ <span id="prDimAddLbl">إضافة قياس</span>
+  </button>
+</div>
 
-  <!-- الارتفاع -->
-  <div class="fg">
-    <label class="fl">📦 <span id="prDimHLbl">الارتفاع (سم)</span></label>
-    <input type="number" class="fc" id="prDimH"
-      placeholder="0" min="0" step="0.1"
-      oninput="onPrDimInput()">
-  </div>
 
   <!-- الوزن -->
   <div class="fg">
@@ -8272,6 +8275,7 @@ updateSumSectionLabels();
 updateStep1Texts();
 updateDash();
 updatePrInfoLabels();
+updatePrDimLabels();
 
   // ✅ تحديث نص زر حذف صورة القطعة
   const prImgDelTxt = document.getElementById('prImgDeleteBtnTxt');
@@ -9394,13 +9398,25 @@ showToast(delMsgs[S.lang]||delMsgs.en,'in');
 
    
 async function savePr(){
-  const name=document.getElementById('prName').value.trim();if(!name){showToast(t('fill_req'),'er');return;}
+  const name=document.getElementById('prName').value.trim();
+  if(!name){showToast(t('fill_req'),'er');return;}
+
   const priceA=parseFloat(document.getElementById('prPriceA').value)||0;
   if(!priceA){showToast(t('fill_req'),'er');return;}
-  const l=parseFloat(document.getElementById('dimL').value)||0;
-  const w=parseFloat(document.getElementById('dimW').value)||0;
-  const h=parseFloat(document.getElementById('dimH').value)||0;
-  const cbm=l&&w&&h?parseFloat((l*w*h/1000000).toFixed(4)):0;
+
+  // ── ✅ قراءة الأبعاد من النظام الديناميكي
+  const dims = getPrDimsValue();
+  const l = dims[0]?.l || 0;
+  const w = dims[0]?.w || 0;
+  const h = dims[0]?.h || 0;
+
+  // ── ✅ حساب CBM الإجمالي من كل الصفوف
+  const totalCBM = S.prDims.reduce((sum, d) => {
+    const dl = d.l || 0, dw = d.w || 0, dh = d.h || 0;
+    return sum + (dl && dw && dh ? (dl * dw * dh / 1000000) : 0);
+  }, 0);
+  const cbm = parseFloat(totalCBM.toFixed(4));
+
   const pr={
     id:S.editPrId||Date.now().toString(),name,type:S.prType,
     hsCode:document.getElementById('prHsCode').value.trim(),
@@ -9411,20 +9427,189 @@ async function savePr(){
     activeTier:S.prActiveTier,
     laborCost:parseFloat(document.getElementById('prLabor').value)||0,
     otherCost:parseFloat(document.getElementById('prOther').value)||0,
-    dimL:l,dimW:w,dimH:h,
+
+    // ── ✅ الأبعاد الأساسية (أول صف)
+    dimL:l, dimW:w, dimH:h,
     dimensions:l&&w&&h?`${l}×${w}×${h}`:'',
-    cbm,weight:parseFloat(document.getElementById('prWeight').value)||0,
+    cbm,
+
+    // ── ✅ كل صفوف الأبعاد الديناميكية
+    dims: dims,
+
+    weight:parseFloat(document.getElementById('prWeight').value)||0,
     packets:parseInt(document.getElementById('prPackets').value)||1,
     color: getPrColorValue(),
-
     colorHex:S.selColor,image:S.prImgData,
     barcode:name.toUpperCase(),createdAt:new Date().toISOString(),
   };
+
   await dbPut('products',pr);
   const idx=S.products.findIndex(p=>p.id===pr.id);
   if(idx>=0)S.products[idx]=pr;else S.products.push(pr);
   showToast(t('saved_pr'));resetPrForm();updateDash();showPage('products');
 }
+
+
+
+
+/* ============================================================
+   PR DIMS — نظام الأبعاد الديناميكي
+============================================================ */
+
+// نصوص 3 لغات
+const PR_DIM_LABELS = {
+  ar: { section:'الأبعاد (سم)', add:'إضافة قياس', len:'الطول', wid:'العرض', hgt:'الارتفاع', del:'حذف' },
+  tr: { section:'Boyutlar (cm)', add:'Ölçü Ekle',  len:'Uzunluk', wid:'Genişlik', hgt:'Yükseklik', del:'Sil' },
+  en: { section:'Dimensions (cm)', add:'Add Size',  len:'Length', wid:'Width', hgt:'Height', del:'Delete' },
+};
+
+// المصفوفة الداخلية
+if (!S.prDims) S.prDims = [{ l:'', w:'', h:'' }];
+
+/* ── تحديث نصوص قسم الأبعاد ── */
+function updatePrDimLabels() {
+  const lang = S.lang || 'ar';
+  const L    = PR_DIM_LABELS[lang] || PR_DIM_LABELS.en;
+  const set  = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('prDimSectionLbl', L.section);
+  set('prDimAddLbl',     L.add);
+  // تحديث placeholders وتسميات الصفوف الموجودة
+  renderPrDimRows();
+}
+
+/* ── رسم الصفوف ── */
+function renderPrDimRows() {
+  const wrap = document.getElementById('prDimRowsWrap');
+  if (!wrap) return;
+  const lang = S.lang || 'ar';
+  const L    = PR_DIM_LABELS[lang] || PR_DIM_LABELS.en;
+  const dir  = lang === 'ar' ? 'rtl' : 'ltr';
+
+  wrap.innerHTML = '';
+
+  S.prDims.forEach((dim, i) => {
+    const row = document.createElement('div');
+    row.id    = `prDimRow_${i}`;
+    row.style.cssText = `
+      display:flex;align-items:center;gap:8px;
+      background:var(--bg2,rgba(0,0,0,.04));
+      border:1px solid var(--border,rgba(0,0,0,.1));
+      border-radius:var(--rs);padding:8px 10px;
+      animation:fadeUp .2s ease;direction:${dir};`;
+
+    row.innerHTML = `
+      <!-- رقم الصف -->
+      <span style="
+        min-width:24px;height:24px;border-radius:50%;
+        background:var(--gold);color:#fff;
+        font-size:12px;font-weight:700;
+        display:flex;align-items:center;justify-content:center;
+        flex-shrink:0;">${i + 1}</span>
+
+      <!-- الطول -->
+      <div style="flex:1;min-width:60px;">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">${L.len}</div>
+        <input type="number" class="fc" 
+          id="prDimL_${i}" value="${dim.l || ''}"
+          placeholder="0" min="0" step="0.1"
+          style="padding:6px 8px;font-size:13px;"
+          oninput="onPrDimRowInput(${i})">
+      </div>
+
+      <!-- العرض -->
+      <div style="flex:1;min-width:60px;">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">${L.wid}</div>
+        <input type="number" class="fc"
+          id="prDimW_${i}" value="${dim.w || ''}"
+          placeholder="0" min="0" step="0.1"
+          style="padding:6px 8px;font-size:13px;"
+          oninput="onPrDimRowInput(${i})">
+      </div>
+
+      <!-- الارتفاع -->
+      <div style="flex:1;min-width:60px;">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">${L.hgt}</div>
+        <input type="number" class="fc"
+          id="prDimH_${i}" value="${dim.h || ''}"
+          placeholder="0" min="0" step="0.1"
+          style="padding:6px 8px;font-size:13px;"
+          oninput="onPrDimRowInput(${i})">
+      </div>
+
+      <!-- زر الحذف — يظهر فقط إذا يوجد أكثر من صف -->
+      ${S.prDims.length > 1 ? `
+      <button type="button"
+        onclick="removePrDimRow(${i})"
+        title="${L.del}"
+        style="
+          width:28px;height:28px;border-radius:7px;border:none;
+          background:rgba(229,62,62,.1);color:var(--red,#e53e3e);
+          cursor:pointer;font-size:14px;flex-shrink:0;
+          display:flex;align-items:center;justify-content:center;
+          transition:all var(--tr);"
+        onmouseenter="this.style.background='var(--red,#e53e3e)';this.style.color='#fff'"
+        onmouseleave="this.style.background='rgba(229,62,62,.1)';this.style.color='var(--red,#e53e3e)'"
+      >✕</button>` : `<div style="width:28px;flex-shrink:0;"></div>`}
+    `;
+
+    wrap.appendChild(row);
+  });
+}
+
+/* ── إضافة صف جديد ── */
+function addPrDimRow() {
+  S.prDims.push({ l:'', w:'', h:'' });
+  renderPrDimRows();
+  // التمرير للأسفل
+  setTimeout(() => {
+    const last = document.getElementById(`prDimRow_${S.prDims.length - 1}`);
+    if (last) last.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }, 50);
+}
+
+/* ── حذف صف ── */
+function removePrDimRow(i) {
+  if (S.prDims.length <= 1) return;
+  S.prDims.splice(i, 1);
+  renderPrDimRows();
+  onPrDimAllInput();
+}
+
+/* ── تحديث المصفوفة عند الكتابة ── */
+function onPrDimRowInput(i) {
+  S.prDims[i] = {
+    l: parseFloat(document.getElementById(`prDimL_${i}`)?.value) || 0,
+    w: parseFloat(document.getElementById(`prDimW_${i}`)?.value) || 0,
+    h: parseFloat(document.getElementById(`prDimH_${i}`)?.value) || 0,
+  };
+  onPrDimAllInput();
+}
+
+/* ── حساب CBM الإجمالي من كل الصفوف ── */
+function onPrDimAllInput() {
+  const totalCBM = S.prDims.reduce((sum, d) => {
+    const l = d.l || 0, w = d.w || 0, h = d.h || 0;
+    return sum + (l && w && h ? (l * w * h / 1000000) : 0);
+  }, 0);
+  const el = document.getElementById('cbmCalc');
+  if (el) el.textContent = totalCBM.toFixed(4) + ' m³';
+}
+
+/* ── قراءة الأبعاد عند الحفظ ── */
+function getPrDimsValue() {
+  return S.prDims.map(d => ({
+    l: d.l || 0,
+    w: d.w || 0,
+    h: d.h || 0,
+  }));
+}
+
+
+   
+
+
+
+   
 function resetPrForm(){
   S.editPrId = null;
   S._editPrReturnToProducts = false;
@@ -9442,11 +9627,11 @@ function resetPrForm(){
     if (el) el.value = '';
   });
 
-  // ── مسح حقول الأبعاد الجديدة (prDimL / prDimW / prDimH)
-  ['prDimL','prDimW','prDimH'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
+ // ── إعادة تعيين نظام الأبعاد الديناميكي
+S.prDims = [{ l:'', w:'', h:'' }];
+renderPrDimRows();
+onPrDimAllInput();
+
 
   // ── إعادة تعيين CBM
   const cbmEl = document.getElementById('cbmCalc');
@@ -9832,13 +10017,18 @@ function editPr(id){
     // ── الوزن
     sv('prWeight',  p.weight  || '');
 
-    // ── ✅ الأبعاد الجديدة (prDimL / prDimW / prDimH)
-    sv('prDimL', p.dimL || '');
-    sv('prDimW', p.dimW || '');
-    sv('prDimH', p.dimH || '');
+   // ── ✅ تحميل الأبعاد في النظام الديناميكي
+if (p.dims && p.dims.length) {
+  S.prDims = p.dims.map(d => ({ l: d.l||0, w: d.w||0, h: d.h||0 }));
+} else if (p.dimL || p.dimW || p.dimH) {
+  // دعم البيانات القديمة
+  S.prDims = [{ l: p.dimL||0, w: p.dimW||0, h: p.dimH||0 }];
+} else {
+  S.prDims = [{ l:'', w:'', h:'' }];
+}
+renderPrDimRows();
+onPrDimAllInput();
 
-    // ── تحديث CBM من الحقول الجديدة
-    onPrDimInput();
 
     // ── ✅ اللون — من قائمة FURNITURE_COLORS
     const colorSel        = document.getElementById('prColorSel');
@@ -11765,9 +11955,11 @@ function getPrColorValue() {
 
 /* ── حساب CBM من الحقول الجديدة ── */
 function onPrDimInput() {
- const l = parseFloat(document.getElementById('prDimL')?.value) || 0;
-const w = parseFloat(document.getElementById('prDimW')?.value) || 0;
-const h = parseFloat(document.getElementById('prDimH')?.value) || 0;
+const dims = getPrDimsValue();
+const l = dims[0]?.l || 0;
+const w = dims[0]?.w || 0;
+const h = dims[0]?.h || 0;
+
   const cbm = (l && w && h) ? (l * w * h / 1000000) : 0;
   const el = document.getElementById('cbmCalc');
   if (el) el.textContent = cbm.toFixed(4) + ' m³';
