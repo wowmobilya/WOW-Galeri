@@ -3743,11 +3743,11 @@ textarea.fc{resize:vertical;min-height:72px}
    🧠 AI-DRIVEN PERFORMANCE OPTIMIZATION (ULTIMATE SMOOTHNESS)
 ============================================================ */
 
-/* 1. العزل الذكي (CSS Containment): منع المتصفح من إعادة حساب الصفحة بالكامل عند تغير عنصر واحد */
+/* 1. تم تعديل العزل الذكي: إيقاف content-visibility لأنه يسبب "رجة" في الوضع العرضي للتابليت */
 .card, .co-card, .pr-card-new, .inv-card, .client-type-step-card, .modal {
-    contain: layout style paint;
-    content-visibility: auto;
-    contain-intrinsic-size: 250px;
+    /* نكتفي بالتسريع العتادي (GPU) لمنع التقطيع بدون التسبب في رجة الأبعاد */
+    transform: translateZ(0);
+    will-change: transform, opacity;
 }
 
 /* 2. تسريع النصوص وإلغاء وميض اللمس المزعج على أندرويد */
@@ -8273,9 +8273,11 @@ function closeModal(id){document.getElementById(id).classList.remove('open')}
     _rafId = requestAnimationFrame(adjustCalcModal);
   }
 
-  /* ✅ مراقبة تغييرات الـ viewport */
+    /* ✅ مراقبة تغييرات الـ viewport */
   window.visualViewport.addEventListener('resize', onViewportChange);
-  window.visualViewport.addEventListener('scroll', onViewportChange);
+  // تم إيقاف مراقبة الـ scroll لأنها تسبب بطء شديد (Lag) أثناء التمرير على التابليت
+  // window.visualViewport.addEventListener('scroll', onViewportChange);
+
 
   /* ✅ تطبيق فوري عند فتح الحاسبة */
   const _origOpenModal = window.openModal;
