@@ -4394,7 +4394,7 @@ html, body {
       <button class="sct-back-btn" onclick="backToPrTypeSelect()">← <span data-i18n="btn_back">رجوع</span></button>
       <div class="sct-sticky-title">
         <h1 data-i18n="add_pr_title">📦 إضافة منتج</h1>
-        <p id="addPrSubtitle">املأ بيانات المنتج</p>
+<p id="addPrSubtitle">—</p>
       </div>
     </div>
 
@@ -11960,21 +11960,25 @@ function updatePrSelectedTypeBanner(tp) {
   const cfg  = PR_TYPE_CONFIG[tp];
   if (!cfg) return;
 
-  // ── تسميات "النوع المختار" × 3 لغات
   const selectedLabels = {
     ar: 'النوع المختار',
     tr: 'Seçilen Tip',
     en: 'Selected Type',
   };
 
-  // ── تسميات زر "تغيير" × 3 لغات
   const changeLabels = {
     ar: '🔄 تغيير',
     tr: '🔄 Değiştir',
     en: '🔄 Change',
   };
 
-  // ── تحديث الأيقونة
+  // ✅ أضف هذا — نص "املأ بيانات المنتج" × 3 لغات
+  const subtitleLabels = {
+    ar: 'املأ بيانات المنتج',
+    tr: 'Ürün bilgilerini doldurun',
+    en: 'Fill in product details',
+  };
+
   const iconEl = document.getElementById('prSelectedTypeIcon');
   if (iconEl) {
     iconEl.innerHTML = cfg.iconType === 'img'
@@ -11983,18 +11987,20 @@ function updatePrSelectedTypeBanner(tp) {
       : `<span style="font-size:26px;">${cfg.icon}</span>`;
   }
 
-  // ── تحديث التسمية الصغيرة
   const labelEl = document.getElementById('prSelectedTypeLabel');
   if (labelEl) labelEl.textContent = selectedLabels[lang] || selectedLabels.en;
 
-  // ── تحديث اسم النوع بلغة البرنامج
   const nameEl = document.getElementById('prSelectedTypeName');
   if (nameEl) nameEl.textContent = cfg.titles[lang] || cfg.titles.en;
 
-  // ── تحديث زر التغيير
   const changeBtn = document.getElementById('changePrTypeBtn');
   if (changeBtn) changeBtn.textContent = changeLabels[lang] || changeLabels.en;
+
+  // ✅ تحديث subtitle الصفحة
+  const subtitleEl = document.getElementById('addPrSubtitle');
+  if (subtitleEl) subtitleEl.textContent = subtitleLabels[lang] || subtitleLabels.en;
 }
+
 
 
 function backToPrTypeSelect() {
