@@ -3706,34 +3706,38 @@ textarea.fc{resize:vertical;min-height:72px}
 
 
 /* ── صور المنتجات في جدول الفاتورة ── */
-.inv-tbl .item-img-cell {
-  width: 54px;
-  padding: 3px 4px;
-  vertical-align: middle;
+table.inv-tbl td.item-img-cell {
+  width: 54px !important;
+  padding: 3px 4px !important;
+  vertical-align: middle !important;
 }
-.inv-tbl .item-img-cell img {
-  width: 48px;
-  height: 38px;
-  object-fit: cover;
-  border-radius: 5px;
-  display: block;
-  border: 1px solid var(--border);
-  transition: transform .25s ease;
+
+table.inv-tbl td.item-img-cell img {
+  width: 48px !important;
+  height: 38px !important;
+  object-fit: cover !important;
+  border-radius: 5px !important;
+  display: block !important;
+  border: 1px solid var(--border) !important;
+  transition: transform .25s ease !important;
+  max-width: unset !important;
 }
-.inv-tbl tr:hover .item-img-cell img {
-  transform: scale(1.08);
+
+table.inv-tbl tr:hover td.item-img-cell img {
+  transform: scale(1.08) !important;
 }
-.inv-tbl .item-img-placeholder {
-  width: 48px;
-  height: 38px;
-  background: var(--input);
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  border: 1px solid var(--border);
-  margin: 0 auto;
+
+table.inv-tbl td.item-img-cell .item-img-placeholder {
+  width: 48px !important;
+  height: 38px !important;
+  background: var(--input) !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 18px !important;
+  border: 1px solid var(--border) !important;
+  margin: 0 auto !important;
 }
 
 
@@ -9763,14 +9767,13 @@ function renderInvTable(){
 tbody.innerHTML=S.invItems.map((item,i)=>`
     <tr>
       <td>${i+1}</td>
-      <td style="padding:3px;width:52px;">
+      <td class="item-img-cell">
         ${item.image
-          ? `<img src="${item.image}" alt="${item.name}" style="width:48px;height:38px;object-fit:cover;border-radius:5px;display:block;border:1px solid var(--border);">`
-          : `<div style="width:48px;height:38px;background:var(--input);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid var(--border);">${(()=>{const icons={coffee_table:'☕',dresser:'🪞',side_table:'🪑',tv_table:'📺',other:'📦'};return icons[item.type]||'📦';})()}</div>`
+          ? `<img src="${item.image}" alt="${item.name}">`
+          : `<div class="item-img-placeholder">${(()=>{const icons={coffee_table:'☕',dresser:'🪞',side_table:'🪑',tv_table:'📺',other:'📦'};return icons[item.type]||'📦';})()}</div>`
         }
       </td>
       <td style="font-weight:600;text-align:right;">${item.name}</td>
-
       <td>${item.dimensions||'—'}</td>
       <td>${item.color}</td>
       <td>
@@ -9785,6 +9788,7 @@ tbody.innerHTML=S.invItems.map((item,i)=>`
       <td>${((item.cbm||0)*item.qty).toFixed(4)}</td>
       <td><button class="btn btn-r btn-icon btn-sm" onclick="removeItem(${i})">🗑️</button></td>
     </tr>`).join('');
+
   const totUSD=S.invItems.reduce((s,i)=>s+i.totalUSD,0);
   const totCBM=S.invItems.reduce((s,i)=>s+(i.cbm*i.qty),0);
   const t1=document.getElementById('invTblTotal');if(t1)t1.textContent=fmtCurr(totUSD,S.invCurrency);
