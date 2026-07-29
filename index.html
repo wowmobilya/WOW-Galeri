@@ -4416,7 +4416,7 @@ html, body {
     <!-- اسم القطعة -->
     <div class="fg">
       <label class="fl">📝 <span data-i18n="pr_name" id="prNameLbl">اسم القطعة</span> <span class="req">*</span></label>
-      <input type="text" class="fc" id="prName" placeholder="LUNA Coffee Table">
+      <input type="text" class="fc" id="prName" placeholder="W400">
     </div>
 
     <!-- HS Code -->
@@ -4424,11 +4424,8 @@ html, body {
       <label class="fl">🏷️ <span id="prHsLabelTxt">كود HS</span></label>
       <div style="position:relative;">
         <input
-          type="text"
-          class="fc"
-          id="prHsCode"
-          autocomplete="off"
-          inputmode="none"
+          type="text" class="fc" id="prHsCode"
+          autocomplete="off" inputmode="none"
           style="cursor:pointer;"
           onclick="openHsDropdown()"
           onkeydown="if(!_hsCustomMode)return false;"
@@ -4439,18 +4436,15 @@ html, body {
           position:absolute;top:50%;right:10px;
           transform:translateY(-50%);
           font-size:11px;color:var(--muted);
-          pointer-events:none;
-          transition:transform .25s ease;
+          pointer-events:none;transition:transform .25s ease;
         ">▼</span>
         <div id="hsDropdown" style="
-          display:none;
-          position:absolute;top:calc(100% + 4px);left:0;right:0;
+          display:none;position:absolute;
+          top:calc(100% + 4px);left:0;right:0;
           background:var(--card);border:1.5px solid var(--gold);
           border-radius:var(--rs);box-shadow:var(--shadow2);
-          z-index:9999;overflow:hidden;
-          animation:fadeUp .2s ease;
-          max-height:320px;overflow-y:auto;
-          min-width:260px;
+          z-index:9999;max-height:300px;overflow-y:auto;
+          animation:fadeUp .2s ease;min-width:260px;
         "></div>
       </div>
     </div>
@@ -4460,11 +4454,8 @@ html, body {
       <label class="fl">📄 <span id="prDescLabelTxt">الوصف</span></label>
       <div style="position:relative;">
         <input
-          type="text"
-          class="fc"
-          id="prDesc"
-          autocomplete="off"
-          inputmode="none"
+          type="text" class="fc" id="prDesc"
+          autocomplete="off" inputmode="none"
           style="cursor:pointer;"
           onclick="openDescDropdown()"
           onkeydown="if(!_descCustomMode)return false;"
@@ -4475,23 +4466,22 @@ html, body {
           position:absolute;top:50%;right:10px;
           transform:translateY(-50%);
           font-size:11px;color:var(--muted);
-          pointer-events:none;
-          transition:transform .25s ease;
+          pointer-events:none;transition:transform .25s ease;
         ">▼</span>
         <div id="descDropdown" style="
-          display:none;
-          position:absolute;top:calc(100% + 4px);left:0;right:0;
+          display:none;position:absolute;
+          top:calc(100% + 4px);left:0;right:0;
           background:var(--card);border:1.5px solid var(--gold);
           border-radius:var(--rs);box-shadow:var(--shadow2);
-          z-index:9999;overflow:hidden;
-          animation:fadeUp .2s ease;
-          min-width:220px;
+          z-index:9999;max-height:300px;overflow-y:auto;
+          animation:fadeUp .2s ease;min-width:260px;
         "></div>
       </div>
     </div>
 
   </div>
 </div>
+
 
 
     <div class="card">
@@ -15159,14 +15149,14 @@ window.applyTr = function () {
 
 
 /* ============================================================
-   HS CODE + DESC DROPDOWNS — COMPLETE SYSTEM 2026
+   HS CODE + DESC DROPDOWNS — FULL SYSTEM
 ============================================================ */
 
-/* ── بيانات HS Code × 3 لغات ── */
+/* ── HS Code Data × 3 لغات ── */
 const HS_CODE_DATA = {
   ar: [
     { group:'✏️ مخصص', items:[
-      { code:'CUSTOM', label:'✏️ مخصص — اكتب يدوياً', custom:true },
+      { code:'CUSTOM', label:'اكتب يدوياً', custom:true },
     ]},
     { group:'🛋️ طاولات وسط', items:[
       { code:'9403.60.90.90.00', label:'9403.60.90.90.00' },
@@ -15189,7 +15179,7 @@ const HS_CODE_DATA = {
   ],
   tr: [
     { group:'✏️ Özel', items:[
-      { code:'CUSTOM', label:'✏️ Özel — Manuel Yaz', custom:true },
+      { code:'CUSTOM', label:'Manuel Yaz', custom:true },
     ]},
     { group:'🛋️ Orta Sehpa', items:[
       { code:'9403.60.90.90.00', label:'9403.60.90.90.00' },
@@ -15212,7 +15202,7 @@ const HS_CODE_DATA = {
   ],
   en: [
     { group:'✏️ Custom', items:[
-      { code:'CUSTOM', label:'✏️ Custom — Type Manually', custom:true },
+      { code:'CUSTOM', label:'Type Manually', custom:true },
     ]},
     { group:'🛋️ Coffee Tables', items:[
       { code:'9403.60.90.90.00', label:'9403.60.90.90.00' },
@@ -15235,56 +15225,54 @@ const HS_CODE_DATA = {
   ],
 };
 
-/* ── بيانات الوصف × 3 لغات ── */
+/* ── DESC Data × 3 لغات — كل شيء بلغته بدون مزج ── */
 const DESC_DATA = {
   ar: [
-    { val:'CUSTOM',  label:'✏️ مخصص — اكتب يدوياً', custom:true },
-    { val:'SET',     label:'طقم — SET'   },
-    { val:'PCS',     label:'قطعة — PCS'  },
-    { val:'1+2',     label:'1+2'         },
-    { val:'1+1',     label:'1+1'         },
-    { val:'2+2',     label:'2+2'         },
-    { val:'2+3',     label:'2+3'         },
-    { val:'1+4',     label:'1+4'         },
-    { val:'3+2+1',   label:'3+2+1'       },
-    { val:'3+3',     label:'3+3'         },
-    { val:'2+2+1',   label:'2+2+1'       },
-    { val:'L-SHAPE', label:'L-SHAPE'     },
-    { val:'U-SHAPE', label:'U-SHAPE'     },
-    { val:'CORNER',  label:'CORNER'      },
+    { val:'CUSTOM', label:'اكتب يدوياً', icon:'✏️', custom:true },
+    { val:'SET',    label:'طقم',          icon:'📦' },
+    { val:'PCS',    label:'قطعة',         icon:'🔢' },
+    { val:'1+2',    label:'1+2',          icon:'🛋️' },
+    { val:'1+1',    label:'1+1',          icon:'🛋️' },
+    { val:'2+2',    label:'2+2',          icon:'🛋️' },
+    { val:'2+3',    label:'2+3',          icon:'🛋️' },
+    { val:'1+4',    label:'1+4',          icon:'🛋️' },
+    { val:'3+2+1',  label:'3+2+1',        icon:'🛋️' },
+    { val:'3+3',    label:'3+3',          icon:'🛋️' },
+    { val:'2+2+1',  label:'2+2+1',        icon:'🛋️' },
   ],
   tr: [
-    { val:'CUSTOM',  label:'✏️ Özel — Manuel Yaz', custom:true },
-    { val:'SET',     label:'Takım — SET'  },
-    { val:'PCS',     label:'Parça — PCS'  },
-    { val:'1+2',     label:'1+2'          },
-    { val:'1+1',     label:'1+1'          },
-    { val:'2+2',     label:'2+2'          },
-    { val:'2+3',     label:'2+3'          },
-    { val:'1+4',     label:'1+4'          },
-    { val:'3+2+1',   label:'3+2+1'        },
-    { val:'3+3',     label:'3+3'          },
-    { val:'2+2+1',   label:'2+2+1'        },
-    { val:'L-SHAPE', label:'L-SHAPE'      },
-    { val:'U-SHAPE', label:'U-SHAPE'      },
-    { val:'CORNER',  label:'CORNER'       },
+    { val:'CUSTOM', label:'Manuel Yaz',   icon:'✏️', custom:true },
+    { val:'SET',    label:'Takım',         icon:'📦' },
+    { val:'PCS',    label:'Parça',         icon:'🔢' },
+    { val:'1+2',    label:'1+2',           icon:'🛋️' },
+    { val:'1+1',    label:'1+1',           icon:'🛋️' },
+    { val:'2+2',    label:'2+2',           icon:'🛋️' },
+    { val:'2+3',    label:'2+3',           icon:'🛋️' },
+    { val:'1+4',    label:'1+4',           icon:'🛋️' },
+    { val:'3+2+1',  label:'3+2+1',         icon:'🛋️' },
+    { val:'3+3',    label:'3+3',           icon:'🛋️' },
+    { val:'2+2+1',  label:'2+2+1',         icon:'🛋️' },
   ],
   en: [
-    { val:'CUSTOM',  label:'✏️ Custom — Type Manually', custom:true },
-    { val:'SET',     label:'SET'          },
-    { val:'PCS',     label:'PCS'          },
-    { val:'1+2',     label:'1+2'          },
-    { val:'1+1',     label:'1+1'          },
-    { val:'2+2',     label:'2+2'          },
-    { val:'2+3',     label:'2+3'          },
-    { val:'1+4',     label:'1+4'          },
-    { val:'3+2+1',   label:'3+2+1'        },
-    { val:'3+3',     label:'3+3'          },
-    { val:'2+2+1',   label:'2+2+1'        },
-    { val:'L-SHAPE', label:'L-SHAPE'      },
-    { val:'U-SHAPE', label:'U-SHAPE'      },
-    { val:'CORNER',  label:'CORNER'       },
+    { val:'CUSTOM', label:'Type Manually', icon:'✏️', custom:true },
+    { val:'SET',    label:'Set',            icon:'📦' },
+    { val:'PCS',    label:'Pieces',         icon:'🔢' },
+    { val:'1+2',    label:'1+2',            icon:'🛋️' },
+    { val:'1+1',    label:'1+1',            icon:'🛋️' },
+    { val:'2+2',    label:'2+2',            icon:'🛋️' },
+    { val:'2+3',    label:'2+3',            icon:'🛋️' },
+    { val:'1+4',    label:'1+4',            icon:'🛋️' },
+    { val:'3+2+1',  label:'3+2+1',          icon:'🛋️' },
+    { val:'3+3',    label:'3+3',            icon:'🛋️' },
+    { val:'2+2+1',  label:'2+2+1',          icon:'🛋️' },
   ],
+};
+
+/* ── placeholder اسم القطعة × 3 لغات ── */
+const PR_NAME_PH = {
+  ar: 'مثال: W400',
+  tr: 'Örnek: W400',
+  en: 'Example: W400',
 };
 
 /* ── حالة القوائم ── */
@@ -15294,77 +15282,88 @@ let _hsDropOpen     = false;
 let _descDropOpen   = false;
 
 /* ============================================================
-   موضع السهم + نصوص حسب اللغة
+   تحديث واجهة المستخدم حسب اللغة
 ============================================================ */
 function _ddUpdateUI() {
   const lang  = S.lang || 'ar';
   const isRtl = lang === 'ar';
 
-  /* ── تسميات ── */
+  /* تسمية HS */
   const hsLbl = document.getElementById('prHsLabelTxt');
-  if (hsLbl) {
-    hsLbl.textContent = { ar:'كود HS', tr:'HS Kodu', en:'HS Code' }[lang] || 'HS Code';
-  }
-  const descLbl = document.getElementById('prDescLabelTxt');
-  if (descLbl) {
-    descLbl.textContent = { ar:'الوصف', tr:'Açıklama', en:'Description' }[lang] || 'Description';
-  }
+  if (hsLbl) hsLbl.textContent = { ar:'كود HS', tr:'HS Kodu', en:'HS Code' }[lang];
 
-  /* ── placeholder ── */
+  /* تسمية الوصف */
+  const descLbl = document.getElementById('prDescLabelTxt');
+  if (descLbl) descLbl.textContent = { ar:'الوصف', tr:'Açıklama', en:'Description' }[lang];
+
+  /* placeholder اسم القطعة */
+  const prName = document.getElementById('prName');
+  if (prName) prName.placeholder = PR_NAME_PH[lang] || PR_NAME_PH.en;
+
+  /* placeholder HS */
   const hsInp = document.getElementById('prHsCode');
   if (hsInp && !_hsCustomMode) {
     hsInp.placeholder = {
       ar:'اختر كود HS...', tr:'HS kodu seçin...', en:'Select HS code...'
-    }[lang] || 'Select HS code...';
+    }[lang];
   }
+
+  /* placeholder DESC — يتغير بلغته */
   const descInp = document.getElementById('prDesc');
   if (descInp && !_descCustomMode) {
     descInp.placeholder = {
       ar:'اختر الوصف...', tr:'Açıklama seçin...', en:'Select description...'
-    }[lang] || 'Select description...';
+    }[lang];
   }
 
-  /* ── موضع السهم: يسار في RTL، يمين في LTR ── */
+  /* ── موضع السهم حسب RTL/LTR ── */
   [
-    { arrowId:'prHsArrow',   inpId:'prHsCode'  },
-    { arrowId:'prDescArrow', inpId:'prDesc'     },
+    { arrowId:'prHsArrow',   inpId:'prHsCode' },
+    { arrowId:'prDescArrow', inpId:'prDesc'   },
   ].forEach(({ arrowId, inpId }) => {
     const arrow = document.getElementById(arrowId);
     const inp   = document.getElementById(inpId);
     if (!arrow || !inp) return;
-
     if (isRtl) {
-      arrow.style.right = 'auto';
-      arrow.style.left  = '10px';
-      inp.style.paddingRight = '12px';
-      inp.style.paddingLeft  = '30px';
+      arrow.style.right = 'auto'; arrow.style.left = '10px';
+      inp.style.paddingRight = '12px'; inp.style.paddingLeft = '30px';
     } else {
-      arrow.style.left  = 'auto';
-      arrow.style.right = '10px';
-      inp.style.paddingRight = '30px';
-      inp.style.paddingLeft  = '12px';
+      arrow.style.left = 'auto'; arrow.style.right = '10px';
+      inp.style.paddingRight = '30px'; inp.style.paddingLeft = '12px';
     }
   });
+
+  /* ── تحديث قيمة حقل الوصف إذا كان محدداً مسبقاً ── */
+  _syncDescDisplay();
+}
+
+/* تحديث النص المعروض في حقل الوصف حسب اللغة الحالية */
+function _syncDescDisplay() {
+  const lang    = S.lang || 'ar';
+  const descInp = document.getElementById('prDesc');
+  if (!descInp || _descCustomMode) return;
+
+  const currentVal = descInp.dataset.val; /* نحفظ الـ val الحقيقي هنا */
+  if (!currentVal) return;
+
+  const data = DESC_DATA[lang] || DESC_DATA.en;
+  const found = data.find(d => d.val === currentVal);
+  if (found) descInp.value = found.label;
 }
 
 /* ============================================================
    HS CODE — فتح / إغلاق / رسم
 ============================================================ */
 function openHsDropdown() {
-  /* أغلق DESC إذا كان مفتوحاً */
   if (_descDropOpen) _closeDescDD();
-
-  /* toggle */
-  if (_hsDropOpen) { _closeHsDD(); return; }
+  if (_hsDropOpen)   { _closeHsDD(); return; }
 
   renderHsDropdown();
-
   const dd    = document.getElementById('hsDropdown');
   const arrow = document.getElementById('prHsArrow');
   if (dd)    { dd.style.display = 'block'; _hsDropOpen = true; }
   if (arrow) arrow.style.transform = 'translateY(-50%) rotate(180deg)';
 
-  /* إغلاق عند الضغط خارجاً */
   setTimeout(() => document.addEventListener('click', _hsOutside), 60);
 }
 
@@ -15417,7 +15416,8 @@ function renderHsDropdown() {
             color:${item.custom ? 'var(--gold2)' : 'var(--text)'};
             direction:ltr;unicode-bidi:plaintext;flex:1;
           ">${item.label}</span>
-          ${!item.custom ? `<span style="
+          ${!item.custom ? `
+          <span style="
             background:var(--gold-light);color:var(--gold2);
             border-radius:20px;padding:2px 8px;font-size:9px;font-weight:700;
             border:1px solid rgba(200,169,110,.2);flex-shrink:0;
@@ -15430,11 +15430,7 @@ function renderHsDropdown() {
 
 function selectHsCode(code, isCustom) {
   _closeHsDD();
-  if (isCustom) {
-    _hsCustomMode = true;
-    _showCustomField('hs');
-    return;
-  }
+  if (isCustom) { _hsCustomMode = true; _showCustomField('hs'); return; }
   _hsCustomMode = false;
   _removeCustomField('hs');
   const inp = document.getElementById('prHsCode');
@@ -15449,11 +15445,10 @@ function selectHsCode(code, isCustom) {
    DESC — فتح / إغلاق / رسم
 ============================================================ */
 function openDescDropdown() {
-  if (_hsDropOpen) _closeHsDD();
+  if (_hsDropOpen)   _closeHsDD();
   if (_descDropOpen) { _closeDescDD(); return; }
 
   renderDescDropdown();
-
   const dd    = document.getElementById('descDropdown');
   const arrow = document.getElementById('prDescArrow');
   if (dd)    { dd.style.display = 'block'; _descDropOpen = true; }
@@ -15487,49 +15482,46 @@ function renderDescDropdown() {
     <div onclick="selectDesc('${item.val}',${!!item.custom})"
       style="
         display:flex;align-items:center;gap:10px;
-        padding:11px 14px;cursor:pointer;
+        padding:10px 14px;cursor:pointer;
         border-bottom:1px solid var(--border);
         transition:background var(--tr);
         ${item.custom ? 'background:rgba(200,169,110,.07);' : ''}
       "
       onmouseenter="this.style.background='var(--gold-light)'"
       onmouseleave="this.style.background='${item.custom ? 'rgba(200,169,110,.07)' : ''}'">
-      <span style="font-size:16px;flex-shrink:0;">${
-        item.custom          ? '✏️'
-        : item.val === 'SET' ? '📦'
-        : item.val === 'PCS' ? '🔢'
-        : item.val.includes('+') ? '🛋️'
-        : '📐'
-      }</span>
+      <span style="font-size:15px;flex-shrink:0;">${item.icon}</span>
       <span style="
-        font-size:14px;font-weight:${item.custom ? '700' : '900'};
+        font-size:13px;font-weight:${item.custom ? '700' : '800'};
         color:${item.custom ? 'var(--gold2)' : 'var(--text)'};
-        direction:ltr;unicode-bidi:plaintext;flex:1;letter-spacing:.3px;
+        flex:1;letter-spacing:.3px;
       ">${item.label}</span>
     </div>`).join('');
 }
 
 function selectDesc(val, isCustom) {
   _closeDescDD();
-  if (isCustom) {
-    _descCustomMode = true;
-    _showCustomField('desc');
-    return;
-  }
+  if (isCustom) { _descCustomMode = true; _showCustomField('desc'); return; }
   _descCustomMode = false;
   _removeCustomField('desc');
+
+  const lang = S.lang || 'ar';
+  const data = DESC_DATA[lang] || DESC_DATA.en;
+  const found = data.find(d => d.val === val);
+
   const inp = document.getElementById('prDesc');
-  if (!inp) return;
-  inp.value = val;
+  if (!inp || !found) return;
+
+  /* نحفظ الـ val الحقيقي في dataset لتحديثه عند تغيير اللغة */
+  inp.dataset.val = val;
+  inp.value = found.label;
+
   inp.style.borderColor = 'var(--green)';
   setTimeout(() => { inp.style.borderColor = ''; }, 900);
-  showToast('✅ ' + val, 'ok');
+  showToast('✅ ' + found.label, 'ok');
 }
 
 /* ============================================================
    CUSTOM FIELD — حقل مخصص منفصل
-   المبدأ: نُخفي الـ input الأصلي ونُنشئ input جديد
-   قابل للكتابة — لوحة المفاتيح تظهر فقط هنا
 ============================================================ */
 function _showCustomField(type) {
   const lang   = S.lang || 'ar';
@@ -15538,32 +15530,26 @@ function _showCustomField(type) {
   const origId = isHs ? 'prHsCode' : 'prDesc';
   const wrapId = isHs ? 'hsCustomWrap' : 'descCustomWrap';
 
-  /* أزل القديم إن وجد */
   const old = document.getElementById(wrapId);
   if (old) old.remove();
 
   const origInp = document.getElementById(origId);
   if (!origInp) return;
-
-  /* أخفِ الـ input الأصلي */
   origInp.style.display = 'none';
 
   const phs = isHs
     ? { ar:'اكتب كود HS يدوياً...', tr:'HS kodunu yazın...', en:'Type HS code...' }
     : { ar:'اكتب الوصف يدوياً...',  tr:'Açıklama yazın...',  en:'Type description...' };
 
-  /* أنشئ الـ wrapper */
   const wrap = document.createElement('div');
   wrap.id = wrapId;
   wrap.style.cssText = 'position:relative;animation:fadeUp .2s ease;';
 
-  /* الـ input الجديد القابل للكتابة */
   const newInp = document.createElement('input');
-  newInp.type        = 'text';
-  newInp.className   = 'fc';
-  newInp.placeholder = phs[lang] || phs.en;
+  newInp.type         = 'text';
+  newInp.className    = 'fc';
+  newInp.placeholder  = phs[lang] || phs.en;
   newInp.autocomplete = 'off';
-  /* لا نضع inputmode="none" هنا — نريد لوحة المفاتيح */
   newInp.style.cssText = `
     border-color:var(--gold);
     box-shadow:0 0 0 3px rgba(200,169,110,.12);
@@ -15571,11 +15557,9 @@ function _showCustomField(type) {
     padding-${isRtl ? 'right' : 'left'}:12px;
   `;
 
-  /* زر إلغاء ✕ */
   const cancelBtn = document.createElement('button');
   cancelBtn.type = 'button';
   cancelBtn.textContent = '✕';
-  cancelBtn.title = { ar:'إلغاء', tr:'İptal', en:'Cancel' }[lang] || 'Cancel';
   cancelBtn.style.cssText = `
     position:absolute;top:50%;
     ${isRtl ? 'left' : 'right'}:8px;
@@ -15583,34 +15567,24 @@ function _showCustomField(type) {
     background:rgba(229,62,62,.1);color:var(--red);
     border:none;border-radius:6px;
     width:26px;height:26px;font-size:12px;
-    cursor:pointer;font-family:inherit;
-    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;display:flex;
+    align-items:center;justify-content:center;
     transition:all var(--tr);
   `;
-  cancelBtn.onmouseenter = () => {
-    cancelBtn.style.background = 'var(--red)';
-    cancelBtn.style.color = '#fff';
-  };
-  cancelBtn.onmouseleave = () => {
-    cancelBtn.style.background = 'rgba(229,62,62,.1)';
-    cancelBtn.style.color = 'var(--red)';
-  };
+  cancelBtn.onmouseenter = () => { cancelBtn.style.background='var(--red)'; cancelBtn.style.color='#fff'; };
+  cancelBtn.onmouseleave = () => { cancelBtn.style.background='rgba(229,62,62,.1)'; cancelBtn.style.color='var(--red)'; };
   cancelBtn.onclick = () => {
     _removeCustomField(type);
-    if (isHs)  _hsCustomMode   = false;
-    else       _descCustomMode = false;
+    if (isHs) _hsCustomMode = false;
+    else      _descCustomMode = false;
   };
 
-  /* عند الكتابة → حدّث الـ input الأصلي */
   newInp.oninput = () => { origInp.value = newInp.value; };
 
   wrap.appendChild(newInp);
   wrap.appendChild(cancelBtn);
-
-  /* أدرج بعد الـ input الأصلي */
   origInp.parentNode.insertBefore(wrap, origInp.nextSibling);
 
-  /* افتح لوحة المفاتيح بعد 80ms */
   setTimeout(() => newInp.focus(), 80);
 }
 
@@ -15618,60 +15592,37 @@ function _removeCustomField(type) {
   const isHs   = type === 'hs';
   const origId = isHs ? 'prHsCode' : 'prDesc';
   const wrapId = isHs ? 'hsCustomWrap' : 'descCustomWrap';
-
-  const wrap    = document.getElementById(wrapId);
+  const wrap   = document.getElementById(wrapId);
   const origInp = document.getElementById(origId);
-
   if (wrap)    wrap.remove();
-  if (origInp) {
-    origInp.style.display = '';
-    origInp.value = '';
-  }
+  if (origInp) { origInp.style.display = ''; origInp.value = ''; delete origInp.dataset.val; }
 }
 
 /* ============================================================
-   HOOKS — ربط مع applyTr و resetPrForm
+   HOOKS
 ============================================================ */
-/* ── applyTr ── */
 const _origApplyTrDD = window.applyTr;
 window.applyTr = function () {
   _origApplyTrDD.call(this);
   _ddUpdateUI();
-  /* أعد رسم القوائم المفتوحة بلغة جديدة */
   if (_hsDropOpen)   renderHsDropdown();
   if (_descDropOpen) renderDescDropdown();
 };
 
-/* ── resetPrForm ── */
 const _origResetPrDD = window.resetPrForm;
 window.resetPrForm = function () {
   _origResetPrDD.call(this);
-
-  /* أغلق القوائم */
-  _closeHsDD();
-  _closeDescDD();
-
-  /* أزل الحقول المخصصة */
-  _removeCustomField('hs');
-  _removeCustomField('desc');
-
-  /* إعادة الحالة */
-  _hsCustomMode   = false;
-  _descCustomMode = false;
-
-  /* أعد السهام */
+  _closeHsDD(); _closeDescDD();
+  _removeCustomField('hs'); _removeCustomField('desc');
+  _hsCustomMode = false; _descCustomMode = false;
   ['prHsArrow','prDescArrow'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.transform = 'translateY(-50%) rotate(0deg)';
   });
-
   _ddUpdateUI();
 };
 
-/* ── تشغيل أول مرة بعد التحميل ── */
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(_ddUpdateUI, 400);
-});
+document.addEventListener('DOMContentLoaded', () => setTimeout(_ddUpdateUI, 400));
 
    
 
