@@ -39,10 +39,11 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;touch-action:manipulation}
 html {
-  scroll-behavior: smooth;
   -webkit-tap-highlight-color: transparent;
-  overflow-y: scroll; /* 👈 هذا هو السطر الإضافي لمنع تذبذب الشاشة */
+  overflow-y: scroll;
+  /* scroll-behavior: smooth مُزال — يسبب بطء على التابليت */
 }
+
 body{
   font-family:'Segoe UI','Cairo','Tajawal',system-ui,sans-serif;
   background:var(--bg);color:var(--text);min-height:100vh;
@@ -3667,47 +3668,44 @@ textarea.fc{resize:vertical;min-height:72px}
     transform: translateY(2px);
   }
 
-/* ============================================================
-   BOTTOM NAV — RTL/LTR FIX
-============================================================ */
+/* ── مسافات آمنة للقائمة السفلية ── */
 @media (max-width: 1024px) {
 
-  /* ✅ تثبيت اتجاه القائمة السفلية دائماً LTR */
-  .bottom-nav {
-    direction: ltr !important;
+  /* مسافة أسفل الصفحات */
+  .page {
+    padding-bottom: 90px !important;
   }
 
-  /* ✅ تثبيت اتجاه كل زر */
-  .bnav-btn {
-    direction: ltr !important;
-    unicode-bidi: isolate;
+  /* شريط حفظ الشركة */
+  .co-form-sticky-bar {
+    bottom: calc(72px + env(safe-area-inset-bottom)) !important;
   }
 
-  /* ✅ تثبيت نص التسمية — يعرض دائماً بشكل صحيح */
-  .bnav-label {
-    direction: inherit;
-    unicode-bidi: plaintext;
-    text-align: center !important;
-    display: block;
-    width: 100%;
+  /* زر السلة العائم */
+  .qbl-cart-fab {
+    bottom: calc(88px + env(safe-area-inset-bottom)) !important;
   }
 
-  /* ✅ منع انعكاس الأيقونات */
-  .bnav-icon {
-    direction: ltr !important;
-    unicode-bidi: isolate;
+  /* الإشعارات */
+  .toast-box {
+    bottom: calc(88px + env(safe-area-inset-bottom)) !important;
   }
 
-  /* ✅ تثبيت موضع الدائرة — لا تتأثر بـ RTL */
-  .bnav-circle {
-    direction: ltr !important;
-  }
-
-  /* ✅ تثبيت المنحنى */
+  /* تثبيت اتجاه القائمة السفلية */
+  .bottom-nav,
+  .bnav-btn,
+  .bnav-icon,
+  .bnav-circle,
   .bottom-nav-curve {
     direction: ltr !important;
   }
+
+  .bnav-label {
+    unicode-bidi: plaintext;
+    text-align: center !important;
+  }
 }
+
 
 
 
@@ -3889,36 +3887,6 @@ html, body {
 
 
 
- /* ============================================================
-   🛠️ إصلاح تداخل القائمة السفلية مع الأزرار والمحتوى (الهواتف والتابلت) - النهائي المضمون
-============================================================ */
-@media (max-width: 1024px) {
-  /* 1. نقل المساحة السفلية إلى داخل الصفحات نفسها لضمان التمرير الكامل */
-  .page {
-    padding-bottom: calc(100px + env(safe-area-inset-bottom)) !important;
-  }
-
-  /* 2. رفع شريط "حفظ الشركة" ليكون فوق القائمة السفلية مباشرة */
-  .co-form-sticky-bar {
-    bottom: calc(72px + env(safe-area-inset-bottom)) !important;
-    z-index: 600;
-  }
-
-  /* 3. رفع الزر العائم للسلة (الباركود السريع) */
-  .qbl-cart-fab {
-    bottom: calc(96px + env(safe-area-inset-bottom)) !important;
-  }
-
-  /* 4. إبقاء شريط السلة في الأسفل ليختفي تماماً خارج الشاشة عند إغلاقه */
-  .qbl-cart-bar {
-    bottom: 0 !important; 
-  }
-
-  /* 5. رفع الإشعارات (Toasts) لئلا تغطيها القائمة */
-  .toast-box {
-    bottom: calc(96px + env(safe-area-inset-bottom)) !important;
-  }
-}
 
 
 
