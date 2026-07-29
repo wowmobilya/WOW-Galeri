@@ -8301,6 +8301,7 @@ const PARENT_MAP = {
   'payment-management': 'invoices',
   // الأقسام الرئيسية → الرئيسية
   'companies':     'dashboard',
+   
   'products':      'dashboard',
   'invoices':      'dashboard',
   'add-product':   'dashboard',
@@ -8310,33 +8311,53 @@ const PARENT_MAP = {
 function goBack() {
   const cur = getCurrentPage();
 
-  // ── حالة خاصة: صفحة إضافة منتج لها خطوتان داخليتان
+  // ── صفحة إضافة/تعديل منتج
   if (cur === 'add-product') {
     const form = document.getElementById('pr-form-view');
     if (form && form.style.display !== 'none') {
 
-      // ✅ إذا كنا في وضع التعديل → ارجع لصفحة المنتجات مباشرةً
+      // وضع التعديل → ارجع لصفحة المنتجات
       if (S.editPrId || S._editPrReturnToProducts) {
         S._editPrReturnToProducts = false;
         showPage('products');
         return;
       }
 
-      // إذا كنا في إضافة جديدة → ارجع لاختيار النوع أولاً
+      // إضافة جديدة → ارجع لاختيار النوع
       backToPrTypeSelect();
       return;
     }
+    // شاشة اختيار النوع → الرئيسية
+    showPage('dashboard');
+    return;
   }
 
-  // ── حالة خاصة: الباركود السريع في مرحلة النتيجة → ارجع للمسح أولاً
+  // ── صفحة إضافة/تعديل شركة
+  if (cur === 'add-company') {
+    if (S.editCoId || S._editCoReturnToCompanies) {
+      S._editCoReturnToCompanies = false;
+      showPage('companies');
+      return;
+    }
+    // إضافة جديدة → اختيار النوع
+    showPage('select-client-type');
+    return;
+  }
+
+  // ── الباركود السريع
   if (cur === 'quick-barcode' && QBL.phase !== 1) {
     qblResetToScan();
     return;
   }
 
-  // ── الرجوع للأب حسب الخريطة، وإن لم يوجد → الرئيسية
+  // ── الرئيسية → لا رجوع (منع إغلاق التطبيق)
+  if (cur === 'dashboard') {
+    history.pushState({page:'dashboard'},'','#dashboard');
+    return;
+  }
+
+  // ── باقي الصفحات حسب الخريطة
   const parent = PARENT_MAP[cur] || 'dashboard';
-  if (cur === 'dashboard') return;
   showPage(parent);
 }
 
@@ -8778,7 +8799,9 @@ async function saveCo(){
   showToast(t('saved_co'));resetCoForm();updateDash();showPage('companies');
 }
 function resetCoForm(){
-  S.editCoId=null;S.logoData=null;
+  S.editCoId=null;
+   S._editCoReturnToCompanies=false;
+   S.logoData=null;
   ['coName','buyerName','coCity','coPhone','coEmail','coWebsite','coShowrooms'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   const cc=document.getElementById('coCountry');if(cc)cc.value='';
   const cp=document.getElementById('coProvince');if(cp)cp.value='';
@@ -8952,7 +8975,9 @@ function setCoTab(filter){
 }
 function editCo(id){
   const c=S.companies.find(x=>x.id===id);if(!c)return;
-  S.editCoId=id;S.logoData=c.logo||null;showPage('add-company');
+  S.editCoId=id;
+   S._editCoReturnToCompanies=true;
+   S.logoData=c.logo||null;showPage('add-company');
   setTimeout(()=>{
     selClientType(c.type||'external');
     setTimeout(()=>{
