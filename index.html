@@ -9405,19 +9405,54 @@ function renderPr(){
 function editPr(id){
   const p=S.products.find(x=>x.id===id);if(!p)return;
   S.editPrId=id;S.prImgData=p.image||null;S.prActiveTier=p.activeTier||'A';
+  S.prType=p.type||'coffee_table';
+
+  // ✅ انتقل للصفحة لكن أظهر نموذج التعديل مباشرةً
   showPage('add-product');
+
+  // ✅ أخفِ شاشة الاختيار وأظهر النموذج فوراً
   setTimeout(()=>{
+    document.getElementById('pr-type-select-view').style.display='none';
+    document.getElementById('pr-form-view').style.display='block';
+
+    // تحديث بانر النوع المختار
+    const lang=S.lang||'ar';
+    const cfg=PR_TYPE_CONFIG[p.type]||PR_TYPE_CONFIG.coffee_table;
+    const tx=APT_TEXTS[lang]||APT_TEXTS.ar;
+    const iconEl=document.getElementById('prSelectedTypeIcon');
+    if(iconEl){
+      iconEl.innerHTML=cfg.iconType==='img'
+        ?`<img src="${cfg.icon}" alt="${p.type}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`
+        :`<span style="font-size:26px;">${cfg.icon}</span>`;
+    }
+    const labelEl=document.getElementById('prSelectedTypeLabel');
+    if(labelEl)labelEl.textContent=tx.selected;
+    const nameEl=document.getElementById('prSelectedTypeName');
+    if(nameEl)nameEl.textContent=cfg.titles[lang]||cfg.titles.en;
+    const changeBtn=document.getElementById('changePrTypeBtn');
+    if(changeBtn)changeBtn.textContent=tx.change;
+
+    // ملء الحقول
     const sv=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
     sv('prName',p.name);sv('prHsCode',p.hsCode);sv('prDesc',p.desc);
     sv('prPriceA',p.priceA||p.priceUSD||'');sv('prPriceB',p.priceB||'');sv('prPriceC',p.priceC||'');
     sv('prPriceTRY',p.priceTRY||'');sv('prLabor',p.laborCost);sv('prOther',p.otherCost);
-    sv('dimL',p.dimL);sv('dimW',p.dimW);sv('dimH',p.dimH);
     sv('prWeight',p.weight);sv('prPackets',p.packets||1);sv('prColor',p.color);
-    selPrType(p.type||'coffee_table');selColor(p.colorHex||'#8B7355',null);
     selActiveTier(p.activeTier||'A',null);calcCBM();updateCostBox();updateTierPreviews();
-    if(p.image)document.getElementById('prImgPrev').innerHTML=`<img src="${p.image}" class="img-prev" style="max-width:120px;" alt="product">`;
+    if(p.image)document.getElementById('prImgPrev').innerHTML=
+      `<img src="${p.image}" class="img-prev" style="max-width:120px;" alt="product">`;
+
+    // تهيئة القطع
+    if(p.dimPieces&&p.dimPieces.length){
+      S.dimPieces=p.dimPieces.map(d=>({...d}));
+    }else{
+      S.dimPieces=[{l:p.dimL||0,w:p.dimW||0,h:p.dimH||0,
+        weight:p.weight||0,packets:p.packets||1,color:p.color||'STANDARD'}];
+    }
+    renderDimPieces();
   },80);
 }
+
 async function deletePr(id){
   const pr=S.products.find(p=>p.id===id);if(!pr)return;
   openDM(pr.name||'—',async()=>{
@@ -14811,27 +14846,7 @@ window.resetPrForm = function () {
   initDimPieces();
 };
 
-/* ── تعديل editPr ── */
-const _origEditPr = window.editPr;
-window.editPr = function (id) {
-  _origEditPr.call(this, id);
-  setTimeout(() => {
-    const p = S.products.find(x => x.id === id);
-    if (p && p.dimPieces && p.dimPieces.length) {
-      S.dimPieces = p.dimPieces.map(d => ({ ...d }));
-    } else {
-      S.dimPieces = [{
-        l:       p?.dimL    || 0,
-        w:       p?.dimW    || 0,
-        h:       p?.dimH    || 0,
-        weight:  p?.weight  || 0,
-        packets: p?.packets || 1,
-        color:   p?.color   || 'STANDARD',
-      }];
-    }
-    renderDimPieces();
-  }, 180);
-};
+
 
 /* ── تعديل selectPrTypeAndContinue ── */
 const _origSelectPrType = window.selectPrTypeAndContinue;
