@@ -4522,16 +4522,34 @@ html, body {
 
 
      
-    <div class="card">
-      <div class="card-hdr"><div class="card-title">🖼️ <span data-i18n="pr_image">صورة القطعة</span></div></div>
-      <div class="img-area" id="prImgArea">
-        <input type="file" id="prImgInput" accept="image/*" onchange="handlePrImg(event)">
-        <div id="prImgPrev">
-          <div style="font-size:36px;margin-bottom:8px;">🛋️</div>
-          <p style="color:var(--muted);font-size:12px;" data-i18n="upload_img">اسحب صورة المنتج هنا</p>
-        </div>
-      </div>
+  <div class="card">
+  <div class="card-hdr">
+    <div class="card-title">🖼️ <span data-i18n="pr_image">صورة القطعة</span></div>
+    <!-- زر الحذف — يظهر فقط عند وجود صورة -->
+    <button id="prImgDeleteBtn"
+      onclick="deletePrImg()"
+      style="
+        display:none;
+        align-items:center;gap:5px;
+        padding:6px 12px;border-radius:8px;border:none;
+        background:rgba(229,62,62,.1);color:var(--red);
+        font-size:12px;font-weight:700;cursor:pointer;
+        font-family:inherit;transition:all var(--tr);
+      "
+      onmouseenter="this.style.background='var(--red)';this.style.color='#fff'"
+      onmouseleave="this.style.background='rgba(229,62,62,.1)';this.style.color='var(--red)'"
+    >🗑️ <span id="prImgDeleteBtnTxt">حذف الصورة</span></button>
+  </div>
+
+  <div class="img-area" id="prImgArea">
+    <input type="file" id="prImgInput" accept="image/*" onchange="handlePrImg(event)">
+    <div id="prImgPrev">
+      <div style="font-size:36px;margin-bottom:8px;">🛋️</div>
+      <p style="color:var(--muted);font-size:12px;" data-i18n="upload_img">اسحب صورة المنتج هنا</p>
     </div>
+  </div>
+</div>
+
 
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn btn-p btn-lg" onclick="savePr()">💾 <span data-i18n="btn_save_pr">حفظ القطعة</span></button>
@@ -8141,6 +8159,16 @@ updatePrintOptsBtnLabel();
 updateSumSectionLabels();
 updateStep1Texts();
 updateDash();
+
+  // ✅ تحديث نص زر حذف صورة القطعة
+  const prImgDelTxt = document.getElementById('prImgDeleteBtnTxt');
+  if(prImgDelTxt){
+    const labels={ar:'حذف الصورة',tr:'Görseli Sil',en:'Delete Image'};
+    prImgDelTxt.textContent = labels[S.lang] || labels.en;
+  }
+
+
+   
   // ✅ موجود مسبقاً
   updateAddCoTypeBadge(S.clientType || 'external');
 
@@ -9208,9 +9236,44 @@ function updateCostBox(){
 function handlePrImg(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
-  r.onload=ev=>{S.prImgData=ev.target.result;document.getElementById('prImgPrev').innerHTML=`<img src="${ev.target.result}" class="img-prev" style="max-width:120px;max-height:120px;" alt="product">`;};
+  r.onload=ev=>{
+    S.prImgData=ev.target.result;
+    document.getElementById('prImgPrev').innerHTML=
+      `<img src="${ev.target.result}" class="img-prev"
+        style="max-width:120px;max-height:120px;" alt="product">`;
+    // ✅ إظهار زر الحذف
+    const delBtn=document.getElementById('prImgDeleteBtn');
+    if(delBtn)delBtn.style.display='inline-flex';
+    // ✅ إزالة قابلية النقر على منطقة الرفع (لمنع التداخل)
+    const area=document.getElementById('prImgArea');
+    if(area)area.style.cursor='default';
+  };
   r.readAsDataURL(f);
 }
+
+
+function deletePrImg(){
+  S.prImgData=null;
+  // ✅ إعادة منطقة الرفع لحالتها الأصلية
+  const prev=document.getElementById('prImgPrev');
+  if(prev)prev.innerHTML=`
+    <div style="font-size:36px;margin-bottom:8px;">🛋️</div>
+    <p style="color:var(--muted);font-size:12px;">${t('upload_img')}</p>`;
+  // ✅ إخفاء زر الحذف
+  const delBtn=document.getElementById('prImgDeleteBtn');
+  if(delBtn)delBtn.style.display='none';
+  // ✅ إعادة cursor للمنطقة
+  const area=document.getElementById('prImgArea');
+  if(area)area.style.cursor='pointer';
+  // ✅ مسح قيمة input الملف
+  const inp=document.getElementById('prImgInput');
+  if(inp)inp.value='';
+  showToast('🗑️ تم حذف الصورة','in');
+}
+
+
+
+   
 async function savePr(){
   const name=document.getElementById('prName').value.trim();if(!name){showToast(t('fill_req'),'er');return;}
   const priceA=parseFloat(document.getElementById('prPriceA').value)||0;
@@ -9252,6 +9315,9 @@ function resetPrForm(){
   selPrType('coffee_table');selColor('#8B7355',document.querySelector('.cswatch'));
   selActiveTier('A',null);updateCostBox();
   document.getElementById('prImgPrev').innerHTML=`<div style="font-size:36px;margin-bottom:8px;">🛋️</div><p style="color:var(--muted);font-size:12px;">${t('upload_img')}</p>`;
+   const delBtn=document.getElementById('prImgDeleteBtn');
+if(delBtn)delBtn.style.display='none';
+
   ['A','B','C'].forEach(tier=>{const el=document.getElementById(`tier${tier}Preview`);if(el)el.textContent='$0.00';});
 }
 
@@ -9567,8 +9633,13 @@ function editPr(id){
     sv('prPriceTRY',p.priceTRY||'');sv('prLabor',p.laborCost);sv('prOther',p.otherCost);
     sv('prWeight',p.weight);sv('prPackets',p.packets||1);sv('prColor',p.color);
     selActiveTier(p.activeTier||'A',null);calcCBM();updateCostBox();updateTierPreviews();
-    if(p.image)document.getElementById('prImgPrev').innerHTML=
-      `<img src="${p.image}" class="img-prev" style="max-width:120px;" alt="product">`;
+  if(p.image){
+  document.getElementById('prImgPrev').innerHTML=
+    `<img src="${p.image}" class="img-prev" style="max-width:120px;" alt="product">`;
+  // ✅ إظهار زر الحذف عند التعديل
+  const delBtn=document.getElementById('prImgDeleteBtn');
+  if(delBtn)delBtn.style.display='inline-flex';
+}
 
     // تهيئة القطع
     if(p.dimPieces&&p.dimPieces.length){
