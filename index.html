@@ -281,7 +281,7 @@ input,select,textarea{font-family:inherit}
 }
 
 /* ── Responsive ── */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .curr-bar-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 7px;
@@ -767,7 +767,7 @@ textarea.fc{resize:vertical;min-height:72px}
 }
 
 /* Responsive */
-@media(max-width:900px) { .pr-grid-new { grid-template-columns: repeat(2,1fr); } }
+@media(max-width:1024px) { .pr-grid-new { grid-template-columns: repeat(2,1fr); } }
 @media(max-width:600px) { .pr-grid-new { grid-template-columns: 1fr; } }
 
 /* ============================================================
@@ -1051,7 +1051,7 @@ textarea.fc{resize:vertical;min-height:72px}
 /* ============================================================
    ✏️ INVOICE BUILDER — NEW IMPROVED LAYOUT
 ============================================================ */
-.inv-builder{display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start}
+.inv-builder{display:grid;grid-template-columns:minmax(0, 1fr) 340px;gap:16px;align-items:start}
 
 /* STEP SECTIONS */
 .inv-step{
@@ -1283,7 +1283,7 @@ textarea.fc{resize:vertical;min-height:72px}
 /* ============================================================
    PDF MODAL
 ============================================================ */
-#pdfModal .modal{max-width:900px;padding:0;overflow:hidden}
+#pdfModal .modal{max-width:1024px;padding:0;overflow:hidden}
 .pdf-bar{display:flex;gap:7px;align-items:center;padding:11px 16px;background:var(--input);border-bottom:1px solid var(--border);flex-wrap:wrap}
 .pdf-lang-row{display:flex;gap:6px;align-items:center;}
 .pdf-lang-sel{padding:5px 10px;border-radius:7px;border:1.5px solid var(--border);background:var(--card);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;}
@@ -1512,11 +1512,12 @@ textarea.fc{resize:vertical;min-height:72px}
 /* ============================================================
    RESPONSIVE
 ============================================================ */
-@media(max-width:1100px){
+@media(max-width:1200px){
   .inv-builder{grid-template-columns:1fr}
-  .inv-summary{position:static}
+  .inv-summary{position:static; margin-top: 20px;}
 }
-@media(max-width:900px){
+
+@media(max-width:1024px){
   :root{--side-w:0px}
   .sidebar{transform:translateX(100%);width:260px;box-shadow:none}
   [dir="ltr"] .sidebar{transform:translateX(-100%)}
@@ -3385,7 +3386,7 @@ textarea.fc{resize:vertical;min-height:72px}
 }
 
 /* على الموبايل السايدبار = 0 فلا حاجة لـ margin */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .co-form-sticky-bar {
     margin-right: 0;
     margin-left: 0;
@@ -3452,7 +3453,7 @@ textarea.fc{resize:vertical;min-height:72px}
 ============================================================ */
 .bottom-nav { display: none; }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .quick-actions-mobile-bar { display: none !important; }
 
   /* ── الحاوية الرئيسية ── */
@@ -3637,7 +3638,7 @@ textarea.fc{resize:vertical;min-height:72px}
 /* ============================================================
    BOTTOM NAV — RTL/LTR FIX
 ============================================================ */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
 
   /* ✅ تثبيت اتجاه القائمة السفلية دائماً LTR */
   .bottom-nav {
@@ -3760,7 +3761,7 @@ html, body {
 }
 
 /* 6. وضع "التقشف الرسومي" المخصص لشاشات الجوال والتابلت (أندرويد تحديداً) */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     /* إيقاف تأثير الزجاج (Blur) الثقيل جداً واستبداله بشفافية صلبة */
     .sidebar-overlay, .modal-ov, .delete-modal-ov, .deliver-modal-ov, 
     .qbl-cart-overlay, .bottom-nav-bg, .co-form-sticky-bar, .pr-card-type-badge {
@@ -3795,7 +3796,7 @@ html, body {
 /* ============================================================
    🛠️ SIDEBAR MOBILE FIX (GPU ACCELERATED)
 ============================================================ */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .sidebar {
         /* إخفاء القائمة خارج الشاشة + تفعيل كرت الشاشة معاً */
         transform: translateX(100%) translateZ(0) !important; 
@@ -3822,7 +3823,7 @@ html, body {
  /* ============================================================
    🛠️ إصلاح تداخل القائمة السفلية مع الأزرار والمحتوى (الهواتف والتابلت) - النهائي المضمون
 ============================================================ */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   /* 1. نقل المساحة السفلية إلى داخل الصفحات نفسها لضمان التمرير الكامل */
   .page {
     padding-bottom: calc(100px + env(safe-area-inset-bottom)) !important;
@@ -5969,7 +5970,7 @@ html, body {
 
 <!-- ========== MODAL: PDF PREVIEW ========== -->
 <div class="modal-ov" id="pdfModal">
-  <div class="modal" style="max-width:900px;padding:0;overflow:hidden;">
+  <div class="modal" style="max-width:1024px;padding:0;overflow:hidden;">
     <div class="pdf-bar">
       <span style="font-weight:700;" data-i18n="preview_title">معاينة الفاتورة</span>
       <div class="pdf-lang-row">
