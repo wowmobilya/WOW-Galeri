@@ -50,6 +50,13 @@ body{
   user-select: none;
   -webkit-touch-callout: none;
 }
+/* 👈 الصق هذا الكود الجديد هنا مباشرة */
+*:not(input):not(textarea):not(select) {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
 
 /* 👈 السماح بالتحديد داخل حقول الإدخال فقط حتى تتمكن من الكتابة */
 input, textarea, select {
@@ -6359,7 +6366,19 @@ document.addEventListener('touchmove', function (e) {
   }
 }, { passive: false });
 
+// 1. منع التكبير باستخدام لوحة المفاتيح (Ctrl + / Ctrl -)
+document.addEventListener('keydown', function(e) {
+  if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=')) {
+    e.preventDefault();
+  }
+});
 
+// 2. منع التكبير باستخدام عجلة الماوس أو لوحة اللمس (Ctrl + Scroll / Trackpad Pinch)
+document.addEventListener('wheel', function(e) {
+  if (e.ctrlKey) {
+    e.preventDefault();
+  }
+}, { passive: false });
 
 
 
