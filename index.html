@@ -3788,8 +3788,8 @@ html, body {
     scroll-behavior: smooth;
 }
 
-/* 6. وضع "التقشف الرسومي" المخصص لشاشات الجوال والتابلت (أندرويد تحديداً) */
-@media (max-width: 1024px) {
+/* 6. وضع "التقشف الرسومي" المخصص لجميع أجهزة اللمس (الهواتف والتابليت بوضع الطول والعرض) */
+@media (hover: none) and (pointer: coarse), (max-width: 1366px) {
     /* إيقاف تأثير الزجاج (Blur) الثقيل جداً واستبداله بشفافية صلبة */
     .sidebar-overlay, .modal-ov, .delete-modal-ov, .deliver-modal-ov, 
     .qbl-cart-overlay, .bottom-nav-bg, .co-form-sticky-bar, .pr-card-type-badge {
@@ -3799,7 +3799,7 @@ html, body {
     
     /* بدائل لونية أنيقة بدون Blur */
     .sidebar-overlay, .modal-ov, .delete-modal-ov, .deliver-modal-ov, .qbl-cart-overlay {
-        background: rgba(15, 23, 42, 0.85) !important;
+        background: rgba(15, 23, 42, 0.9) !important;
     }
     .bottom-nav-bg, .co-form-sticky-bar {
         background: var(--card) !important;
@@ -3812,15 +3812,25 @@ html, body {
         display: none !important;
     }
 
-    /* تخفيف الظلال المعقدة للبطاقات أثناء التمرير */
-    .co-card, .pr-card-new, .inv-card {
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
-    }
-    .co-card:hover, .pr-card-new:hover, .inv-card:hover {
-        transform: translateY(-2px) !important; /* تخفيف مسافة القفز */
-        box-shadow: 0 6px 16px rgba(0,0,0,0.08) !important;
+    /* 👈 الأهم: إيقاف تأثيرات الـ Hover الوهمية التي تحدث عند لمس الشاشة للتمرير وتسبب التقطيع */
+    .co-card:hover, .pr-card-new:hover, .inv-card:hover, .client-type-step-card:hover {
+        transform: none !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,.06) !important;
+        border-color: var(--border) !important;
     }
 }
+
+/* 7. إجبار العناصر الثابتة (Sticky) على استخدام طبقة GPU منفصلة لمنع التقطيع أثناء التمرير */
+.co-page-sticky, 
+.sct-sticky-header, 
+.page-sticky-bar, 
+.inv-summary, 
+.qbl-dd-group-header {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+}
+
 /* ============================================================
    🛠️ SIDEBAR MOBILE FIX (GPU ACCELERATED)
 ============================================================ */
