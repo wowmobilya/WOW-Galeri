@@ -4413,71 +4413,125 @@ html, body {
 
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
 
-    <!-- اسم القطعة -->
-    <div class="fg">
-      <label class="fl">📝 <span data-i18n="pr_name" id="prNameLbl">اسم القطعة</span> <span class="req">*</span></label>
-      <input type="text" class="fc" id="prName" placeholder="W400">
-    </div>
+  <!-- اسم القطعة -->
+  <div class="fg">
+    <label class="fl">📝 <span id="prNameLbl">اسم القطعة</span> <span class="req">*</span></label>
+    <input type="text" class="fc" id="prName" placeholder="W400">
+  </div>
 
-    <!-- HS Code -->
-    <div class="fg">
-      <label class="fl">🏷️ <span id="prHsLabelTxt">كود HS</span></label>
-      <div style="position:relative;">
-        <input
-          type="text" class="fc" id="prHsCode"
-          autocomplete="off" inputmode="none"
-          style="cursor:pointer;"
-          onclick="openHsDropdown()"
-          onkeydown="if(!_hsCustomMode)return false;"
-          onpaste="if(!_hsCustomMode)return false;"
-          placeholder="اختر كود HS..."
-        >
-        <span id="prHsArrow" style="
-          position:absolute;top:50%;right:10px;
-          transform:translateY(-50%);
-          font-size:11px;color:var(--muted);
-          pointer-events:none;transition:transform .25s ease;
-        ">▼</span>
-        <div id="hsDropdown" style="
-          display:none;position:absolute;
-          top:calc(100% + 4px);left:0;right:0;
-          background:var(--card);border:1.5px solid var(--gold);
-          border-radius:var(--rs);box-shadow:var(--shadow2);
-          z-index:9999;max-height:300px;overflow-y:auto;
-          animation:fadeUp .2s ease;min-width:260px;
-        "></div>
-      </div>
+  <!-- HS Code -->
+  <div class="fg">
+    <label class="fl">🏷️ <span id="prHsLabelTxt">كود HS</span></label>
+    <div style="position:relative;">
+      <input type="text" class="fc" id="prHsCode"
+        autocomplete="off" inputmode="none"
+        style="cursor:pointer;"
+        onclick="openHsDropdown()"
+        onkeydown="if(!_hsCustomMode)return false;"
+        onpaste="if(!_hsCustomMode)return false;"
+        placeholder="اختر كود HS...">
+      <span id="prHsArrow" style="
+        position:absolute;top:50%;right:10px;
+        transform:translateY(-50%);
+        font-size:11px;color:var(--muted);
+        pointer-events:none;transition:transform .25s ease;">▼</span>
+      <div id="hsDropdown" style="
+        display:none;position:absolute;
+        top:calc(100% + 4px);left:0;right:0;
+        background:var(--card);border:1.5px solid var(--gold);
+        border-radius:var(--rs);box-shadow:var(--shadow2);
+        z-index:9999;max-height:300px;overflow-y:auto;
+        animation:fadeUp .2s ease;min-width:260px;"></div>
     </div>
+  </div>
 
-    <!-- الوصف -->
-    <div class="fg">
-      <label class="fl">📄 <span id="prDescLabelTxt">الوصف</span></label>
-      <div style="position:relative;">
-        <input
-          type="text" class="fc" id="prDesc"
-          autocomplete="off" inputmode="none"
-          style="cursor:pointer;"
-          onclick="openDescDropdown()"
-          onkeydown="if(!_descCustomMode)return false;"
-          onpaste="if(!_descCustomMode)return false;"
-          placeholder="اختر الوصف..."
-        >
-        <span id="prDescArrow" style="
-          position:absolute;top:50%;right:10px;
-          transform:translateY(-50%);
-          font-size:11px;color:var(--muted);
-          pointer-events:none;transition:transform .25s ease;
-        ">▼</span>
-        <div id="descDropdown" style="
-          display:none;position:absolute;
-          top:calc(100% + 4px);left:0;right:0;
-          background:var(--card);border:1.5px solid var(--gold);
-          border-radius:var(--rs);box-shadow:var(--shadow2);
-          z-index:9999;max-height:300px;overflow-y:auto;
-          animation:fadeUp .2s ease;min-width:260px;
-        "></div>
-      </div>
+  <!-- الوصف -->
+  <div class="fg">
+    <label class="fl">📄 <span id="prDescLabelTxt">الوصف</span></label>
+    <div style="position:relative;">
+      <input type="text" class="fc" id="prDesc"
+        autocomplete="off" inputmode="none"
+        style="cursor:pointer;"
+        onclick="openDescDropdown()"
+        onkeydown="if(!_descCustomMode)return false;"
+        onpaste="if(!_descCustomMode)return false;"
+        placeholder="اختر الوصف...">
+      <span id="prDescArrow" style="
+        position:absolute;top:50%;right:10px;
+        transform:translateY(-50%);
+        font-size:11px;color:var(--muted);
+        pointer-events:none;transition:transform .25s ease;">▼</span>
+      <div id="descDropdown" style="
+        display:none;position:absolute;
+        top:calc(100% + 4px);left:0;right:0;
+        background:var(--card);border:1.5px solid var(--gold);
+        border-radius:var(--rs);box-shadow:var(--shadow2);
+        z-index:9999;max-height:300px;overflow-y:auto;
+        animation:fadeUp .2s ease;min-width:260px;"></div>
     </div>
+  </div>
+
+  <!-- الطول -->
+  <div class="fg">
+    <label class="fl">📏 <span id="prDimLLbl">الطول (سم)</span></label>
+    <input type="number" class="fc" id="prDimL"
+      placeholder="0" min="0" step="0.1"
+      oninput="onPrDimInput()">
+  </div>
+
+  <!-- العرض -->
+  <div class="fg">
+    <label class="fl">📐 <span id="prDimWLbl">العرض (سم)</span></label>
+    <input type="number" class="fc" id="prDimW"
+      placeholder="0" min="0" step="0.1"
+      oninput="onPrDimInput()">
+  </div>
+
+  <!-- الارتفاع -->
+  <div class="fg">
+    <label class="fl">📦 <span id="prDimHLbl">الارتفاع (سم)</span></label>
+    <input type="number" class="fc" id="prDimH"
+      placeholder="0" min="0" step="0.1"
+      oninput="onPrDimInput()">
+  </div>
+
+  <!-- الوزن -->
+  <div class="fg">
+    <label class="fl">⚖️ <span id="prWeightLbl">الوزن (كجم)</span></label>
+    <input type="number" class="fc" id="prWeight"
+      placeholder="0.0" min="0" step="0.1">
+  </div>
+
+  <!-- اللون — مأخوذ من نظام الأبعاد بكامل خصائصه -->
+  <div class="fg" style="grid-column:span 2;">
+    <label class="fl">🎨 <span id="prColorLbl">اللون</span></label>
+    <div style="position:relative;">
+      <select class="fc" id="prColorSel"
+        onchange="onPrColorSelChange(this)"
+        style="cursor:pointer;">
+      </select>
+    </div>
+    <!-- حقل الكتابة اليدوية عند اختيار مخصص -->
+    <div id="prColorCustomWrap" style="
+      display:none;align-items:center;gap:7px;margin-top:7px;">
+      <span style="font-size:16px;flex-shrink:0;">✏️</span>
+      <input type="text" class="fc" id="prColorCustom"
+        oninput="onPrColorCustomInput(this)"
+        style="flex:1;">
+      <button type="button" onclick="cancelPrColorCustom()"
+        style="
+          width:28px;height:28px;border-radius:7px;border:none;
+          background:rgba(229,62,62,.1);color:var(--red);
+          cursor:pointer;font-size:13px;
+          display:flex;align-items:center;justify-content:center;
+          transition:all var(--tr);"
+        onmouseenter="this.style.background='var(--red)';this.style.color='#fff'"
+        onmouseleave="this.style.background='rgba(229,62,62,.1)';this.style.color='var(--red)'"
+      >✕</button>
+    </div>
+  </div>
+
+</div>
 
   </div>
 </div>
@@ -8217,6 +8271,7 @@ updatePrintOptsBtnLabel();
 updateSumSectionLabels();
 updateStep1Texts();
 updateDash();
+updatePrInfoLabels();
 
   // ✅ تحديث نص زر حذف صورة القطعة
   const prImgDelTxt = document.getElementById('prImgDeleteBtnTxt');
@@ -9360,7 +9415,8 @@ async function savePr(){
     dimensions:l&&w&&h?`${l}×${w}×${h}`:'',
     cbm,weight:parseFloat(document.getElementById('prWeight').value)||0,
     packets:parseInt(document.getElementById('prPackets').value)||1,
-    color:document.getElementById('prColor').value.trim()||'STANDARD',
+    color: getPrColorValue(),
+
     colorHex:S.selColor,image:S.prImgData,
     barcode:name.toUpperCase(),createdAt:new Date().toISOString(),
   };
@@ -9370,20 +9426,95 @@ async function savePr(){
   showToast(t('saved_pr'));resetPrForm();updateDash();showPage('products');
 }
 function resetPrForm(){
-  S.editPrId=null;
-   S._editPrReturnToProducts=false;
-   S.prImgData=null;S.prActiveTier='A';
-  ['prName','prHsCode','prDesc','prPriceA','prPriceB','prPriceC','prPriceTRY','prLabor','prOther','dimL','dimW','dimH','prWeight','prColor'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('prPackets').value='1';
-  document.getElementById('cbmCalc').textContent='0.0000 m³';
-  selPrType('coffee_table');selColor('#8B7355',document.querySelector('.cswatch'));
-  selActiveTier('A',null);updateCostBox();
-  document.getElementById('prImgPrev').innerHTML=`<div style="font-size:36px;margin-bottom:8px;">🛋️</div><p style="color:var(--muted);font-size:12px;">${t('upload_img')}</p>`;
-   const delBtn=document.getElementById('prImgDeleteBtn');
-if(delBtn)delBtn.style.display='none';
+  S.editPrId = null;
+  S._editPrReturnToProducts = false;
+  S.prImgData = null;
+  S.prActiveTier = 'A';
 
-  ['A','B','C'].forEach(tier=>{const el=document.getElementById(`tier${tier}Preview`);if(el)el.textContent='$0.00';});
+  // ── مسح حقول النصوص والأرقام القديمة
+  [
+    'prName','prHsCode','prDesc',
+    'prPriceA','prPriceB','prPriceC','prPriceTRY',
+    'prLabor','prOther',
+    'prWeight',
+  ].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  // ── مسح حقول الأبعاد الجديدة (prDimL / prDimW / prDimH)
+  ['prDimL','prDimW','prDimH'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  // ── إعادة تعيين CBM
+  const cbmEl = document.getElementById('cbmCalc');
+  if (cbmEl) cbmEl.textContent = '0.0000 m³';
+
+  // ── إعادة تعيين قائمة الألوان الجديدة
+  const colorSel = document.getElementById('prColorSel');
+  if (colorSel) {
+    colorSel.value = 'STANDARD';
+    colorSel.dataset.val = 'STANDARD';
+  }
+
+  // ── إخفاء حقل اللون المخصص وتفريغه
+  const colorCustomWrap = document.getElementById('prColorCustomWrap');
+  if (colorCustomWrap) colorCustomWrap.style.display = 'none';
+  const colorCustomInp = document.getElementById('prColorCustom');
+  if (colorCustomInp) colorCustomInp.value = '';
+
+  // ── إعادة بناء قائمة الألوان بلغة البرنامج الحالية
+  buildPrColorSelect();
+
+  // ── إعادة تعيين نظام القطع المتعددة
+  S.dimPieces = [];
+  initDimPieces();
+
+  // ── إعادة تعيين نوع القطعة والتسعير
+  selActiveTier('A', null);
+  updateCostBox();
+
+  // ── إعادة تعيين منطقة الصورة
+  const prImgPrev = document.getElementById('prImgPrev');
+  if (prImgPrev) {
+    prImgPrev.innerHTML = `
+      <div style="font-size:36px;margin-bottom:8px;">🛋️</div>
+      <p style="color:var(--muted);font-size:12px;">${t('upload_img')}</p>`;
+  }
+
+  // ── إخفاء زر حذف الصورة
+  const delBtn = document.getElementById('prImgDeleteBtn');
+  if (delBtn) delBtn.style.display = 'none';
+
+  // ── إعادة تعيين input الصورة
+  const prImgInput = document.getElementById('prImgInput');
+  if (prImgInput) prImgInput.value = '';
+
+  // ── إعادة تعيين معاينات الأسعار
+  ['A','B','C'].forEach(tier => {
+    const el = document.getElementById(`tier${tier}Preview`);
+    if (el) el.textContent = '$0.00';
+  });
+
+  // ── إعادة تعيين قوائم HS و DESC
+  _closeHsDD();
+  _closeDescDD();
+  _removeCustomField('hs');
+  _removeCustomField('desc');
+  _hsCustomMode   = false;
+  _descCustomMode = false;
+
+  const hsArrow = document.getElementById('prHsArrow');
+  if (hsArrow) hsArrow.style.transform = 'translateY(-50%) rotate(0deg)';
+  const descArrow = document.getElementById('prDescArrow');
+  if (descArrow) descArrow.style.transform = 'translateY(-50%) rotate(0deg)';
+
+  // ── تحديث تسميات الحقول بلغة البرنامج
+  updatePrInfoLabels();
 }
+
 
 /* ============================================================
    PRODUCTS RENDER
@@ -9659,52 +9790,136 @@ function renderPr(){
   }).join('');
 }
 function editPr(id){
-  const p=S.products.find(x=>x.id===id);if(!p)return;
-  S.editPrId=id;
-   S._editPrReturnToProducts=true; // ✅ أضف هذا
-   S.prImgData=p.image||null;S.prActiveTier=p.activeTier||'A';
-  S.prType=p.type||'coffee_table';
+  const p = S.products.find(x => x.id === id);
+  if (!p) return;
 
-  // ✅ انتقل للصفحة لكن أظهر نموذج التعديل مباشرةً
+  S.editPrId               = id;
+  S._editPrReturnToProducts = true;
+  S.prImgData              = p.image || null;
+  S.prActiveTier           = p.activeTier || 'A';
+  S.prType                 = p.type || 'coffee_table';
+
   showPage('add-product');
 
-  // ✅ أخفِ شاشة الاختيار وأظهر النموذج فوراً
-  setTimeout(()=>{
-    document.getElementById('pr-type-select-view').style.display='none';
-    document.getElementById('pr-form-view').style.display='block';
+  setTimeout(() => {
 
-    // تحديث بانر النوع المختار
-    const lang=S.lang||'ar';
-    const cfg=PR_TYPE_CONFIG[p.type]||PR_TYPE_CONFIG.coffee_table;
-    const tx=APT_TEXTS[lang]||APT_TEXTS.ar;
+    // ── إظهار نموذج التعديل وإخفاء شاشة الاختيار
+    document.getElementById('pr-type-select-view').style.display = 'none';
+    document.getElementById('pr-form-view').style.display        = 'block';
+
+    // ── تحديث بانر النوع المختار
     updatePrSelectedTypeBanner(p.type);
 
+    // ── دالة مساعدة لملء الحقول
+    const sv = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val ?? '';
+    };
 
-    // ملء الحقول
-    const sv=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
-    sv('prName',p.name);sv('prHsCode',p.hsCode);sv('prDesc',p.desc);
-    sv('prPriceA',p.priceA||p.priceUSD||'');sv('prPriceB',p.priceB||'');sv('prPriceC',p.priceC||'');
-    sv('prPriceTRY',p.priceTRY||'');sv('prLabor',p.laborCost);sv('prOther',p.otherCost);
-    sv('prWeight',p.weight);sv('prPackets',p.packets||1);sv('prColor',p.color);
-    selActiveTier(p.activeTier||'A',null);calcCBM();updateCostBox();updateTierPreviews();
-  if(p.image){
-  document.getElementById('prImgPrev').innerHTML=
-    `<img src="${p.image}" class="img-prev" style="max-width:120px;" alt="product">`;
-  // ✅ إظهار زر الحذف عند التعديل
-  const delBtn=document.getElementById('prImgDeleteBtn');
-  if(delBtn)delBtn.style.display='inline-flex';
-}
+    // ── الحقول الأساسية
+    sv('prName',    p.name);
+    sv('prHsCode',  p.hsCode  || '');
+    sv('prDesc',    p.desc    || '');
 
-    // تهيئة القطع
-    if(p.dimPieces&&p.dimPieces.length){
-      S.dimPieces=p.dimPieces.map(d=>({...d}));
-    }else{
-      S.dimPieces=[{l:p.dimL||0,w:p.dimW||0,h:p.dimH||0,
-        weight:p.weight||0,packets:p.packets||1,color:p.color||'STANDARD'}];
+    // ── التسعير
+    sv('prPriceA',  p.priceA  || p.priceUSD || '');
+    sv('prPriceB',  p.priceB  || '');
+    sv('prPriceC',  p.priceC  || '');
+    sv('prPriceTRY',p.priceTRY|| '');
+    sv('prLabor',   p.laborCost || '');
+    sv('prOther',   p.otherCost || '');
+
+    // ── الوزن
+    sv('prWeight',  p.weight  || '');
+
+    // ── ✅ الأبعاد الجديدة (prDimL / prDimW / prDimH)
+    sv('prDimL', p.dimL || '');
+    sv('prDimW', p.dimW || '');
+    sv('prDimH', p.dimH || '');
+
+    // ── تحديث CBM من الحقول الجديدة
+    onPrDimInput();
+
+    // ── ✅ اللون — من قائمة FURNITURE_COLORS
+    const colorSel        = document.getElementById('prColorSel');
+    const colorCustomWrap = document.getElementById('prColorCustomWrap');
+    const colorCustomInp  = document.getElementById('prColorCustom');
+
+    if (colorSel) {
+      // إعادة بناء القائمة أولاً بلغة البرنامج الحالية
+      buildPrColorSelect();
+
+      if (p.color && isKnownColor(p.color)) {
+        // ── لون معروف في القائمة → اختره مباشرة
+        colorSel.value      = p.color;
+        colorSel.dataset.val = p.color;
+        if (colorCustomWrap) colorCustomWrap.style.display = 'none';
+        if (colorCustomInp)  colorCustomInp.value = '';
+      } else if (p.color && p.color !== 'STANDARD') {
+        // ── لون مخصص غير موجود في القائمة → وضع CUSTOM
+        colorSel.value      = 'CUSTOM';
+        colorSel.dataset.val = 'CUSTOM';
+        if (colorCustomWrap) {
+          colorCustomWrap.style.display   = 'flex';
+          colorCustomWrap.style.animation = 'fadeUp .25s ease';
+        }
+        if (colorCustomInp) colorCustomInp.value = p.color;
+      } else {
+        // ── STANDARD أو فارغ
+        colorSel.value      = 'STANDARD';
+        colorSel.dataset.val = 'STANDARD';
+        if (colorCustomWrap) colorCustomWrap.style.display = 'none';
+        if (colorCustomInp)  colorCustomInp.value = '';
+      }
+    }
+
+    // ── التسعير النشط
+    selActiveTier(p.activeTier || 'A', null);
+    updateCostBox();
+    updateTierPreviews();
+
+    // ── الصورة
+    if (p.image) {
+      const prImgPrev = document.getElementById('prImgPrev');
+      if (prImgPrev) {
+        prImgPrev.innerHTML = `
+          <img src="${p.image}" class="img-prev"
+            style="max-width:120px;max-height:120px;" alt="product">`;
+      }
+      const delBtn = document.getElementById('prImgDeleteBtn');
+      if (delBtn) delBtn.style.display = 'inline-flex';
+    } else {
+      const prImgPrev = document.getElementById('prImgPrev');
+      if (prImgPrev) {
+        prImgPrev.innerHTML = `
+          <div style="font-size:36px;margin-bottom:8px;">🛋️</div>
+          <p style="color:var(--muted);font-size:12px;">${t('upload_img')}</p>`;
+      }
+      const delBtn = document.getElementById('prImgDeleteBtn');
+      if (delBtn) delBtn.style.display = 'none';
+    }
+
+    // ── نظام القطع المتعددة
+    if (p.dimPieces && p.dimPieces.length) {
+      S.dimPieces = p.dimPieces.map(d => ({ ...d }));
+    } else {
+      S.dimPieces = [{
+        l:       p.dimL    || 0,
+        w:       p.dimW    || 0,
+        h:       p.dimH    || 0,
+        weight:  p.weight  || 0,
+        packets: p.packets || 1,
+        color:   p.color   || 'STANDARD',
+      }];
     }
     renderDimPieces();
-  },80);
+
+    // ── تحديث تسميات الحقول بلغة البرنامج
+    updatePrInfoLabels();
+
+  }, 80);
 }
+
 
 async function deletePr(id){
   const pr=S.products.find(p=>p.id===id);if(!pr)return;
@@ -11419,6 +11634,151 @@ if (hasConv) {
   </div>`;
 }
 
+
+
+
+
+
+/* ============================================================
+   PR INFO — DIM + COLOR FIELDS (3 LANGUAGES)
+============================================================ */
+
+const PR_INFO_LABELS = {
+  ar: {
+    name:    'اسم القطعة',
+    hs:      'كود HS',
+    desc:    'الوصف',
+    dimL:    'الطول (سم)',
+    dimW:    'العرض (سم)',
+    dimH:    'الارتفاع (سم)',
+    weight:  'الوزن (كجم)',
+    color:   'اللون',
+    customPh:'اكتب اللون يدوياً...',
+  },
+  tr: {
+    name:    'Ürün Adı',
+    hs:      'HS Kodu',
+    desc:    'Açıklama',
+    dimL:    'Uzunluk (cm)',
+    dimW:    'Genişlik (cm)',
+    dimH:    'Yükseklik (cm)',
+    weight:  'Ağırlık (kg)',
+    color:   'Renk',
+    customPh:'Rengi manuel yazın...',
+  },
+  en: {
+    name:    'Product Name',
+    hs:      'HS Code',
+    desc:    'Description',
+    dimL:    'Length (cm)',
+    dimW:    'Width (cm)',
+    dimH:    'Height (cm)',
+    weight:  'Weight (kg)',
+    color:   'Color',
+    customPh:'Type color manually...',
+  },
+};
+
+/* ── تحديث تسميات الحقول حسب اللغة ── */
+function updatePrInfoLabels() {
+  const lang = S.lang || 'ar';
+  const L    = PR_INFO_LABELS[lang] || PR_INFO_LABELS.en;
+  const set  = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+
+  set('prNameLbl',   L.name);
+  set('prHsLabelTxt', L.hs);
+  set('prDescLabelTxt', L.desc);
+  set('prDimLLbl',   L.dimL);
+  set('prDimWLbl',   L.dimW);
+  set('prDimHLbl',   L.dimH);
+  set('prWeightLbl', L.weight);
+  set('prColorLbl',  L.color);
+
+  /* placeholder اسم القطعة */
+  const nameInp = document.getElementById('prName');
+  if (nameInp) nameInp.placeholder = { ar:'مثال: W400', tr:'Örnek: W400', en:'Example: W400' }[lang];
+
+  /* placeholder الحقل المخصص للون */
+  const customInp = document.getElementById('prColorCustom');
+  if (customInp) customInp.placeholder = L.customPh;
+
+  /* إعادة بناء قائمة الألوان بلغة البرنامج */
+  buildPrColorSelect();
+}
+
+/* ── بناء قائمة الألوان من FURNITURE_COLORS ── */
+function buildPrColorSelect() {
+  const sel = document.getElementById('prColorSel');
+  if (!sel) return;
+  const current = sel.dataset.val || 'STANDARD';
+  sel.innerHTML = buildColorSelectHTML(current);
+  sel.dataset.val = current;
+}
+
+/* ── معالجة تغيير قائمة الألوان ── */
+function onPrColorSelChange(selectEl) {
+  const val        = selectEl.value;
+  const customWrap = document.getElementById('prColorCustomWrap');
+  const customInp  = document.getElementById('prColorCustom');
+
+  selectEl.dataset.val = val;
+
+  if (val === 'CUSTOM') {
+    if (customWrap) {
+      customWrap.style.display   = 'flex';
+      customWrap.style.animation = 'fadeUp .25s ease';
+    }
+    if (customInp) setTimeout(() => customInp.focus(), 80);
+    return;
+  }
+
+  if (customWrap) customWrap.style.display = 'none';
+}
+
+/* ── الكتابة اليدوية ── */
+function onPrColorCustomInput(inputEl) {
+  const sel = document.getElementById('prColorSel');
+  if (sel) sel.dataset.customVal = inputEl.value;
+}
+
+/* ── إلغاء الكتابة اليدوية ── */
+function cancelPrColorCustom() {
+  const sel        = document.getElementById('prColorSel');
+  const customWrap = document.getElementById('prColorCustomWrap');
+  const customInp  = document.getElementById('prColorCustom');
+
+  if (sel)        { sel.value = 'STANDARD'; sel.dataset.val = 'STANDARD'; }
+  if (customWrap) customWrap.style.display = 'none';
+  if (customInp)  customInp.value = '';
+}
+
+/* ── قراءة قيمة اللون النهائية ── */
+function getPrColorValue() {
+  const sel = document.getElementById('prColorSel');
+  if (!sel) return 'STANDARD';
+  if (sel.value === 'CUSTOM') {
+    const customInp = document.getElementById('prColorCustom');
+    return customInp?.value?.trim() || 'CUSTOM';
+  }
+  return sel.value || 'STANDARD';
+}
+
+/* ── حساب CBM من الحقول الجديدة ── */
+function onPrDimInput() {
+ const l = parseFloat(document.getElementById('prDimL')?.value) || 0;
+const w = parseFloat(document.getElementById('prDimW')?.value) || 0;
+const h = parseFloat(document.getElementById('prDimH')?.value) || 0;
+  const cbm = (l && w && h) ? (l * w * h / 1000000) : 0;
+  const el = document.getElementById('cbmCalc');
+  if (el) el.textContent = cbm.toFixed(4) + ' m³';
+}
+
+
+   
+
+
+
+   
 /* ============================================================
    INIT
 ============================================================ */
