@@ -8225,6 +8225,11 @@ updateDash();
     prImgDelTxt.textContent = labels[S.lang] || labels.en;
   }
 
+// ✅ تحديث بانر النوع المختار عند تغيير اللغة
+const formView = document.getElementById('pr-form-view');
+if (formView && formView.style.display !== 'none') {
+  updatePrSelectedTypeBanner(S.prType);
+}
 
    
   // ✅ موجود مسبقاً
@@ -9672,18 +9677,8 @@ function editPr(id){
     const lang=S.lang||'ar';
     const cfg=PR_TYPE_CONFIG[p.type]||PR_TYPE_CONFIG.coffee_table;
     const tx=APT_TEXTS[lang]||APT_TEXTS.ar;
-    const iconEl=document.getElementById('prSelectedTypeIcon');
-    if(iconEl){
-      iconEl.innerHTML=cfg.iconType==='img'
-        ?`<img src="${cfg.icon}" alt="${p.type}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`
-        :`<span style="font-size:26px;">${cfg.icon}</span>`;
-    }
-    const labelEl=document.getElementById('prSelectedTypeLabel');
-    if(labelEl)labelEl.textContent=tx.selected;
-    const nameEl=document.getElementById('prSelectedTypeName');
-    if(nameEl)nameEl.textContent=cfg.titles[lang]||cfg.titles.en;
-    const changeBtn=document.getElementById('changePrTypeBtn');
-    if(changeBtn)changeBtn.textContent=tx.change;
+    updatePrSelectedTypeBanner(p.type);
+
 
     // ملء الحقول
     const sv=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
@@ -11952,34 +11947,55 @@ function renderPrTypeStepCards() {
 function selectPrTypeAndContinue(tp, event) {
   S.prType = tp;
 
-  // أخفِ شاشة الاختيار وأظهر النموذج
   document.getElementById('pr-type-select-view').style.display = 'none';
   const formView = document.getElementById('pr-form-view');
   formView.style.display = 'block';
 
-  // بانر النوع المختار
+  updatePrSelectedTypeBanner(tp);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function updatePrSelectedTypeBanner(tp) {
+  if (!tp) tp = S.prType || 'coffee_table';
   const lang = S.lang || 'ar';
   const cfg  = PR_TYPE_CONFIG[tp];
-  const tx   = APT_TEXTS[lang] || APT_TEXTS.ar;
+  if (!cfg) return;
 
+  // ── تسميات "النوع المختار" × 3 لغات
+  const selectedLabels = {
+    ar: 'النوع المختار',
+    tr: 'Seçilen Tip',
+    en: 'Selected Type',
+  };
+
+  // ── تسميات زر "تغيير" × 3 لغات
+  const changeLabels = {
+    ar: '🔄 تغيير',
+    tr: '🔄 Değiştir',
+    en: '🔄 Change',
+  };
+
+  // ── تحديث الأيقونة
   const iconEl = document.getElementById('prSelectedTypeIcon');
   if (iconEl) {
     iconEl.innerHTML = cfg.iconType === 'img'
-      ? `<img src="${cfg.icon}" alt="${tp}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`
+      ? `<img src="${cfg.icon}" alt="${tp}"
+           style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`
       : `<span style="font-size:26px;">${cfg.icon}</span>`;
   }
 
+  // ── تحديث التسمية الصغيرة
   const labelEl = document.getElementById('prSelectedTypeLabel');
-  if (labelEl) labelEl.textContent = tx.selected;
+  if (labelEl) labelEl.textContent = selectedLabels[lang] || selectedLabels.en;
 
+  // ── تحديث اسم النوع بلغة البرنامج
   const nameEl = document.getElementById('prSelectedTypeName');
   if (nameEl) nameEl.textContent = cfg.titles[lang] || cfg.titles.en;
 
+  // ── تحديث زر التغيير
   const changeBtn = document.getElementById('changePrTypeBtn');
-  if (changeBtn) changeBtn.textContent = tx.change;
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (changeBtn) changeBtn.textContent = changeLabels[lang] || changeLabels.en;
 }
+
 
 function backToPrTypeSelect() {
   document.getElementById('pr-form-view').style.display = 'none';
