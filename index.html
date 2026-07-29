@@ -4415,14 +4415,59 @@ html, body {
           <label class="fl">📝 <span data-i18n="pr_name">اسم القطعة</span> <span class="req">*</span></label>
           <input type="text" class="fc" id="prName" placeholder="LUNA Coffee Table">
         </div>
-        <div class="fg">
-          <label class="fl">🏷️ HS Code</label>
-          <input type="text" class="fc" id="prHsCode" placeholder="9403.60.90.90.00">
-        </div>
-        <div class="fg full">
-          <label class="fl">📄 <span data-i18n="pr_desc">الوصف</span></label>
-          <textarea class="fc" id="prDesc" rows="2"></textarea>
-        </div>
+       <div class="fg">
+  <label class="fl">🏷️ HS Code</label>
+  <div style="position:relative;">
+    <input type="text" class="fc" id="prHsCode"
+      placeholder="9403.60.90.90.00"
+      oninput="onHsCodeInput(this.value)"
+      onfocus="openHsDropdown()"
+      autocomplete="off"
+      style="padding-left:36px;"
+    >
+    <span style="
+      position:absolute;top:50%;left:10px;transform:translateY(-50%);
+      font-size:14px;pointer-events:none;
+    ">🏷️</span>
+    <!-- القائمة المنسدلة -->
+    <div id="hsDropdown" style="
+      display:none;
+      position:absolute;top:calc(100% + 4px);left:0;right:0;
+      background:var(--card);border:1.5px solid var(--gold);
+      border-radius:var(--rs);box-shadow:var(--shadow2);
+      z-index:999;overflow:hidden;
+      animation:fadeUp .2s ease;
+      max-height:320px;overflow-y:auto;
+    "></div>
+  </div>
+</div>
+
+      <div class="fg full">
+  <label class="fl">📄 <span data-i18n="pr_desc">الوصف</span></label>
+  <div style="position:relative;">
+    <input type="text" class="fc" id="prDesc"
+      placeholder="SET"
+      oninput="onDescInput(this.value)"
+      onfocus="openDescDropdown()"
+      autocomplete="off"
+      style="padding-left:36px;"
+    >
+    <span style="
+      position:absolute;top:50%;left:10px;transform:translateY(-50%);
+      font-size:14px;pointer-events:none;
+    ">📄</span>
+    <!-- القائمة المنسدلة -->
+    <div id="descDropdown" style="
+      display:none;
+      position:absolute;top:calc(100% + 4px);left:0;right:0;
+      background:var(--card);border:1.5px solid var(--gold);
+      border-radius:var(--rs);box-shadow:var(--shadow2);
+      z-index:999;overflow:hidden;
+      animation:fadeUp .2s ease;
+    "></div>
+  </div>
+</div>
+
       </div>
     </div>
 
@@ -15080,6 +15125,423 @@ window.applyTr = function () {
 
 
 
+
+
+
+
+
+
+/* ============================================================
+   HS CODE DROPDOWN — 3 LANGUAGES
+============================================================ */
+const HS_CODE_DATA = {
+  ar: [
+    {
+      group: '✏️ مخصص',
+      items: [
+        { code: '', label: '✏️ مخصص — اكتب يدوياً', custom: true },
+      ]
+    },
+    {
+      group: '🛋️ طاولات وسط (Coffee Tables)',
+      items: [
+        { code: '9403.60.90.90.00', label: '9403.60.90.90.00 — طاولة قهوة خشبية' },
+        { code: '9403.20.80.00.00', label: '9403.20.80.00.00 — طاولة قهوة معدنية' },
+        { code: '9403.89.00.00.00', label: '9403.89.00.00.00 — طاولة قهوة مواد أخرى' },
+      ]
+    },
+    {
+      group: '🪑 طاولات جانبية (Side Tables)',
+      items: [
+        { code: '9403.60.10.00.00', label: '9403.60.10.00.00 — طاولة جانبية خشبية' },
+        { code: '9403.20.20.00.00', label: '9403.20.20.00.00 — طاولة جانبية معدنية' },
+      ]
+    },
+    {
+      group: '📺 طاولات تلفزيون (TV Tables)',
+      items: [
+        { code: '9403.60.30.00.00', label: '9403.60.30.00.00 — وحدة تلفاز خشبية' },
+        { code: '9403.60.90.10.00', label: '9403.60.90.10.00 — وحدة تلفاز مع أرفف' },
+      ]
+    },
+    {
+      group: '🪞 درسوار / مدخل (Dresser)',
+      items: [
+        { code: '9403.50.00.00.00', label: '9403.50.00.00.00 — خزانة ملابس / درسوار خشبية' },
+        { code: '9403.60.50.00.00', label: '9403.60.50.00.00 — درسوار مع مرآة' },
+        { code: '9403.60.70.00.00', label: '9403.60.70.00.00 — وحدة مدخل خشبية' },
+      ]
+    },
+  ],
+  tr: [
+    {
+      group: '✏️ Özel',
+      items: [
+        { code: '', label: '✏️ Özel — Manuel Yaz', custom: true },
+      ]
+    },
+    {
+      group: '🛋️ Orta Sehpa (Coffee Tables)',
+      items: [
+        { code: '9403.60.90.90.00', label: '9403.60.90.90.00 — Ahşap Orta Sehpa' },
+        { code: '9403.20.80.00.00', label: '9403.20.80.00.00 — Metal Orta Sehpa' },
+        { code: '9403.89.00.00.00', label: '9403.89.00.00.00 — Diğer Malzeme Sehpa' },
+      ]
+    },
+    {
+      group: '🪑 Yan Sehpa (Side Tables)',
+      items: [
+        { code: '9403.60.10.00.00', label: '9403.60.10.00.00 — Ahşap Yan Sehpa' },
+        { code: '9403.20.20.00.00', label: '9403.20.20.00.00 — Metal Yan Sehpa' },
+      ]
+    },
+    {
+      group: '📺 TV Ünitesi (TV Tables)',
+      items: [
+        { code: '9403.60.30.00.00', label: '9403.60.30.00.00 — Ahşap TV Ünitesi' },
+        { code: '9403.60.90.10.00', label: '9403.60.90.10.00 — Raflı TV Ünitesi' },
+      ]
+    },
+    {
+      group: '🪞 Dresuar / Konsol (Dresser)',
+      items: [
+        { code: '9403.50.00.00.00', label: '9403.50.00.00.00 — Ahşap Dresuar' },
+        { code: '9403.60.50.00.00', label: '9403.60.50.00.00 — Aynalı Dresuar' },
+        { code: '9403.60.70.00.00', label: '9403.60.70.00.00 — Ahşap Konsol' },
+      ]
+    },
+  ],
+  en: [
+    {
+      group: '✏️ Custom',
+      items: [
+        { code: '', label: '✏️ Custom — Type Manually', custom: true },
+      ]
+    },
+    {
+      group: '🛋️ Coffee Tables',
+      items: [
+        { code: '9403.60.90.90.00', label: '9403.60.90.90.00 — Wooden Coffee Table' },
+        { code: '9403.20.80.00.00', label: '9403.20.80.00.00 — Metal Coffee Table' },
+        { code: '9403.89.00.00.00', label: '9403.89.00.00.00 — Other Material Table' },
+      ]
+    },
+    {
+      group: '🪑 Side Tables',
+      items: [
+        { code: '9403.60.10.00.00', label: '9403.60.10.00.00 — Wooden Side Table' },
+        { code: '9403.20.20.00.00', label: '9403.20.20.00.00 — Metal Side Table' },
+      ]
+    },
+    {
+      group: '📺 TV Tables',
+      items: [
+        { code: '9403.60.30.00.00', label: '9403.60.30.00.00 — Wooden TV Unit' },
+        { code: '9403.60.90.10.00', label: '9403.60.90.10.00 — TV Unit with Shelves' },
+      ]
+    },
+    {
+      group: '🪞 Dresser / Console',
+      items: [
+        { code: '9403.50.00.00.00', label: '9403.50.00.00.00 — Wooden Dresser / Wardrobe' },
+        { code: '9403.60.50.00.00', label: '9403.60.50.00.00 — Dresser with Mirror' },
+        { code: '9403.60.70.00.00', label: '9403.60.70.00.00 — Wooden Console Unit' },
+      ]
+    },
+  ],
+};
+
+let _hsDropdownOpen = false;
+let _hsCustomMode   = false;
+
+function openHsDropdown() {
+  _hsDropdownOpen = true;
+  renderHsDropdown(document.getElementById('prHsCode')?.value || '');
+  document.getElementById('hsDropdown').style.display = 'block';
+  // إغلاق عند الضغط خارجاً
+  setTimeout(() => {
+    document.addEventListener('click', closeHsOnOutside, { once: true });
+  }, 100);
+}
+
+function closeHsOnOutside(e) {
+  const dd = document.getElementById('hsDropdown');
+  const inp = document.getElementById('prHsCode');
+  if (dd && !dd.contains(e.target) && e.target !== inp) {
+    dd.style.display = 'none';
+    _hsDropdownOpen = false;
+  }
+}
+
+function onHsCodeInput(val) {
+  if (_hsCustomMode) return; // المستخدم يكتب يدوياً
+  renderHsDropdown(val);
+  if (!_hsDropdownOpen) {
+    document.getElementById('hsDropdown').style.display = 'block';
+    _hsDropdownOpen = true;
+  }
+}
+
+function renderHsDropdown(filter) {
+  const dd   = document.getElementById('hsDropdown');
+  if (!dd) return;
+  const lang = S.lang || 'ar';
+  const data = HS_CODE_DATA[lang] || HS_CODE_DATA.en;
+  const f    = filter.toLowerCase().trim();
+
+  let html = '';
+  data.forEach(group => {
+    const filtered = group.items.filter(item =>
+      !f ||
+      item.code.toLowerCase().includes(f) ||
+      item.label.toLowerCase().includes(f) ||
+      item.custom
+    );
+    if (!filtered.length) return;
+
+    html += `
+      <div style="
+        padding:7px 12px 4px;
+        font-size:9px;font-weight:800;
+        color:var(--muted);letter-spacing:1.2px;
+        text-transform:uppercase;
+        background:var(--input);
+        border-bottom:1px solid var(--border);
+        position:sticky;top:0;z-index:2;
+      ">${group.group}</div>`;
+
+    filtered.forEach(item => {
+      html += `
+        <div onclick="selectHsCode('${item.code}', ${!!item.custom})"
+          style="
+            display:flex;align-items:center;gap:10px;
+            padding:10px 14px;cursor:pointer;
+            border-bottom:1px solid var(--border);
+            transition:background var(--tr);
+            ${item.custom ? 'background:rgba(200,169,110,.06);' : ''}
+          "
+          onmouseenter="this.style.background='var(--gold-light)'"
+          onmouseleave="this.style.background='${item.custom ? 'rgba(200,169,110,.06)' : ''}'">
+          <span style="font-size:13px;flex-shrink:0;">${item.custom ? '✏️' : '🏷️'}</span>
+          <div style="flex:1;min-width:0;">
+            ${item.custom
+              ? `<div style="font-size:12px;font-weight:700;color:var(--gold2);">${item.label}</div>`
+              : `<div style="font-size:12px;font-weight:700;color:var(--text);">${item.code}</div>
+                 <div style="font-size:10px;color:var(--muted);margin-top:1px;">${item.label.split('—')[1]?.trim() || ''}</div>`
+            }
+          </div>
+          ${item.custom ? '' : `
+          <span style="
+            background:var(--gold-light);color:var(--gold2);
+            border-radius:20px;padding:2px 8px;
+            font-size:9px;font-weight:700;
+            border:1px solid rgba(200,169,110,.2);
+            flex-shrink:0;
+          ">HS</span>`}
+        </div>`;
+    });
+  });
+
+  if (!html) {
+    html = `<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px;">
+      🔍 ${filter}
+    </div>`;
+  }
+
+  dd.innerHTML = html;
+}
+
+function selectHsCode(code, isCustom) {
+  const inp = document.getElementById('prHsCode');
+  if (!inp) return;
+
+  if (isCustom) {
+    _hsCustomMode = true;
+    inp.value = '';
+    inp.placeholder = {ar:'اكتب كود HS يدوياً...', tr:'HS kodunu yazın...', en:'Type HS code manually...'}[S.lang] || 'Type HS code...';
+    inp.focus();
+    document.getElementById('hsDropdown').style.display = 'none';
+    _hsDropdownOpen = false;
+    return;
+  }
+
+  _hsCustomMode = false;
+  inp.value = code;
+  inp.style.borderColor = 'var(--green)';
+  setTimeout(() => { inp.style.borderColor = ''; }, 1000);
+  document.getElementById('hsDropdown').style.display = 'none';
+  _hsDropdownOpen = false;
+
+  const msgs = { ar:`✅ تم اختيار: ${code}`, tr:`✅ Seçildi: ${code}`, en:`✅ Selected: ${code}` };
+  showToast(msgs[S.lang] || msgs.en, 'ok');
+}
+
+
+/* ============================================================
+   DESCRIPTION DROPDOWN — 3 LANGUAGES
+============================================================ */
+const DESC_DATA = {
+  ar: [
+    { val: 'CUSTOM',  label: '✏️ مخصص — اكتب يدوياً', custom: true },
+    { val: 'SET',     label: '📦 SET — طقم كامل'        },
+    { val: 'PCS',     label: '🔢 PCS — قطعة واحدة'      },
+    { val: '1+2',     label: '🛋️ 1+2 — كنبة 1 + كنبة 2' },
+    { val: '1+1',     label: '🪑 1+1 — كرسيان'           },
+    { val: '2+2',     label: '🛋️ 2+2 — كنبتان'           },
+    { val: '2+3',     label: '🛋️ 2+3 — كنبة 2 + كنبة 3' },
+    { val: '1+4',     label: '🛋️ 1+4 — كنبة 1 + كنبة 4' },
+    { val: '3+2+1',   label: '🛋️ 3+2+1 — طقم ثلاثي'     },
+    { val: '3+3',     label: '🛋️ 3+3 — كنبتان كبيرتان'  },
+    { val: '2+2+1',   label: '🛋️ 2+2+1 — طقم خماسي'     },
+    { val: 'L-SHAPE', label: '📐 L-SHAPE — شكل حرف L'   },
+    { val: 'U-SHAPE', label: '📐 U-SHAPE — شكل حرف U'   },
+    { val: 'CORNER',  label: '📐 CORNER — كنبة زاوية'   },
+  ],
+  tr: [
+    { val: 'CUSTOM',  label: '✏️ Özel — Manuel Yaz', custom: true },
+    { val: 'SET',     label: '📦 SET — Tam Takım'          },
+    { val: 'PCS',     label: '🔢 PCS — Tek Parça'          },
+    { val: '1+2',     label: '🛋️ 1+2 — 1\'li + 2\'li Koltuk' },
+    { val: '1+1',     label: '🪑 1+1 — İki Tekli Koltuk'   },
+    { val: '2+2',     label: '🛋️ 2+2 — İki İkili Koltuk'   },
+    { val: '2+3',     label: '🛋️ 2+3 — 2\'li + 3\'lü Koltuk' },
+    { val: '1+4',     label: '🛋️ 1+4 — 1\'li + 4\'lü Koltuk' },
+    { val: '3+2+1',   label: '🛋️ 3+2+1 — Üçlü Takım'      },
+    { val: '3+3',     label: '🛋️ 3+3 — İki Üçlü Koltuk'   },
+    { val: '2+2+1',   label: '🛋️ 2+2+1 — Beşli Takım'     },
+    { val: 'L-SHAPE', label: '📐 L-SHAPE — L Şekli'        },
+    { val: 'U-SHAPE', label: '📐 U-SHAPE — U Şekli'        },
+    { val: 'CORNER',  label: '📐 CORNER — Köşe Koltuk'    },
+  ],
+  en: [
+    { val: 'CUSTOM',  label: '✏️ Custom — Type Manually', custom: true },
+    { val: 'SET',     label: '📦 SET — Full Set'            },
+    { val: 'PCS',     label: '🔢 PCS — Single Piece'        },
+    { val: '1+2',     label: '🛋️ 1+2 — 1-Seater + 2-Seater' },
+    { val: '1+1',     label: '🪑 1+1 — Two Armchairs'       },
+    { val: '2+2',     label: '🛋️ 2+2 — Two 2-Seaters'       },
+    { val: '2+3',     label: '🛋️ 2+3 — 2-Seater + 3-Seater' },
+    { val: '1+4',     label: '🛋️ 1+4 — 1-Seater + 4-Seater' },
+    { val: '3+2+1',   label: '🛋️ 3+2+1 — Triple Set'        },
+    { val: '3+3',     label: '🛋️ 3+3 — Two 3-Seaters'       },
+    { val: '2+2+1',   label: '🛋️ 2+2+1 — Five-Piece Set'    },
+    { val: 'L-SHAPE', label: '📐 L-SHAPE — L-Shaped Sofa'   },
+    { val: 'U-SHAPE', label: '📐 U-SHAPE — U-Shaped Sofa'   },
+    { val: 'CORNER',  label: '📐 CORNER — Corner Sofa'      },
+  ],
+};
+
+let _descDropdownOpen = false;
+let _descCustomMode   = false;
+
+function openDescDropdown() {
+  _descDropdownOpen = true;
+  renderDescDropdown(document.getElementById('prDesc')?.value || '');
+  document.getElementById('descDropdown').style.display = 'block';
+  setTimeout(() => {
+    document.addEventListener('click', closeDescOnOutside, { once: true });
+  }, 100);
+}
+
+function closeDescOnOutside(e) {
+  const dd  = document.getElementById('descDropdown');
+  const inp = document.getElementById('prDesc');
+  if (dd && !dd.contains(e.target) && e.target !== inp) {
+    dd.style.display = 'none';
+    _descDropdownOpen = false;
+  }
+}
+
+function onDescInput(val) {
+  if (_descCustomMode) return;
+  renderDescDropdown(val);
+  if (!_descDropdownOpen) {
+    document.getElementById('descDropdown').style.display = 'block';
+    _descDropdownOpen = true;
+  }
+}
+
+function renderDescDropdown(filter) {
+  const dd   = document.getElementById('descDropdown');
+  if (!dd) return;
+  const lang = S.lang || 'ar';
+  const data = DESC_DATA[lang] || DESC_DATA.en;
+  const f    = filter.toLowerCase().trim();
+
+  const filtered = data.filter(item =>
+    !f ||
+    item.val.toLowerCase().includes(f) ||
+    item.label.toLowerCase().includes(f) ||
+    item.custom
+  );
+
+  if (!filtered.length) {
+    dd.innerHTML = `<div style="padding:14px;text-align:center;color:var(--muted);font-size:12px;">
+      🔍 ${filter}
+    </div>`;
+    return;
+  }
+
+  dd.innerHTML = filtered.map(item => `
+    <div onclick="selectDesc('${item.val}', ${!!item.custom})"
+      style="
+        display:flex;align-items:center;gap:10px;
+        padding:11px 14px;cursor:pointer;
+        border-bottom:1px solid var(--border);
+        transition:background var(--tr);
+        ${item.custom ? 'background:rgba(200,169,110,.06);' : ''}
+      "
+      onmouseenter="this.style.background='var(--gold-light)'"
+      onmouseleave="this.style.background='${item.custom ? 'rgba(200,169,110,.06)' : ''}'">
+      <span style="font-size:18px;flex-shrink:0;">${item.label.split(' ')[0]}</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:${item.custom ? '700' : '800'};
+          color:${item.custom ? 'var(--gold2)' : 'var(--text)'};">
+          ${item.val === 'CUSTOM' ? item.label : item.val}
+        </div>
+        ${!item.custom ? `
+        <div style="font-size:10px;color:var(--muted);margin-top:1px;">
+          ${item.label.split('—')[1]?.trim() || ''}
+        </div>` : ''}
+      </div>
+      ${!item.custom ? `
+      <span style="
+        background:var(--gold-light);color:var(--gold2);
+        border-radius:20px;padding:2px 9px;
+        font-size:10px;font-weight:800;
+        border:1px solid rgba(200,169,110,.2);
+        flex-shrink:0;
+      ">${item.val}</span>` : ''}
+    </div>`).join('');
+}
+
+function selectDesc(val, isCustom) {
+  const inp = document.getElementById('prDesc');
+  if (!inp) return;
+
+  if (isCustom) {
+    _descCustomMode = true;
+    inp.value = '';
+    inp.placeholder = {ar:'اكتب الوصف يدوياً...', tr:'Açıklama yazın...', en:'Type description manually...'}[S.lang] || 'Type...';
+    inp.focus();
+    document.getElementById('descDropdown').style.display = 'none';
+    _descDropdownOpen = false;
+    return;
+  }
+
+  _descCustomMode = false;
+  inp.value = val;
+  inp.style.borderColor = 'var(--green)';
+  setTimeout(() => { inp.style.borderColor = ''; }, 1000);
+  document.getElementById('descDropdown').style.display = 'none';
+  _descDropdownOpen = false;
+
+  const msgs = { ar:`✅ تم اختيار: ${val}`, tr:`✅ Seçildi: ${val}`, en:`✅ Selected: ${val}` };
+  showToast(msgs[S.lang] || msgs.en, 'ok');
+}
+
+
+   
 
 
 
