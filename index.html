@@ -4536,41 +4536,50 @@ body {
           </div>
         </div>
       </div>
-      <div class="fgrid">
+           <!-- ✅ تم تعديل الشبكة هنا لتكون 3 أعمدة دائماً -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+        
+        <!-- سعر أ -->
         <div class="fg">
-          <label class="fl" style="color:var(--gold2);">🅰️ <span data-i18n="price_a">سعر أ (دولار)</span> <span class="req">*</span></label>
+          <label class="fl" style="color:var(--gold2); font-size:11px;">🅰️ <span data-i18n="price_a">سعر أ</span> <span class="req">*</span></label>
           <input type="number" class="fc" id="prPriceA" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('A')">
-          <div style="display:flex;gap:6px;margin-top:5px;background:var(--input);border:1px solid var(--border);border-radius:8px;padding:5px 10px;">
-            <span style="font-size:10px;color:var(--muted);">🇹🇷 ₺</span>
+          <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:4px; margin-top:5px; background:var(--input); border:1px solid var(--border); border-radius:8px; padding:5px;">
+            <span style="font-size:10px;color:var(--muted);">₺</span>
             <span id="prPriceA_TRY" style="font-size:10px;font-weight:700;color:#e53e3e;">0</span>
             <span style="font-size:10px;color:var(--border);">|</span>
-            <span style="font-size:10px;color:var(--muted);">💶 €</span>
+            <span style="font-size:10px;color:var(--muted);">€</span>
             <span id="prPriceA_EUR" style="font-size:10px;font-weight:700;color:#2b6cb0;">0.00</span>
           </div>
         </div>
+
+        <!-- سعر ب -->
         <div class="fg">
-          <label class="fl" style="color:var(--blue);">🅱️ <span data-i18n="price_b">سعر ب (دولار)</span></label>
+          <label class="fl" style="color:var(--blue); font-size:11px;">🅱️ <span data-i18n="price_b">سعر ب</span></label>
           <input type="number" class="fc" id="prPriceB" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('B')">
-          <div style="display:flex;gap:6px;margin-top:5px;background:var(--input);border:1px solid var(--border);border-radius:8px;padding:5px 10px;">
-            <span style="font-size:10px;color:var(--muted);">🇹🇷 ₺</span>
+          <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:4px; margin-top:5px; background:var(--input); border:1px solid var(--border); border-radius:8px; padding:5px;">
+            <span style="font-size:10px;color:var(--muted);">₺</span>
             <span id="prPriceB_TRY" style="font-size:10px;font-weight:700;color:#e53e3e;">0</span>
             <span style="font-size:10px;color:var(--border);">|</span>
-            <span style="font-size:10px;color:var(--muted);">💶 €</span>
+            <span style="font-size:10px;color:var(--muted);">€</span>
             <span id="prPriceB_EUR" style="font-size:10px;font-weight:700;color:#2b6cb0;">0.00</span>
           </div>
         </div>
+
+        <!-- سعر ج -->
         <div class="fg">
-          <label class="fl" style="color:var(--green);">🅲 <span data-i18n="price_c">سعر ج (دولار)</span></label>
+          <label class="fl" style="color:var(--green); font-size:11px;">🅲 <span data-i18n="price_c">سعر ج</span></label>
           <input type="number" class="fc" id="prPriceC" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('C')">
-          <div style="display:flex;gap:6px;margin-top:5px;background:var(--input);border:1px solid var(--border);border-radius:8px;padding:5px 10px;">
-            <span style="font-size:10px;color:var(--muted);">🇹🇷 ₺</span>
+          <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:4px; margin-top:5px; background:var(--input); border:1px solid var(--border); border-radius:8px; padding:5px;">
+            <span style="font-size:10px;color:var(--muted);">₺</span>
             <span id="prPriceC_TRY" style="font-size:10px;font-weight:700;color:#e53e3e;">0</span>
             <span style="font-size:10px;color:var(--border);">|</span>
-            <span style="font-size:10px;color:var(--muted);">💶 €</span>
+            <span style="font-size:10px;color:var(--muted);">€</span>
             <span id="prPriceC_EUR" style="font-size:10px;font-weight:700;color:#2b6cb0;">0.00</span>
           </div>
         </div>
+
       </div>
+
     </div>
 
     <!-- ✅ 3️⃣ معلومات القطعة ثالثاً -->
