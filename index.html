@@ -4396,7 +4396,17 @@ html, body {
         <h1 data-i18n="add_pr_title">📦 إضافة منتج</h1>
         <p id="addPrSubtitle">—</p>
       </div>
+      <!-- ✅ أزرار الحفظ وإعادة التفريغ في الأعلى الثابت -->
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="btn btn-p btn-sm" onclick="savePr()" style="white-space:nowrap;">
+          💾 <span data-i18n="btn_save_pr">حفظ</span>
+        </button>
+        <button class="btn btn-s btn-sm" onclick="resetPrForm()" title="إعادة تعيين">
+          🔄
+        </button>
+      </div>
     </div>
+
 
     <!-- نوع القطعة المختار -->
     <div id="prSelectedTypeBanner" style="margin-top:16px;display:flex;align-items:center;gap:12px;background:var(--gold-light);border:1.5px solid var(--gold);border-radius:var(--r);padding:14px 18px;margin-bottom:4px;">
@@ -4668,12 +4678,12 @@ html, body {
 
     </div>
 
-    <!-- ✅ 5️⃣ أزرار الحفظ أخيراً -->
+     <!-- ✅ 5️⃣ أزرار الحفظ أخيراً -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn btn-p btn-lg" onclick="savePr()">💾 <span data-i18n="btn_save_pr">حفظ القطعة</span></button>
       <button class="btn btn-s btn-lg" onclick="resetPrForm()">🔄</button>
-      <button class="btn btn-s btn-lg" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
     </div>
+
 
   </div>
 </section>
