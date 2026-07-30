@@ -9886,6 +9886,9 @@ onPrDimAllInput();
 
   // ── تحديث تسميات الحقول بلغة البرنامج
   updatePrInfoLabels();
+   updatePrSelectedTypeBanner(S.prType || 'coffee_table');
+updatePrFormBtnLabels();
+
 }
 
 
@@ -10291,6 +10294,9 @@ onPrDimAllInput();
 
     // ── تحديث تسميات الحقول بلغة البرنامج
     updatePrInfoLabels();
+     updatePrSelectedTypeBanner(p.type);
+updatePrFormBtnLabels();
+
 
   }, 80);
 }
@@ -12721,52 +12727,29 @@ function selectPrTypeAndContinue(tp, event) {
   updatePrSelectedTypeBanner(tp);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function updatePrSelectedTypeBanner(tp) {
-  if (!tp) tp = S.prType || 'coffee_table';
-  const lang = S.lang || 'ar';
-  const cfg  = PR_TYPE_CONFIG[tp];
-  if (!cfg) return;
+function updatePrFormBtnLabels() {
+  const lang     = S.lang || 'ar';
+  const isEdit   = !!(S.editPrId);
 
-  const selectedLabels = {
-    ar: 'النوع المختار',
-    tr: 'Seçilen Tip',
-    en: 'Selected Type',
+  const saveLabels = {
+    add:  { ar:'حفظ',         tr:'Kaydet',                  en:'Save'         },
+    edit: { ar:'حفظ التعديل', tr:'Değişiklikleri Kaydet',   en:'Save Changes' },
+  };
+  const resetLabels = {
+    ar: 'تفريغ', tr: 'Temizle', en: 'Clear',
   };
 
-  const changeLabels = {
-    ar: '🔄 تغيير',
-    tr: '🔄 Değiştir',
-    en: '🔄 Change',
-  };
+  const mode = isEdit ? 'edit' : 'add';
+  const set  = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
 
-  // ✅ أضف هذا — نص "املأ بيانات المنتج" × 3 لغات
-  const subtitleLabels = {
-    ar: 'املأ بيانات المنتج',
-    tr: 'Ürün bilgilerini doldurun',
-    en: 'Fill in product details',
-  };
+  set('prSaveBtnTxt',  saveLabels[mode][lang]  || saveLabels[mode].en);
+  set('prResetBtnTxt', resetLabels[lang]        || resetLabels.en);
 
-  const iconEl = document.getElementById('prSelectedTypeIcon');
-  if (iconEl) {
-    iconEl.innerHTML = cfg.iconType === 'img'
-      ? `<img src="${cfg.icon}" alt="${tp}"
-           style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`
-      : `<span style="font-size:26px;">${cfg.icon}</span>`;
-  }
-
-  const labelEl = document.getElementById('prSelectedTypeLabel');
-  if (labelEl) labelEl.textContent = selectedLabels[lang] || selectedLabels.en;
-
-  const nameEl = document.getElementById('prSelectedTypeName');
-  if (nameEl) nameEl.textContent = cfg.titles[lang] || cfg.titles.en;
-
-  const changeBtn = document.getElementById('changePrTypeBtn');
-  if (changeBtn) changeBtn.textContent = changeLabels[lang] || changeLabels.en;
-
-  // ✅ تحديث subtitle الصفحة
-  const subtitleEl = document.getElementById('addPrSubtitle');
-  if (subtitleEl) subtitleEl.textContent = subtitleLabels[lang] || subtitleLabels.en;
+  // إخفاء زر التفريغ في وضع التعديل
+  const resetBtn = document.getElementById('prResetBtnTxt')?.closest('button');
+  if (resetBtn) resetBtn.style.display = isEdit ? 'none' : '';
 }
+
 
 
 
