@@ -3889,31 +3889,22 @@ html, body {
 
 
 /* ============================================================
-   STICKY HEADER — ULTIMATE FIX (DESKTOP + MOBILE)
+   STICKY HEADER — FINAL FIX
 ============================================================ */
 
-/* 1️⃣ إزالة overflow من كل الأباء */
-.main,
-#mainContent {
-  overflow: visible !important;
-  overflow-x: visible !important;
-}
-
+/* 1️⃣ الإصلاح الجذري */
 body {
-  overflow-x: clip !important;
+  overflow-x: clip !important; /* clip لا يكسر sticky — hidden يكسره */
 }
 
-html {
-  overflow-x: clip !important;
+.main,
+.page,
+.page.active {
+  overflow: visible !important;
+  contain: none !important;
 }
 
-/* 2️⃣ السايدبار لا يكسر sticky */
-.sidebar {
-  overflow-y: auto !important;
-  overflow-x: visible !important;
-}
-
-/* 3️⃣ تقوية كل الـ sticky headers — ديسكتوب وموبايل */
+/* 2️⃣ تقوية الـ sticky */
 .sct-sticky-header,
 .co-page-sticky,
 .page-sticky-bar {
@@ -3922,40 +3913,15 @@ html {
   top: var(--nav-h) !important;
   z-index: 500 !important;
   background: var(--bg) !important;
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  /* ✅ الحل الأساسي للديسكتوب */
-  margin-left: -20px !important;
-  margin-right: -20px !important;
-  padding-left: 20px !important;
-  padding-right: 20px !important;
-  width: calc(100% + 40px) !important;
 }
 
-/* 4️⃣ منع الصفحات من كسر sticky */
-.page,
-.page.active {
-  overflow: visible !important;
-  contain: none !important;
-}
-
-/* 5️⃣ ديسكتوب خاص — ضمان العمل مع السايدبار */
+/* 3️⃣ ديسكتوب — ضمان العمل مع السايدبار */
 @media (min-width: 1025px) {
   .main {
     overflow: visible !important;
-    position: relative !important;
-  }
-
-  .sct-sticky-header,
-  .co-page-sticky,
-  .page-sticky-bar {
-    /* يحسب العرض الصحيح مع السايدبار */
-    left: 0 !important;
-    right: 0 !important;
   }
 }
+
 
    
 
