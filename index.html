@@ -4570,32 +4570,59 @@ html, body {
           </div>
         </div>
       </div>
-      <div class="fgrid">
-        <div class="fg">
-          <label class="fl" style="color:var(--gold2);">🅰️ <span data-i18n="price_a">سعر A (USD)</span> <span class="req">*</span></label>
-          <input type="number" class="fc" id="prPriceA" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('A')">
-          <div style="font-size:10px;color:var(--muted);margin-top:3px;">₺<span id="prPriceA_TRY">0.00</span> &nbsp;|&nbsp; €<span id="prPriceA_EUR">0.00</span></div>
-        </div>
-        <div class="fg">
-          <label class="fl" style="color:var(--blue);">🅱️ <span data-i18n="price_b">سعر B (USD)</span></label>
-          <input type="number" class="fc" id="prPriceB" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('B')">
-          <div style="font-size:10px;color:var(--muted);margin-top:3px;">₺<span id="prPriceB_TRY">0.00</span> &nbsp;|&nbsp; €<span id="prPriceB_EUR">0.00</span></div>
-        </div>
-        <div class="fg">
-          <label class="fl" style="color:var(--green);">🅲 <span data-i18n="price_c">سعر C (USD)</span></label>
-          <input type="number" class="fc" id="prPriceC" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('C')">
-          <div style="font-size:10px;color:var(--muted);margin-top:3px;">₺<span id="prPriceC_TRY">0.00</span> &nbsp;|&nbsp; €<span id="prPriceC_EUR">0.00</span></div>
-        </div>
-        
-        
-        <div class="fg">
-  <div class="cost-box">
-    <div class="cost-row"><span id="cb-a-lbl">💵 أ</span><span id="cb-a">$0.00</span></div>
-    <div class="cost-row"><span id="cb-b-lbl">💵 ب</span><span id="cb-b">$0.00</span></div>
-    <div class="cost-row"><span id="cb-c-lbl">💵 ج</span><span id="cb-c">$0.00</span></div>
-    <div class="cost-row"><span>€ EUR</span><span id="cb-eur" style="color:#805ad5;">€0.00</span></div>
+<div class="fgrid">
+  <div class="fg">
+    <label class="fl" style="color:var(--gold2);">🅰️ <span data-i18n="price_a">سعر أ (دولار)</span> <span class="req">*</span></label>
+    <input type="number" class="fc" id="prPriceA" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('A')">
+    <div style="
+      display:flex;gap:6px;margin-top:5px;
+      background:var(--input);border:1px solid var(--border);
+      border-radius:8px;padding:5px 10px;
+    ">
+      <span style="font-size:10px;color:var(--muted);">🇹🇷</span>
+      <span style="font-size:10px;color:var(--muted);">₺</span>
+      <span id="prPriceA_TRY" style="font-size:10px;font-weight:700;color:#e53e3e;">0</span>
+      <span style="font-size:10px;color:var(--border);">|</span>
+      <span style="font-size:10px;color:var(--muted);">💶</span>
+      <span style="font-size:10px;color:var(--muted);">€</span>
+      <span id="prPriceA_EUR" style="font-size:10px;font-weight:700;color:#2b6cb0;">0.00</span>
+    </div>
   </div>
-</div>
+  <div class="fg">
+    <label class="fl" style="color:var(--blue);">🅱️ <span data-i18n="price_b">سعر ب (دولار)</span></label>
+    <input type="number" class="fc" id="prPriceB" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('B')">
+    <div style="
+      display:flex;gap:6px;margin-top:5px;
+      background:var(--input);border:1px solid var(--border);
+      border-radius:8px;padding:5px 10px;
+    ">
+      <span style="font-size:10px;color:var(--muted);">🇹🇷</span>
+      <span style="font-size:10px;color:var(--muted);">₺</span>
+      <span id="prPriceB_TRY" style="font-size:10px;font-weight:700;color:#e53e3e;">0</span>
+      <span style="font-size:10px;color:var(--border);">|</span>
+      <span style="font-size:10px;color:var(--muted);">💶</span>
+      <span style="font-size:10px;color:var(--muted);">€</span>
+      <span id="prPriceB_EUR" style="font-size:10px;font-weight:700;color:#2b6cb0;">0.00</span>
+    </div>
+  </div>
+  <div class="fg">
+    <label class="fl" style="color:var(--green);">🅲 <span data-i18n="price_c">سعر ج (دولار)</span></label>
+    <input type="number" class="fc" id="prPriceC" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('C')">
+    <div style="
+      display:flex;gap:6px;margin-top:5px;
+      background:var(--input);border:1px solid var(--border);
+      border-radius:8px;padding:5px 10px;
+    ">
+      <span style="font-size:10px;color:var(--muted);">🇹🇷</span>
+      <span style="font-size:10px;color:var(--muted);">₺</span>
+      <span id="prPriceC_TRY" style="font-size:10px;font-weight:700;color:#e53e3e;">0</span>
+      <span style="font-size:10px;color:var(--border);">|</span>
+      <span style="font-size:10px;color:var(--muted);">💶</span>
+      <span style="font-size:10px;color:var(--muted);">€</span>
+      <span id="prPriceC_EUR" style="font-size:10px;font-weight:700;color:#2b6cb0;">0.00</span>
+    </div>
+  </div>
+
 </div>
 </div>
 
@@ -6778,7 +6805,7 @@ const TR={
     pr_type:'نوع القطعة',pr_info:'معلومات القطعة',pr_name:'اسم القطعة',
     pr_desc:'الوصف',pricing:'التسعير',pricing_hint:'العملة الأساسية: USD',
     active_tier:'التسعير النشط للعرض',
-   price_a:'سعر أ (USD)',price_b:'سعر ب (USD)',price_c:'سعر ج (USD)',
+   price_a:'سعر أ (دولار)',price_b:'سعر ب (دولار)',price_c:'سعر ج (دولار)',
     dims:'الأبعاد',dims_label:'الأبعاد (ط × ع × ا) سم',
     weight:'الوزن (كجم)',packets:'عدد الباكيت',color:'اللون',
     pr_image:'صورة القطعة',upload_img:'اسحب الصورة هنا',btn_save_pr:'حفظ القطعة',
@@ -9320,13 +9347,16 @@ function onTierInput(tier){
 function updateTierPreviews(){
   ['A','B','C'].forEach(tier => {
     const val    = parseFloat(document.getElementById(`prPrice${tier}`)?.value) || 0;
+    const tryEl  = document.getElementById(`prPrice${tier}_TRY`);
     const eurEl  = document.getElementById(`prPrice${tier}_EUR`);
     const prevEl = document.getElementById(`tier${tier}Preview`);
+    if (tryEl)  tryEl.textContent  = usdToTry(val).toFixed(0);
     if (eurEl)  eurEl.textContent  = usdToEur(val).toFixed(2);
     if (prevEl) prevEl.textContent = '$' + val.toFixed(2);
   });
   updateTierLabels();
 }
+
 
 function updateTierLabels(){
   const lang = S.lang || 'ar';
