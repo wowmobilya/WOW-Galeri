@@ -4471,31 +4471,38 @@ html, body {
     </div>
   </div>
 
- <!-- ✅ نظام الأبعاد الديناميكي -->
+<!-- ✅ نظام الأبعاد الديناميكي -->
 <div class="fg" style="grid-column:1 / -1;">
-  <label class="fl">📐 <span id="prDimSectionLbl">الأبعاد (سم)</span></label>
 
-  <!-- حاوية الصفوف -->
-  <div id="prDimRowsWrap" style="
-    display:flex;flex-direction:column;gap:8px;margin-top:6px;">
+  <!-- ── رأس القسم: التسمية + زر الإضافة جنبًا لجنب ── -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+    <label class="fl" style="margin-bottom:0;">📐 <span id="prDimSectionLbl">الأبعاد (سم)</span></label>
+
+    <button type="button" id="prDimAddBtn"
+      onclick="addPrDimRow()"
+      style="
+        display:inline-flex;align-items:center;justify-content:center;
+        width:28px;height:28px;
+        border-radius:50%;
+        border:1.5px solid var(--gold);
+        background:var(--gold-light);
+        color:var(--gold2);
+        font-size:16px;font-weight:700;
+        cursor:pointer;
+        transition:all var(--tr);
+        flex-shrink:0;
+        line-height:1;"
+      onmouseenter="this.style.background='var(--gold)';this.style.color='#fff';this.style.transform='scale(1.15)'"
+      onmouseleave="this.style.background='var(--gold-light)';this.style.color='var(--gold2)';this.style.transform='scale(1)'">
+      ＋
+    </button>
   </div>
 
-  <!-- زر الإضافة -->
-  <button type="button" id="prDimAddBtn"
-    onclick="addPrDimRow()"
-    style="
-      margin-top:10px;
-      display:inline-flex;align-items:center;gap:6px;
-      padding:7px 16px;border-radius:var(--rs);
-      border:1.5px dashed var(--gold);
-      background:transparent;color:var(--gold);
-      font-size:13px;font-weight:600;
-      cursor:pointer;transition:all var(--tr);"
-    onmouseenter="this.style.background='rgba(var(--gold-rgb),.1)'"
-    onmouseleave="this.style.background='transparent'">
-    ＋ <span id="prDimAddLbl">إضافة قياس</span>
-  </button>
+  <!-- حاوية الصفوف -->
+  <div id="prDimRowsWrap" style="display:flex;flex-direction:column;gap:8px;"></div>
+
 </div>
+
 
 
   <!-- الوزن -->
@@ -9472,7 +9479,6 @@ function updatePrDimLabels() {
   const L    = PR_DIM_LABELS[lang] || PR_DIM_LABELS.en;
   const set  = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   set('prDimSectionLbl', L.section);
-  set('prDimAddLbl',     L.add);
   // تحديث placeholders وتسميات الصفوف الموجودة
   renderPrDimRows();
 }
