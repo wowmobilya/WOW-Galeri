@@ -6778,9 +6778,7 @@ const TR={
     pr_type:'نوع القطعة',pr_info:'معلومات القطعة',pr_name:'اسم القطعة',
     pr_desc:'الوصف',pricing:'التسعير',pricing_hint:'العملة الأساسية: USD',
     active_tier:'التسعير النشط للعرض',
-    price_a:'سعر A (USD)',price_b:'سعر B (USD)',price_c:'سعر C (USD)',
-    sale_try:'سعر TRY',labor:'تكلفة العمالة',other_cost:'تكاليف أخرى',
-    total_cost:'إجمالي التكلفة',
+   price_a:'سعر أ (USD)',price_b:'سعر ب (USD)',price_c:'سعر ج (USD)',
     dims:'الأبعاد',dims_label:'الأبعاد (ط × ع × ا) سم',
     weight:'الوزن (كجم)',packets:'عدد الباكيت',color:'اللون',
     pr_image:'صورة القطعة',upload_img:'اسحب الصورة هنا',btn_save_pr:'حفظ القطعة',
@@ -6954,8 +6952,6 @@ sum_btn_print:   'Yazdır',
     pr_desc:'Açıklama',pricing:'Fiyatlandırma',pricing_hint:'Temel para birimi: USD',
     active_tier:'Aktif Fiyat Kademesi',
     price_a:'A Fiyatı (USD)',price_b:'B Fiyatı (USD)',price_c:'C Fiyatı (USD)',
-    sale_try:'TRY Fiyatı',labor:'İşçilik',other_cost:'Diğer Maliyetler',
-    total_cost:'Toplam Maliyet',
     dims:'Boyutlar',dims_label:'Boyutlar (U × G × Y) cm',
     weight:'Ağırlık (kg)',packets:'Paket Sayısı',color:'Renk',
     pr_image:'Ürün Görseli',upload_img:'Görseli sürükleyin',btn_save_pr:'Ürünü Kaydet',
@@ -7082,9 +7078,7 @@ sum_btn_print:   'Print',
     pr_type:'Product Type',pr_info:'Product Info',pr_name:'Product Name',
     pr_desc:'Description',pricing:'Pricing',pricing_hint:'Base currency: USD',
     active_tier:'Active Display Tier',
-    price_a:'Price A (USD)',price_b:'Price B (USD)',price_c:'Price C (USD)',
-    sale_try:'TRY Price',labor:'Labor Cost',other_cost:'Other Costs',
-    total_cost:'Total Cost',
+   price_a:'Price A (USD)',price_b:'Price B (USD)',price_c:'Price C (USD)',
     dims:'Dimensions',dims_label:'Dimensions (L × W × H) cm',
     weight:'Weight (kg)',packets:'Packet Count',color:'Color',
     pr_image:'Product Image',upload_img:'Drag image here',btn_save_pr:'Save Product',
@@ -9466,8 +9460,6 @@ async function savePr(){
     priceC:parseFloat(document.getElementById('prPriceC').value)||0,
     priceUSD:priceA,priceTRY:usdToTry(priceA),
     activeTier:S.prActiveTier,
-    laborCost:parseFloat(document.getElementById('prLabor').value)||0,
-    otherCost:parseFloat(document.getElementById('prOther').value)||0,
 
     // ── ✅ الأبعاد الأساسية (أول صف)
     dimL:l, dimW:w, dimH:h,
@@ -9659,8 +9651,8 @@ function resetPrForm(){
   // ── مسح حقول النصوص والأرقام القديمة
   [
     'prName','prHsCode','prDesc',
-    'prPriceA','prPriceB','prPriceC','prPriceTRY',
-    'prLabor','prOther',
+   'prPriceA','prPriceB','prPriceC',
+'prWeight',
     'prWeight',
   ].forEach(id => {
     const el = document.getElementById(id);
@@ -10050,9 +10042,6 @@ function editPr(id){
     sv('prPriceA',  p.priceA  || p.priceUSD || '');
     sv('prPriceB',  p.priceB  || '');
     sv('prPriceC',  p.priceC  || '');
-    sv('prPriceTRY',p.priceTRY|| '');
-    sv('prLabor',   p.laborCost || '');
-    sv('prOther',   p.otherCost || '');
 
     // ── الوزن
     sv('prWeight',  p.weight  || '');
