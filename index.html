@@ -4380,7 +4380,7 @@ html, body {
 <section class="page" id="page-add-product">
   <div id="pr-type-select-view">
     <div class="sct-sticky-header">
-<button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
+      <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
       <div class="sct-sticky-title">
         <h1 id="apt-title">📦 إضافة منتج</h1>
         <p id="apt-subtitle">اختر نوع القطعة للمتابعة</p>
@@ -4394,7 +4394,7 @@ html, body {
       <button class="sct-back-btn" onclick="backToPrTypeSelect()">← <span data-i18n="btn_back">رجوع</span></button>
       <div class="sct-sticky-title">
         <h1 data-i18n="add_pr_title">📦 إضافة منتج</h1>
-<p id="addPrSubtitle">—</p>
+        <p id="addPrSubtitle">—</p>
       </div>
     </div>
 
@@ -4405,149 +4405,37 @@ html, body {
         <div style="font-size:10px;font-weight:800;color:var(--gold2);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:3px;" id="prSelectedTypeLabel">النوع المختار</div>
         <div style="font-size:15px;font-weight:800;color:var(--text);" id="prSelectedTypeName">—</div>
       </div>
-<button class="btn btn-s btn-sm" style="margin-inline-start:auto;" onclick="backToPrTypeSelect()" id="changePrTypeBtn">🔄 تغيير</button>
+      <button class="btn btn-s btn-sm" style="margin-inline-start:auto;" onclick="backToPrTypeSelect()" id="changePrTypeBtn">🔄 تغيير</button>
     </div>
 
-<div class="card" style="margin-top:12px;">
-  <div class="card-hdr"><div class="card-title">📝 <span data-i18n="pr_info">معلومات القطعة</span></div></div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-
-  <!-- اسم القطعة -->
-  <div class="fg">
-    <label class="fl">📝 <span id="prNameLbl">اسم القطعة</span> <span class="req">*</span></label>
-    <input type="text" class="fc" id="prName" placeholder="W400">
-  </div>
-
-  <!-- HS Code -->
-  <div class="fg">
-    <label class="fl">🏷️ <span id="prHsLabelTxt">كود HS</span></label>
-    <div style="position:relative;">
-      <input type="text" class="fc" id="prHsCode"
-        autocomplete="off" inputmode="none"
-        style="cursor:pointer;"
-        onclick="openHsDropdown()"
-        onkeydown="if(!_hsCustomMode)return false;"
-        onpaste="if(!_hsCustomMode)return false;"
-        placeholder="اختر كود HS...">
-      <span id="prHsArrow" style="
-        position:absolute;top:50%;right:10px;
-        transform:translateY(-50%);
-        font-size:11px;color:var(--muted);
-        pointer-events:none;transition:transform .25s ease;">▼</span>
-      <div id="hsDropdown" style="
-        display:none;position:absolute;
-        top:calc(100% + 4px);left:0;right:0;
-        background:var(--card);border:1.5px solid var(--gold);
-        border-radius:var(--rs);box-shadow:var(--shadow2);
-        z-index:9999;max-height:300px;overflow-y:auto;
-        animation:fadeUp .2s ease;min-width:260px;"></div>
+    <!-- ✅ 1️⃣ صورة القطعة أولاً -->
+    <div class="card" style="margin-top:12px;">
+      <div class="card-hdr">
+        <div class="card-title">🖼️ <span data-i18n="pr_image">صورة القطعة</span></div>
+        <button id="prImgDeleteBtn"
+          onclick="deletePrImg()"
+          style="
+            display:none;
+            align-items:center;gap:5px;
+            padding:6px 12px;border-radius:8px;border:none;
+            background:rgba(229,62,62,.1);color:var(--red);
+            font-size:12px;font-weight:700;cursor:pointer;
+            font-family:inherit;transition:all var(--tr);
+          "
+          onmouseenter="this.style.background='var(--red)';this.style.color='#fff'"
+          onmouseleave="this.style.background='rgba(229,62,62,.1)';this.style.color='var(--red)'"
+        >🗑️ <span id="prImgDeleteBtnTxt">حذف الصورة</span></button>
+      </div>
+      <div class="img-area" id="prImgArea">
+        <input type="file" id="prImgInput" accept="image/*" onchange="handlePrImg(event)">
+        <div id="prImgPrev">
+          <div style="font-size:36px;margin-bottom:8px;">🛋️</div>
+          <p style="color:var(--muted);font-size:12px;" data-i18n="upload_img">اسحب صورة المنتج هنا</p>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- الوصف -->
-  <div class="fg">
-    <label class="fl">📄 <span id="prDescLabelTxt">الوصف</span></label>
-    <div style="position:relative;">
-      <input type="text" class="fc" id="prDesc"
-        autocomplete="off" inputmode="none"
-        style="cursor:pointer;"
-        onclick="openDescDropdown()"
-        onkeydown="if(!_descCustomMode)return false;"
-        onpaste="if(!_descCustomMode)return false;"
-        placeholder="اختر الوصف...">
-      <span id="prDescArrow" style="
-        position:absolute;top:50%;right:10px;
-        transform:translateY(-50%);
-        font-size:11px;color:var(--muted);
-        pointer-events:none;transition:transform .25s ease;">▼</span>
-      <div id="descDropdown" style="
-        display:none;position:absolute;
-        top:calc(100% + 4px);left:0;right:0;
-        background:var(--card);border:1.5px solid var(--gold);
-        border-radius:var(--rs);box-shadow:var(--shadow2);
-        z-index:9999;max-height:300px;overflow-y:auto;
-        animation:fadeUp .2s ease;min-width:260px;"></div>
-    </div>
-  </div>
-
-<!-- ✅ نظام الأبعاد الديناميكي -->
-<div class="fg" style="grid-column:1 / -1;">
-
-  <!-- ── رأس القسم: التسمية + زر الإضافة جنبًا لجنب ── -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-    <label class="fl" style="margin-bottom:0;">📐 <span id="prDimSectionLbl">الأبعاد (سم)</span></label>
-
-    <button type="button" id="prDimAddBtn"
-      onclick="addPrDimRow()"
-      style="
-        display:inline-flex;align-items:center;justify-content:center;
-        width:28px;height:28px;
-        border-radius:50%;
-        border:1.5px solid var(--gold);
-        background:var(--gold-light);
-        color:var(--gold2);
-        font-size:16px;font-weight:700;
-        cursor:pointer;
-        transition:all var(--tr);
-        flex-shrink:0;
-        line-height:1;"
-      onmouseenter="this.style.background='var(--gold)';this.style.color='#fff';this.style.transform='scale(1.15)'"
-      onmouseleave="this.style.background='var(--gold-light)';this.style.color='var(--gold2)';this.style.transform='scale(1)'">
-      ＋
-    </button>
-  </div>
-
-  <!-- حاوية الصفوف -->
-  <div id="prDimRowsWrap" style="display:flex;flex-direction:column;gap:8px;"></div>
-
-</div>
-
-
-
-  <!-- الوزن -->
-  <div class="fg">
-    <label class="fl">⚖️ <span id="prWeightLbl">الوزن (كجم)</span></label>
-    <input type="number" class="fc" id="prWeight"
-      placeholder="0.0" min="0" step="0.1">
-  </div>
-
-  <!-- اللون — مأخوذ من نظام الأبعاد بكامل خصائصه -->
-  <div class="fg" style="grid-column:span 2;">
-    <label class="fl">🎨 <span id="prColorLbl">اللون</span></label>
-    <div style="position:relative;">
-      <select class="fc" id="prColorSel"
-        onchange="onPrColorSelChange(this)"
-        style="cursor:pointer;">
-      </select>
-    </div>
-    <!-- حقل الكتابة اليدوية عند اختيار مخصص -->
-    <div id="prColorCustomWrap" style="
-      display:none;align-items:center;gap:7px;margin-top:7px;">
-      <span style="font-size:16px;flex-shrink:0;">✏️</span>
-      <input type="text" class="fc" id="prColorCustom"
-        oninput="onPrColorCustomInput(this)"
-        style="flex:1;">
-      <button type="button" onclick="cancelPrColorCustom()"
-        style="
-          width:28px;height:28px;border-radius:7px;border:none;
-          background:rgba(229,62,62,.1);color:var(--red);
-          cursor:pointer;font-size:13px;
-          display:flex;align-items:center;justify-content:center;
-          transition:all var(--tr);"
-        onmouseenter="this.style.background='var(--red)';this.style.color='#fff'"
-        onmouseleave="this.style.background='rgba(229,62,62,.1)';this.style.color='var(--red)'"
-      >✕</button>
-    </div>
-  </div>
-
-</div>
-
-  </div>
-</div>
-
-
-
+    <!-- ✅ 2️⃣ التسعير ثانياً -->
     <div class="card">
       <div class="card-hdr">
         <div class="card-title">💰 <span data-i18n="pricing">التسعير</span></div>
@@ -4570,131 +4458,198 @@ html, body {
           </div>
         </div>
       </div>
-<div class="fgrid">
-  <div class="fg">
-    <label class="fl" style="color:var(--gold2);">🅰️ <span data-i18n="price_a">سعر أ (دولار)</span> <span class="req">*</span></label>
-    <input type="number" class="fc" id="prPriceA" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('A')">
-    <div style="
-      display:flex;gap:6px;margin-top:5px;
-      background:var(--input);border:1px solid var(--border);
-      border-radius:8px;padding:5px 10px;
-    ">
-      <span style="font-size:10px;color:var(--muted);">🇹🇷</span>
-      <span style="font-size:10px;color:var(--muted);">₺</span>
-      <span id="prPriceA_TRY" style="font-size:10px;font-weight:700;color:#e53e3e;">0</span>
-      <span style="font-size:10px;color:var(--border);">|</span>
-      <span style="font-size:10px;color:var(--muted);">💶</span>
-      <span style="font-size:10px;color:var(--muted);">€</span>
-      <span id="prPriceA_EUR" style="font-size:10px;font-weight:700;color:#2b6cb0;">0.00</span>
+      <div class="fgrid">
+        <div class="fg">
+          <label class="fl" style="color:var(--gold2);">🅰️ <span data-i18n="price_a">سعر أ (دولار)</span> <span class="req">*</span></label>
+          <input type="number" class="fc" id="prPriceA" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('A')">
+          <div style="display:flex;gap:6px;margin-top:5px;background:var(--input);border:1px solid var(--border);border-radius:8px;padding:5px 10px;">
+            <span style="font-size:10px;color:var(--muted);">🇹🇷 ₺</span>
+            <span id="prPriceA_TRY" style="font-size:10px;font-weight:700;color:#e53e3e;">0</span>
+            <span style="font-size:10px;color:var(--border);">|</span>
+            <span style="font-size:10px;color:var(--muted);">💶 €</span>
+            <span id="prPriceA_EUR" style="font-size:10px;font-weight:700;color:#2b6cb0;">0.00</span>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="fl" style="color:var(--blue);">🅱️ <span data-i18n="price_b">سعر ب (دولار)</span></label>
+          <input type="number" class="fc" id="prPriceB" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('B')">
+          <div style="display:flex;gap:6px;margin-top:5px;background:var(--input);border:1px solid var(--border);border-radius:8px;padding:5px 10px;">
+            <span style="font-size:10px;color:var(--muted);">🇹🇷 ₺</span>
+            <span id="prPriceB_TRY" style="font-size:10px;font-weight:700;color:#e53e3e;">0</span>
+            <span style="font-size:10px;color:var(--border);">|</span>
+            <span style="font-size:10px;color:var(--muted);">💶 €</span>
+            <span id="prPriceB_EUR" style="font-size:10px;font-weight:700;color:#2b6cb0;">0.00</span>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="fl" style="color:var(--green);">🅲 <span data-i18n="price_c">سعر ج (دولار)</span></label>
+          <input type="number" class="fc" id="prPriceC" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('C')">
+          <div style="display:flex;gap:6px;margin-top:5px;background:var(--input);border:1px solid var(--border);border-radius:8px;padding:5px 10px;">
+            <span style="font-size:10px;color:var(--muted);">🇹🇷 ₺</span>
+            <span id="prPriceC_TRY" style="font-size:10px;font-weight:700;color:#e53e3e;">0</span>
+            <span style="font-size:10px;color:var(--border);">|</span>
+            <span style="font-size:10px;color:var(--muted);">💶 €</span>
+            <span id="prPriceC_EUR" style="font-size:10px;font-weight:700;color:#2b6cb0;">0.00</span>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="fg">
-    <label class="fl" style="color:var(--blue);">🅱️ <span data-i18n="price_b">سعر ب (دولار)</span></label>
-    <input type="number" class="fc" id="prPriceB" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('B')">
-    <div style="
-      display:flex;gap:6px;margin-top:5px;
-      background:var(--input);border:1px solid var(--border);
-      border-radius:8px;padding:5px 10px;
-    ">
-      <span style="font-size:10px;color:var(--muted);">🇹🇷</span>
-      <span style="font-size:10px;color:var(--muted);">₺</span>
-      <span id="prPriceB_TRY" style="font-size:10px;font-weight:700;color:#e53e3e;">0</span>
-      <span style="font-size:10px;color:var(--border);">|</span>
-      <span style="font-size:10px;color:var(--muted);">💶</span>
-      <span style="font-size:10px;color:var(--muted);">€</span>
-      <span id="prPriceB_EUR" style="font-size:10px;font-weight:700;color:#2b6cb0;">0.00</span>
+
+    <!-- ✅ 3️⃣ معلومات القطعة ثالثاً -->
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">📝 <span data-i18n="pr_info">معلومات القطعة</span></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+
+        <!-- اسم القطعة -->
+        <div class="fg">
+          <label class="fl">📝 <span id="prNameLbl">اسم القطعة</span> <span class="req">*</span></label>
+          <input type="text" class="fc" id="prName" placeholder="W400">
+        </div>
+
+        <!-- HS Code -->
+        <div class="fg">
+          <label class="fl">🏷️ <span id="prHsLabelTxt">كود HS</span></label>
+          <div style="position:relative;">
+            <input type="text" class="fc" id="prHsCode"
+              autocomplete="off" inputmode="none"
+              style="cursor:pointer;"
+              onclick="openHsDropdown()"
+              onkeydown="if(!_hsCustomMode)return false;"
+              onpaste="if(!_hsCustomMode)return false;"
+              placeholder="اختر كود HS...">
+            <span id="prHsArrow" style="
+              position:absolute;top:50%;right:10px;
+              transform:translateY(-50%);
+              font-size:11px;color:var(--muted);
+              pointer-events:none;transition:transform .25s ease;">▼</span>
+            <div id="hsDropdown" style="
+              display:none;position:absolute;
+              top:calc(100% + 4px);left:0;right:0;
+              background:var(--card);border:1.5px solid var(--gold);
+              border-radius:var(--rs);box-shadow:var(--shadow2);
+              z-index:9999;max-height:300px;overflow-y:auto;
+              animation:fadeUp .2s ease;min-width:260px;"></div>
+          </div>
+        </div>
+
+        <!-- الوصف -->
+        <div class="fg">
+          <label class="fl">📄 <span id="prDescLabelTxt">الوصف</span></label>
+          <div style="position:relative;">
+            <input type="text" class="fc" id="prDesc"
+              autocomplete="off" inputmode="none"
+              style="cursor:pointer;"
+              onclick="openDescDropdown()"
+              onkeydown="if(!_descCustomMode)return false;"
+              onpaste="if(!_descCustomMode)return false;"
+              placeholder="اختر الوصف...">
+            <span id="prDescArrow" style="
+              position:absolute;top:50%;right:10px;
+              transform:translateY(-50%);
+              font-size:11px;color:var(--muted);
+              pointer-events:none;transition:transform .25s ease;">▼</span>
+            <div id="descDropdown" style="
+              display:none;position:absolute;
+              top:calc(100% + 4px);left:0;right:0;
+              background:var(--card);border:1.5px solid var(--gold);
+              border-radius:var(--rs);box-shadow:var(--shadow2);
+              z-index:9999;max-height:300px;overflow-y:auto;
+              animation:fadeUp .2s ease;min-width:260px;"></div>
+          </div>
+        </div>
+
+        <!-- الوزن -->
+        <div class="fg">
+          <label class="fl">⚖️ <span id="prWeightLbl">الوزن (كجم)</span></label>
+          <input type="number" class="fc" id="prWeight"
+            placeholder="0.0" min="0" step="0.1">
+        </div>
+
+        <!-- اللون -->
+        <div class="fg" style="grid-column:span 2;">
+          <label class="fl">🎨 <span id="prColorLbl">اللون</span></label>
+          <div style="position:relative;">
+            <select class="fc" id="prColorSel"
+              onchange="onPrColorSelChange(this)"
+              style="cursor:pointer;">
+            </select>
+          </div>
+          <div id="prColorCustomWrap" style="
+            display:none;align-items:center;gap:7px;margin-top:7px;">
+            <span style="font-size:16px;flex-shrink:0;">✏️</span>
+            <input type="text" class="fc" id="prColorCustom"
+              oninput="onPrColorCustomInput(this)"
+              style="flex:1;">
+            <button type="button" onclick="cancelPrColorCustom()"
+              style="
+                width:28px;height:28px;border-radius:7px;border:none;
+                background:rgba(229,62,62,.1);color:var(--red);
+                cursor:pointer;font-size:13px;
+                display:flex;align-items:center;justify-content:center;
+                transition:all var(--tr);"
+              onmouseenter="this.style.background='var(--red)';this.style.color='#fff'"
+              onmouseleave="this.style.background='rgba(229,62,62,.1)';this.style.color='var(--red)'"
+            >✕</button>
+          </div>
+        </div>
+
+        <!-- نظام الأبعاد الديناميكي -->
+        <div class="fg" style="grid-column:1 / -1;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <label class="fl" style="margin-bottom:0;">📐 <span id="prDimSectionLbl">الأبعاد (سم)</span></label>
+            <button type="button" id="prDimAddBtn"
+              onclick="addPrDimRow()"
+              style="
+                display:inline-flex;align-items:center;justify-content:center;
+                width:28px;height:28px;border-radius:50%;
+                border:1.5px solid var(--gold);background:var(--gold-light);
+                color:var(--gold2);font-size:16px;font-weight:700;
+                cursor:pointer;transition:all var(--tr);flex-shrink:0;line-height:1;"
+              onmouseenter="this.style.background='var(--gold)';this.style.color='#fff';this.style.transform='scale(1.15)'"
+              onmouseleave="this.style.background='var(--gold-light)';this.style.color='var(--gold2)';this.style.transform='scale(1)'">
+              ＋
+            </button>
+          </div>
+          <div id="prDimRowsWrap" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+
+      </div>
     </div>
-  </div>
-  <div class="fg">
-    <label class="fl" style="color:var(--green);">🅲 <span data-i18n="price_c">سعر ج (دولار)</span></label>
-    <input type="number" class="fc" id="prPriceC" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('C')">
-    <div style="
-      display:flex;gap:6px;margin-top:5px;
-      background:var(--input);border:1px solid var(--border);
-      border-radius:8px;padding:5px 10px;
-    ">
-      <span style="font-size:10px;color:var(--muted);">🇹🇷</span>
-      <span style="font-size:10px;color:var(--muted);">₺</span>
-      <span id="prPriceC_TRY" style="font-size:10px;font-weight:700;color:#e53e3e;">0</span>
-      <span style="font-size:10px;color:var(--border);">|</span>
-      <span style="font-size:10px;color:var(--muted);">💶</span>
-      <span style="font-size:10px;color:var(--muted);">€</span>
-      <span id="prPriceC_EUR" style="font-size:10px;font-weight:700;color:#2b6cb0;">0.00</span>
+
+    <!-- ✅ 4️⃣ الأبعاد التفصيلية رابعاً -->
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-title">📐 <span data-i18n="dims">الأبعاد</span></div>
+        <button type="button" class="btn btn-p btn-sm" onclick="addDimPiece()">
+          ➕ <span id="addDimBtnTxt">إضافة قطعة</span>
+        </button>
+      </div>
+      <div id="dimPiecesContainer"></div>
+      <div style="
+        margin-top:8px;background:var(--gold-light);
+        border:1.5px solid var(--gold);border-radius:var(--rs);
+        padding:10px 16px;display:flex;
+        align-items:center;justify-content:space-between;
+      ">
+        <span style="font-size:12px;font-weight:700;color:var(--gold2);">
+          📦 <span id="cbmTotalLabel">CBM الإجمالي</span>
+        </span>
+        <strong id="cbmCalc" style="color:var(--gold2);font-size:16px;">
+          0.0000 m³
+        </strong>
+      </div>
     </div>
-  </div>
 
-</div>
-</div>
-
- <div class="card">
-  <div class="card-hdr">
-    <div class="card-title">📐 <span data-i18n="dims">الأبعاد</span></div>
-    <button type="button" class="btn btn-p btn-sm" onclick="addDimPiece()">
-      ➕ <span id="addDimBtnTxt">إضافة قطعة</span>
-    </button>
-  </div>
-
-  <!-- القطع الديناميكية -->
-  <div id="dimPiecesContainer"></div>
-
-  <!-- CBM الإجمالي -->
-  <div style="
-    margin-top:8px;
-    background:var(--gold-light);
-    border:1.5px solid var(--gold);
-    border-radius:var(--rs);
-    padding:10px 16px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-  ">
-    <span style="font-size:12px;font-weight:700;color:var(--gold2);">
-      📦 <span id="cbmTotalLabel">CBM الإجمالي</span>
-    </span>
-    <strong id="cbmCalc" style="color:var(--gold2);font-size:16px;">
-      0.0000 m³
-    </strong>
-  </div>
-</div>
-
-
-     
-  <div class="card">
-  <div class="card-hdr">
-    <div class="card-title">🖼️ <span data-i18n="pr_image">صورة القطعة</span></div>
-    <!-- زر الحذف — يظهر فقط عند وجود صورة -->
-    <button id="prImgDeleteBtn"
-      onclick="deletePrImg()"
-      style="
-        display:none;
-        align-items:center;gap:5px;
-        padding:6px 12px;border-radius:8px;border:none;
-        background:rgba(229,62,62,.1);color:var(--red);
-        font-size:12px;font-weight:700;cursor:pointer;
-        font-family:inherit;transition:all var(--tr);
-      "
-      onmouseenter="this.style.background='var(--red)';this.style.color='#fff'"
-      onmouseleave="this.style.background='rgba(229,62,62,.1)';this.style.color='var(--red)'"
-    >🗑️ <span id="prImgDeleteBtnTxt">حذف الصورة</span></button>
-  </div>
-
-  <div class="img-area" id="prImgArea">
-    <input type="file" id="prImgInput" accept="image/*" onchange="handlePrImg(event)">
-    <div id="prImgPrev">
-      <div style="font-size:36px;margin-bottom:8px;">🛋️</div>
-      <p style="color:var(--muted);font-size:12px;" data-i18n="upload_img">اسحب صورة المنتج هنا</p>
-    </div>
-  </div>
-</div>
-
-
+    <!-- ✅ 5️⃣ أزرار الحفظ أخيراً -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn btn-p btn-lg" onclick="savePr()">💾 <span data-i18n="btn_save_pr">حفظ القطعة</span></button>
       <button class="btn btn-s btn-lg" onclick="resetPrForm()">🔄</button>
-<button class="btn btn-s btn-lg" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
+      <button class="btn btn-s btn-lg" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
     </div>
+
   </div>
 </section>
+
 
 <!-- ========== INVOICES LIST ========== -->
 <section class="page" id="page-invoices">
