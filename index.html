@@ -3892,33 +3892,25 @@ html, body {
    STICKY HEADER — ULTIMATE FIX (DESKTOP + MOBILE)
 ============================================================ */
 
-/* 1️⃣ إزالة overflow من html لمنع كسر الـ sticky في الديسكتوب */
-html {
-  overflow-x: visible !important;
-}
-
-body {
-  overflow-x: hidden !important; /* نكتفي بإخفاء التمرير الأفقي من الـ body */
-}
-
-/* 2️⃣ إزالة أي transform من الحاويات الأب (لأنها تلغي تثبيت القائمة) */
-.main,
-#mainContent,
-.page,
-.page.active {
+/* 1️⃣ تحرير الـ html والـ body بالكامل لضمان عمل الـ Sticky في كل المتصفحات (الهاتف والكمبيوتر) */
+html, body {
   overflow: visible !important;
   overflow-x: visible !important;
-  transform: none !important; /* 🚨 هذا السطر يحل مشكلة الديسكتوب الناتجة عن translateZ */
+  overflow-y: visible !important;
+}
+
+/* 2️⃣ إزالة الـ transform من الحاويات (السبب الرئيسي لتعطل التثبيت في الكمبيوتر) */
+.main, 
+#mainContent, 
+.page, 
+.page.active {
+  overflow: visible !important;
+  transform: none !important;
   contain: none !important;
+  perspective: none !important;
 }
 
-/* 3️⃣ السايدبار لا يكسر sticky */
-.sidebar {
-  overflow-y: auto !important;
-  overflow-x: visible !important;
-}
-
-/* 4️⃣ تقوية كل الـ sticky headers — ديسكتوب وموبايل */
+/* 3️⃣ إعداد القائمة الثابتة بقوة */
 .sct-sticky-header,
 .co-page-sticky,
 .page-sticky-bar {
@@ -3928,26 +3920,19 @@ body {
   z-index: 500 !important;
   background: var(--bg) !important;
   
-  /* 🚨 إزالة transform من العنصر نفسه لتجنب مشاكل العرض الوهمية */
+  /* منع أي حركة وهمية تعطل التثبيت */
   transform: none !important;
   will-change: auto !important;
   
-  /* تعويض الـ padding الخاص بـ .main */
+  /* تمديد القائمة لتعويض حواف الـ main */
   margin-left: -20px !important;
   margin-right: -20px !important;
   padding-left: 20px !important;
   padding-right: 20px !important;
-  width: calc(100% + 40px) !important;
+  width: auto !important;
   
-  /* لمسة جمالية: ظل خفيف لتمييز القائمة عند التمرير */
+  /* ظل خفيف لجمالية القائمة */
   box-shadow: 0 4px 12px -2px rgba(0,0,0,0.05) !important;
-}
-
-/* 5️⃣ ديسكتوب خاص — ضمان العمل مع السايدبار */
-@media (min-width: 1025px) {
-  .main {
-    position: relative !important;
-  }
 }
 
    
