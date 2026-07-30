@@ -15675,23 +15675,27 @@ function renderDimPieces() {
             style="${inputStyle}">
         </div>
 
-        <!-- CBM -->
-       <div style="
-          flex-shrink:0;
-          background:var(--input);
-          border:1px solid var(--border);
-          border-radius:var(--rs);
-          padding:4px 8px;
-          text-align:center;
-          min-width:64px;
-          transition:background var(--tr);
-        ">
-          <div style="font-size:8px;color:var(--muted);font-weight:600;">CBM</div>
-          <div id="dimCBM_${i}" style="
-            font-size:11px;font-weight:800;color:var(--gold2);">
-            ${cbm}
-          </div>
-        </div>
+       <!-- CBM -->
+<div style="
+  flex-shrink:0;
+  background:var(--input);
+  border:1px solid var(--border);
+  border-radius:var(--rs);
+  padding:0 8px;
+  text-align:center;
+  min-width:64px;
+  height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:background var(--tr);
+">
+  <div id="dimCBM_${i}" style="
+    font-size:11px;font-weight:800;color:var(--gold2);line-height:1;">
+    ${cbm}
+  </div>
+</div>
+
 
         <!-- زر الحذف -->
         ${i > 0 ? `
