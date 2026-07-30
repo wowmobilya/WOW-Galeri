@@ -3892,28 +3892,33 @@ html, body {
    STICKY HEADER — ULTIMATE FIX (DESKTOP + MOBILE)
 ============================================================ */
 
-/* 1️⃣ إزالة overflow من كل الأباء */
-.main,
-#mainContent {
-  overflow: visible !important;
+/* 1️⃣ إزالة overflow من html لمنع كسر الـ sticky في الديسكتوب */
+html {
   overflow-x: visible !important;
 }
 
 body {
-  overflow-x: clip !important;
+  overflow-x: hidden !important; /* نكتفي بإخفاء التمرير الأفقي من الـ body */
 }
 
-html {
-  overflow-x: clip !important;
+/* 2️⃣ إزالة أي transform من الحاويات الأب (لأنها تلغي تثبيت القائمة) */
+.main,
+#mainContent,
+.page,
+.page.active {
+  overflow: visible !important;
+  overflow-x: visible !important;
+  transform: none !important; /* 🚨 هذا السطر يحل مشكلة الديسكتوب الناتجة عن translateZ */
+  contain: none !important;
 }
 
-/* 2️⃣ السايدبار لا يكسر sticky */
+/* 3️⃣ السايدبار لا يكسر sticky */
 .sidebar {
   overflow-y: auto !important;
   overflow-x: visible !important;
 }
 
-/* 3️⃣ تقوية كل الـ sticky headers — ديسكتوب وموبايل */
+/* 4️⃣ تقوية كل الـ sticky headers — ديسكتوب وموبايل */
 .sct-sticky-header,
 .co-page-sticky,
 .page-sticky-bar {
@@ -3922,38 +3927,26 @@ html {
   top: var(--nav-h) !important;
   z-index: 500 !important;
   background: var(--bg) !important;
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  /* ✅ الحل الأساسي للديسكتوب */
+  
+  /* 🚨 إزالة transform من العنصر نفسه لتجنب مشاكل العرض الوهمية */
+  transform: none !important;
+  will-change: auto !important;
+  
+  /* تعويض الـ padding الخاص بـ .main */
   margin-left: -20px !important;
   margin-right: -20px !important;
   padding-left: 20px !important;
   padding-right: 20px !important;
   width: calc(100% + 40px) !important;
-}
-
-/* 4️⃣ منع الصفحات من كسر sticky */
-.page,
-.page.active {
-  overflow: visible !important;
-  contain: none !important;
+  
+  /* لمسة جمالية: ظل خفيف لتمييز القائمة عند التمرير */
+  box-shadow: 0 4px 12px -2px rgba(0,0,0,0.05) !important;
 }
 
 /* 5️⃣ ديسكتوب خاص — ضمان العمل مع السايدبار */
 @media (min-width: 1025px) {
   .main {
-    overflow: visible !important;
     position: relative !important;
-  }
-
-  .sct-sticky-header,
-  .co-page-sticky,
-  .page-sticky-bar {
-    /* يحسب العرض الصحيح مع السايدبار */
-    left: 0 !important;
-    right: 0 !important;
   }
 }
 
