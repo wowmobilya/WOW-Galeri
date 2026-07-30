@@ -4995,31 +4995,37 @@ body {
 
        
      
-<!-- ══ ROW: اللوحة + الشاحنة — نفس الصف بحجم متساوٍ ══ -->
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+<!-- ══ ROW: الشحن + رقم اللوحة + رقم الشاحنة — صف واحد بحجم متساوٍ ══ -->
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px;">
+
+  <!-- الشحن -->
+  <div class="fg">
+    <label class="fl">🚢 <span id="lbl_shippingTitle">الشحن</span></label>
+    <select class="fc" id="invShippingSelect"
+      onchange="selectShippingOpt(this.value); renderNoteTemplates();"
+      style="cursor:pointer;">
+      <option value="client" id="shippingOpt_client_opt">👤 يدفع العميل تكلفة الشحن</option>
+      <option value="company" id="shippingOpt_company_opt">🏢 تتحمل الشركة تكاليف الشحن</option>
+    </select>
+  </div>
+
+  <!-- رقم اللوحة -->
   <div class="fg">
     <label class="fl">🚛 <span id="lbl_plate">رقم اللوحة</span></label>
     <input type="text" class="fc" id="invPlate" placeholder="33 NMR 34">
   </div>
+
+  <!-- رقم الشاحنة -->
   <div class="fg">
-    <label class="fl">🚢 <span id="lbl_truck">رقم الشاحنة</span></label>
+    <label class="fl">🔢 <span id="lbl_truck">رقم الشاحنة</span></label>
     <input type="text" class="fc" id="invTruck" placeholder="251">
   </div>
+
 </div>
 
 
-   <!-- ══ SHIPPING SECTION — قائمة منسدلة ══ -->
-<div style="margin-bottom:14px;">
-  <label class="fl" style="margin-bottom:8px;">
-    🚢 <span id="lbl_shippingTitle">الشحن</span>
-  </label>
-  <select class="fc" id="invShippingSelect"
-    onchange="selectShippingOpt(this.value); renderNoteTemplates();"
-    style="cursor:pointer;">
-    <option value="client" id="shippingOpt_client_opt">👤 يدفع العميل تكلفة الشحن</option>
-    <option value="company" id="shippingOpt_company_opt">🏢 تتحمل الشركة تكاليف الشحن</option>
-  </select>
-</div>
+
+  
 
     <!-- ══ NOTES SECTION — 3 لغات × 5 صيغ ══ -->
     <div style="margin-bottom:4px;">
