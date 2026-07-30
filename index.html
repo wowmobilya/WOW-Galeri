@@ -4938,119 +4938,133 @@ body {
     <span id="step1Badge" class="inv-step-badge" style="display:none;"></span>
     <span id="step1Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
   </div>
-  <div class="inv-step-body" id="step1Body">
 
 
-     
-      <!-- ══ ROW 1: رقم الفاتورة + الشركة + الدولة + المحافظة ══ -->
-    <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px;">
-      
-      <div class="fg" style="flex: 1; min-width: 140px;">
-        <label class="fl">🔢 <span id="lbl_invNo">رقم الفاتورة</span></label>
-        <div class="inv-num-badge" id="invNumDisplay" style="width: 100%; justify-content: center; box-sizing: border-box;">A5001</div>
-      </div>
-      
-      <div class="fg" style="flex: 1; min-width: 140px;">
-        <label class="fl">🏢 <span id="lbl_coName">الشركة</span> <span class="req">*</span></label>
-        <select class="fc" id="invCoSel" onchange="onCoSelect()"><option value="">—</option></select>
-      </div>
-      
-      <div class="fg" id="invCountryField" style="flex: 1; min-width: 140px;">
-        <label class="fl">🌍 <span id="lbl_country">الدولة</span></label>
-        <input type="text" class="fc" id="invCountry" readonly placeholder="—">
-      </div>
-      
-      <div class="fg" id="invProvinceField" style="display:none; flex: 1; min-width: 140px;">
-        <label class="fl">🗺️ <span id="lbl_province">المحافظة</span></label>
-        <input type="text" class="fc" id="invProvince" readonly placeholder="—">
-      </div>
-      
+   
+ <div class="inv-step-body" id="step1Body">
+
+  <!-- ══ ROW 1: رقم الفاتورة + الشركة + الدولة + المحافظة ══ -->
+  <div style="display:flex; flex-wrap:wrap; gap:14px; margin-bottom:14px;">
+    
+    <div class="fg" style="flex:1; min-width:140px;">
+      <label class="fl">🔢 <span id="lbl_invNo">رقم الفاتورة</span></label>
+      <div class="inv-num-badge" id="invNumDisplay" 
+        style="width:100%; justify-content:center; box-sizing:border-box;">A5001</div>
+    </div>
+    
+    <div class="fg" style="flex:1; min-width:140px;">
+      <label class="fl">🏢 <span id="lbl_coName">الشركة</span> <span class="req">*</span></label>
+      <select class="fc" id="invCoSel" onchange="onCoSelect()">
+        <option value="">—</option>
+      </select>
+    </div>
+    
+    <div class="fg" id="invCountryField" style="flex:1; min-width:140px;">
+      <label class="fl">🌍 <span id="lbl_country">الدولة</span></label>
+      <input type="text" class="fc" id="invCountry" readonly placeholder="—">
+    </div>
+    
+    <div class="fg" id="invProvinceField" style="display:none; flex:1; min-width:140px;">
+      <label class="fl">🗺️ <span id="lbl_province">المحافظة</span></label>
+      <input type="text" class="fc" id="invProvince" readonly placeholder="—">
     </div>
 
+  </div>
 
-    <!-- ══ ROW 2: تاريخ التسجيل + العملة + تاريخ التحميل ══ -->
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px;">
-      
-      <!-- تاريخ التسجيل -->
-      <div class="fg">
-        <label class="fl">📝 <span id="lbl_regDate">تاريخ التسجيل</span></label>
-        <input type="date" class="fc" id="invRegDate">
-      </div>
+  <!-- ✦ فاصل عصري ✦ -->
+  <div style="
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--border), var(--gold), var(--border), transparent);
+    margin:0 0 14px;
+    opacity:0.6;
+  "></div>
 
-      <!-- العملة -->
-      <div class="fg">
-        <label class="fl">💱 <span id="lbl_currency">العملة</span></label>
-        <select class="fc" id="invCurrency" onchange="onCurrencyChange()">
-          <!-- تُملأ ديناميكياً بـ updateCurrencySelect() -->
-        </select>
-      </div>
-
-      <!-- تاريخ التحميل -->
-      <div class="fg">
-        <label class="fl">📅 <span id="lbl_loadDate">تاريخ التحميل</span></label>
-        <input type="date" class="fc" id="invLoadDate">
-      </div>
-
+  <!-- ══ ROW 2: تاريخ التسجيل + العملة + تاريخ التحميل ══ -->
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:14px;">
+    
+    <div class="fg">
+      <label class="fl">📝 <span id="lbl_regDate">تاريخ التسجيل</span></label>
+      <input type="date" class="fc" id="invRegDate">
     </div>
 
-       
-     
-<!-- ══ ROW: الشحن + رقم اللوحة + رقم الشاحنة — صف واحد بحجم متساوٍ ══ -->
-<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px;">
+    <div class="fg">
+      <label class="fl">💱 <span id="lbl_currency">العملة</span></label>
+      <select class="fc" id="invCurrency" onchange="onCurrencyChange()">
+      </select>
+    </div>
 
-  <!-- الشحن -->
-  <div class="fg">
-    <label class="fl">🚢 <span id="lbl_shippingTitle">الشحن</span></label>
-    <select class="fc" id="invShippingSelect"
-      onchange="selectShippingOpt(this.value); renderNoteTemplates();"
-      style="cursor:pointer;">
-      <option value="client" id="shippingOpt_client_opt">👤 يدفع العميل تكلفة الشحن</option>
-      <option value="company" id="shippingOpt_company_opt">🏢 تتحمل الشركة تكاليف الشحن</option>
-    </select>
+    <div class="fg">
+      <label class="fl">📅 <span id="lbl_loadDate">تاريخ التحميل</span></label>
+      <input type="date" class="fc" id="invLoadDate">
+    </div>
+
   </div>
 
-  <!-- رقم اللوحة -->
-  <div class="fg">
-    <label class="fl">🚛 <span id="lbl_plate">رقم اللوحة</span></label>
-    <input type="text" class="fc" id="invPlate" placeholder="33 NMR 34">
+  <!-- ✦ فاصل عصري ✦ -->
+  <div style="
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--border), var(--gold), var(--border), transparent);
+    margin:0 0 14px;
+    opacity:0.6;
+  "></div>
+
+  <!-- ══ ROW 3: الشحن + رقم اللوحة + رقم الشاحنة ══ -->
+  <div id="shippingTruckRow" 
+    style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px;">
+
+    <div class="fg">
+      <label class="fl">🚢 <span id="lbl_shippingTitle">الشحن</span></label>
+      <select class="fc" id="invShippingSelect"
+        onchange="selectShippingOpt(this.value); renderNoteTemplates();"
+        style="cursor:pointer;">
+        <option value="client" id="shippingOpt_client_opt">👤 يدفع العميل تكلفة الشحن</option>
+        <option value="company" id="shippingOpt_company_opt">🏢 تتحمل الشركة تكاليف الشحن</option>
+      </select>
+    </div>
+
+    <div class="fg">
+      <label class="fl">🚛 <span id="lbl_plate">رقم اللوحة</span></label>
+      <input type="text" class="fc" id="invPlate" placeholder="33 NMR 34">
+    </div>
+
+    <div class="fg">
+      <label class="fl">🔢 <span id="lbl_truck">رقم الشاحنة</span></label>
+      <input type="text" class="fc" id="invTruck" placeholder="251">
+    </div>
+
   </div>
 
-  <!-- رقم الشاحنة -->
-  <div class="fg">
-    <label class="fl">🔢 <span id="lbl_truck">رقم الشاحنة</span></label>
-    <input type="text" class="fc" id="invTruck" placeholder="251">
+  <!-- ✦ فاصل عصري ✦ -->
+  <div style="
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--border), var(--gold), var(--border), transparent);
+    margin:0 0 14px;
+    opacity:0.6;
+  "></div>
+
+  <!-- ══ NOTES SECTION ══ -->
+  <div style="margin-bottom:4px;">
+    <label class="fl" style="margin-bottom:8px;">
+      📝 <span id="lbl_notes">ملاحظات</span>
+    </label>
+    <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px;" 
+      id="noteTemplatesBtns"></div>
+    <textarea class="fc" id="invNotes" rows="3"
+      placeholder="..." style="resize:vertical;"></textarea>
+  </div>
+
+  <!-- نوع الفاتورة -->
+  <div style="margin-top:12px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+    <span id="invTypeLabel" style="font-size:12px; font-weight:700; color:var(--gold2);
+      background:var(--gold-light); border:1px solid rgba(200,169,110,.3);
+      border-radius:20px; padding:4px 14px;">🌍 خارجي</span>
+    <button class="btn btn-s btn-sm" id="editInvBtn" style="display:none;" 
+      onclick="toggleEditMode()">✏️ <span id="editInvBtnTxt">تعديل</span></button>
   </div>
 
 </div>
 
-
-
-  
-
-    <!-- ══ NOTES SECTION — 3 لغات × 5 صيغ ══ -->
-    <div style="margin-bottom:4px;">
-      <label class="fl" style="margin-bottom:8px;">
-        📝 <span id="lbl_notes">ملاحظات</span>
-      </label>
-
-      <!-- أزرار الصيغ الجاهزة -->
-      <div style="
-        display:flex;gap:5px;flex-wrap:wrap;
-        margin-bottom:8px;
-      " id="noteTemplatesBtns"></div>
-
-      <textarea class="fc" id="invNotes" rows="3"
-        placeholder="..." style="resize:vertical;"></textarea>
-    </div>
-
-    <!-- نوع الفاتورة -->
-    <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-      <span id="invTypeLabel" style="font-size:12px;font-weight:700;color:var(--gold2);background:var(--gold-light);border:1px solid rgba(200,169,110,.3);border-radius:20px;padding:4px 14px;">🌍 خارجي</span>
-      <button class="btn btn-s btn-sm" id="editInvBtn" style="display:none;" onclick="toggleEditMode()">✏️ <span id="editInvBtnTxt">تعديل</span></button>
-    </div>
-
-  </div><!-- end step1Body -->
-</div>
+   
 
 
       <!-- STEP 2: Pricing Tier -->
