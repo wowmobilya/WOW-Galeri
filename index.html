@@ -4629,12 +4629,13 @@ html, body {
 
       <div id="dimPiecesContainer"></div>
      <div style="
-  margin-top:8px;background:var(--gold-light);
-  border:1.5px solid var(--gold);border-radius:var(--rs);
-  padding:10px 16px;display:flex;
-  align-items:center;justify-content:space-between;
-  gap:12px;flex-wrap:wrap;
-">
+<div style="
+        margin-top:8px;background:var(--gold-light);
+        border:1.5px solid var(--gold);border-radius:var(--rs);
+        padding:10px 16px;display:flex;
+        align-items:center;justify-content:space-between;
+      ">
+
   <!-- CBM الإجمالي -->
   <div style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:12px;font-weight:700;color:var(--gold2);">
@@ -15543,8 +15544,9 @@ function renderDimPieces() {
   if (cbmLbl) cbmLbl.textContent = tx.cbm_total;
 
   // ── CSS مشترك لكل الحقول
-  const inputStyle = `
-    background:#fff;
+ const inputStyle = `
+    background:var(--input);
+    color:var(--text);
     border:1.5px solid var(--border);
     text-align:center;
     font-size:13px;
@@ -15552,21 +15554,24 @@ function renderDimPieces() {
     padding:7px 4px;
   `;
 
+
   container.innerHTML = S.dimPieces.map((piece, i) => {
     const cbm = (piece.l && piece.w && piece.h)
       ? (piece.l * piece.w * piece.h / 1000000).toFixed(4)
       : '0.0000';
 
-    return `
+  return `
     <div id="dimPiece_${i}" style="
-      background:#fff;
+      background:var(--card);
       border:1.5px solid var(--border);
       border-radius:var(--rs);
       padding:10px 12px;
       margin-bottom:8px;
       animation:fadeUp .25s ease both;
       animation-delay:${i * 0.04}s;
+      transition:background var(--tr), border-color var(--tr);
     ">
+
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
 
         <!-- رقم الباكيت -->
@@ -15664,14 +15669,15 @@ function renderDimPieces() {
         </div>
 
         <!-- CBM -->
-        <div style="
+       <div style="
           flex-shrink:0;
-          background:#fff;
+          background:var(--input);
           border:1px solid var(--border);
           border-radius:var(--rs);
           padding:4px 8px;
           text-align:center;
           min-width:64px;
+          transition:background var(--tr);
         ">
           <div style="font-size:8px;color:var(--muted);font-weight:600;">CBM</div>
           <div id="dimCBM_${i}" style="
