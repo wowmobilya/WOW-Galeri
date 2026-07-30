@@ -4448,20 +4448,19 @@ body {
 
   <div id="pr-form-view" style="display:none;">
     <div class="sct-sticky-header">
-<button class="sct-back-btn" onclick="goBack()">← <span id="prFormBackLabel">رجوع</span></button>
+      <button class="sct-back-btn" onclick="backToPrTypeSelect()">← <span data-i18n="btn_back">رجوع</span></button>
       <div class="sct-sticky-title">
         <h1 data-i18n="add_pr_title">📦 إضافة منتج</h1>
         <p id="addPrSubtitle">—</p>
       </div>
-   <div style="display:flex;gap:6px;flex-shrink:0;">
+     <div style="display:flex;gap:6px;flex-shrink:0;">
   <button class="btn btn-p btn-sm" onclick="savePr()" style="white-space:nowrap;">
     💾 <span id="prSaveBtnTxt">حفظ</span>
   </button>
-  <button class="btn btn-s btn-sm" onclick="resetPrForm()" id="prResetBtn" style="white-space:nowrap;">
+  <button class="btn btn-s btn-sm" onclick="resetPrForm()" style="white-space:nowrap;">
     🔄 <span id="prResetBtnTxt">تفريغ</span>
   </button>
 </div>
-
     </div>
 
 
@@ -8668,21 +8667,17 @@ function goBack() {
     const form = document.getElementById('pr-form-view');
     if (form && form.style.display !== 'none') {
 
-      // ✅ وضع التعديل → ارجع لصفحة المنتجات مباشرة
+      // وضع التعديل → ارجع لصفحة المنتجات
       if (S.editPrId || S._editPrReturnToProducts) {
         S._editPrReturnToProducts = false;
-        S.editPrId = null;
-        // ✅ إعادة الأزرار لوضع الإضافة بعد الرجوع
-        updatePrFormBtnLabels();
         showPage('products');
         return;
       }
 
-      // ✅ إضافة جديدة → ارجع لاختيار النوع
+      // إضافة جديدة → ارجع لاختيار النوع
       backToPrTypeSelect();
       return;
     }
-
     // شاشة اختيار النوع → الرئيسية
     showPage('dashboard');
     return;
@@ -8716,7 +8711,6 @@ function goBack() {
   const parent = PARENT_MAP[cur] || 'dashboard';
   showPage(parent);
 }
-
 
 
 /* ============================================================
@@ -9811,19 +9805,21 @@ function resetPrForm(){
   S.prActiveTier = 'A';
 
   // ── مسح حقول النصوص والأرقام القديمة
-  [
-    'prName','prHsCode','prDesc',
-    'prPriceA','prPriceB','prPriceC',
-    'prWeight',
-  ].forEach(id => {
+ [
+  'prName','prHsCode','prDesc',
+  'prPriceA','prPriceB','prPriceC',
+  'prWeight',
+].forEach(id => {
+
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
 
-  // ── إعادة تعيين نظام الأبعاد الديناميكي
-  S.prDims = [{ l:'', w:'', h:'' }];
-  renderPrDimRows();
-  onPrDimAllInput();
+ // ── إعادة تعيين نظام الأبعاد الديناميكي
+S.prDims = [{ l:'', w:'', h:'' }];
+renderPrDimRows();
+onPrDimAllInput();
+
 
   // ── إعادة تعيين CBM
   const cbmEl = document.getElementById('cbmCalc');
@@ -9890,11 +9886,7 @@ function resetPrForm(){
 
   // ── تحديث تسميات الحقول بلغة البرنامج
   updatePrInfoLabels();
-
-  // ✅ 6️⃣ إعادة واجهة وضع الإضافة — عنوان + أزرار
-  updatePrFormBtnLabels();
 }
-
 
 
 /* ============================================================
@@ -10180,19 +10172,7 @@ function editPr(id){
   S.prActiveTier           = p.activeTier || 'A';
   S.prType                 = p.type || 'coffee_table';
 
-showPage('add-product');
-
-// ✅ تحديث العنوان فوراً بعد setPage وقبل setTimeout
-setTimeout(() => {
-  const lang = S.lang || 'ar';
-  const pageTitleLabels = {
-    ar: '✏️ تعديل منتج',
-    tr: '✏️ Ürün Düzenle',
-    en: '✏️ Edit Product',
-  };
-  const aptTitleEl = document.getElementById('apt-title');
-  if (aptTitleEl) aptTitleEl.textContent = pageTitleLabels[lang] || pageTitleLabels.en;
-}, 10);
+  showPage('add-product');
 
   setTimeout(() => {
 
@@ -10222,31 +10202,36 @@ setTimeout(() => {
     // ── الوزن
     sv('prWeight',  p.weight  || '');
 
-    // ── تحميل الأبعاد في النظام الديناميكي
-    if (p.dims && p.dims.length) {
-      S.prDims = p.dims.map(d => ({ l: d.l||0, w: d.w||0, h: d.h||0 }));
-    } else if (p.dimL || p.dimW || p.dimH) {
-      S.prDims = [{ l: p.dimL||0, w: p.dimW||0, h: p.dimH||0 }];
-    } else {
-      S.prDims = [{ l:'', w:'', h:'' }];
-    }
-    renderPrDimRows();
-    onPrDimAllInput();
+   // ── ✅ تحميل الأبعاد في النظام الديناميكي
+if (p.dims && p.dims.length) {
+  S.prDims = p.dims.map(d => ({ l: d.l||0, w: d.w||0, h: d.h||0 }));
+} else if (p.dimL || p.dimW || p.dimH) {
+  // دعم البيانات القديمة
+  S.prDims = [{ l: p.dimL||0, w: p.dimW||0, h: p.dimH||0 }];
+} else {
+  S.prDims = [{ l:'', w:'', h:'' }];
+}
+renderPrDimRows();
+onPrDimAllInput();
 
-    // ── اللون
+
+    // ── ✅ اللون — من قائمة FURNITURE_COLORS
     const colorSel        = document.getElementById('prColorSel');
     const colorCustomWrap = document.getElementById('prColorCustomWrap');
     const colorCustomInp  = document.getElementById('prColorCustom');
 
     if (colorSel) {
+      // إعادة بناء القائمة أولاً بلغة البرنامج الحالية
       buildPrColorSelect();
 
       if (p.color && isKnownColor(p.color)) {
+        // ── لون معروف في القائمة → اختره مباشرة
         colorSel.value      = p.color;
         colorSel.dataset.val = p.color;
         if (colorCustomWrap) colorCustomWrap.style.display = 'none';
         if (colorCustomInp)  colorCustomInp.value = '';
       } else if (p.color && p.color !== 'STANDARD') {
+        // ── لون مخصص غير موجود في القائمة → وضع CUSTOM
         colorSel.value      = 'CUSTOM';
         colorSel.dataset.val = 'CUSTOM';
         if (colorCustomWrap) {
@@ -10255,6 +10240,7 @@ setTimeout(() => {
         }
         if (colorCustomInp) colorCustomInp.value = p.color;
       } else {
+        // ── STANDARD أو فارغ
         colorSel.value      = 'STANDARD';
         colorSel.dataset.val = 'STANDARD';
         if (colorCustomWrap) colorCustomWrap.style.display = 'none';
@@ -10305,10 +10291,6 @@ setTimeout(() => {
 
     // ── تحديث تسميات الحقول بلغة البرنامج
     updatePrInfoLabels();
-
-    // ✅ 5️⃣ تحديث واجهة وضع التعديل — عنوان + أزرار
-    updatePrSelectedTypeBanner(p.type);
-    updatePrFormBtnLabels();
 
   }, 80);
 }
@@ -12117,48 +12099,15 @@ const autoLbl = autoLabels[lang] || 'Auto';
   buildPrColorSelect();
 }
 
- function updatePrFormBtnLabels() {
-  const lang   = S.lang || 'ar';
-  const isEdit = !!S.editPrId;
-
-  // ── نصوص زر الحفظ
-  const saveLabels = {
-    ar: isEdit ? 'حفظ التعديل' : 'حفظ',
-    tr: isEdit ? 'Değişiklikleri Kaydet' : 'Kaydet',
-    en: isEdit ? 'Save Changes' : 'Save',
+   function updatePrFormBtnLabels() {
+  const lang = S.lang || 'ar';
+  const labels = {
+    save:  { ar:'حفظ',   tr:'Kaydet',  en:'Save'  },
+    reset: { ar:'تفريغ', tr:'Temizle', en:'Clear' },
   };
-
-  // ── نصوص زر التفريغ
-  const resetLabels = {
-    ar: 'تفريغ',
-    tr: 'Temizle',
-    en: 'Clear',
-  };
-
-  // ── نصوص زر الرجوع
-  const backLabels = {
-    ar: isEdit ? '← رجوع للمنتجات' : '← رجوع',
-    tr: isEdit ? '← Ürünlere Dön'   : '← Geri',
-    en: isEdit ? '← Back to Products': '← Back',
-  };
-
-  // ── نصوص عنوان الصفحة
-  const titleLabels = {
-    ar: isEdit ? '✏️ تعديل منتج' : '📦 إضافة منتج',
-    tr: isEdit ? '✏️ Ürün Düzenle' : '📦 Ürün Ekle',
-    en: isEdit ? '✏️ Edit Product'  : '📦 Add Product',
-  };
-
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-
-  set('prSaveBtnTxt',    saveLabels[lang]  || saveLabels.en);
-  set('prResetBtnTxt',   resetLabels[lang] || resetLabels.en);
-  set('prFormBackLabel', backLabels[lang]  || backLabels.en);
-  set('apt-title',       titleLabels[lang] || titleLabels.en);
-
-  // ── إخفاء زر التفريغ في وضع التعديل
-  const resetBtn = document.getElementById('prResetBtn');
-  if (resetBtn) resetBtn.style.display = isEdit ? 'none' : 'inline-flex';
+  set('prSaveBtnTxt',  labels.save[lang]  || labels.save.en);
+  set('prResetBtnTxt', labels.reset[lang] || labels.reset.en);
 }
 
    
@@ -12790,6 +12739,7 @@ function updatePrSelectedTypeBanner(tp) {
     en: '🔄 Change',
   };
 
+  // ✅ أضف هذا — نص "املأ بيانات المنتج" × 3 لغات
   const subtitleLabels = {
     ar: 'املأ بيانات المنتج',
     tr: 'Ürün bilgilerini doldurun',
@@ -12813,27 +12763,10 @@ function updatePrSelectedTypeBanner(tp) {
   const changeBtn = document.getElementById('changePrTypeBtn');
   if (changeBtn) changeBtn.textContent = changeLabels[lang] || changeLabels.en;
 
+  // ✅ تحديث subtitle الصفحة
   const subtitleEl = document.getElementById('addPrSubtitle');
   if (subtitleEl) subtitleEl.textContent = subtitleLabels[lang] || subtitleLabels.en;
-
-  // ══════════════════════════════════════════════════════
-  // ✅ الكود الجديد — التمييز بين الإضافة والتعديل
-  // ══════════════════════════════════════════════════════
-  const isEdit = !!S.editPrId;
-
-  // ── عنوان الصفحة الرئيسي
-  const pageTitleLabels = {
-    ar: isEdit ? '✏️ تعديل منتج' : '📦 إضافة منتج',
-    tr: isEdit ? '✏️ Ürün Düzenle' : '📦 Ürün Ekle',
-    en: isEdit ? '✏️ Edit Product' : '📦 Add Product',
-  };
-  const aptTitleEl = document.getElementById('apt-title');
-  if (aptTitleEl) aptTitleEl.textContent = pageTitleLabels[lang] || pageTitleLabels.en;
-
-  // ── تحديث نصوص الأزرار (حفظ / تفريغ)
-  updatePrFormBtnLabels();
 }
-
 
 
 
