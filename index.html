@@ -4453,15 +4453,14 @@ body {
         <h1 data-i18n="add_pr_title">📦 إضافة منتج</h1>
         <p id="addPrSubtitle">—</p>
       </div>
-      <!-- ✅ أزرار الحفظ وإعادة التفريغ في الأعلى الثابت -->
-      <div style="display:flex;gap:6px;flex-shrink:0;">
-        <button class="btn btn-p btn-sm" onclick="savePr()" style="white-space:nowrap;">
-          💾 <span data-i18n="btn_save_pr">حفظ</span>
-        </button>
-        <button class="btn btn-s btn-sm" onclick="resetPrForm()" title="إعادة تعيين">
-          🔄
-        </button>
-      </div>
+     <div style="display:flex;gap:6px;flex-shrink:0;">
+  <button class="btn btn-p btn-sm" onclick="savePr()" style="white-space:nowrap;">
+    💾 <span id="prSaveBtnTxt">حفظ</span>
+  </button>
+  <button class="btn btn-s btn-sm" onclick="resetPrForm()" style="white-space:nowrap;">
+    🔄 <span id="prResetBtnTxt">تفريغ</span>
+  </button>
+</div>
     </div>
 
 
@@ -8337,6 +8336,7 @@ updateSumSectionLabels();
 updateStep1Texts();
 updateDash();
 updatePrInfoLabels();
+updatePrFormBtnLabels(); // ← السطر الجديد
 updatePrDimLabels();
    updateTierLabels();
 updateCostBoxLabels();
@@ -12028,6 +12028,18 @@ function updatePrInfoLabels() {
   buildPrColorSelect();
 }
 
+   function updatePrFormBtnLabels() {
+  const lang = S.lang || 'ar';
+  const labels = {
+    save:  { ar:'حفظ',   tr:'Kaydet',  en:'Save'  },
+    reset: { ar:'تفريغ', tr:'Temizle', en:'Clear' },
+  };
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('prSaveBtnTxt',  labels.save[lang]  || labels.save.en);
+  set('prResetBtnTxt', labels.reset[lang] || labels.reset.en);
+}
+
+   
 /* ── بناء قائمة الألوان من FURNITURE_COLORS ── */
 function buildPrColorSelect() {
   const sel = document.getElementById('prColorSel');
