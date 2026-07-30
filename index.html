@@ -16302,11 +16302,10 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(_ddUpdateUI, 400)
 
 
 
-   /* ============================================================
+ /* ============================================================
    STICKY HEADER — DESKTOP FIX (JS)
 ============================================================ */
 function fixStickyOnDesktop() {
-  // على الموبايل sticky يعمل — لا تتدخل
   if (window.innerWidth <= 1024) return;
 
   const headers = document.querySelectorAll(
@@ -16314,8 +16313,8 @@ function fixStickyOnDesktop() {
   );
   if (!headers.length) return;
 
-  const sideW = 240; // --side-w
-  const navH  = 60;  // --nav-h
+  const sideW = 240;
+  const navH  = 60;
   const isRtl = document.documentElement.dir === 'rtl';
 
   headers.forEach(header => {
@@ -16328,20 +16327,19 @@ function fixStickyOnDesktop() {
     header.style.background = 'var(--bg)';
     header.style.boxShadow  = '0 2px 8px rgba(0,0,0,.08)';
     header.style.width      = `calc(100% - ${sideW}px)`;
+    header.style.padding    = '10px 20px 8px';
 
     if (isRtl) {
       header.style.right = sideW + 'px';
-      header.style.left  = '0';
+      header.style.left  = 'auto';
     } else {
       header.style.left  = sideW + 'px';
-      header.style.right = '0';
+      header.style.right = 'auto';
     }
 
-    // مسافة للمحتوى تحته
-    const h = header.offsetHeight || 56;
-    if (header.nextElementSibling) {
-      header.nextElementSibling.style.marginTop = (h + 4) + 'px';
-    }
+    // ✅ paddingTop للـ page بدل marginTop للعنصر التالي
+    const h = header.offsetHeight || 60;
+    parent.style.paddingTop = (h + navH + 8) + 'px';
   });
 }
 
@@ -16358,9 +16356,11 @@ function resetStickyOnMobile() {
     header.style.right      = '';
     header.style.left       = '';
     header.style.boxShadow  = '';
-    if (header.nextElementSibling) {
-      header.nextElementSibling.style.marginTop = '';
-    }
+    header.style.padding    = '';
+
+    // ✅ إعادة paddingTop للصفحة
+    const parent = header.closest('.page');
+    if (parent) parent.style.paddingTop = '';
   });
 }
 
