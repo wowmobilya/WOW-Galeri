@@ -4618,12 +4618,15 @@ html, body {
 
     <!-- ✅ 4️⃣ الأبعاد التفصيلية رابعاً -->
     <div class="card">
-      <div class="card-hdr">
-        <div class="card-title">📐 <span data-i18n="dims">الأبعاد</span></div>
-        <button type="button" class="btn btn-p btn-sm" onclick="addDimPiece()">
-  ➕ <span id="addDimBtnTxt">إضافة باكيت</span>
-</button>
-      </div>
+     <div class="card-hdr">
+  <div class="card-title">
+    📦 <span id="dimCardTitle">أبعاد الباكيت للشحن (سم)</span>
+  </div>
+  <button type="button" class="btn btn-p btn-sm" onclick="addDimPiece()">
+    ➕ <span id="addDimBtnTxt">إضافة باكيت</span>
+  </button>
+</div>
+
       <div id="dimPiecesContainer"></div>
       <div style="
         margin-top:8px;background:var(--gold-light);
@@ -9490,7 +9493,23 @@ function updatePrDimLabels() {
   const L    = PR_DIM_LABELS[lang] || PR_DIM_LABELS.en;
   const set  = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   set('prDimSectionLbl', L.section);
-  // تحديث placeholders وتسميات الصفوف الموجودة
+
+  // ✅ تحديث عنوان الكارد الخارجي
+  const cardTitleLabels = {
+    ar: 'أبعاد الباكيت للشحن (سم)',
+    tr: 'Kargo Paketi Boyutları (cm)',
+    en: 'Shipping Package Dimensions (cm)',
+  };
+  set('dimCardTitle', cardTitleLabels[lang] || cardTitleLabels.en);
+
+  // ✅ تحديث نص زر الإضافة
+  const addBtnLabels = {
+    ar: 'إضافة باكيت',
+    tr: 'Paket Ekle',
+    en: 'Add Package',
+  };
+  set('addDimBtnTxt', addBtnLabels[lang] || addBtnLabels.en);
+
   renderPrDimRows();
 }
 
