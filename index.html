@@ -4932,12 +4932,14 @@ body {
 
      <!-- STEP 1: Invoice Details — REDESIGNED 2026 -->
 <div class="inv-step" id="invStep1">
-  <div class="inv-step-hdr" onclick="toggleStep('step1')">
+ <div class="inv-step-hdr" onclick="toggleStep('step1')">
     <div class="inv-step-num">1</div>
     <div class="inv-step-title" id="step1Title">تفاصيل الفاتورة</div>
     <span id="step1Badge" class="inv-step-badge" style="display:none;"></span>
+    <span id="invTypeLabel" style="font-size:11px;font-weight:700;color:var(--gold2);background:var(--gold-light);border:1px solid rgba(200,169,110,.3);border-radius:20px;padding:3px 10px;">🌍 خارجي</span>
     <span id="step1Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
-  </div>
+</div>
+
 
 
    
@@ -5055,9 +5057,7 @@ body {
 
   <!-- نوع الفاتورة -->
   <div style="margin-top:12px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-    <span id="invTypeLabel" style="font-size:12px; font-weight:700; color:var(--gold2);
-      background:var(--gold-light); border:1px solid rgba(200,169,110,.3);
-      border-radius:20px; padding:4px 14px;">🌍 خارجي</span>
+   
     <button class="btn btn-s btn-sm" id="editInvBtn" style="display:none;" 
       onclick="toggleEditMode()">✏️ <span id="editInvBtnTxt">تعديل</span></button>
   </div>
