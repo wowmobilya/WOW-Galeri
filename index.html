@@ -9649,12 +9649,12 @@ function resetPrForm(){
   S.prActiveTier = 'A';
 
   // ── مسح حقول النصوص والأرقام القديمة
-  [
-    'prName','prHsCode','prDesc',
-   'prPriceA','prPriceB','prPriceC',
-'prWeight',
-    'prWeight',
-  ].forEach(id => {
+ [
+  'prName','prHsCode','prDesc',
+  'prPriceA','prPriceB','prPriceC',
+  'prWeight',
+].forEach(id => {
+
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
