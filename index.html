@@ -4942,30 +4942,31 @@ body {
 
 
      
-     <!-- ══ ROW 1: رقم الفاتورة + الشركة + الدولة + المحافظة ══ -->
+      <!-- ══ ROW 1: رقم الفاتورة + الشركة + الدولة + المحافظة ══ -->
     <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px;">
       
-      <div class="fg" style="flex: 1; min-width: 120px;">
+      <div class="fg" style="flex: 1; min-width: 140px;">
         <label class="fl">🔢 <span id="lbl_invNo">رقم الفاتورة</span></label>
         <div class="inv-num-badge" id="invNumDisplay" style="width: 100%; justify-content: center; box-sizing: border-box;">A5001</div>
       </div>
       
-      <div class="fg" style="flex: 2; min-width: 180px;">
+      <div class="fg" style="flex: 1; min-width: 140px;">
         <label class="fl">🏢 <span id="lbl_coName">الشركة</span> <span class="req">*</span></label>
         <select class="fc" id="invCoSel" onchange="onCoSelect()"><option value="">—</option></select>
       </div>
       
-      <div class="fg" id="invCountryField" style="flex: 1; min-width: 120px;">
+      <div class="fg" id="invCountryField" style="flex: 1; min-width: 140px;">
         <label class="fl">🌍 <span id="lbl_country">الدولة</span></label>
         <input type="text" class="fc" id="invCountry" readonly placeholder="—">
       </div>
       
-      <div class="fg" id="invProvinceField" style="display:none; flex: 1; min-width: 120px;">
+      <div class="fg" id="invProvinceField" style="display:none; flex: 1; min-width: 140px;">
         <label class="fl">🗺️ <span id="lbl_province">المحافظة</span></label>
         <input type="text" class="fc" id="invProvince" readonly placeholder="—">
       </div>
       
     </div>
+
 
     <!-- ══ ROW 2: العملة + التواريخ ══ -->
     <div class="fgrid" style="margin-bottom:14px;">
