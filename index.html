@@ -3888,39 +3888,6 @@ html, body {
 
 
 
-/* ============================================================
-   STICKY HEADER — FINAL FIX
-============================================================ */
-
-/* 1️⃣ الإصلاح الجذري */
-body {
-  overflow-x: clip !important; /* clip لا يكسر sticky — hidden يكسره */
-}
-
-.main,
-.page,
-.page.active {
-  overflow: visible !important;
-  contain: none !important;
-}
-
-/* 2️⃣ تقوية الـ sticky */
-.sct-sticky-header,
-.co-page-sticky,
-.page-sticky-bar {
-  position: -webkit-sticky !important;
-  position: sticky !important;
-  top: var(--nav-h) !important;
-  z-index: 500 !important;
-  background: var(--bg) !important;
-}
-
-/* 3️⃣ ديسكتوب — ضمان العمل مع السايدبار */
-@media (min-width: 1025px) {
-  .main {
-    overflow: visible !important;
-  }
-}
 
 
    
@@ -16327,6 +16294,102 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(_ddUpdateUI, 400)
    
 
 
+
+
+
+
+
+
+
+
+   /* ============================================================
+   STICKY HEADER — DESKTOP FIX (JS)
+============================================================ */
+function fixStickyOnDesktop() {
+  // على الموبايل sticky يعمل — لا تتدخل
+  if (window.innerWidth <= 1024) return;
+
+  const headers = document.querySelectorAll(
+    '.sct-sticky-header, .co-page-sticky, .page-sticky-bar'
+  );
+  if (!headers.length) return;
+
+  const sideW = 240; // --side-w
+  const navH  = 60;  // --nav-h
+  const isRtl = document.documentElement.dir === 'rtl';
+
+  headers.forEach(header => {
+    const parent = header.closest('.page');
+    if (!parent || !parent.classList.contains('active')) return;
+
+    header.style.position   = 'fixed';
+    header.style.top        = navH + 'px';
+    header.style.zIndex     = '500';
+    header.style.background = 'var(--bg)';
+    header.style.boxShadow  = '0 2px 8px rgba(0,0,0,.08)';
+    header.style.width      = `calc(100% - ${sideW}px)`;
+
+    if (isRtl) {
+      header.style.right = sideW + 'px';
+      header.style.left  = '0';
+    } else {
+      header.style.left  = sideW + 'px';
+      header.style.right = '0';
+    }
+
+    // مسافة للمحتوى تحته
+    const h = header.offsetHeight || 56;
+    if (header.nextElementSibling) {
+      header.nextElementSibling.style.marginTop = (h + 4) + 'px';
+    }
+  });
+}
+
+/* على الموبايل — أعد sticky الطبيعي */
+function resetStickyOnMobile() {
+  if (window.innerWidth > 1024) return;
+
+  document.querySelectorAll(
+    '.sct-sticky-header, .co-page-sticky, .page-sticky-bar'
+  ).forEach(header => {
+    header.style.position   = '';
+    header.style.top        = '';
+    header.style.width      = '';
+    header.style.right      = '';
+    header.style.left       = '';
+    header.style.boxShadow  = '';
+    if (header.nextElementSibling) {
+      header.nextElementSibling.style.marginTop = '';
+    }
+  });
+}
+
+/* ── تشغيل عند كل تغيير صفحة ── */
+const _origShowPageFix = window.showPage;
+window.showPage = function(id, pushHistory) {
+  _origShowPageFix.call(this, id, pushHistory);
+  setTimeout(() => {
+    fixStickyOnDesktop();
+    resetStickyOnMobile();
+  }, 80);
+};
+
+/* ── تشغيل عند تغيير حجم الشاشة ── */
+window.addEventListener('resize', () => {
+  fixStickyOnDesktop();
+  resetStickyOnMobile();
+});
+
+/* ── تشغيل عند التحميل ── */
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    fixStickyOnDesktop();
+    resetStickyOnMobile();
+  }, 600);
+});
+
+
+   
    
 
 
