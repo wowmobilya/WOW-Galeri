@@ -4968,21 +4968,32 @@ body {
     </div>
 
 
-    <!-- ══ ROW 2: العملة + التواريخ ══ -->
+      <!-- ══ ROW 2: تاريخ التسجيل + العملة + تاريخ التحميل ══ -->
     <div class="fgrid" style="margin-bottom:14px;">
+      
+      <!-- تاريخ التسجيل -->
       <div class="fg">
-  <label class="fl">💱 <span id="lbl_currency">العملة</span></label>
-  <select class="fc" id="invCurrency" onchange="onCurrencyChange()">
-    <!-- تُملأ ديناميكياً بـ updateCurrencySelect() -->
-  </select>
-</div>
+        <label class="fl">📝 <span id="lbl_regDate">تاريخ التسجيل</span></label>
+        <input type="date" class="fc" id="invRegDate">
+      </div>
 
+      <!-- العملة -->
+      <div class="fg">
+        <label class="fl">💱 <span id="lbl_currency">العملة</span></label>
+        <select class="fc" id="invCurrency" onchange="onCurrencyChange()">
+          <!-- تُملأ ديناميكياً بـ updateCurrencySelect() -->
+        </select>
+      </div>
+
+      <!-- تاريخ التحميل -->
       <div class="fg">
         <label class="fl">📅 <span id="lbl_loadDate">تاريخ التحميل</span></label>
         <input type="date" class="fc" id="invLoadDate">
       </div>
 
+       
       <!-- ── موعد التسليم الذكي ── -->
+
       <div class="fg" style="grid-column:1/-1;">
         <label class="fl" style="margin-bottom:8px;">
           🚚 <span id="lbl_deliveryDate">موعد التسليم</span>
@@ -10467,9 +10478,15 @@ function initCreateInv(){
   selInvTier(S.invTier||'A',null);
   document.querySelectorAll('.pay-method-card').forEach(c=>c.classList.toggle('sel',c.dataset.pm==='cash'));
   S.invPayMethod='cash';
-  const ldEl=document.getElementById('invLoadDate');
+   const ldEl=document.getElementById('invLoadDate');
   if(ldEl&&!ldEl.value)ldEl.value=new Date().toISOString().split('T')[0];
+  
+  // إضافة تاريخ التسجيل التلقائي
+  const regDateEl = document.getElementById('invRegDate');
+  if(regDateEl && !regDateEl.value) regDateEl.value = new Date().toISOString().split('T')[0];
+
   updateSumCurrencyBadge();
+
   // reset step badges
   const b4=document.getElementById('step4Badge');if(b4)b4.textContent=t('kdv_off')||'غير مفعّل';
   const b5=document.getElementById('step5Badge');if(b5)b5.textContent='0 '+t('items_count')||'0 قطعة';
@@ -10752,7 +10769,8 @@ async function saveInvoice(){
     items:[...S.invItems],
     subtotalUSD,discountUSD,depositUSD,grandTotal:grandUSD,
     totalPaidUSD,remainingUSD,
-    totalCBM:parseFloat(totalCBM.toFixed(4)),totalPackets:totalPkts,
+      totalCBM:parseFloat(totalCBM.toFixed(4)),totalPackets:totalPkts,
+    regDate:document.getElementById('invRegDate').value, // حفظ تاريخ التسجيل
     loadDate:document.getElementById('invLoadDate').value,
     deliveryDate:document.getElementById('invDeliveryDate')?.value||'',
     delivered:false,
@@ -11562,10 +11580,13 @@ function editInv(id){
   S.invType=inv.companyType||'external';
   S.currentInvPayments=S.payments.filter(p=>p.invoiceId===id);
   showPage('create-invoice');
-  setTimeout(()=>{
+   setTimeout(()=>{
     const sv=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
-    sv('invCoSel',inv.companyId);sv('invLoadDate',inv.loadDate);
-sv('invDeliveryDate',inv.deliveryDate||'');
+    sv('invCoSel',inv.companyId);
+    sv('invRegDate',inv.regDate); // استرجاع تاريخ التسجيل
+    sv('invLoadDate',inv.loadDate);
+    sv('invDeliveryDate',inv.deliveryDate||'');
+
     sv('invPlate',inv.plate);sv('invTruck',inv.truck);sv('invNotes',inv.notes);
     sv('sumDiscount',inv.discountUSD||0);sv('sumDeposit',inv.depositUSD||0);
     sv('invCurrency',inv.currency||'USD');
@@ -15315,6 +15336,8 @@ const STEP1_TEXTS = {
     shippingBadge: {
       client:  '👤 على العميل',
       company: '🏢 على الشركة',
+           lbl_regDate:             'تاريخ التسجيل',
+
     },
   },
   tr: {
@@ -15344,6 +15367,8 @@ const STEP1_TEXTS = {
     shippingBadge: {
       client:  '👤 Alıcı Öder',
       company: '🏢 Şirket Öder',
+           lbl_regDate:             'Kayıt Tarihi',
+
     },
   },
   en: {
@@ -15373,6 +15398,8 @@ const STEP1_TEXTS = {
     shippingBadge: {
       client:  '👤 Buyer Pays',
       company: '🏢 Company Pays',
+           lbl_regDate:             'Registration Date',
+
     },
   },
 };
@@ -15409,6 +15436,7 @@ function updateStep1Texts() {
   set('lbl_notes',              L.lbl_notes);
   set('lbl_noteTemplates',      L.lbl_noteTemplates);
   set('delivery45InfoText',     L.delivery45Info);
+  set('lbl_regDate',            L.lbl_regDate);
 
   /* ✅ 1 — إعادة بناء select العملة بلغة البرنامج */
   updateCurrencySelect();
