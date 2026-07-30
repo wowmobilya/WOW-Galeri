@@ -4624,12 +4624,57 @@ body {
           </div>
         </div>
 
-        <!-- الوزن -->
-        <div class="fg">
-          <label class="fl">⚖️ <span id="prWeightLbl">الوزن (كجم)</span></label>
-          <input type="number" class="fc" id="prWeight"
-            placeholder="0.0" min="0" step="0.1">
-        </div>
+       <!-- الوزن — للقراءة فقط (يُحسب تلقائياً) -->
+<div class="fg">
+  <label class="fl">⚖️ <span id="prWeightLbl">الوزن (كجم)</span>
+    <span style="
+      font-size:9px;font-weight:700;
+      background:rgba(56,161,105,.1);color:var(--green);
+      border:1px solid rgba(56,161,105,.25);
+      border-radius:20px;padding:1px 7px;margin-inline-start:5px;
+    " id="prWeightAutoLbl">تلقائي</span>
+  </label>
+  <input type="number" class="fc" id="prWeight"
+    placeholder="0.0" min="0" step="0.1"
+    readonly
+    style="background:var(--gold-light);border-color:rgba(200,169,110,.3);
+           color:var(--gold2);font-weight:800;cursor:not-allowed;">
+</div>
+
+<!-- عدد الباكيت — للقراءة فقط (يُحسب تلقائياً) -->
+<div class="fg">
+  <label class="fl">📦 <span id="prPacketsLbl">عدد الباكيت</span>
+    <span style="
+      font-size:9px;font-weight:700;
+      background:rgba(56,161,105,.1);color:var(--green);
+      border:1px solid rgba(56,161,105,.25);
+      border-radius:20px;padding:1px 7px;margin-inline-start:5px;
+    " id="prPacketsAutoLbl">تلقائي</span>
+  </label>
+  <input type="number" class="fc" id="prPackets"
+    placeholder="0" min="0" step="1"
+    readonly
+    style="background:var(--gold-light);border-color:rgba(200,169,110,.3);
+           color:var(--gold2);font-weight:800;cursor:not-allowed;">
+</div>
+
+<!-- حجم CBM — للقراءة فقط (يُحسب تلقائياً) -->
+<div class="fg">
+  <label class="fl">📐 <span id="prCbmInfoLbl">حجم CBM</span>
+    <span style="
+      font-size:9px;font-weight:700;
+      background:rgba(56,161,105,.1);color:var(--green);
+      border:1px solid rgba(56,161,105,.25);
+      border-radius:20px;padding:1px 7px;margin-inline-start:5px;
+    " id="prCbmAutoLbl">تلقائي</span>
+  </label>
+  <input type="text" class="fc" id="prCbmInfo"
+    placeholder="0.0000 m³"
+    readonly
+    style="background:var(--gold-light);border-color:rgba(200,169,110,.3);
+           color:var(--gold2);font-weight:800;cursor:not-allowed;">
+</div>
+
 
         <!-- اللون -->
         <div class="fg" style="grid-column:span 2;">
@@ -9727,7 +9772,15 @@ function onPrDimAllInput() {
 
   const cbmEl = document.getElementById('cbmCalc');
   if (cbmEl) cbmEl.textContent = totalCBM.toFixed(4) + ' m³';
+
+  // ── ✅ تحديث حقل CBM في "معلومات القطعة"
+  const prCbmInfoInp = document.getElementById('prCbmInfo');
+  if (prCbmInfoInp) prCbmInfoInp.value = totalCBM.toFixed(4) + ' m³';
+
+  // ── ✅ تحديث حقل الوزن من dimPieces
+  calcTotalCBM();
 }
+
 
 
 /* ── قراءة الأبعاد عند الحفظ ── */
@@ -11973,7 +12026,10 @@ const PR_INFO_LABELS = {
     dimL:    'الطول (سم)',
     dimW:    'العرض (سم)',
     dimH:    'الارتفاع (سم)',
-    weight:  'الوزن (كجم)',
+weight:  'الوزن (كجم)',
+packets: 'عدد الباكيت',   // ← أضف هذا
+cbm_info:'حجم CBM',        // ← أضف هذا
+     
     color:   'اللون',
     customPh:'اكتب اللون يدوياً...',
   },
@@ -11984,7 +12040,9 @@ const PR_INFO_LABELS = {
     dimL:    'Uzunluk (cm)',
     dimW:    'Genişlik (cm)',
     dimH:    'Yükseklik (cm)',
-    weight:  'Ağırlık (kg)',
+weight:  'Ağırlık (kg)',
+packets: 'Paket Sayısı',   // ← أضف هذا
+cbm_info:'CBM Hacmi',       // ← أضف هذا
     color:   'Renk',
     customPh:'Rengi manuel yazın...',
   },
@@ -11995,7 +12053,9 @@ const PR_INFO_LABELS = {
     dimL:    'Length (cm)',
     dimW:    'Width (cm)',
     dimH:    'Height (cm)',
-    weight:  'Weight (kg)',
+weight:  'Weight (kg)',
+packets: 'Packet Count',   // ← أضف هذا
+cbm_info:'CBM Volume',      // ← أضف هذا
     color:   'Color',
     customPh:'Type color manually...',
   },
@@ -12014,6 +12074,17 @@ function updatePrInfoLabels() {
   set('prDimWLbl',   L.dimW);
   set('prDimHLbl',   L.dimH);
   set('prWeightLbl', L.weight);
+   set('prPacketsLbl', L.packets);
+set('prCbmInfoLbl', L.cbm_info);
+
+// ── تسميات "تلقائي" × 3 لغات
+const autoLabels = { ar:'تلقائي', tr:'Otomatik', en:'Auto' };
+const autoLbl = autoLabels[lang] || 'Auto';
+['prWeightAutoLbl','prPacketsAutoLbl','prCbmAutoLbl'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.textContent = autoLbl;
+});
+
   set('prColorLbl',  L.color);
 
   /* placeholder اسم القطعة */
@@ -15590,25 +15661,39 @@ function updateDimPiece(idx, field, value) {
 function calcTotalCBM() {
   let totalCBM    = 0;
   let totalWeight = 0;
+  let totalPkts   = 0;
 
   S.dimPieces.forEach((p, i) => {
     const cbm = (p.l && p.w && p.h) ? (p.l * p.w * p.h / 1000000) : 0;
     S.dimPieces[i]._cbm = parseFloat(cbm.toFixed(6));
     totalCBM    += cbm;
-    totalWeight += (parseFloat(p.weight) || 0);
+    totalWeight += (parseFloat(p.weight)  || 0);
+    totalPkts   += (parseInt(p.packets)   || 1);
 
     const el = document.getElementById(`dimCBM_${i}`);
     if (el) el.textContent = cbm.toFixed(4) + ' m³';
   });
 
+  // ── تحديث حقل CBM الإجمالي في الكارد الكبير
   const cbmEl = document.getElementById('cbmCalc');
   if (cbmEl) cbmEl.textContent = totalCBM.toFixed(4) + ' m³';
 
+  // ── تحديث حقل الوزن الإجمالي في الكارد الكبير
   const weightEl = document.getElementById('totalWeightCalc');
   if (weightEl) weightEl.textContent = totalWeight.toFixed(2) + ' kg';
 
+  // ── ✅ تحديث الحقول الثلاثة في "معلومات القطعة" تلقائياً
+  const prWeightInp  = document.getElementById('prWeight');
+  const prPacketsInp = document.getElementById('prPackets');
+  const prCbmInfoInp = document.getElementById('prCbmInfo');
+
+  if (prWeightInp)  prWeightInp.value  = totalWeight.toFixed(2);
+  if (prPacketsInp) prPacketsInp.value = totalPkts;
+  if (prCbmInfoInp) prCbmInfoInp.value = totalCBM.toFixed(4) + ' m³';
+
   return totalCBM;
 }
+
 
 
 /* ── رسم جميع القطع ── */
