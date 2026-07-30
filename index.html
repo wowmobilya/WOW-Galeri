@@ -3888,7 +3888,74 @@ html, body {
 
 
 
+/* ============================================================
+   STICKY HEADER — ULTIMATE FIX (DESKTOP + MOBILE)
+============================================================ */
 
+/* 1️⃣ إزالة overflow من كل الأباء */
+.main,
+#mainContent {
+  overflow: visible !important;
+  overflow-x: visible !important;
+}
+
+body {
+  overflow-x: clip !important;
+}
+
+html {
+  overflow-x: clip !important;
+}
+
+/* 2️⃣ السايدبار لا يكسر sticky */
+.sidebar {
+  overflow-y: auto !important;
+  overflow-x: visible !important;
+}
+
+/* 3️⃣ تقوية كل الـ sticky headers — ديسكتوب وموبايل */
+.sct-sticky-header,
+.co-page-sticky,
+.page-sticky-bar {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: var(--nav-h) !important;
+  z-index: 500 !important;
+  background: var(--bg) !important;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  /* ✅ الحل الأساسي للديسكتوب */
+  margin-left: -20px !important;
+  margin-right: -20px !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  width: calc(100% + 40px) !important;
+}
+
+/* 4️⃣ منع الصفحات من كسر sticky */
+.page,
+.page.active {
+  overflow: visible !important;
+  contain: none !important;
+}
+
+/* 5️⃣ ديسكتوب خاص — ضمان العمل مع السايدبار */
+@media (min-width: 1025px) {
+  .main {
+    overflow: visible !important;
+    position: relative !important;
+  }
+
+  .sct-sticky-header,
+  .co-page-sticky,
+  .page-sticky-bar {
+    /* يحسب العرض الصحيح مع السايدبار */
+    left: 0 !important;
+    right: 0 !important;
+  }
+}
 
    
 
@@ -16294,102 +16361,6 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(_ddUpdateUI, 400)
    
 
 
-
-
-
-
-
-
-
-
- /* ============================================================
-   STICKY HEADER — DESKTOP FIX (JS)
-============================================================ */
-function fixStickyOnDesktop() {
-  if (window.innerWidth <= 1024) return;
-
-  const headers = document.querySelectorAll(
-    '.sct-sticky-header, .co-page-sticky, .page-sticky-bar'
-  );
-  if (!headers.length) return;
-
-  const sideW = 240;
-  const navH  = 60;
-  const isRtl = document.documentElement.dir === 'rtl';
-
-  headers.forEach(header => {
-    const parent = header.closest('.page');
-    if (!parent || !parent.classList.contains('active')) return;
-
-    header.style.position   = 'fixed';
-    header.style.top        = navH + 'px';
-    header.style.zIndex     = '500';
-    header.style.background = 'var(--bg)';
-    header.style.boxShadow  = '0 2px 8px rgba(0,0,0,.08)';
-    header.style.width      = `calc(100% - ${sideW}px)`;
-    header.style.padding    = '10px 20px 8px';
-
-    if (isRtl) {
-      header.style.right = sideW + 'px';
-      header.style.left  = 'auto';
-    } else {
-      header.style.left  = sideW + 'px';
-      header.style.right = 'auto';
-    }
-
-    // ✅ paddingTop للـ page بدل marginTop للعنصر التالي
-    const h = header.offsetHeight || 60;
-    parent.style.paddingTop = (h + navH + 8) + 'px';
-  });
-}
-
-/* على الموبايل — أعد sticky الطبيعي */
-function resetStickyOnMobile() {
-  if (window.innerWidth > 1024) return;
-
-  document.querySelectorAll(
-    '.sct-sticky-header, .co-page-sticky, .page-sticky-bar'
-  ).forEach(header => {
-    header.style.position   = '';
-    header.style.top        = '';
-    header.style.width      = '';
-    header.style.right      = '';
-    header.style.left       = '';
-    header.style.boxShadow  = '';
-    header.style.padding    = '';
-
-    // ✅ إعادة paddingTop للصفحة
-    const parent = header.closest('.page');
-    if (parent) parent.style.paddingTop = '';
-  });
-}
-
-/* ── تشغيل عند كل تغيير صفحة ── */
-const _origShowPageFix = window.showPage;
-window.showPage = function(id, pushHistory) {
-  _origShowPageFix.call(this, id, pushHistory);
-  setTimeout(() => {
-    fixStickyOnDesktop();
-    resetStickyOnMobile();
-  }, 80);
-};
-
-/* ── تشغيل عند تغيير حجم الشاشة ── */
-window.addEventListener('resize', () => {
-  fixStickyOnDesktop();
-  resetStickyOnMobile();
-});
-
-/* ── تشغيل عند التحميل ── */
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    fixStickyOnDesktop();
-    resetStickyOnMobile();
-  }, 600);
-});
-
-
-   
    
 
 
