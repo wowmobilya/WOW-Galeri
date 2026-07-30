@@ -4448,7 +4448,7 @@ body {
 
   <div id="pr-form-view" style="display:none;">
     <div class="sct-sticky-header">
-      <button class="sct-back-btn" onclick="backToPrTypeSelect()">← <span data-i18n="btn_back">رجوع</span></button>
+<button class="sct-back-btn" onclick="goBack()">← <span id="prFormBackLabel">رجوع</span></button>
       <div class="sct-sticky-title">
         <h1 data-i18n="add_pr_title">📦 إضافة منتج</h1>
         <p id="addPrSubtitle">—</p>
@@ -10180,7 +10180,19 @@ function editPr(id){
   S.prActiveTier           = p.activeTier || 'A';
   S.prType                 = p.type || 'coffee_table';
 
-  showPage('add-product');
+showPage('add-product');
+
+// ✅ تحديث العنوان فوراً بعد setPage وقبل setTimeout
+setTimeout(() => {
+  const lang = S.lang || 'ar';
+  const pageTitleLabels = {
+    ar: '✏️ تعديل منتج',
+    tr: '✏️ Ürün Düzenle',
+    en: '✏️ Edit Product',
+  };
+  const aptTitleEl = document.getElementById('apt-title');
+  if (aptTitleEl) aptTitleEl.textContent = pageTitleLabels[lang] || pageTitleLabels.en;
+}, 10);
 
   setTimeout(() => {
 
@@ -12105,8 +12117,8 @@ const autoLbl = autoLabels[lang] || 'Auto';
   buildPrColorSelect();
 }
 
-  function updatePrFormBtnLabels() {
-  const lang = S.lang || 'ar';
+ function updatePrFormBtnLabels() {
+  const lang   = S.lang || 'ar';
   const isEdit = !!S.editPrId;
 
   // ── نصوص زر الحفظ
@@ -12123,9 +12135,26 @@ const autoLbl = autoLabels[lang] || 'Auto';
     en: 'Clear',
   };
 
+  // ── نصوص زر الرجوع
+  const backLabels = {
+    ar: isEdit ? '← رجوع للمنتجات' : '← رجوع',
+    tr: isEdit ? '← Ürünlere Dön'   : '← Geri',
+    en: isEdit ? '← Back to Products': '← Back',
+  };
+
+  // ── نصوص عنوان الصفحة
+  const titleLabels = {
+    ar: isEdit ? '✏️ تعديل منتج' : '📦 إضافة منتج',
+    tr: isEdit ? '✏️ Ürün Düzenle' : '📦 Ürün Ekle',
+    en: isEdit ? '✏️ Edit Product'  : '📦 Add Product',
+  };
+
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  set('prSaveBtnTxt',  saveLabels[lang]  || saveLabels.en);
-  set('prResetBtnTxt', resetLabels[lang] || resetLabels.en);
+
+  set('prSaveBtnTxt',    saveLabels[lang]  || saveLabels.en);
+  set('prResetBtnTxt',   resetLabels[lang] || resetLabels.en);
+  set('prFormBackLabel', backLabels[lang]  || backLabels.en);
+  set('apt-title',       titleLabels[lang] || titleLabels.en);
 
   // ── إخفاء زر التفريغ في وضع التعديل
   const resetBtn = document.getElementById('prResetBtn');
