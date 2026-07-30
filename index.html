@@ -15579,7 +15579,7 @@ function renderDimPieces() {
       transition:background var(--tr), border-color var(--tr);
     ">
 
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
+      <div style="display:flex;align-items:stretch;gap:8px;flex-wrap:nowrap;">
 
         <!-- رقم الباكيت -->
         <div style="
@@ -15675,26 +15675,28 @@ function renderDimPieces() {
             style="${inputStyle}">
         </div>
 
-       <!-- CBM -->
+     <!-- CBM -->
 <div style="
   flex-shrink:0;
   background:var(--input);
   border:1px solid var(--border);
   border-radius:var(--rs);
-  padding:0 8px;
+  padding:0 10px;
   text-align:center;
-  min-width:64px;
-  height:38px;
+  min-width:70px;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  transition:background var(--tr);
+  gap:2px;
 ">
+  <div style="font-size:8px;color:var(--muted);font-weight:600;white-space:nowrap;">m³</div>
   <div id="dimCBM_${i}" style="
-    font-size:11px;font-weight:800;color:var(--gold2);line-height:1;">
+    font-size:12px;font-weight:800;color:var(--gold2);line-height:1;">
     ${cbm}
   </div>
 </div>
+
 
 
         <!-- زر الحذف -->
