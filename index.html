@@ -4628,19 +4628,36 @@ html, body {
 </div>
 
       <div id="dimPiecesContainer"></div>
-      <div style="
-        margin-top:8px;background:var(--gold-light);
-        border:1.5px solid var(--gold);border-radius:var(--rs);
-        padding:10px 16px;display:flex;
-        align-items:center;justify-content:space-between;
-      ">
-        <span style="font-size:12px;font-weight:700;color:var(--gold2);">
-          📦 <span id="cbmTotalLabel">CBM الإجمالي</span>
-        </span>
-        <strong id="cbmCalc" style="color:var(--gold2);font-size:16px;">
-          0.0000 m³
-        </strong>
-      </div>
+     <div style="
+  margin-top:8px;background:var(--gold-light);
+  border:1.5px solid var(--gold);border-radius:var(--rs);
+  padding:10px 16px;display:flex;
+  align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;
+">
+  <!-- CBM الإجمالي -->
+  <div style="display:flex;align-items:center;gap:8px;">
+    <span style="font-size:12px;font-weight:700;color:var(--gold2);">
+      📦 <span id="cbmTotalLabel">CBM الإجمالي</span>
+    </span>
+    <strong id="cbmCalc" style="color:var(--gold2);font-size:16px;">
+      0.0000 m³
+    </strong>
+  </div>
+
+  <!-- فاصل -->
+  <div style="width:1px;height:28px;background:rgba(200,169,110,.3);flex-shrink:0;"></div>
+
+  <!-- الوزن الإجمالي -->
+  <div style="display:flex;align-items:center;gap:8px;">
+    <span style="font-size:12px;font-weight:700;color:var(--gold2);">
+      ⚖️ <span id="totalWeightLabel">الوزن الإجمالي</span>
+    </span>
+    <strong id="totalWeightCalc" style="color:var(--gold2);font-size:16px;">
+      0.00 kg
+    </strong>
+  </div>
+</div>
     </div>
 
     <!-- ✅ 5️⃣ أزرار الحفظ أخيراً -->
@@ -9510,8 +9527,17 @@ function updatePrDimLabels() {
   };
   set('addDimBtnTxt', addBtnLabels[lang] || addBtnLabels.en);
 
+  // ✅ هذا هو السطر الجديد — أضفه هنا قبل renderPrDimRows()
+  const weightLabels = {
+    ar: 'الوزن الإجمالي',
+    tr: 'Toplam Ağırlık',
+    en: 'Total Weight',
+  };
+  set('totalWeightLabel', weightLabels[lang] || weightLabels.en);
+
   renderPrDimRows();
 }
+
 
 /* ── رسم الصفوف ── */
 function renderPrDimRows() {
@@ -9627,9 +9653,11 @@ function onPrDimAllInput() {
     const l = d.l || 0, w = d.w || 0, h = d.h || 0;
     return sum + (l && w && h ? (l * w * h / 1000000) : 0);
   }, 0);
-  const el = document.getElementById('cbmCalc');
-  if (el) el.textContent = totalCBM.toFixed(4) + ' m³';
+
+  const cbmEl = document.getElementById('cbmCalc');
+  if (cbmEl) cbmEl.textContent = totalCBM.toFixed(4) + ' m³';
 }
+
 
 /* ── قراءة الأبعاد عند الحفظ ── */
 function getPrDimsValue() {
@@ -15477,18 +15505,28 @@ function updateDimPiece(idx, field, value) {
 
 /* ── حساب CBM الإجمالي ── */
 function calcTotalCBM() {
-  let total = 0;
+  let totalCBM    = 0;
+  let totalWeight = 0;
+
   S.dimPieces.forEach((p, i) => {
     const cbm = (p.l && p.w && p.h) ? (p.l * p.w * p.h / 1000000) : 0;
     S.dimPieces[i]._cbm = parseFloat(cbm.toFixed(6));
-    total += cbm;
+    totalCBM    += cbm;
+    totalWeight += (parseFloat(p.weight) || 0);
+
     const el = document.getElementById(`dimCBM_${i}`);
     if (el) el.textContent = cbm.toFixed(4) + ' m³';
   });
-  const totalEl = document.getElementById('cbmCalc');
-  if (totalEl) totalEl.textContent = total.toFixed(4) + ' m³';
-  return total;
+
+  const cbmEl = document.getElementById('cbmCalc');
+  if (cbmEl) cbmEl.textContent = totalCBM.toFixed(4) + ' m³';
+
+  const weightEl = document.getElementById('totalWeightCalc');
+  if (weightEl) weightEl.textContent = totalWeight.toFixed(2) + ' kg';
+
+  return totalCBM;
 }
+
 
 /* ── رسم جميع القطع ── */
 function renderDimPieces() {
