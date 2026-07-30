@@ -4446,22 +4446,26 @@ body {
     <div style="max-width:560px;margin:20px auto 0;" id="prTypeStepCards"></div>
   </div>
 
-  <div id="pr-form-view" style="display:none;">
+   <div id="pr-form-view" style="display:none;">
     <div class="sct-sticky-header">
-      <button class="sct-back-btn" onclick="backToPrTypeSelect()">← <span data-i18n="btn_back">رجوع</span></button>
+      <!-- 1. تغيير دالة الرجوع إلى goBack() لتعمل بذكاء حسب الحالة -->
+      <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
       <div class="sct-sticky-title">
-        <h1 data-i18n="add_pr_title">📦 إضافة منتج</h1>
+        <!-- 2. إضافة ID للعنوان للتحكم به برمجياً -->
+        <h1 id="prFormTitle" data-i18n="add_pr_title">📦 إضافة منتج</h1>
         <p id="addPrSubtitle">—</p>
       </div>
      <div style="display:flex;gap:6px;flex-shrink:0;">
-  <button class="btn btn-p btn-sm" onclick="savePr()" style="white-space:nowrap;">
-    💾 <span id="prSaveBtnTxt">حفظ</span>
-  </button>
-  <button class="btn btn-s btn-sm" onclick="resetPrForm()" style="white-space:nowrap;">
-    🔄 <span id="prResetBtnTxt">تفريغ</span>
-  </button>
-</div>
+      <button class="btn btn-p btn-sm" onclick="savePr()" style="white-space:nowrap;">
+        💾 <span id="prSaveBtnTxt">حفظ</span>
+      </button>
+      <!-- 3. إضافة ID لزر التفريغ للتحكم بظهوره وإخفائه -->
+      <button class="btn btn-s btn-sm" id="prResetBtnWrap" onclick="resetPrForm()" style="white-space:nowrap;">
+        🔄 <span id="prResetBtnTxt">تفريغ</span>
+      </button>
     </div>
+  </div>
+
 
 
     <!-- نوع القطعة المختار -->
@@ -9805,21 +9809,19 @@ function resetPrForm(){
   S.prActiveTier = 'A';
 
   // ── مسح حقول النصوص والأرقام القديمة
- [
-  'prName','prHsCode','prDesc',
-  'prPriceA','prPriceB','prPriceC',
-  'prWeight',
-].forEach(id => {
-
+  [
+    'prName','prHsCode','prDesc',
+    'prPriceA','prPriceB','prPriceC',
+    'prWeight',
+  ].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
 
- // ── إعادة تعيين نظام الأبعاد الديناميكي
-S.prDims = [{ l:'', w:'', h:'' }];
-renderPrDimRows();
-onPrDimAllInput();
-
+  // ── إعادة تعيين نظام الأبعاد الديناميكي
+  S.prDims = [{ l:'', w:'', h:'' }];
+  renderPrDimRows();
+  onPrDimAllInput();
 
   // ── إعادة تعيين CBM
   const cbmEl = document.getElementById('cbmCalc');
@@ -9872,10 +9874,12 @@ onPrDimAllInput();
   });
 
   // ── إعادة تعيين قوائم HS و DESC
-  _closeHsDD();
-  _closeDescDD();
-  _removeCustomField('hs');
-  _removeCustomField('desc');
+  if (typeof _closeHsDD === 'function') _closeHsDD();
+  if (typeof _closeDescDD === 'function') _closeDescDD();
+  if (typeof _removeCustomField === 'function') {
+    _removeCustomField('hs');
+    _removeCustomField('desc');
+  }
   _hsCustomMode   = false;
   _descCustomMode = false;
 
@@ -9886,6 +9890,9 @@ onPrDimAllInput();
 
   // ── تحديث تسميات الحقول بلغة البرنامج
   updatePrInfoLabels();
+  
+  // ✅ إعادة العناوين والأزرار لوضع الإضافة (لأن S.editPrId أصبح null)
+  updatePrFormBtnLabels(); 
 }
 
 
@@ -10202,20 +10209,19 @@ function editPr(id){
     // ── الوزن
     sv('prWeight',  p.weight  || '');
 
-   // ── ✅ تحميل الأبعاد في النظام الديناميكي
-if (p.dims && p.dims.length) {
-  S.prDims = p.dims.map(d => ({ l: d.l||0, w: d.w||0, h: d.h||0 }));
-} else if (p.dimL || p.dimW || p.dimH) {
-  // دعم البيانات القديمة
-  S.prDims = [{ l: p.dimL||0, w: p.dimW||0, h: p.dimH||0 }];
-} else {
-  S.prDims = [{ l:'', w:'', h:'' }];
-}
-renderPrDimRows();
-onPrDimAllInput();
+    // ── تحميل الأبعاد في النظام الديناميكي
+    if (p.dims && p.dims.length) {
+      S.prDims = p.dims.map(d => ({ l: d.l||0, w: d.w||0, h: d.h||0 }));
+    } else if (p.dimL || p.dimW || p.dimH) {
+      // دعم البيانات القديمة
+      S.prDims = [{ l: p.dimL||0, w: p.dimW||0, h: p.dimH||0 }];
+    } else {
+      S.prDims = [{ l:'', w:'', h:'' }];
+    }
+    renderPrDimRows();
+    onPrDimAllInput();
 
-
-    // ── ✅ اللون — من قائمة FURNITURE_COLORS
+    // ── اللون — من قائمة FURNITURE_COLORS
     const colorSel        = document.getElementById('prColorSel');
     const colorCustomWrap = document.getElementById('prColorCustomWrap');
     const colorCustomInp  = document.getElementById('prColorCustom');
@@ -10291,6 +10297,9 @@ onPrDimAllInput();
 
     // ── تحديث تسميات الحقول بلغة البرنامج
     updatePrInfoLabels();
+    
+    // ✅ تحديث العناوين والأزرار لوضع التعديل
+    updatePrFormBtnLabels(); 
 
   }, 80);
 }
@@ -12099,16 +12108,32 @@ const autoLbl = autoLabels[lang] || 'Auto';
   buildPrColorSelect();
 }
 
-   function updatePrFormBtnLabels() {
+function updatePrFormBtnLabels() {
   const lang = S.lang || 'ar';
+  const isEdit = !!S.editPrId; // التحقق مما إذا كنا في وضع التعديل
+
   const labels = {
-    save:  { ar:'حفظ',   tr:'Kaydet',  en:'Save'  },
-    reset: { ar:'تفريغ', tr:'Temizle', en:'Clear' },
+    save:      { ar:'حفظ', tr:'Kaydet', en:'Save' },
+    saveEdit:  { ar:'حفظ التعديل', tr:'Değişiklikleri Kaydet', en:'Save Edit' },
+    reset:     { ar:'تفريغ', tr:'Temizle', en:'Clear' },
+    titleAdd:  { ar:'📦 إضافة منتج', tr:'📦 Ürün Ekle', en:'📦 Add Product' },
+    titleEdit: { ar:'✏️ تعديل منتج', tr:'✏️ Ürün Düzenle', en:'✏️ Edit Product' }
   };
+
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  set('prSaveBtnTxt',  labels.save[lang]  || labels.save.en);
+
+  // تحديث النصوص بناءً على الحالة (إضافة أو تعديل)
+  set('prSaveBtnTxt',  isEdit ? (labels.saveEdit[lang] || labels.saveEdit.en) : (labels.save[lang] || labels.save.en));
   set('prResetBtnTxt', labels.reset[lang] || labels.reset.en);
+  set('prFormTitle',   isEdit ? (labels.titleEdit[lang] || labels.titleEdit.en) : (labels.titleAdd[lang] || labels.titleAdd.en));
+
+  // إخفاء زر التفريغ في وضع التعديل وإظهاره في وضع الإضافة
+  const resetBtn = document.getElementById('prResetBtnWrap');
+  if (resetBtn) {
+    resetBtn.style.display = isEdit ? 'none' : 'inline-flex';
+  }
 }
+
 
    
 /* ── بناء قائمة الألوان من FURNITURE_COLORS ── */
