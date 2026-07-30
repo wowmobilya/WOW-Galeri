@@ -3888,6 +3888,45 @@ html, body {
 
 
 
+/* ============================================================
+   STICKY HEADER — ULTIMATE FIX
+============================================================ */
+
+/* 1️⃣ إزالة أي overflow يكسر sticky */
+.main,
+#mainContent {
+  overflow: visible !important;
+}
+
+body {
+  overflow-x: clip !important;
+}
+
+/* 2️⃣ تقوية كل الـ sticky headers */
+.sct-sticky-header,
+.co-page-sticky,
+.page-sticky-bar {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: var(--nav-h) !important;
+  z-index: 500 !important;
+  background: var(--bg) !important;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* 3️⃣ منع الصفحات من كسر sticky */
+.page,
+.page.active {
+  overflow: visible !important;
+  contain: none !important;
+}
+
+   
+
+
 
 
 
