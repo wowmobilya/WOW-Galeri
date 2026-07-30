@@ -6373,14 +6373,37 @@ body {
         <div class="fg"><label class="fl">🔢 <span data-i18n="account_no">رقم الحساب</span></label><input type="text" class="fc" id="stAccountNo"></div>
       </div>
     </div>
-      <div id="stab-invoice" style="display:none;">
+       <div id="stab-invoice" style="display:none;">
       <div class="fgrid">
-        <div class="fg"><label class="fl">🔢 <span data-i18n="next_inv_no">رقم الفاتورة التالي</span></label><input type="number" class="fc" id="stNextInvNo" min="1"></div>
+        <!-- السلاسل الثلاثة الأوتوماتيكية -->
+        <div class="fg full">
+          <label class="fl">🌍 <span data-i18n="st_seq_ext">تسلسل الخارجي (A)</span></label>
+          <div style="display:flex;gap:5px;">
+            <input type="text" class="fc" id="stPrefixExt" placeholder="a" style="width:30%; text-align:center; font-weight:bold;">
+            <input type="number" class="fc" id="stNextNoExt" placeholder="5000" style="width:70%; font-weight:bold;">
+          </div>
+        </div>
+        <div class="fg full">
+          <label class="fl">🏠 <span data-i18n="st_seq_ret">تسلسل المفرق (B)</span></label>
+          <div style="display:flex;gap:5px;">
+            <input type="text" class="fc" id="stPrefixRet" placeholder="b" style="width:30%; text-align:center; font-weight:bold;">
+            <input type="number" class="fc" id="stNextNoRet" placeholder="3000" style="width:70%; font-weight:bold;">
+          </div>
+        </div>
+        <div class="fg full">
+          <label class="fl">📦 <span data-i18n="st_seq_whl">تسلسل الجملة (C)</span></label>
+          <div style="display:flex;gap:5px;">
+            <input type="text" class="fc" id="stPrefixWhl" placeholder="c" style="width:30%; text-align:center; font-weight:bold;">
+            <input type="number" class="fc" id="stNextNoWhl" placeholder="1000" style="width:70%; font-weight:bold;">
+          </div>
+        </div>
+        
         <div class="fg"><label class="fl">👤 <span data-i18n="auth_person">الشخص المخوّل</span></label><input type="text" class="fc" id="stAuthPerson"></div>
         <div class="fg"><label class="fl">🏛️ <span data-i18n="kdv_rate_setting">نسبة KDV (%)</span></label><input type="number" class="fc" id="stKdvRate" placeholder="20" min="0" max="100" step="0.1" value="20"></div>
         <div class="fg full"><label class="fl">📝 <span data-i18n="default_notes">ملاحظات افتراضية</span></label><textarea class="fc" id="stDefaultNotes" rows="2"></textarea></div>
       </div>
     </div>
+
     <div id="stab-currency" style="display:none;">
       <div style="background:var(--input);border-radius:var(--rs);padding:14px;margin-bottom:12px;border:1px solid var(--border);">
         <div style="font-size:12px;font-weight:700;color:var(--gold2);margin-bottom:10px;">💱 <span data-i18n="curr_rates_title">أسعار الصرف الحالية</span></div>
@@ -6744,6 +6767,9 @@ invClientFilter:null,
        defaultNotes:'DELIVERY AFTER 45 DAYS OF RECEIVING THE DEPOSIT',
     kdvRate:20,manualUsdTry:null,manualUsdEur:null,
     logo:'https://h.top4top.io/p_3861refg81.png',
+      prefixExt: 'a', nextNoExt: 5000,
+    prefixRet: 'b', nextNoRet: 3000,
+    prefixWhl: 'c', nextNoWhl: 1000,
   }
 };
 
@@ -7009,6 +7035,7 @@ sum_btn_preview: 'معاينة',
 sum_btn_save:    'حفظ',
 sum_btn_print:   'طباعة',
  pr_tab_coffee:'طاولة قهوة', pr_tab_dresser:'مدخل', pr_tab_side:'طاولة جانبية', pr_tab_tv:'طاولة تلفاز',
+st_seq_ext: 'تسلسل الخارجي (A)', st_seq_ret: 'تسلسل المفرق (B)', st_seq_whl: 'تسلسل الجملة (C)',
 
     pm_stat_paid:'المدفوع',pm_stat_remaining:'المتبقي',
     add_payment:'إضافة دفعة جديدة',pay_amount:'المبلغ',pay_date:'التاريخ',
@@ -7090,6 +7117,7 @@ sum_btn_save:    'Kaydet',
 sum_btn_print:   'Yazdır',
     reset_logo:'Varsayılana Dön', logo_restored:'✅ Varsayılan logo geri yüklendi',
  pr_tab_coffee:'Orta Sehpa', pr_tab_dresser:'DRESUAR', pr_tab_side:'Yan Sehpa', pr_tab_tv:'TV Ünitesi',
+st_seq_ext: 'Dış Fatura Serisi (A)', st_seq_ret: 'Perakende Serisi (B)', st_seq_whl: 'Toptan Serisi (C)',
 
     pr_desc:'Açıklama',pricing:'Fiyatlandırma',pricing_hint:'Temel para birimi: USD',
     active_tier:'Aktif Fiyat Kademesi',
@@ -7216,6 +7244,7 @@ sum_btn_save:    'Save',
 sum_btn_print:   'Print',
     reset_logo:'Restore Default', logo_restored:'✅ Default logo restored',
     pr_tab_coffee:'Coffee Table', pr_tab_dresser:'Dresser', pr_tab_side:'Side Table', pr_tab_tv:'TV Table',
+st_seq_ext: 'External Sequence (A)', st_seq_ret: 'Retail Sequence (B)', st_seq_whl: 'Wholesale Sequence (C)',
 
     pr_type:'Product Type',pr_info:'Product Info',pr_name:'Product Name',
     pr_desc:'Description',pricing:'Pricing',pricing_hint:'Base currency: USD',
@@ -10441,10 +10470,21 @@ S.deliveryMode = S.deliveryMode || 'manual';
 updateStep1Texts();
 
 }
-function updateInvNumDisplay(){
-  const num='A'+S.nextInvNo;
-  ['curInvNum','invNumDisplay'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=num;});
+function getAutoInvNo(type) {
+  if (type === 'internal_retail') return (S.settings.prefixRet || 'b') + (S.settings.nextNoRet || 3000);
+  if (type === 'internal_wholesale') return (S.settings.prefixWhl || 'c') + (S.settings.nextNoWhl || 1000);
+  return (S.settings.prefixExt || 'a') + (S.settings.nextNoExt || 5000);
 }
+
+function updateInvNumDisplay() {
+  // إذا كنا في وضع التعديل، نعرض الرقم القديم، وإلا نولد رقماً جديداً أوتوماتيكياً
+  const num = S.editInvId ? (S.invoices.find(i => i.id === S.editInvId)?.invNo || getAutoInvNo(S.invType)) : getAutoInvNo(S.invType);
+  ['curInvNum','invNumDisplay'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = num;
+  });
+}
+
 function selInvType(tp){
   S.invType=tp;
   const typeLabels={external:'🌍 '+t('t_ext'),internal_retail:'🏠 '+t('t_int_retail'),internal_wholesale:'📦 '+t('t_int_whl')};
@@ -10458,6 +10498,8 @@ function selInvType(tp){
   if(currSel){if(isInternal)currSel.value='TRY';else currSel.value='USD';}
   S.invCurrency=currSel?.value||'USD';
   populateCoSelect();updateSummary();updateSumCurrencyBadge();
+     updateInvNumDisplay(); // 👈 أضف هذا السطر هنا
+
 }
 function populateCoSelect(){
   const sel=document.getElementById('invCoSel');if(!sel)return;
@@ -10686,7 +10728,12 @@ async function saveInvoice(){
   const totalPaidUSD=depositUSD+paymentsTotal;
   const remainingUSD=Math.max(0,grandUSD-totalPaidUSD);
   const invId=S.editInvId||Date.now().toString();
-  const invNo='A'+S.nextInvNo;
+  
+  // 1️⃣ توليد الرقم الأوتوماتيكي بناءً على نوع الفاتورة
+  const generatedInvNo = getAutoInvNo(S.invType);
+  // إذا كنا نعدل فاتورة قديمة نحتفظ برقمها، وإلا نأخذ الرقم الجديد المولد
+  const invNo = S.editInvId ? (S.invoices.find(i => i.id === S.editInvId)?.invNo || generatedInvNo) : generatedInvNo;
+
   const inv={
     id:invId,invNo,companyId:coId,companyName:co?.name||'—',
     companyLogo:co?.logo||null,companyType:co?.type||S.invType,
@@ -10699,9 +10746,9 @@ async function saveInvoice(){
     totalPaidUSD,remainingUSD,
     totalCBM:parseFloat(totalCBM.toFixed(4)),totalPackets:totalPkts,
     loadDate:document.getElementById('invLoadDate').value,
-deliveryDate:document.getElementById('invDeliveryDate')?.value||'',
-delivered:false,
-deliveredAt:null,
+    deliveryDate:document.getElementById('invDeliveryDate')?.value||'',
+    delivered:false,
+    deliveredAt:null,
     plate:document.getElementById('invPlate')?.value||'',
     truck:document.getElementById('invTruck')?.value||'',
     notes:document.getElementById('invNotes').value,
@@ -10712,12 +10759,19 @@ deliveredAt:null,
     payments:[...S.currentInvPayments],
   };
   await dbPut('invoices',inv);
+  
+  // 2️⃣ زيادة العداد الخاص بالنوع المختار فقط وحفظه في الإعدادات
   if(!S.editInvId){
-    S.nextInvNo++;
-    await dbPut('settings',{id:'nextInvNo',value:S.nextInvNo});
+    if (S.invType === 'internal_retail') S.settings.nextNoRet++;
+    else if (S.invType === 'internal_wholesale') S.settings.nextNoWhl++;
+    else S.settings.nextNoExt++;
+    
+    await dbPut('settings', {id:'main', ...S.settings});
   }
+  
   const idx=S.invoices.findIndex(i=>i.id===invId);
   if(idx>=0)S.invoices[idx]=inv;else S.invoices.push(inv);
+  
   // save payments separately
   for(const p of S.currentInvPayments){
     p.invoiceId=invId;
@@ -10725,6 +10779,7 @@ deliveredAt:null,
     const pi=S.payments.findIndex(x=>x.id===p.id);
     if(pi>=0)S.payments[pi]=p;else S.payments.push(p);
   }
+  
   showToast(S.editInvId?t('updated_inv'):t('saved_inv'),'ok');
   S.editInvId=null;S.invItems=[];S.currentInvPayments=[];
 
@@ -10738,6 +10793,7 @@ deliveredAt:null,
 
   updateDash();showPage('invoices');
 }
+
 
 /* ============================================================
    INVOICES LIST RENDER
@@ -11623,50 +11679,101 @@ function openSettingsModal(){
 }
 function loadSettingsToForm(){
   const sv=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
-  sv('stCompanyName',S.settings.companyName);sv('stAddress',S.settings.address);
-  sv('stPhone',S.settings.phone);sv('stEmail',S.settings.email);
-  sv('stWebsite',S.settings.website);sv('stMersis',S.settings.mersis);
-  sv('stBankName',S.settings.bankName);sv('stBeneficiary',S.settings.beneficiary);
-  sv('stIbanUSD',S.settings.ibanUSD);sv('stIbanTRY',S.settings.ibanTRY);
-  sv('stIbanEUR',S.settings.ibanEUR);sv('stSwift',S.settings.swift);
-  sv('stAccountNo',S.settings.accountNo);sv('stAuthPerson',S.settings.authPerson);
-  sv('stDefaultNotes',S.settings.defaultNotes);sv('stNextInvNo',S.nextInvNo);
+  
+  sv('stCompanyName',S.settings.companyName);
+  sv('stAddress',S.settings.address);
+  sv('stPhone',S.settings.phone);
+  sv('stEmail',S.settings.email);
+  sv('stWebsite',S.settings.website);
+  sv('stMersis',S.settings.mersis);
+  sv('stBankName',S.settings.bankName);
+  sv('stBeneficiary',S.settings.beneficiary);
+  sv('stIbanUSD',S.settings.ibanUSD);
+  sv('stIbanTRY',S.settings.ibanTRY);
+  sv('stIbanEUR',S.settings.ibanEUR);
+  sv('stSwift',S.settings.swift);
+  sv('stAccountNo',S.settings.accountNo);
+  sv('stAuthPerson',S.settings.authPerson);
+  sv('stDefaultNotes',S.settings.defaultNotes);
+  
+  // 1️⃣ تحميل السلاسل الثلاثة الأوتوماتيكية
+  sv('stPrefixExt', S.settings.prefixExt || 'a'); 
+  sv('stNextNoExt', S.settings.nextNoExt || 5000);
+  sv('stPrefixRet', S.settings.prefixRet || 'b'); 
+  sv('stNextNoRet', S.settings.nextNoRet || 3000);
+  sv('stPrefixWhl', S.settings.prefixWhl || 'c'); 
+  sv('stNextNoWhl', S.settings.nextNoWhl || 1000);
+
   sv('stKdvRate',S.settings.kdvRate||20);
   sv('stManualUsdTry',S.settings.manualUsdTry||'');
   sv('stManualUsdEur',S.settings.manualUsdEur||'');
+  
   const lp=document.getElementById('settingsLogoPrev');
-  if(lp){if(S.settings.logo)lp.innerHTML=`<img src="${S.settings.logo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;else lp.textContent='W';}
+  if(lp){
+    if(S.settings.logo) lp.innerHTML=`<img src="${S.settings.logo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
+    else lp.textContent='W';
+  }
   updateRateUI();
 }
+
 async function saveSettings(){
   const gv=id=>{const el=document.getElementById(id);return el?el.value.trim():'';};
-  S.settings.companyName=gv('stCompanyName');S.settings.address=gv('stAddress');
-  S.settings.phone=gv('stPhone');S.settings.email=gv('stEmail');
-  S.settings.website=gv('stWebsite');S.settings.mersis=gv('stMersis');
-  S.settings.bankName=gv('stBankName');S.settings.beneficiary=gv('stBeneficiary');
-  S.settings.ibanUSD=gv('stIbanUSD');S.settings.ibanTRY=gv('stIbanTRY');
-  S.settings.ibanEUR=gv('stIbanEUR');S.settings.swift=gv('stSwift');
-  S.settings.accountNo=gv('stAccountNo');S.settings.authPerson=gv('stAuthPerson');
+  
+  S.settings.companyName=gv('stCompanyName');
+  S.settings.address=gv('stAddress');
+  S.settings.phone=gv('stPhone');
+  S.settings.email=gv('stEmail');
+  S.settings.website=gv('stWebsite');
+  S.settings.mersis=gv('stMersis');
+  S.settings.bankName=gv('stBankName');
+  S.settings.beneficiary=gv('stBeneficiary');
+  S.settings.ibanUSD=gv('stIbanUSD');
+  S.settings.ibanTRY=gv('stIbanTRY');
+  S.settings.ibanEUR=gv('stIbanEUR');
+  S.settings.swift=gv('stSwift');
+  S.settings.accountNo=gv('stAccountNo');
+  S.settings.authPerson=gv('stAuthPerson');
   S.settings.defaultNotes=gv('stDefaultNotes');
+  
+  // 2️⃣ حفظ السلاسل الثلاثة الأوتوماتيكية
+  S.settings.prefixExt = gv('stPrefixExt') || 'a'; 
+  S.settings.nextNoExt = parseInt(gv('stNextNoExt')) || 5000;
+  S.settings.prefixRet = gv('stPrefixRet') || 'b'; 
+  S.settings.nextNoRet = parseInt(gv('stNextNoRet')) || 3000;
+  S.settings.prefixWhl = gv('stPrefixWhl') || 'c'; 
+  S.settings.nextNoWhl = parseInt(gv('stNextNoWhl')) || 1000;
+
   S.settings.kdvRate=parseFloat(gv('stKdvRate'))||20;
+  
   const manTry=parseFloat(gv('stManualUsdTry'));
   const manEur=parseFloat(gv('stManualUsdEur'));
-  S.settings.manualUsdTry=manTry||null;S.settings.manualUsdEur=manEur||null;
-  if(manTry)S.usdTry=manTry;if(manEur)S.usdEur=manEur;
-  const nextNo=parseInt(gv('stNextInvNo'));
-  if(nextNo>0){S.nextInvNo=nextNo;await dbPut('settings',{id:'nextInvNo',value:nextNo});}
+  S.settings.manualUsdTry=manTry||null;
+  S.settings.manualUsdEur=manEur||null;
+  
+  if(manTry) S.usdTry=manTry;
+  if(manEur) S.usdEur=manEur;
+  
+  // حفظ الإعدادات في قاعدة البيانات
   await dbPut('settings',{id:'main',...S.settings});
+  
+  // تحديث واجهة المستخدم (اللوجو والاسم)
   const navTxt=document.getElementById('navTitle');
-  if(navTxt)navTxt.innerHTML=`<span>${(S.settings.companyName||'WOW').split(' ')[0]}</span> ${(S.settings.companyName||'WOW Furniture').split(' ').slice(1).join(' ')}`;
+  if(navTxt) navTxt.innerHTML=`<span>${(S.settings.companyName||'WOW').split(' ')[0]}</span> ${(S.settings.companyName||'WOW Furniture').split(' ').slice(1).join(' ')}`;
+  
   const navLogoTxt=document.getElementById('navLogoTxt');
-  if(navLogoTxt)navLogoTxt.textContent=(S.settings.companyName||'W')[0].toUpperCase();
+  if(navLogoTxt) navLogoTxt.textContent=(S.settings.companyName||'W')[0].toUpperCase();
+  
   if(S.settings.logo){
     const nl=document.getElementById('navLogo');
-    if(nl)nl.innerHTML=`<img src="${S.settings.logo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
+    if(nl) nl.innerHTML=`<img src="${S.settings.logo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
   }
-  updateRateUI();updateKdvDisplay();closeModal('settingsModal');
+  
+  updateRateUI();
+  updateKdvDisplay();
+  closeModal('settingsModal');
   showToast(t('settings_saved'),'ok');
 }
+
 function handleSettingsLogo(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
