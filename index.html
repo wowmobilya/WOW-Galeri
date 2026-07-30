@@ -15562,164 +15562,127 @@ function renderDimPieces() {
   `;
 
 
-  container.innerHTML = S.dimPieces.map((piece, i) => {
-    const cbm = (piece.l && piece.w && piece.h)
-      ? (piece.l * piece.w * piece.h / 1000000).toFixed(4)
-      : '0.0000';
+ container.innerHTML = S.dimPieces.map((piece, i) => {
+  const cbm = (piece.l && piece.w && piece.h)
+    ? (piece.l * piece.w * piece.h / 1000000).toFixed(4)
+    : '0.0000';
 
   return `
-    <div id="dimPiece_${i}" style="
-      background:var(--card);
-      border:1.5px solid var(--border);
-      border-radius:var(--rs);
-      padding:10px 12px;
-      margin-bottom:8px;
-      animation:fadeUp .25s ease both;
-      animation-delay:${i * 0.04}s;
-      transition:background var(--tr), border-color var(--tr);
-    ">
+  <div id="dimPiece_${i}" style="
+    background:var(--card);
+    border:1.5px solid var(--border);
+    border-radius:var(--rs);
+    padding:10px 12px;
+    margin-bottom:8px;
+    animation:fadeUp .25s ease both;
+    animation-delay:${i * 0.04}s;
+  ">
+    <div style="display:flex;align-items:stretch;gap:8px;flex-wrap:nowrap;">
 
-      <div style="display:flex;align-items:stretch;gap:8px;flex-wrap:nowrap;">
+      <!-- رقم الباكيت -->
+      <div style="
+        width:26px;height:auto;border-radius:50%;
+        background:#1a1a2e;color:#c8a96e;
+        font-size:11px;font-weight:900;
+        display:flex;align-items:center;justify-content:center;
+        flex-shrink:0;align-self:center;
+      ">${i + 1}</div>
 
-        <!-- رقم الباكيت -->
-        <div style="
-          width:26px;height:26px;border-radius:50%;
-          background:#1a1a2e;color:#c8a96e;
-          font-size:11px;font-weight:900;
-          display:flex;align-items:center;justify-content:center;
-          flex-shrink:0;
-        ">${i + 1}</div>
-
-        <!-- الطول -->
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:9px;font-weight:700;color:var(--muted);
-            margin-bottom:3px;text-align:center;">
-            ${tx.dim_l}
-          </div>
-          <input type="number"
-            class="fc"
-            inputmode="decimal"
-            pattern="[0-9]*"
-            placeholder="0"
-            value="${piece.l || ''}"
-            min="0"
-            step="0.1"
-            onkeypress="return /[0-9.]/.test(event.key)"
-            oninput="updateDimPiece(${i},'l',this.value)"
-            style="${inputStyle}">
-        </div>
-
-        <!-- فاصل -->
-        <span style="color:var(--muted);font-weight:700;font-size:13px;flex-shrink:0;">×</span>
-
-        <!-- العرض -->
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:9px;font-weight:700;color:var(--muted);
-            margin-bottom:3px;text-align:center;">
-            ${tx.dim_w}
-          </div>
-          <input type="number"
-            class="fc"
-            inputmode="decimal"
-            pattern="[0-9]*"
-            placeholder="0"
-            value="${piece.w || ''}"
-            min="0"
-            step="0.1"
-            onkeypress="return /[0-9.]/.test(event.key)"
-            oninput="updateDimPiece(${i},'w',this.value)"
-            style="${inputStyle}">
-        </div>
-
-        <!-- فاصل -->
-        <span style="color:var(--muted);font-weight:700;font-size:13px;flex-shrink:0;">×</span>
-
-        <!-- الارتفاع -->
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:9px;font-weight:700;color:var(--muted);
-            margin-bottom:3px;text-align:center;">
-            ${tx.dim_h}
-          </div>
-          <input type="number"
-            class="fc"
-            inputmode="decimal"
-            pattern="[0-9]*"
-            placeholder="0"
-            value="${piece.h || ''}"
-            min="0"
-            step="0.1"
-            onkeypress="return /[0-9.]/.test(event.key)"
-            oninput="updateDimPiece(${i},'h',this.value)"
-            style="${inputStyle}">
-        </div>
-
-        <!-- فاصل -->
-        <span style="color:var(--border);font-size:13px;flex-shrink:0;">|</span>
-
-        <!-- الوزن -->
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:9px;font-weight:700;color:var(--muted);
-            margin-bottom:3px;text-align:center;">
-            ${tx.weight}
-          </div>
-          <input type="number"
-            class="fc"
-            inputmode="decimal"
-            pattern="[0-9]*"
-            placeholder="0"
-            value="${piece.weight || ''}"
-            min="0"
-            step="0.1"
-            onkeypress="return /[0-9.]/.test(event.key)"
-            oninput="updateDimPiece(${i},'weight',this.value)"
-            style="${inputStyle}">
-        </div>
-
-     <!-- CBM -->
-<div style="
-  flex-shrink:0;
-  background:var(--input);
-  border:1px solid var(--border);
-  border-radius:var(--rs);
-  padding:0 10px;
-  text-align:center;
-  min-width:70px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:2px;
-">
-  <div style="font-size:8px;color:var(--muted);font-weight:600;white-space:nowrap;">m³</div>
-  <div id="dimCBM_${i}" style="
-    font-size:12px;font-weight:800;color:var(--gold2);line-height:1;">
-    ${cbm}
-  </div>
-</div>
-
-
-
-        <!-- زر الحذف -->
-        ${i > 0 ? `
-        <button type="button"
-          onclick="removeDimPiece(${i})"
-          style="
-            width:28px;height:28px;border-radius:7px;border:none;
-            background:rgba(229,62,62,.1);color:var(--red);
-            cursor:pointer;font-size:13px;flex-shrink:0;
-            display:flex;align-items:center;justify-content:center;
-            transition:all var(--tr);
-          "
-          onmouseenter="this.style.background='var(--red)';this.style.color='#fff'"
-          onmouseleave="this.style.background='rgba(229,62,62,.1)';this.style.color='var(--red)'"
-        >✕</button>` : '<div style="width:28px;flex-shrink:0;"></div>'}
-
+      <!-- الطول -->
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:9px;font-weight:700;color:var(--muted);
+          margin-bottom:3px;text-align:center;">${tx.dim_l}</div>
+        <input type="number" class="fc"
+          inputmode="decimal" placeholder="0"
+          value="${piece.l || ''}" min="0" step="0.1"
+          oninput="updateDimPiece(${i},'l',this.value)"
+          style="text-align:center;font-size:13px;font-weight:700;padding:7px 4px;">
       </div>
-    </div>`;
-  }).join('');
 
-  calcTotalCBM();
-}
+      <span style="color:var(--muted);font-weight:700;font-size:13px;
+        flex-shrink:0;align-self:flex-end;padding-bottom:9px;">×</span>
+
+      <!-- العرض -->
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:9px;font-weight:700;color:var(--muted);
+          margin-bottom:3px;text-align:center;">${tx.dim_w}</div>
+        <input type="number" class="fc"
+          inputmode="decimal" placeholder="0"
+          value="${piece.w || ''}" min="0" step="0.1"
+          oninput="updateDimPiece(${i},'w',this.value)"
+          style="text-align:center;font-size:13px;font-weight:700;padding:7px 4px;">
+      </div>
+
+      <span style="color:var(--muted);font-weight:700;font-size:13px;
+        flex-shrink:0;align-self:flex-end;padding-bottom:9px;">×</span>
+
+      <!-- الارتفاع -->
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:9px;font-weight:700;color:var(--muted);
+          margin-bottom:3px;text-align:center;">${tx.dim_h}</div>
+        <input type="number" class="fc"
+          inputmode="decimal" placeholder="0"
+          value="${piece.h || ''}" min="0" step="0.1"
+          oninput="updateDimPiece(${i},'h',this.value)"
+          style="text-align:center;font-size:13px;font-weight:700;padding:7px 4px;">
+      </div>
+
+      <!-- فاصل -->
+      <div style="width:1px;background:var(--border);align-self:stretch;flex-shrink:0;margin:0 2px;"></div>
+
+      <!-- CBM -->
+      <div style="
+        flex-shrink:0;min-width:68px;
+        background:var(--gold-light);
+        border:1px solid rgba(200,169,110,.3);
+        border-radius:var(--rs);
+        display:flex;flex-direction:column;
+        align-items:center;justify-content:center;
+        gap:2px;padding:4px 8px;
+      ">
+        <div style="font-size:8px;color:var(--gold2);font-weight:700;">CBM</div>
+        <div id="dimCBM_${i}" style="
+          font-size:12px;font-weight:900;color:var(--gold2);line-height:1;">
+          ${cbm}
+        </div>
+        <div style="font-size:7px;color:var(--muted);">m³</div>
+      </div>
+
+      <!-- فاصل -->
+      <div style="width:1px;background:var(--border);align-self:stretch;flex-shrink:0;margin:0 2px;"></div>
+
+      <!-- الوزن -->
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:9px;font-weight:700;color:var(--muted);
+          margin-bottom:3px;text-align:center;">${tx.weight}</div>
+        <input type="number" class="fc"
+          inputmode="decimal" placeholder="0"
+          value="${piece.weight || ''}" min="0" step="0.1"
+          oninput="updateDimPiece(${i},'weight',this.value)"
+          style="text-align:center;font-size:13px;font-weight:700;padding:7px 4px;">
+      </div>
+
+      <!-- زر الحذف -->
+      ${i > 0 ? `
+      <button type="button"
+        onclick="removeDimPiece(${i})"
+        style="
+          width:28px;height:28px;border-radius:7px;border:none;
+          background:rgba(229,62,62,.1);color:var(--red);
+          cursor:pointer;font-size:13px;flex-shrink:0;
+          display:flex;align-items:center;justify-content:center;
+          align-self:flex-end;margin-bottom:1px;
+          transition:all var(--tr);
+        "
+        onmouseenter="this.style.background='var(--red)';this.style.color='#fff'"
+        onmouseleave="this.style.background='rgba(229,62,62,.1)';this.style.color='var(--red)'"
+      >✕</button>` : '<div style="width:28px;flex-shrink:0;"></div>'}
+
+    </div>
+  </div>`;
+}).join('');
+
+calcTotalCBM();
 
 
 
