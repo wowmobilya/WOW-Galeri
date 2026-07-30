@@ -16464,6 +16464,69 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(_ddUpdateUI, 400)
    
 
 
+
+
+
+
+
+
+
+
+/* ============================================================
+   SMART NAVIGATION FIX — إصلاح تداخل وضع التعديل مع الإضافة
+============================================================ */
+(function applySmartNavigationFix() {
+  // 1. حفظ النسخة الأصلية من دالة التنقل
+  const _originalShowPage = window.showPage;
+  
+  // متغير يخبر النظام أننا ننتقل بغرض التعديل وليس الإضافة
+  window._isNavigatingToEdit = false;
+
+  // 2. إعادة تعريف دالة التنقل
+  window.showPage = function(id, pushHistory = true) {
+    // إذا كان المستخدم يفتح صفحة الإضافة بشكل طبيعي (من القائمة الجانبية مثلاً)
+    if (!window._isNavigatingToEdit) {
+      if (id === 'add-product') {
+        resetPrForm(); // تفريغ المنتج بالكامل وإلغاء وضع التعديل
+      } else if (id === 'add-company') {
+        resetCoForm(); // تفريغ العميل بالكامل
+      } else if (id === 'create-invoice') {
+        S.editInvId = null; // تفريغ الفاتورة
+      }
+    }
+    // استدعاء الدالة الأصلية للانتقال للصفحة
+    _originalShowPage.call(this, id, pushHistory);
+  };
+
+  // 3. إخبار النظام عند الضغط على زر "تعديل منتج"
+  const _originalEditPr = window.editPr;
+  window.editPr = function(id) {
+    window._isNavigatingToEdit = true;
+    _originalEditPr.call(this, id);
+    window._isNavigatingToEdit = false;
+  };
+
+  // 4. إخبار النظام عند الضغط على زر "تعديل عميل"
+  const _originalEditCo = window.editCo;
+  window.editCo = function(id) {
+    window._isNavigatingToEdit = true;
+    _originalEditCo.call(this, id);
+    window._isNavigatingToEdit = false;
+  };
+
+  // 5. إخبار النظام عند الضغط على زر "تعديل فاتورة"
+  const _originalEditInv = window.editInv;
+  window.editInv = function(id) {
+    window._isNavigatingToEdit = true;
+    _originalEditInv.call(this, id);
+    window._isNavigatingToEdit = false;
+  };
+})();
+
+
+
+
+   
    
 
 
