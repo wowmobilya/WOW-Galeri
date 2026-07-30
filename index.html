@@ -4621,8 +4621,8 @@ html, body {
       <div class="card-hdr">
         <div class="card-title">📐 <span data-i18n="dims">الأبعاد</span></div>
         <button type="button" class="btn btn-p btn-sm" onclick="addDimPiece()">
-          ➕ <span id="addDimBtnTxt">إضافة قطعة</span>
-        </button>
+  ➕ <span id="addDimBtnTxt">إضافة باكيت</span>
+</button>
       </div>
       <div id="dimPiecesContainer"></div>
       <div style="
@@ -15368,40 +15368,52 @@ S.dimPieces = S.dimPieces || [];
 
 const DIM_TEXTS = {
   ar: {
-    piece:          'قطعة',
-    add_btn:        'إضافة قطعة',
-    dims_label:     'الأبعاد (ط × ع × ا) سم',
-    weight:         'الوزن (كجم)',
-    packets:        'الباكيت',
-    color:          'اللون',
-    cbm_total:      ' الإجمالي ',
-    custom_ph:      'اكتب اللون...',
-    del_confirm:    'حذف هذه القطعة؟',
-    min_one:        '⚠️ يجب أن تبقى قطعة واحدة على الأقل',
+    piece:       'باكيت',
+    add_btn:     'إضافة باكيت',
+    dims_label:  'أبعاد الباكيت للشحن (سم)',
+    dim_l:       'الطول',
+    dim_w:       'العرض',
+    dim_h:       'الارتفاع',
+    cbm_piece:   'حجم الباكيت',
+    cbm_total:   'CBM الإجمالي',
+    weight:      'الوزن (كجم)',
+    packets:     'عدد الباكيت',
+    color:       'اللون',
+    custom_ph:   'اكتب اللون...',
+    del_confirm: 'حذف هذا الباكيت؟',
+    min_one:     '⚠️ يجب أن يبقى باكيت واحد على الأقل',
   },
   tr: {
-    piece:          'Parça',
-    add_btn:        'Parça Ekle',
-    dims_label:     'Boyutlar (U × G × Y) cm',
-    weight:         'Ağırlık (kg)',
-    packets:        'Paket',
-    color:          'Renk',
-    cbm_total:      'Toplam ',
-    custom_ph:      'Renk yaz...',
-    del_confirm:    'Bu parçayı sil?',
-    min_one:        '⚠️ En az bir parça kalmalıdır',
+    piece:       'Paket',
+    add_btn:     'Paket Ekle',
+    dims_label:  'Kargo Paketi Boyutları (cm)',
+    dim_l:       'Uzunluk',
+    dim_w:       'Genişlik',
+    dim_h:       'Yükseklik',
+    cbm_piece:   'Paket Hacmi',
+    cbm_total:   'Toplam CBM',
+    weight:      'Ağırlık (kg)',
+    packets:     'Paket Adedi',
+    color:       'Renk',
+    custom_ph:   'Renk yaz...',
+    del_confirm: 'Bu paketi sil?',
+    min_one:     '⚠️ En az bir paket kalmalıdır',
   },
   en: {
-    piece:          'Piece',
-    add_btn:        'Add Piece',
-    dims_label:     'Dimensions (L × W × H) cm',
-    weight:         'Weight (kg)',
-    packets:        'Packets',
-    color:          'Color',
-    cbm_total:      'Total',
-    custom_ph:      'Type color...',
-    del_confirm:    'Delete this piece?',
-    min_one:        '⚠️ At least one piece must remain',
+    piece:       'Package',
+    add_btn:     'Add Package',
+    dims_label:  'Shipping Package Dimensions (cm)',
+    dim_l:       'Length',
+    dim_w:       'Width',
+    dim_h:       'Height',
+    cbm_piece:   'Package Volume',
+    cbm_total:   'Total CBM',
+    weight:      'Weight (kg)',
+    packets:     'Package Count',
+    color:       'Color',
+    custom_ph:   'Type color...',
+    del_confirm: 'Delete this package?',
+    min_one:     '⚠️ At least one package must remain',
   },
 };
 
@@ -15478,34 +15490,24 @@ function renderDimPieces() {
   // تحديث نص زر الإضافة
   const addBtnTxt = document.getElementById('addDimBtnTxt');
   if (addBtnTxt) addBtnTxt.textContent = tx.add_btn;
-  // ✅ تحديث نص CBM الإجمالي بلغة البرنامج
+
+  // تحديث نص CBM الإجمالي
   const cbmLbl = document.getElementById('cbmTotalLabel');
   if (cbmLbl) cbmLbl.textContent = tx.cbm_total;
 
-  // ألوان مميزة لكل قطعة
-  const pieceColors = [
-    { bg:'rgba(200,169,110,.10)', border:'rgba(200,169,110,.45)', num:'var(--gold2)'  },
-    { bg:'rgba(49,130,206,.08)',  border:'rgba(49,130,206,.35)',  num:'#2b6cb0'       },
-    { bg:'rgba(56,161,105,.08)',  border:'rgba(56,161,105,.35)',  num:'#276749'       },
-    { bg:'rgba(128,90,213,.08)', border:'rgba(128,90,213,.35)', num:'#553c9a'       },
-    { bg:'rgba(229,62,62,.06)',  border:'rgba(229,62,62,.30)',  num:'#c53030'       },
-  ];
-
   container.innerHTML = S.dimPieces.map((piece, i) => {
-    const pc  = pieceColors[i % pieceColors.length];
     const cbm = (piece.l && piece.w && piece.h)
       ? (piece.l * piece.w * piece.h / 1000000).toFixed(4)
       : '0.0000';
 
-    // هل اللون مخصص (غير موجود في القائمة)؟
     const isCustomColor = piece.color && !isKnownColor(piece.color);
     const customVisible = isCustomColor ? 'flex' : 'none';
     const customValue   = isCustomColor ? piece.color : '';
 
     return `
     <div id="dimPiece_${i}" style="
-      background:${pc.bg};
-      border:1.5px solid ${pc.border};
+      background:#fff;
+      border:1.5px solid var(--border);
       border-radius:var(--r);
       padding:14px;
       margin-bottom:10px;
@@ -15513,38 +15515,35 @@ function renderDimPieces() {
       animation-delay:${i * 0.05}s;
     ">
 
-      <!-- ── رأس القطعة ── -->
+      <!-- رأس الباكيت -->
       <div style="
         display:flex;align-items:center;
         justify-content:space-between;
         margin-bottom:12px;
+        padding-bottom:10px;
+        border-bottom:1px solid var(--border);
       ">
         <div style="display:flex;align-items:center;gap:9px;">
-
-          <!-- رقم دائري ملوَّن -->
           <div style="
             width:30px;height:30px;border-radius:50%;
-            background:${pc.num};color:#fff;
-            font-size:14px;font-weight:900;
+            background:#1a1a2e;color:#c8a96e;
+            font-size:13px;font-weight:900;
             display:flex;align-items:center;justify-content:center;
             flex-shrink:0;
-            box-shadow:0 3px 10px ${pc.border};
-          ">${i + 1}</div>
-
+          ">📦</div>
           <div>
             <div style="font-size:13px;font-weight:800;color:var(--text);">
               ${tx.piece} ${i + 1}
             </div>
             <div style="font-size:10px;color:var(--muted);margin-top:1px;">
               CBM:
-              <strong id="dimCBM_${i}" style="color:${pc.num};">
+              <strong id="dimCBM_${i}" style="color:var(--gold2);">
                 ${cbm} m³
               </strong>
             </div>
           </div>
         </div>
 
-        <!-- زر الحذف — مخفي للقطعة الأولى -->
         ${i > 0 ? `
         <button type="button"
           onclick="removeDimPiece(${i})"
@@ -15561,59 +15560,155 @@ function renderDimPieces() {
         >🗑️</button>` : '<div style="width:30px;"></div>'}
       </div>
 
-      <!-- ── الأبعاد ط × ع × ا ── -->
+      <!-- أبعاد الباكيت للشحن -->
       <div class="fg" style="margin-bottom:10px;">
-        <label class="fl" style="font-size:11px;">
-          📏 ${tx.dims_label}
+        <label class="fl" style="font-size:11px;margin-bottom:6px;">
+          📐 ${tx.dims_label}
         </label>
-        <div class="dim-row">
-          <input type="number" class="fc" placeholder="ط"
-            value="${piece.l || ''}" min="0"
-            oninput="updateDimPiece(${i},'l',this.value)"
-            style="border-color:${pc.border};">
-          <span class="dim-sep">×</span>
-          <input type="number" class="fc" placeholder="ع"
-            value="${piece.w || ''}" min="0"
-            oninput="updateDimPiece(${i},'w',this.value)"
-            style="border-color:${pc.border};">
-          <span class="dim-sep">×</span>
-          <input type="number" class="fc" placeholder="ا"
-            value="${piece.h || ''}" min="0"
-            oninput="updateDimPiece(${i},'h',this.value)"
-            style="border-color:${pc.border};">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+
+          <!-- الطول -->
+          <div>
+            <div style="font-size:9px;font-weight:700;color:var(--muted);
+              margin-bottom:4px;text-align:center;letter-spacing:.5px;
+              text-transform:uppercase;">
+              ${tx.dim_l}
+            </div>
+            <input type="number" class="fc"
+              placeholder="0"
+              value="${piece.l || ''}" min="0" step="0.1"
+              oninput="updateDimPiece(${i},'l',this.value)"
+              style="
+                background:#fff;
+                border:1.5px solid var(--border);
+                border-radius:var(--rs);
+                text-align:center;
+                font-size:14px;
+                font-weight:700;
+                padding:8px 6px;
+              ">
+          </div>
+
+          <!-- العرض -->
+          <div>
+            <div style="font-size:9px;font-weight:700;color:var(--muted);
+              margin-bottom:4px;text-align:center;letter-spacing:.5px;
+              text-transform:uppercase;">
+              ${tx.dim_w}
+            </div>
+            <input type="number" class="fc"
+              placeholder="0"
+              value="${piece.w || ''}" min="0" step="0.1"
+              oninput="updateDimPiece(${i},'w',this.value)"
+              style="
+                background:#fff;
+                border:1.5px solid var(--border);
+                border-radius:var(--rs);
+                text-align:center;
+                font-size:14px;
+                font-weight:700;
+                padding:8px 6px;
+              ">
+          </div>
+
+          <!-- الارتفاع -->
+          <div>
+            <div style="font-size:9px;font-weight:700;color:var(--muted);
+              margin-bottom:4px;text-align:center;letter-spacing:.5px;
+              text-transform:uppercase;">
+              ${tx.dim_h}
+            </div>
+            <input type="number" class="fc"
+              placeholder="0"
+              value="${piece.h || ''}" min="0" step="0.1"
+              oninput="updateDimPiece(${i},'h',this.value)"
+              style="
+                background:#fff;
+                border:1.5px solid var(--border);
+                border-radius:var(--rs);
+                text-align:center;
+                font-size:14px;
+                font-weight:700;
+                padding:8px 6px;
+              ">
+          </div>
+
+        </div>
+
+        <!-- عرض CBM للباكيت -->
+        <div style="
+          margin-top:8px;
+          background:#fff;
+          border:1px solid var(--border);
+          border-radius:var(--rs);
+          padding:7px 12px;
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+        ">
+          <span style="font-size:10px;color:var(--muted);font-weight:600;">
+            📦 ${tx.cbm_piece}
+          </span>
+          <strong id="dimCBM_${i}" style="
+            font-size:13px;
+            font-weight:800;
+            color:var(--gold2);
+          ">${cbm} m³</strong>
         </div>
       </div>
 
-      <!-- ── وزن + باكيت ── -->
-      <div class="fgrid" style="gap:10px;margin-bottom:10px;">
+      <!-- وزن + باكيت -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
         <div class="fg">
-          <label class="fl" style="font-size:11px;">⚖️ ${tx.weight}</label>
-          <input type="number" class="fc" placeholder="0.00"
+          <label class="fl" style="font-size:11px;margin-bottom:4px;">
+            ⚖️ ${tx.weight}
+          </label>
+          <input type="number" class="fc"
+            placeholder="0.00"
             value="${piece.weight || ''}" min="0" step="0.1"
             oninput="updateDimPiece(${i},'weight',this.value)"
-            style="border-color:${pc.border};">
+            style="
+              background:#fff;
+              border:1.5px solid var(--border);
+              text-align:center;
+              font-size:13px;
+              font-weight:700;
+            ">
         </div>
         <div class="fg">
-          <label class="fl" style="font-size:11px;">📦 ${tx.packets}</label>
-          <input type="number" class="fc" placeholder="1"
+          <label class="fl" style="font-size:11px;margin-bottom:4px;">
+            📦 ${tx.packets}
+          </label>
+          <input type="number" class="fc"
+            placeholder="1"
             value="${piece.packets || 1}" min="1"
             oninput="updateDimPiece(${i},'packets',this.value)"
-            style="border-color:${pc.border};">
+            style="
+              background:#fff;
+              border:1.5px solid var(--border);
+              text-align:center;
+              font-size:13px;
+              font-weight:700;
+            ">
         </div>
       </div>
 
-      <!-- ── اللون — قائمة منسدلة ── -->
+      <!-- اللون -->
       <div class="fg">
-        <label class="fl" style="font-size:11px;">🎨 ${tx.color}</label>
-
+        <label class="fl" style="font-size:11px;margin-bottom:4px;">
+          🎨 ${tx.color}
+        </label>
         <select class="fc"
           id="dimColorSel_${i}"
           onchange="onDimColorChange(${i}, this)"
-          style="border-color:${pc.border};cursor:pointer;">
+          style="
+            background:#fff;
+            border:1.5px solid var(--border);
+            cursor:pointer;
+          ">
           ${buildColorSelectHTML(piece.color)}
         </select>
 
-        <!-- حقل الكتابة اليدوية — يظهر عند اختيار "مخصص" -->
         <div id="dimColorCustomWrap_${i}" style="
           display:${customVisible};
           align-items:center;
@@ -15626,7 +15721,11 @@ function renderDimPieces() {
             placeholder="${tx.custom_ph}"
             value="${customValue}"
             oninput="onDimColorCustomInput(${i}, this)"
-            style="border-color:${pc.border};flex:1;">
+            style="
+              background:#fff;
+              border:1.5px solid var(--border);
+              flex:1;
+            ">
         </div>
       </div>
 
@@ -15635,6 +15734,7 @@ function renderDimPieces() {
 
   calcTotalCBM();
 }
+
 
 /* ── معالجة تغيير القائمة ── */
 function onDimColorChange(idx, selectEl) {
