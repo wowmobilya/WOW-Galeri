@@ -3892,25 +3892,33 @@ html, body {
    STICKY HEADER — ULTIMATE FIX (DESKTOP + MOBILE)
 ============================================================ */
 
-/* 1️⃣ تحرير الـ html والـ body بالكامل لضمان عمل الـ Sticky في كل المتصفحات (الهاتف والكمبيوتر) */
-html, body {
-  overflow: visible !important;
-  overflow-x: visible !important;
-  overflow-y: visible !important;
+/* 1️⃣ استخدام clip بدلاً من hidden لمنع التمرير الأفقي بأمان تام */
+html { 
+  overflow-x: visible !important; 
+}
+body { 
+  overflow-x: clip !important; 
 }
 
-/* 2️⃣ إزالة الـ transform من الحاويات (السبب الرئيسي لتعطل التثبيت في الكمبيوتر) */
+/* 2️⃣ إزالة الـ transform من الحاويات (السبب الجذري لتعطل التثبيت في شاشات اللابتوب) */
 .main, 
-#mainContent, 
-.page, 
-.page.active {
-  overflow: visible !important;
+#mainContent {
   transform: none !important;
-  contain: none !important;
   perspective: none !important;
+  contain: none !important;
+  overflow: visible !important;
 }
 
-/* 3️⃣ إعداد القائمة الثابتة بقوة */
+/* 3️⃣ إصلاح الأنيميشن في الصفحات (يمنع بقاء الـ transform بعد انتهاء الحركة) */
+.page,
+#page-select-client-type, 
+#page-select-invoice-type, 
+#page-add-product {
+  animation-fill-mode: backwards !important;
+  overflow: visible !important;
+}
+
+/* 4️⃣ إعداد القائمة الثابتة بقوة */
 .sct-sticky-header,
 .co-page-sticky,
 .page-sticky-bar {
@@ -3935,7 +3943,6 @@ html, body {
   box-shadow: 0 4px 12px -2px rgba(0,0,0,0.05) !important;
 }
 
-   
 
 
 
