@@ -4235,10 +4235,14 @@ body {
 <section class="page" id="page-products">
   <div class="co-page-sticky">
     <div class="co-toolbar-row">
-      <h1 class="co-toolbar-title" data-i18n="pr_title">🛋️ المنتجات</h1>
-      <input type="text" class="fc" id="prSearch" placeholder="🔍" oninput="renderPr()">
-      <button class="btn btn-p" onclick="showPage('add-product')">➕ <span data-i18n="btn_add_pr">إضافة</span></button>
-    </div>
+  <!-- زر الرجوع الجديد -->
+  <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
+  
+  <h1 class="co-toolbar-title" data-i18n="pr_title">🛋️ المنتجات</h1>
+  <input type="text" class="fc" id="prSearch" placeholder="🔍" oninput="renderPr()">
+  <button class="btn btn-p" onclick="showPage('add-product')">➕ <span data-i18n="btn_add_pr">إضافة</span></button>
+</div>
+
     <div class="co-stats-bar" id="prStatsBar">
       <div class="co-stat-pill" onclick="setPrTab('all')">
         <span class="csp-icon"></span><span data-i18n="co_tab_all">الكل</span>
@@ -4272,11 +4276,15 @@ body {
 <!-- ========== COMPANIES LIST ========== -->
 <section class="page" id="page-companies">
   <div class="co-page-sticky">
-    <div class="co-toolbar-row">
-      <h1 class="co-toolbar-title" data-i18n="co_title">👥 العملاء</h1>
-      <input type="text" class="fc" id="coSearch" placeholder="🔍" oninput="renderCo()">
-      <button class="btn btn-p" onclick="showPage('select-client-type')">➕ <span data-i18n="btn_add_co">إضافة</span></button>
-    </div>
+   <div class="co-toolbar-row">
+  <!-- زر الرجوع الجديد -->
+  <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
+  
+  <h1 class="co-toolbar-title" data-i18n="co_title">👥 العملاء</h1>
+  <input type="text" class="fc" id="coSearch" placeholder="🔍" oninput="renderCo()">
+  <button class="btn btn-p" onclick="showPage('select-client-type')">➕ <span data-i18n="btn_add_co">إضافة</span></button>
+</div>
+
     <div class="co-stats-bar" id="coStatsBar">
       <div class="co-stat-pill csp-all" onclick="setCoTab('all')">
         <span class="csp-icon">🏢</span><span data-i18n="co_tab_all">الكل</span>
@@ -4793,11 +4801,15 @@ body {
 <!-- ========== INVOICES LIST ========== -->
 <section class="page" id="page-invoices">
   <div class="co-page-sticky">
-    <div class="co-toolbar-row">
-      <h1 class="co-toolbar-title" data-i18n="inv_title">📄 الفواتير</h1>
-      <input type="text" class="fc" id="invSearch" placeholder="🔍" oninput="renderInvList()">
-      <button class="btn btn-p" onclick="showPage('select-invoice-type')">✏️ <span data-i18n="btn_create">إنشاء</span></button>
-    </div>
+   <div class="co-toolbar-row">
+  <!-- زر الرجوع الجديد -->
+  <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
+  
+  <h1 class="co-toolbar-title" data-i18n="inv_title">📄 الفواتير</h1>
+  <input type="text" class="fc" id="invSearch" placeholder="🔍" oninput="renderInvList()">
+  <button class="btn btn-p" onclick="showPage('select-invoice-type')">✏️ <span data-i18n="btn_create">إنشاء</span></button>
+</div>
+
     <div class="co-stats-bar" id="invStatsBar">
       <div class="co-stat-pill" onclick="setInvTab('all')" id="invPill-all">
         <span class="csp-icon">📄</span><span data-i18n="co_tab_all">الكل</span>
