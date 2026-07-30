@@ -15377,9 +15377,7 @@ const DIM_TEXTS = {
     cbm_piece:   'حجم الباكيت',
     cbm_total:   'CBM الإجمالي',
     weight:      'الوزن (كجم)',
-    packets:     'عدد الباكيت',
-    color:       'اللون',
-    custom_ph:   'اكتب اللون...',
+    custom_ph:   '',
     del_confirm: 'حذف هذا الباكيت؟',
     min_one:     '⚠️ يجب أن يبقى باكيت واحد على الأقل',
   },
@@ -15393,9 +15391,7 @@ const DIM_TEXTS = {
     cbm_piece:   'Paket Hacmi',
     cbm_total:   'Toplam CBM',
     weight:      'Ağırlık (kg)',
-    packets:     'Paket Adedi',
-    color:       'Renk',
-    custom_ph:   'Renk yaz...',
+    custom_ph:   '',
     del_confirm: 'Bu paketi sil?',
     min_one:     '⚠️ En az bir paket kalmalıdır',
   },
@@ -15409,9 +15405,7 @@ const DIM_TEXTS = {
     cbm_piece:   'Package Volume',
     cbm_total:   'Total CBM',
     weight:      'Weight (kg)',
-    packets:     'Package Count',
-    color:       'Color',
-    custom_ph:   'Type color...',
+    custom_ph:   '',
     del_confirm: 'Delete this package?',
     min_one:     '⚠️ At least one package must remain',
   },
@@ -15487,11 +15481,9 @@ function renderDimPieces() {
   const lang = S.lang || 'ar';
   const tx   = DIM_TEXTS[lang] || DIM_TEXTS.ar;
 
-  // تحديث نص زر الإضافة
   const addBtnTxt = document.getElementById('addDimBtnTxt');
   if (addBtnTxt) addBtnTxt.textContent = tx.add_btn;
 
-  // تحديث نص CBM الإجمالي
   const cbmLbl = document.getElementById('cbmTotalLabel');
   if (cbmLbl) cbmLbl.textContent = tx.cbm_total;
 
@@ -15499,10 +15491,6 @@ function renderDimPieces() {
     const cbm = (piece.l && piece.w && piece.h)
       ? (piece.l * piece.w * piece.h / 1000000).toFixed(4)
       : '0.0000';
-
-    const isCustomColor = piece.color && !isKnownColor(piece.color);
-    const customVisible = isCustomColor ? 'flex' : 'none';
-    const customValue   = isCustomColor ? piece.color : '';
 
     return `
     <div id="dimPiece_${i}" style="
@@ -15527,7 +15515,7 @@ function renderDimPieces() {
           <div style="
             width:30px;height:30px;border-radius:50%;
             background:#1a1a2e;color:#c8a96e;
-            font-size:13px;font-weight:900;
+            font-size:14px;font-weight:900;
             display:flex;align-items:center;justify-content:center;
             flex-shrink:0;
           ">📦</div>
@@ -15657,76 +15645,22 @@ function renderDimPieces() {
         </div>
       </div>
 
-      <!-- وزن + باكيت -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-        <div class="fg">
-          <label class="fl" style="font-size:11px;margin-bottom:4px;">
-            ⚖️ ${tx.weight}
-          </label>
-          <input type="number" class="fc"
-            placeholder="0.00"
-            value="${piece.weight || ''}" min="0" step="0.1"
-            oninput="updateDimPiece(${i},'weight',this.value)"
-            style="
-              background:#fff;
-              border:1.5px solid var(--border);
-              text-align:center;
-              font-size:13px;
-              font-weight:700;
-            ">
-        </div>
-        <div class="fg">
-          <label class="fl" style="font-size:11px;margin-bottom:4px;">
-            📦 ${tx.packets}
-          </label>
-          <input type="number" class="fc"
-            placeholder="1"
-            value="${piece.packets || 1}" min="1"
-            oninput="updateDimPiece(${i},'packets',this.value)"
-            style="
-              background:#fff;
-              border:1.5px solid var(--border);
-              text-align:center;
-              font-size:13px;
-              font-weight:700;
-            ">
-        </div>
-      </div>
-
-      <!-- اللون -->
+      <!-- الوزن فقط -->
       <div class="fg">
         <label class="fl" style="font-size:11px;margin-bottom:4px;">
-          🎨 ${tx.color}
+          ⚖️ ${tx.weight}
         </label>
-        <select class="fc"
-          id="dimColorSel_${i}"
-          onchange="onDimColorChange(${i}, this)"
+        <input type="number" class="fc"
+          placeholder="0.00"
+          value="${piece.weight || ''}" min="0" step="0.1"
+          oninput="updateDimPiece(${i},'weight',this.value)"
           style="
             background:#fff;
             border:1.5px solid var(--border);
-            cursor:pointer;
+            text-align:center;
+            font-size:13px;
+            font-weight:700;
           ">
-          ${buildColorSelectHTML(piece.color)}
-        </select>
-
-        <div id="dimColorCustomWrap_${i}" style="
-          display:${customVisible};
-          align-items:center;
-          gap:7px;
-          margin-top:7px;
-        ">
-          <span style="font-size:16px;flex-shrink:0;">✏️</span>
-          <input type="text" class="fc"
-            id="dimColorCustom_${i}"
-            placeholder="${tx.custom_ph}"
-            value="${customValue}"
-            oninput="onDimColorCustomInput(${i}, this)"
-            style="
-              background:#fff;
-              border:1.5px solid var(--border);
-              flex:1;
-            ">
-        </div>
       </div>
 
     </div>`;
@@ -15734,6 +15668,7 @@ function renderDimPieces() {
 
   calcTotalCBM();
 }
+
 
 
 /* ── معالجة تغيير القائمة ── */
