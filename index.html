@@ -4994,169 +4994,32 @@ body {
     </div>
 
        
-      <!-- ── موعد التسليم الذكي ── -->
+     
+<!-- ══ ROW: اللوحة + الشاحنة — نفس الصف بحجم متساوٍ ══ -->
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+  <div class="fg">
+    <label class="fl">🚛 <span id="lbl_plate">رقم اللوحة</span></label>
+    <input type="text" class="fc" id="invPlate" placeholder="33 NMR 34">
+  </div>
+  <div class="fg">
+    <label class="fl">🚢 <span id="lbl_truck">رقم الشاحنة</span></label>
+    <input type="text" class="fc" id="invTruck" placeholder="251">
+  </div>
+</div>
 
-      <div class="fg" style="grid-column:1/-1;">
-        <label class="fl" style="margin-bottom:8px;">
-          🚚 <span id="lbl_deliveryDate">موعد التسليم</span>
-          <span style="
-            background:var(--gold-light);color:var(--gold2);
-            border:1px solid rgba(200,169,110,.3);
-            border-radius:20px;padding:2px 10px;
-            font-size:10px;font-weight:700;margin-inline-start:8px;
-          " id="deliveryModeBadge">يدوي</span>
-        </label>
 
-        <!-- أزرار الوضع السريع -->
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;" id="deliveryQuickBtns">
-          <button type="button" onclick="setDelivery45Days()" style="
-            display:flex;align-items:center;gap:5px;
-            padding:7px 12px;border-radius:var(--rs);
-            border:1.5px solid var(--border);
-            background:var(--input);color:var(--text2);
-            font-size:11px;font-weight:700;cursor:pointer;
-            font-family:inherit;transition:all var(--tr);
-            white-space:nowrap;
-          "
-          onmouseenter="this.style.borderColor='var(--gold)';this.style.color='var(--gold2)';this.style.background='var(--gold-light)'"
-          onmouseleave="this.style.borderColor='var(--border)';this.style.color='var(--text2)';this.style.background='var(--input)'"
-          id="btn45Days">
-            ⏱️ <span id="lbl_45days">45 يوم من الدفعة</span>
-          </button>
-
-          <button type="button" onclick="setDeliveryManual()" style="
-            display:flex;align-items:center;gap:5px;
-            padding:7px 12px;border-radius:var(--rs);
-            border:1.5px solid var(--border);
-            background:var(--input);color:var(--text2);
-            font-size:11px;font-weight:700;cursor:pointer;
-            font-family:inherit;transition:all var(--tr);
-            white-space:nowrap;
-          "
-          onmouseenter="this.style.borderColor='var(--gold)';this.style.color='var(--gold2)';this.style.background='var(--gold-light)'"
-          onmouseleave="this.style.borderColor='var(--border)';this.style.color='var(--text2)';this.style.background='var(--input)'"
-          id="btnManualDate">
-            📅 <span id="lbl_manualDate">تاريخ يدوي</span>
-          </button>
-        </div>
-
-        <!-- حقل التاريخ -->
-        <input type="date" class="fc" id="invDeliveryDate"
-          onchange="onDeliveryDateChange()">
-
-        <!-- معلومة الـ 45 يوم -->
-        <div id="delivery45Info" style="
-          display:none;
-          margin-top:6px;
-          background:rgba(56,161,105,.07);
-          border:1px solid rgba(56,161,105,.2);
-          border-radius:var(--rs);
-          padding:8px 12px;
-          font-size:11px;color:#276749;
-          display:none;align-items:center;gap:8px;
-        ">
-          <span style="font-size:16px;">📦</span>
-          <span id="delivery45InfoText">التسليم بعد 45 يوماً من استلام الدفعة المقدمة</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ ROW 3: اللوحة + الشاحنة ══ -->
-    <div class="fgrid" style="margin-bottom:14px;" id="truckFields">
-      <div class="fg" id="invPlateField">
-        <label class="fl">🚛 <span id="lbl_plate">رقم اللوحة</span></label>
-        <input type="text" class="fc" id="invPlate" placeholder="33 NMR 34">
-      </div>
-      <div class="fg" id="invTruckField">
-        <label class="fl">🚢 <span id="lbl_truck">رقم الشاحنة</span></label>
-        <input type="text" class="fc" id="invTruck" placeholder="251">
-      </div>
-    </div>
-
-    <!-- ══ SHIPPING SECTION — عصري ══ -->
-    <div style="
-      background:var(--input);
-      border:1.5px solid var(--border);
-      border-radius:var(--r);
-      overflow:hidden;
-      margin-bottom:14px;
-    ">
-      <!-- رأس القسم -->
-      <div style="
-        display:flex;align-items:center;justify-content:space-between;
-        padding:12px 16px;
-        background:var(--card);
-        border-bottom:1px solid var(--border);
-      ">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="font-size:20px;">🚢</span>
-          <div>
-            <div style="font-size:13px;font-weight:800;color:var(--text);" id="lbl_shippingTitle">الشحن</div>
-            <div style="font-size:10px;color:var(--muted);" id="lbl_shippingSubtitle">اختر من يتحمل تكلفة الشحن</div>
-          </div>
-        </div>
-        <!-- شارة الاختيار الحالي -->
-        <div id="shippingCurrentBadge" style="
-          background:var(--gold-light);
-          border:1.5px solid var(--gold);
-          border-radius:20px;
-          padding:4px 12px;
-          font-size:11px;font-weight:700;
-          color:var(--gold2);
-          white-space:nowrap;
-        ">—</div>
-      </div>
-
-      <!-- خيارات الشحن -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
-
-        <!-- على العميل -->
-        <div id="shippingOpt_client"
-          onclick="selectShippingOpt('client')"
-          style="
-            padding:14px 16px;
-            cursor:pointer;
-            border-right:1px solid var(--border);
-            transition:all var(--tr);
-            display:flex;flex-direction:column;gap:6px;
-          "
-          onmouseenter="if(S.shippingOpt!=='client')this.style.background='var(--gold-light)'"
-          onmouseleave="if(S.shippingOpt!=='client')this.style.background=''">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:22px;">👤</span>
-            <div>
-              <div style="font-size:12px;font-weight:800;color:var(--text);" id="lbl_clientShipping">الشحن على العميل</div>
-              <div style="font-size:10px;color:var(--muted);" id="lbl_clientShippingSub">يدفع العميل تكلفة الشحن</div>
-            </div>
-          </div>
-          <!-- صيغ الملاحظات -->
-          <div id="shippingNotes_client" style="display:none;flex-direction:column;gap:4px;margin-top:4px;"></div>
-        </div>
-
-        <!-- على الشركة -->
-        <div id="shippingOpt_company"
-          onclick="selectShippingOpt('company')"
-          style="
-            padding:14px 16px;
-            cursor:pointer;
-            transition:all var(--tr);
-            display:flex;flex-direction:column;gap:6px;
-          "
-          onmouseenter="if(S.shippingOpt!=='company')this.style.background='var(--gold-light)'"
-          onmouseleave="if(S.shippingOpt!=='company')this.style.background=''">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:22px;">🏢</span>
-            <div>
-              <div style="font-size:12px;font-weight:800;color:var(--text);" id="lbl_companyShipping">الشحن على الشركة</div>
-              <div style="font-size:10px;color:var(--muted);" id="lbl_companyShippingSub">WOW Furniture تتحمل الشحن</div>
-            </div>
-          </div>
-          <!-- صيغ الملاحظات -->
-          <div id="shippingNotes_company" style="display:none;flex-direction:column;gap:4px;margin-top:4px;"></div>
-        </div>
-
-      </div>
-    </div>
+   <!-- ══ SHIPPING SECTION — قائمة منسدلة ══ -->
+<div style="margin-bottom:14px;">
+  <label class="fl" style="margin-bottom:8px;">
+    🚢 <span id="lbl_shippingTitle">الشحن</span>
+  </label>
+  <select class="fc" id="invShippingSelect"
+    onchange="selectShippingOpt(this.value); renderNoteTemplates();"
+    style="cursor:pointer;">
+    <option value="client" id="shippingOpt_client_opt">👤 يدفع العميل تكلفة الشحن</option>
+    <option value="company" id="shippingOpt_company_opt">🏢 تتحمل الشركة تكاليف الشحن</option>
+  </select>
+</div>
 
     <!-- ══ NOTES SECTION — 3 لغات × 5 صيغ ══ -->
     <div style="margin-bottom:4px;">
@@ -15428,6 +15291,35 @@ function updateStep1Texts() {
   set('lbl_plate',              L.lbl_plate);
   set('lbl_truck',              L.lbl_truck);
   set('lbl_shippingTitle',      L.lbl_shippingTitle);
+     set('lbl_shippingTitle',      L.lbl_shippingTitle);
+
+  // ✅ تحديث نصوص القائمة المنسدلة للشحن
+  const clientOpt  = document.getElementById('shippingOpt_client_opt');
+  const companyOpt = document.getElementById('shippingOpt_company_opt');
+
+  const shippingOptLabels = {
+    ar: {
+      client:  '👤 يدفع العميل تكلفة الشحن',
+      company: '🏢 تتحمل الشركة تكاليف الشحن',
+    },
+    tr: {
+      client:  '👤 Nakliye alıcıya ait',
+      company: '🏢 WOW Furniture nakliyeyi üstlenir',
+    },
+    en: {
+      client:  '👤 Buyer pays shipping costs',
+      company: '🏢 Company covers shipping costs',
+    },
+  };
+
+  const sOpts = shippingOptLabels[lang] || shippingOptLabels.en;
+  if (clientOpt)  clientOpt.textContent  = sOpts.client;
+  if (companyOpt) companyOpt.textContent = sOpts.company;
+
+  // ✅ مزامنة القيمة المحددة مع S.shippingOpt
+  const shippingSel = document.getElementById('invShippingSelect');
+  if (shippingSel) shippingSel.value = S.shippingOpt || 'client';
+
   set('lbl_shippingSubtitle',   L.lbl_shippingSubtitle);
   set('lbl_clientShipping',     L.lbl_clientShipping);
   set('lbl_clientShippingSub',  L.lbl_clientShippingSub);
@@ -15463,21 +15355,15 @@ function updateShippingUI() {
   const lang = S.lang || 'ar';
   const L    = STEP1_TEXTS[lang] || STEP1_TEXTS.ar;
 
-  /* الشارة */
+  // ✅ تحديث شارة الاختيار الحالي (إذا بقيت في مكان ما)
   const badge = document.getElementById('shippingCurrentBadge');
   if (badge) badge.textContent = L.shippingBadge[S.shippingOpt] || '—';
 
-  /* تلوين الخيارين */
-  ['client','company'].forEach(opt => {
-    const el = document.getElementById('shippingOpt_' + opt);
-    if (!el) return;
-    const isSel = S.shippingOpt === opt;
-    el.style.background = isSel
-      ? 'linear-gradient(135deg,rgba(200,169,110,.12),rgba(200,169,110,.04))'
-      : '';
-    if (opt === 'client') el.style.borderRight = '1px solid var(--border)';
-  });
+  // ✅ مزامنة قيمة القائمة المنسدلة الجديدة
+  const sel = document.getElementById('invShippingSelect');
+  if (sel) sel.value = S.shippingOpt || 'client';
 }
+
 
 /* ── موعد التسليم: 45 يوم تلقائي ── */
 function setDelivery45Days() {
