@@ -4586,30 +4586,17 @@ html, body {
           <input type="number" class="fc" id="prPriceC" placeholder="0.00" min="0" step="0.01" oninput="onTierInput('C')">
           <div style="font-size:10px;color:var(--muted);margin-top:3px;">₺<span id="prPriceC_TRY">0.00</span> &nbsp;|&nbsp; €<span id="prPriceC_EUR">0.00</span></div>
         </div>
+        
+        
         <div class="fg">
-          <label class="fl">🇹🇷 <span data-i18n="sale_try">سعر TRY</span></label>
-          <input type="number" class="fc" id="prPriceTRY" placeholder="0.00" min="0" step="1" oninput="updatePriceFromTRY()">
-        </div>
-        <div class="fg">
-          <label class="fl">👷 <span data-i18n="labor">تكلفة العمالة</span></label>
-          <input type="number" class="fc" id="prLabor" placeholder="0.00" min="0" step="0.01" oninput="updateCostBox()">
-        </div>
-        <div class="fg">
-          <label class="fl">📊 <span data-i18n="other_cost">تكاليف أخرى</span></label>
-          <input type="number" class="fc" id="prOther" placeholder="0.00" min="0" step="0.01" oninput="updateCostBox()">
-        </div>
-        <div class="fg">
-          <div class="cost-box">
-            <div class="cost-row"><span>💵 A</span><span id="cb-a">$0.00</span></div>
-            <div class="cost-row"><span>💵 B</span><span id="cb-b">$0.00</span></div>
-            <div class="cost-row"><span>💵 C</span><span id="cb-c">$0.00</span></div>
-            <div class="cost-row"><span>₺ TRY</span><span id="cb-try" style="color:#e53e3e;">₺0.00</span></div>
-            <div class="cost-row"><span>€ EUR</span><span id="cb-eur" style="color:#805ad5;">€0.00</span></div>
-            <div class="cost-row"><span data-i18n="total_cost">إجمالي التكلفة</span><span id="cb-total">$0.00</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="cost-box">
+    <div class="cost-row"><span id="cb-a-lbl">💵 أ</span><span id="cb-a">$0.00</span></div>
+    <div class="cost-row"><span id="cb-b-lbl">💵 ب</span><span id="cb-b">$0.00</span></div>
+    <div class="cost-row"><span id="cb-c-lbl">💵 ج</span><span id="cb-c">$0.00</span></div>
+    <div class="cost-row"><span>€ EUR</span><span id="cb-eur" style="color:#805ad5;">€0.00</span></div>
+  </div>
+</div>
+
 
  <div class="card">
   <div class="card-hdr">
@@ -8283,6 +8270,9 @@ updateStep1Texts();
 updateDash();
 updatePrInfoLabels();
 updatePrDimLabels();
+   updateTierLabels();
+updateCostBoxLabels();
+
 
   // ✅ تحديث نص زر حذف صورة القطعة
   const prImgDelTxt = document.getElementById('prImgDeleteBtnTxt');
@@ -9333,16 +9323,42 @@ function onTierInput(tier){
   updateCostBox();updateTierPreviews();
 }
 function updateTierPreviews(){
-  ['A','B','C'].forEach(tier=>{
-    const val=parseFloat(document.getElementById(`prPrice${tier}`)?.value)||0;
-    const tryEl=document.getElementById(`prPrice${tier}_TRY`);
-    const eurEl=document.getElementById(`prPrice${tier}_EUR`);
-    const prevEl=document.getElementById(`tier${tier}Preview`);
-    if(tryEl)tryEl.textContent=usdToTry(val).toFixed(0);
-    if(eurEl)eurEl.textContent=usdToEur(val).toFixed(2);
-    if(prevEl)prevEl.textContent='$'+val.toFixed(2);
+  ['A','B','C'].forEach(tier => {
+    const val    = parseFloat(document.getElementById(`prPrice${tier}`)?.value) || 0;
+    const eurEl  = document.getElementById(`prPrice${tier}_EUR`);
+    const prevEl = document.getElementById(`tier${tier}Preview`);
+    if (eurEl)  eurEl.textContent  = usdToEur(val).toFixed(2);
+    if (prevEl) prevEl.textContent = '$' + val.toFixed(2);
   });
+  updateTierLabels();
 }
+
+function updateTierLabels(){
+  const lang = S.lang || 'ar';
+  const L = {
+    ar: { A:'أ', B:'ب', C:'ج' },
+    tr: { A:'A', B:'B', C:'C' },
+    en: { A:'A', B:'B', C:'C' },
+  }[lang] || { A:'A', B:'B', C:'C' };
+
+  ['A','B','C'].forEach(tier => {
+    const lbl = document.getElementById(`tier${tier}-lbl`);
+    if (lbl) lbl.textContent = L[tier];
+  });
+
+  document.querySelectorAll('#invTierGrp .price-tier-btn .tier-lbl').forEach(el => {
+    const t = el.closest('[data-tier]')?.dataset.tier;
+    if (t && L[t]) el.textContent = L[t];
+  });
+
+  document.querySelectorAll('#prActiveTierGrp .price-tier-btn .tier-lbl').forEach(el => {
+    const t = el.closest('[data-tier]')?.dataset.tier;
+    if (t && L[t]) el.textContent = L[t];
+  });
+
+  updateCostBoxLabels();
+}
+
 function updatePriceFromTRY(){
   const tryVal=parseFloat(document.getElementById('prPriceTRY').value)||0;
   const usd=tryToUsd(tryVal);
@@ -9350,18 +9366,35 @@ function updatePriceFromTRY(){
   onTierInput('A');
 }
 function updateCostBox(){
-  const a=parseFloat(document.getElementById('prPriceA')?.value)||0;
-  const b=parseFloat(document.getElementById('prPriceB')?.value)||0;
-  const c=parseFloat(document.getElementById('prPriceC')?.value)||0;
-  const labor=parseFloat(document.getElementById('prLabor')?.value)||0;
-  const other=parseFloat(document.getElementById('prOther')?.value)||0;
-  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-  set('cb-a','$'+a.toFixed(2));set('cb-b','$'+b.toFixed(2));set('cb-c','$'+c.toFixed(2));
-  set('cb-try','₺'+usdToTry(a).toFixed(0));
-  set('cb-eur','€'+usdToEur(a).toFixed(2));
-  set('cb-total','$'+(labor+other).toFixed(2));
+  const a = parseFloat(document.getElementById('prPriceA')?.value) || 0;
+  const b = parseFloat(document.getElementById('prPriceB')?.value) || 0;
+  const c = parseFloat(document.getElementById('prPriceC')?.value) || 0;
+
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+
+  set('cb-a', '$' + a.toFixed(2));
+  set('cb-b', '$' + b.toFixed(2));
+  set('cb-c', '$' + c.toFixed(2));
+  set('cb-eur', '€' + usdToEur(a).toFixed(2));
+
   updateTierPreviews();
+  updateCostBoxLabels();
 }
+
+function updateCostBoxLabels(){
+  const lang = S.lang || 'ar';
+  const labels = {
+    ar: { a:'💵 أ', b:'💵 ب', c:'💵 ج' },
+    tr: { a:'💵 A', b:'💵 B', c:'💵 C' },
+    en: { a:'💵 A', b:'💵 B', c:'💵 C' },
+  };
+  const L = labels[lang] || labels.en;
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('cb-a-lbl', L.a);
+  set('cb-b-lbl', L.b);
+  set('cb-c-lbl', L.c);
+}
+
 function handlePrImg(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
