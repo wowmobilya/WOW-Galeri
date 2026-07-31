@@ -5044,7 +5044,7 @@ body {
     opacity:0.6;
   "></div>
 
-  <!-- ══ NOTES SECTION ══ -->
+   <!-- ══ NOTES SECTION ══ -->
   <div style="margin-bottom:4px;">
     <label class="fl" style="margin-bottom:8px;">
       📝 <span id="lbl_notes">ملاحظات</span>
@@ -5052,8 +5052,9 @@ body {
     <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px;" 
       id="noteTemplatesBtns"></div>
     <textarea class="fc" id="invNotes" rows="3"
-      placeholder="..." style="resize:vertical;"></textarea>
+      placeholder="..." style="resize:vertical;" oninput="delete this.dataset.templateIdx;"></textarea>
   </div>
+
 
   <!-- نوع الفاتورة -->
   <div style="margin-top:12px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
@@ -15166,9 +15167,12 @@ function applyNoteTemplate(idx) {
 
   const el = document.getElementById('invNotes');
   if (el) {
-    el.value = note; // إدراج النص في الحقل
+    el.value = note;
     
-    // تأثير بصري جميل عند الإدراج (توهج ذهبي)
+    // حفظ رقم الملاحظة ونوع الشحن للترجمة لاحقاً
+    el.dataset.templateIdx = idx;
+    el.dataset.templateOpt = sOpt;
+    
     el.style.transition  = 'border-color .2s, box-shadow .2s';
     el.style.borderColor = 'var(--gold)';
     el.style.boxShadow   = '0 0 0 3px rgba(200,169,110,.2)';
@@ -15178,7 +15182,6 @@ function applyNoteTemplate(idx) {
     }, 900);
   }
 
-  // إشعار للمستخدم بنجاح العملية
   const toastMsgs = {
     ar: `📝 تم تطبيق الملاحظة`,
     tr: `📝 Not uygulandı`,
@@ -15348,7 +15351,7 @@ function updateStep1Texts() {
   set('delivery45InfoText',     L.delivery45Info);
   set('lbl_regDate',            L.lbl_regDate);
 
-  /* ✅ 1 — إعادة بناء select العملة بلغة البرنامج */
+    /* ✅ 1 — إعادة بناء select العملة بلغة البرنامج */
   updateCurrencySelect();
 
   /* ✅ 2 — إعادة بناء واجهة الشحن بلغة البرنامج */
@@ -15359,6 +15362,17 @@ function updateStep1Texts() {
 
   /* ✅ 4 — تحديث شارة وضع التسليم */
   updateDeliveryModeUI();
+
+  /* ✅ 5 — تحديث لغة الملاحظة إذا كانت مختارة من القائمة ولم تُعدل يدوياً */
+  const notesEl = document.getElementById('invNotes');
+  if (notesEl && notesEl.dataset.templateIdx !== undefined) {
+    const idx = parseInt(notesEl.dataset.templateIdx);
+    const opt = notesEl.dataset.templateOpt || 'client';
+    const translatedNote = NOTE_TEMPLATES[lang]?.[opt]?.[idx];
+    if (translatedNote) {
+      notesEl.value = translatedNote;
+    }
+  }
 }
 
 /* ── اختيار خيار الشحن ── */
