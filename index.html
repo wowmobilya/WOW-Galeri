@@ -5051,9 +5051,10 @@ body {
     </label>
     <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px;" 
       id="noteTemplatesBtns"></div>
-   <textarea class="fc" id="invNotes" rows="3"
-  placeholder="..." style="resize:vertical;" 
-  oninput="delete this.dataset.templateIdx; renderNoteTemplates();"></textarea>
+  <textarea class="fc" id="invNotes" rows="3"
+  placeholder="..." style="resize:none; overflow:hidden;" 
+  oninput="this.style.height='auto'; this.style.height=(this.scrollHeight + 2) + 'px'; delete this.dataset.templateIdx; renderNoteTemplates();"></textarea>
+
 
   </div>
 
@@ -11755,9 +11756,9 @@ function generateBarcodeSVG(text,width=180,height=30){
    BUILD INVOICE HTML — A4 CLEAN WHITE
 ============================================================ */
 const PDF_TR={
-  en:{invoice:'INVOICE',seller:'SELLER',buyer:'BUYER',no:'Invoice No',date:'Date',loadDate:'Loading Date',plate:'Plate No',truck:'Truck No',item:'#',name:'Product Name',dims:'Dimensions',color:'Color',qty:'Qty',price:'Unit Price',total:'Total',cbm:'CBM',weight:'Weight',subtotal:'Subtotal',discount:'Discount',kdv:'VAT',grandTotal:'GRAND TOTAL',deposit:'Deposit',paid:'Total Paid',remaining:'Remaining',payMethod:'Payment Method',bankInfo:'BANK INFORMATION',bank:'Bank',beneficiary:'Beneficiary',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'Account No',rates:'Exchange Rates',notes:'Notes',seller_sig:'Seller Signature',buyer_sig:'Buyer Signature',stamp:'Stamp',verify:'This invoice was issued by WOW Furniture — www.wowmobilya.net',tier:'Price Tier',packets:'Packets',payHistory:'Payment History',mersis:'Mersis No',},
-  tr:{invoice:'FATURA',seller:'SATICI',buyer:'ALICI',no:'Fatura No',date:'Tarih',loadDate:'Yükleme Tarihi',plate:'Plaka No',truck:'Kamyon No',item:'#',name:'Ürün Adı',dims:'Boyutlar',color:'Renk',qty:'Adet',price:'Birim Fiyat',total:'Toplam',cbm:'CBM',weight:'Ağırlık',subtotal:'Ara Toplam',discount:'İndirim',kdv:'KDV',grandTotal:'GENEL TOPLAM',deposit:'Depozito',paid:'Toplam Ödenen',remaining:'Kalan',payMethod:'Ödeme Yöntemi',bankInfo:'BANKA BİLGİLERİ',bank:'Banka',beneficiary:'Lehdar',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'Hesap No',rates:'Döviz Kurları',notes:'Notlar',seller_sig:'Satıcı İmzası',buyer_sig:'Alıcı İmzası',stamp:'Mühür',verify:'Bu fatura WOW Furniture tarafından düzenlenmiştir — www.wowmobilya.net',tier:'Fiyat Kademesi',packets:'Paket',payHistory:'Ödeme Geçmişi',mersis:'Mersis No',},
-  ar:{invoice:'فاتورة',seller:'البائع',buyer:'المشتري',no:'رقم الفاتورة',date:'التاريخ',loadDate:'تاريخ التحميل',plate:'رقم اللوحة',truck:'رقم الشاحنة',item:'#',name:'اسم المنتج',dims:'الأبعاد',color:'اللون',qty:'الكمية',price:'سعر الوحدة',total:'المجموع',cbm:'CBM',weight:'الوزن',subtotal:'المجموع الفرعي',discount:'الخصم',kdv:'ضريبة KDV',grandTotal:'المجموع النهائي',deposit:'العربون',paid:'إجمالي المدفوع',remaining:'المتبقي',payMethod:'طريقة الدفع',bankInfo:'معلومات البنك',bank:'البنك',beneficiary:'المستفيد',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'رقم الحساب',rates:'أسعار الصرف',notes:'ملاحظات',seller_sig:'توقيع البائع',buyer_sig:'توقيع المشتري',stamp:'الختم',verify:'هذه الفاتورة صادرة من WOW Furniture — www.wowmobilya.net',tier:'درجة التسعير',packets:'الباكيتات',payHistory:'سجل الدفعات',mersis:'رقم Mersis',},
+  en:{invoice:'INVOICE',seller:'SELLER',buyer:'BUYER',no:'Invoice No',date:'Date',loadDate:'Loading Date',plate:'Plate No',truck:'Truck No',item:'#',name:'Product Name',dims:'Dimensions',color:'Color',qty:'Qty',price:'Unit Price',total:'Total',cbm:'CBM',weight:'Weight',subtotal:'Subtotal',discount:'Discount',kdv:'VAT',grandTotal:'GRAND TOTAL',deposit:'Deposit',paid:'Total Paid',remaining:'Remaining',payMethod:'Payment Method',bankInfo:'BANK INFORMATION',bank:'Bank',beneficiary:'Beneficiary',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'Account No',rates:'Exchange Rates',notes:'Delivery and Sales Terms',seller_sig:'Seller Signature',buyer_sig:'Buyer Signature',stamp:'Stamp',verify:'This invoice was issued by WOW Furniture — www.wowmobilya.net',tier:'Price Tier',packets:'Packets',payHistory:'Payment History',mersis:'Mersis No',},
+  tr:{invoice:'FATURA',seller:'SATICI',buyer:'ALICI',no:'Fatura No',date:'Tarih',loadDate:'Yükleme Tarihi',plate:'Plaka No',truck:'Kamyon No',item:'#',name:'Ürün Adı',dims:'Boyutlar',color:'Renk',qty:'Adet',price:'Birim Fiyat',total:'Toplam',cbm:'CBM',weight:'Ağırlık',subtotal:'Ara Toplam',discount:'İndirim',kdv:'KDV',grandTotal:'GENEL TOPLAM',deposit:'Depozito',paid:'Toplam Ödenen',remaining:'Kalan',payMethod:'Ödeme Yöntemi',bankInfo:'BANKA BİLGİLERİ',bank:'Banka',beneficiary:'Lehdar',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'Hesap No',rates:'Döviz Kurları',notes:'Teslimat ve Satış Şartları',seller_sig:'Satıcı İmzası',buyer_sig:'Alıcı İmzası',stamp:'Mühür',verify:'Bu fatura WOW Furniture tarafından düzenlenmiştir — www.wowmobilya.net',tier:'Fiyat Kademesi',packets:'Paket',payHistory:'Ödeme Geçmişi',mersis:'Mersis No',},
+  ar:{invoice:'فاتورة',seller:'البائع',buyer:'المشتري',no:'رقم الفاتورة',date:'التاريخ',loadDate:'تاريخ التحميل',plate:'رقم اللوحة',truck:'رقم الشاحنة',item:'#',name:'اسم المنتج',dims:'الأبعاد',color:'اللون',qty:'الكمية',price:'سعر الوحدة',total:'المجموع',cbm:'CBM',weight:'الوزن',subtotal:'المجموع الفرعي',discount:'الخصم',kdv:'ضريبة KDV',grandTotal:'المجموع النهائي',deposit:'العربون',paid:'إجمالي المدفوع',remaining:'المتبقي',payMethod:'طريقة الدفع',bankInfo:'معلومات البنك',bank:'البنك',beneficiary:'المستفيد',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'رقم الحساب',rates:'أسعار الصرف',notes:'شروط التسليم والبيع',seller_sig:'توقيع البائع',buyer_sig:'توقيع المشتري',stamp:'الختم',verify:'هذه الفاتورة صادرة من WOW Furniture — www.wowmobilya.net',tier:'درجة التسعير',packets:'الباكيتات',payHistory:'سجل الدفعات',mersis:'رقم Mersis',},
 };
 const PAY_METHOD_LABELS={
   en:{cash:'Cash',bank_transfer:'Bank Transfer',credit_card:'Credit Card',check:'Check',installment:'Installment',western_union:'Western Union',crypto:'Crypto',paypal:'PayPal',letter_credit:'Letter of Credit',deferred:'Deferred'},
@@ -15142,28 +15143,34 @@ function renderNoteTemplates() {
 }
 
 /* ── تطبيق الصيغة على حقل الملاحظات ── */
-function applyNoteTemplate(idx) {
+/* ── تطبيق الصيغة على حقل الشروط ── */
+function applyNoteTemplate(idx, silent = false) {
   const lang  = S.lang || 'ar';
   const sOpt  = S.shippingOpt || 'client';
   
-  // سحب النصوص بناءً على اللغة
   const baseNote = (NOTE_BASE_TEMPLATES[lang] || NOTE_BASE_TEMPLATES.ar)[idx];
   const shipText = (NOTE_SHIPPING_TEXT[lang] || NOTE_SHIPPING_TEXT.ar)[sOpt];
-  const terms    = (NOTE_TERMS[lang] || NOTE_TERMS.ar).join('\n');
+  const termsArray = NOTE_TERMS[lang] || NOTE_TERMS.ar;
 
   if (!baseNote) return;
 
-  // دمج النص النهائي: (التسليم — الشحن) ثم سطرين فارغين ثم الشروط مرتبة
-  const finalText = `${baseNote} — ${shipText}\n\n${terms}`;
+  // دمج النص مع الترقيم التلقائي (1) (2) (3)...
+  const numberedTerms = termsArray.map((term, i) => `(${i + 1}) ${term}`).join('\n');
+  const finalText = `${baseNote} — ${shipText}\n\n${numberedTerms}`;
 
   const el = document.getElementById('invNotes');
   if (el) {
     el.value = finalText;
     
-    // حفظ رقم الملاحظة ونوع الشحن للترجمة لاحقاً
+    // حفظ رقم الملاحظة للترجمة لاحقاً
     el.dataset.templateIdx = idx;
     el.dataset.templateOpt = sOpt;
     
+    // تمدد الحقل تلقائياً ليناسب المحتوى
+    el.style.height = 'auto';
+    el.style.height = (el.scrollHeight + 2) + 'px';
+    
+    // تأثير بصري عند التطبيق
     el.style.transition  = 'border-color .2s, box-shadow .2s';
     el.style.borderColor = 'var(--gold)';
     el.style.boxShadow   = '0 0 0 3px rgba(200,169,110,.2)';
@@ -15178,20 +15185,23 @@ function applyNoteTemplate(idx) {
   const defaultOpt = document.getElementById('noteSelectDefault');
   if (selectEl && defaultOpt) {
     const successMsgs = {
-      ar: '✅ تم اختيار الملاحظة',
-      tr: '✅ Not seçildi',
-      en: '✅ Note selected'
+      ar: '✅ تم اختيار الشروط',
+      tr: '✅ Şartlar seçildi',
+      en: '✅ Terms selected'
     };
     defaultOpt.textContent = successMsgs[lang] || successMsgs.en;
-    selectEl.value = ''; // إعادة القائمة للخيار الأول ليظهر النص الجديد
+    selectEl.value = '';
   }
 
-  const toastMsgs = {
-    ar: `📝 تم تطبيق الملاحظة والشروط`,
-    tr: `📝 Not ve şartlar uygulandı`,
-    en: `📝 Note and terms applied`,
-  };
-  showToast(toastMsgs[lang] || toastMsgs.en, 'ok');
+  // إظهار الإشعار فقط إذا لم يكن التحديث صامتاً (بسبب تغيير اللغة)
+  if (!silent) {
+    const toastMsgs = {
+      ar: `📝 تم تطبيق شروط التسليم والبيع`,
+      tr: `📝 Teslimat şartları uygulandı`,
+      en: `📝 Delivery terms applied`,
+    };
+    showToast(toastMsgs[lang] || toastMsgs.en, 'ok');
+  }
 }
 
 
@@ -15219,8 +15229,8 @@ const STEP1_TEXTS = {
     lbl_clientShippingSub:   'يدفع العميل تكلفة الشحن',
     lbl_companyShipping:     'الشحن على الشركة',
     lbl_companyShippingSub:  'WOW Furniture تتحمل الشحن',
-    lbl_notes:               'ملاحظات',
-    lbl_noteTemplates:       'صيغ جاهزة',
+     lbl_notes: 'شروط التسليم والبيع',
+  lbl_noteTemplates: 'صيغ جاهزة',
     deliveryModeBadge_manual:'يدوي',
     deliveryModeBadge_45:    '45 يوم',
     delivery45Info:          'التسليم بعد 45 يوماً من استلام الدفعة المقدمة',
@@ -15249,8 +15259,8 @@ const STEP1_TEXTS = {
     lbl_clientShippingSub:   'Nakliye masrafı alıcıya aittir',
     lbl_companyShipping:     'Şirket Öder',
     lbl_companyShippingSub:  'WOW Furniture nakliyeyi üstlenir',
-    lbl_notes:               'Notlar',
-    lbl_noteTemplates:       'Hazır Şablonlar',
+     lbl_notes: 'Teslimat ve Satış Şartları',
+  lbl_noteTemplates: 'Hazır Şablonlar',
     deliveryModeBadge_manual:'Manuel',
     deliveryModeBadge_45:    '45 Gün',
     delivery45Info:          'Depozito alındıktan 45 gün sonra teslimat',
@@ -15279,8 +15289,8 @@ const STEP1_TEXTS = {
     lbl_clientShippingSub:   'Buyer pays all shipping costs',
     lbl_companyShipping:     'Shipping on Company',
     lbl_companyShippingSub:  'WOW Furniture covers shipping',
-    lbl_notes:               'Notes',
-    lbl_noteTemplates:       'Quick Templates',
+   lbl_notes: 'Delivery and Sales Terms',
+  lbl_noteTemplates: 'Quick Templates',
     deliveryModeBadge_manual:'Manual',
     deliveryModeBadge_45:    '45 Days',
     delivery45Info:          'Delivery 45 days after receiving the deposit',
@@ -15368,15 +15378,14 @@ function updateStep1Texts() {
   /* ✅ 4 — تحديث شارة وضع التسليم */
   updateDeliveryModeUI();
 
-  /* ✅ 5 — تحديث لغة الملاحظة إذا كانت مختارة من القائمة ولم تُعدل يدوياً */
+  /* ✅ 5 — تحديث لغة الشروط إذا كانت مختارة من القائمة ولم تُعدل يدوياً */
   const notesEl = document.getElementById('invNotes');
   if (notesEl && notesEl.dataset.templateIdx !== undefined) {
     const idx = parseInt(notesEl.dataset.templateIdx);
-    const opt = notesEl.dataset.templateOpt || 'client';
-    const translatedNote = NOTE_TEMPLATES[lang]?.[opt]?.[idx];
-    if (translatedNote) {
-      notesEl.value = translatedNote;
-    }
+    // استدعاء الدالة بوضع silent=true حتى تتغير اللغة بدون إزعاج المستخدم بإشعارات متكررة
+    applyNoteTemplate(idx, true); 
+  }
+
   }
 }
 
