@@ -10347,16 +10347,24 @@ function initCreateInv(){
     document.getElementById('sumDiscount').value='0';
     document.getElementById('sumDeposit').value='0';
     const editBtn=document.getElementById('editInvBtn');if(editBtn)editBtn.style.display='none';
+    
+    // 👈 1. أضف هذا السطر لتفريغ حقل الملاحظات دائماً في الفاتورة الجديدة
+    const notesEl = document.getElementById('invNotes');
+    if(notesEl) notesEl.value = '';
   }
+  
   updateInvNumDisplay();populateCoSelect();renderPrSelector();
   renderInvTable();updateSummary();updateKdvDisplay();
-  const notesEl=document.getElementById('invNotes');
-  if(notesEl&&!notesEl.value)notesEl.value=S.settings.defaultNotes;
+  
+  // 👈 2. قم بحذف أو وضع تعليق (//) على هذين السطرين لمنع سحب النص الافتراضي
+  // const notesEl=document.getElementById('invNotes');
+  // if(notesEl&&!notesEl.value)notesEl.value=S.settings.defaultNotes;
+
   selInvType(S.invType||'external');
   selInvTier(S.invTier||'A',null);
   document.querySelectorAll('.pay-method-card').forEach(c=>c.classList.toggle('sel',c.dataset.pm==='cash'));
   S.invPayMethod='cash';
-   const ldEl=document.getElementById('invLoadDate');
+  const ldEl=document.getElementById('invLoadDate');
   if(ldEl&&!ldEl.value)ldEl.value=new Date().toISOString().split('T')[0];
   
   // إضافة تاريخ التسجيل التلقائي
@@ -10368,11 +10376,11 @@ function initCreateInv(){
   // reset step badges
   const b4=document.getElementById('step4Badge');if(b4)b4.textContent=t('kdv_off')||'غير مفعّل';
   const b5=document.getElementById('step5Badge');if(b5)b5.textContent='0 '+t('items_count')||'0 قطعة';
-S.shippingOpt  = S.shippingOpt  || 'client';
-S.deliveryMode = S.deliveryMode || 'manual';
-updateStep1Texts();
-
+  S.shippingOpt  = S.shippingOpt  || 'client';
+  S.deliveryMode = S.deliveryMode || 'manual';
+  updateStep1Texts();
 }
+
 function getAutoInvNo(type) {
   if (type === 'internal_retail') return (S.settings.prefixRet || 'b') + (S.settings.nextNoRet || 3000);
   if (type === 'internal_wholesale') return (S.settings.prefixWhl || 'c') + (S.settings.nextNoWhl || 1000);
