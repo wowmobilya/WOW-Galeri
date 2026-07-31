@@ -16648,148 +16648,137 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(_ddUpdateUI, 400)
 
 
 
-   <!-- ============================================================
-     PRIVACY LOCK SYSTEM v2 — WOW FURNITURE 2026
+ <!-- ============================================================
+     PRIVACY LOCK SYSTEM v3 — WOW FURNITURE 2026
 ============================================================ -->
 
-<!-- شاشة القفل -->
 <div id="privacyLockScreen" style="
   position:fixed;inset:0;z-index:99999;
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
+  display:none;flex-direction:column;
+  align-items:center;justify-content:center;overflow:hidden;
 ">
-  <!-- خلفية -->
-  <div id="lockBg" style="position:absolute;inset:0;z-index:0;transition:background .4s;"></div>
+  <div id="lockBg" style="position:absolute;inset:0;z-index:0;"></div>
 
   <!-- دوائر ضوئية -->
   <div style="position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;">
     <div id="lockOrb1" style="position:absolute;width:500px;height:500px;border-radius:50%;top:-150px;right:-150px;animation:lockOrb1 8s ease-in-out infinite;"></div>
     <div id="lockOrb2" style="position:absolute;width:350px;height:350px;border-radius:50%;bottom:-100px;left:-100px;animation:lockOrb2 10s ease-in-out infinite;"></div>
-    <div id="lockOrb3" style="position:absolute;width:250px;height:250px;border-radius:50%;top:50%;left:5%;animation:lockOrb3 12s ease-in-out infinite;"></div>
+    <div id="lockOrb3" style="position:absolute;width:250px;height:250px;border-radius:50%;top:45%;left:5%;animation:lockOrb3 12s ease-in-out infinite;"></div>
   </div>
 
   <!-- المحتوى -->
-  <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;width:100%;max-width:360px;padding:0 24px;">
+  <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;width:100%;max-width:360px;padding:0 28px;">
 
     <!-- اللوجو -->
     <div id="lockLogoWrap" style="
-      width:96px;height:96px;border-radius:26px;
+      width:100px;height:100px;border-radius:28px;
       display:flex;align-items:center;justify-content:center;
-      margin-bottom:22px;overflow:hidden;
+      margin-bottom:20px;overflow:hidden;
       animation:lockLogoIn .7s cubic-bezier(.34,1.56,.64,1) both;
-      transition:box-shadow .3s;
     ">
       <img id="lockLogoImg" src="https://h.top4top.io/p_3861refg81.png"
-        style="width:85%;height:85%;object-fit:contain;" alt="logo">
+        style="width:82%;height:82%;object-fit:contain;" alt="logo">
     </div>
 
     <!-- اسم الشركة -->
     <div id="lockCompanyName" style="
-      font-size:24px;font-weight:900;
-      margin-bottom:6px;letter-spacing:.5px;
-      animation:lockFadeUp .5s ease .2s both;
-      transition:color .3s;
+      font-size:23px;font-weight:900;margin-bottom:5px;
+      letter-spacing:.5px;animation:lockFadeUp .5s ease .2s both;
     ">WOW Furniture</div>
 
     <!-- subtitle -->
     <div id="lockSubtitle" style="
-      font-size:12px;font-weight:700;letter-spacing:2px;
-      text-transform:uppercase;margin-bottom:40px;
+      font-size:11px;font-weight:700;letter-spacing:2.5px;
+      text-transform:uppercase;margin-bottom:38px;
       animation:lockFadeUp .5s ease .3s both;
-      transition:color .3s;
     ">أدخل رمز المرور</div>
 
-    <!-- مرحلة الإنشاء: مؤشر الخطوة -->
-    <div id="lockStepIndicator" style="
-      display:none;margin-bottom:12px;
-      animation:lockFadeUp .3s ease both;
-    ">
-      <div style="display:flex;gap:6px;align-items:center;justify-content:center;">
-        <div id="lockStep1Dot" style="width:8px;height:8px;border-radius:50%;transition:all .3s;"></div>
-        <div style="width:24px;height:2px;border-radius:2px;transition:all .3s;" id="lockStepLine"></div>
-        <div id="lockStep2Dot" style="width:8px;height:8px;border-radius:50%;transition:all .3s;"></div>
+    <!-- مؤشر الخطوتين -->
+    <div id="lockStepWrap" style="display:none;margin-bottom:18px;animation:lockFadeUp .3s ease both;">
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <div id="lockS1" style="width:10px;height:10px;border-radius:50%;transition:all .3s;"></div>
+        <div id="lockSLine" style="width:32px;height:3px;border-radius:2px;transition:all .3s;"></div>
+        <div id="lockS2" style="width:10px;height:10px;border-radius:50%;transition:all .3s;"></div>
       </div>
-      <div id="lockStepLabel" style="font-size:11px;font-weight:700;text-align:center;margin-top:8px;letter-spacing:.5px;transition:color .3s;"></div>
+      <div id="lockStepLbl" style="font-size:11px;font-weight:700;text-align:center;margin-top:9px;letter-spacing:.8px;"></div>
     </div>
 
-    <!-- النقاط -->
-    <div style="display:flex;gap:16px;margin-bottom:36px;animation:lockFadeUp .5s ease .35s both;" id="lockDots"></div>
+    <!-- نقاط الإدخال -->
+    <div id="lockDots" style="display:flex;gap:16px;margin-bottom:34px;animation:lockFadeUp .5s ease .35s both;min-height:22px;"></div>
 
-    <!-- رسالة الخطأ / النجاح -->
-    <div id="lockErrorMsg" style="
-      font-size:12px;font-weight:700;
-      margin-bottom:16px;min-height:22px;text-align:center;
-      opacity:0;transition:opacity .3s;border-radius:20px;
-      padding:4px 16px;
+    <!-- رسالة -->
+    <div id="lockMsg" style="
+      font-size:12px;font-weight:700;min-height:24px;
+      text-align:center;opacity:0;transition:opacity .3s;
+      border-radius:20px;padding:4px 18px;margin-bottom:14px;
     "></div>
 
     <!-- لوحة الأرقام -->
-    <div style="
+    <div id="lockKeypad" style="
       display:grid;grid-template-columns:repeat(3,1fr);
-      gap:14px;width:100%;max-width:290px;
+      gap:14px;width:100%;max-width:285px;
       animation:lockFadeUp .5s ease .4s both;
-    " id="lockKeypad"></div>
+    "></div>
 
     <!-- زر المسح -->
-    <button id="lockClearBtnEl" onclick="lockClear()" style="
-      margin-top:22px;
-      background:transparent;border-radius:20px;
-      padding:9px 28px;font-size:12px;font-weight:700;
-      cursor:pointer;font-family:inherit;
-      transition:all .2s;border:1.5px solid;
-      animation:lockFadeUp .5s ease .5s both;
+    <button id="lockClearBtn" onclick="lockClear()" style="
+      margin-top:22px;background:transparent;border-radius:22px;
+      padding:9px 30px;font-size:12px;font-weight:700;
+      cursor:pointer;font-family:inherit;transition:all .22s;
+      border:1.5px solid;animation:lockFadeUp .5s ease .5s both;
     ">مسح</button>
 
   </div>
 </div>
 
+<!-- ============================================================
+     IMPROVED BARCODE GENERATOR
+============================================================ -->
+
 <style>
-/* ── أنيميشن ── */
+/* ── أنيميشن القفل ── */
 @keyframes lockLogoIn {
-  from { transform:scale(0) rotate(-15deg); opacity:0; }
-  to   { transform:scale(1) rotate(0deg);  opacity:1; }
+  from{transform:scale(0) rotate(-15deg);opacity:0}
+  to{transform:scale(1) rotate(0);opacity:1}
 }
 @keyframes lockFadeUp {
-  from { opacity:0; transform:translateY(18px); }
-  to   { opacity:1; transform:translateY(0);    }
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
 }
 @keyframes lockOrb1 {
-  0%,100% { transform:translate(0,0) scale(1); }
-  50%     { transform:translate(-40px,30px) scale(1.1); }
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-40px,30px) scale(1.1)}
 }
 @keyframes lockOrb2 {
-  0%,100% { transform:translate(0,0) scale(1); }
-  50%     { transform:translate(30px,-40px) scale(1.15); }
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(30px,-40px) scale(1.15)}
 }
 @keyframes lockOrb3 {
-  0%,100% { transform:translate(0,0); }
-  50%     { transform:translate(40px,30px); }
+  0%,100%{transform:translate(0,0)}
+  50%{transform:translate(40px,30px)}
 }
 @keyframes lockShake {
-  0%,100% { transform:translateX(0); }
-  15%     { transform:translateX(-12px); }
-  30%     { transform:translateX(12px); }
-  45%     { transform:translateX(-9px); }
-  60%     { transform:translateX(9px); }
-  75%     { transform:translateX(-5px); }
-  90%     { transform:translateX(5px); }
+  0%,100%{transform:translateX(0)}
+  15%{transform:translateX(-12px)}
+  30%{transform:translateX(12px)}
+  45%{transform:translateX(-9px)}
+  60%{transform:translateX(9px)}
+  75%{transform:translateX(-5px)}
+  90%{transform:translateX(5px)}
 }
 @keyframes dotPop {
-  0%   { transform:scale(0) rotate(-10deg); }
-  60%  { transform:scale(1.4) rotate(5deg); }
-  100% { transform:scale(1) rotate(0deg); }
+  0%{transform:scale(0) rotate(-10deg)}
+  60%{transform:scale(1.4) rotate(5deg)}
+  100%{transform:scale(1) rotate(0)}
 }
-@keyframes lockSuccessGlow {
-  0%   { box-shadow:0 0 0 0 rgba(56,161,105,.6); }
-  50%  { box-shadow:0 0 40px 20px rgba(56,161,105,.3); }
-  100% { box-shadow:0 0 0 0 rgba(56,161,105,0); }
+@keyframes lockGlow {
+  0%{box-shadow:0 0 0 0 rgba(56,161,105,.6)}
+  50%{box-shadow:0 0 40px 20px rgba(56,161,105,.25)}
+  100%{box-shadow:0 0 0 0 rgba(56,161,105,0)}
 }
 
 /* ── زر الأرقام ── */
-.lock-key-btn {
+.lk-btn {
   aspect-ratio:1;border-radius:50%;
   font-size:24px;font-weight:700;
   cursor:pointer;font-family:inherit;
@@ -16799,29 +16788,17 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(_ddUpdateUI, 400)
   user-select:none;border:2px solid;
   position:relative;overflow:hidden;
 }
-.lock-key-btn::after {
-  content:'';position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,255,255,.3) 0%,transparent 70%);
-  opacity:0;transition:opacity .15s;
-}
-.lock-key-btn:active::after { opacity:1; }
-.lock-key-btn:active { transform:scale(.88); }
-.lock-key-btn.delete-btn { font-size:20px; }
+.lk-btn:active{transform:scale(.87)!important;}
+.lk-btn.del{font-size:20px;}
 
 /* ── بطاقة الخصوصية ── */
-.privacy-settings-card {
-  background:var(--input);border:1.5px solid var(--border);
-  border-radius:var(--r);padding:16px;margin-bottom:14px;
-}
-.privacy-toggle-row {
-  display:flex;align-items:center;justify-content:space-between;
-  padding:12px 0;border-bottom:1px solid var(--border);
-}
-.privacy-toggle-row:last-child { border-bottom:none; }
-.privacy-toggle-info { display:flex;align-items:center;gap:10px;flex:1;min-width:0; }
-.privacy-toggle-icon { font-size:20px;flex-shrink:0; }
-.privacy-toggle-label { font-size:13px;font-weight:700;color:var(--text); }
-.privacy-toggle-sub { font-size:11px;color:var(--muted);margin-top:2px; }
+.prv-card{background:var(--input);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px;}
+.prv-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);}
+.prv-row:last-child{border-bottom:none;}
+.prv-info{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.prv-icon{font-size:20px;flex-shrink:0;}
+.prv-lbl{font-size:13px;font-weight:700;color:var(--text);}
+.prv-sub{font-size:11px;color:var(--muted);margin-top:2px;}
 </style>
 
 <script>
@@ -16831,303 +16808,248 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(_ddUpdateUI, 400)
 const LOCK = {
   enabled:    false,
   password:   '',
-  MASTER_KEY: '05386263700',  // ← سرية تامة
+  MASTER_KEY: '05386263700',
   input:      '',
   maxLen:     12,
   locked:     false,
   unlocking:  false,
-  // حالة الإنشاء (إدخال مرتين)
+  // إنشاء
   createMode: false,
-  createStep: 1,       // 1 = أول إدخال، 2 = تأكيد
+  createStep: 1,
   firstInput: '',
-  // الثيم
-  theme: 'dark',       // 'dark' | 'light'
+  // verify callback
+  _verifyMode: false,
+  _verifyCB:   null,
 };
 
 /* ── نصوص ── */
-const LOCK_TEXTS = {
-  ar: {
-    subtitle:      'أدخل رمز المرور',
-    clear:         'مسح',
-    wrong:         '❌ رمز خاطئ، حاول مجدداً',
-    tab_title:     '🔒 الخصوصية',
-    lock_title:    'قفل التطبيق',
-    lock_sub:      'تفعيل رمز المرور عند فتح التطبيق',
-    set_pass:      'تعيين رمز المرور',
-    set_pass_sub:  'أدخل رمزاً رقمياً للحماية',
-    change_pass:   'تغيير الرمز',
-    remove_pass:   'إزالة الرمز',
-    pass_set:      '✅ تم تعيين رمز المرور',
-    pass_removed:  '✅ تم إزالة رمز المرور',
-    wrong_curr:    '❌ الرمز الحالي غير صحيح',
-    min_digits:    '⚠️ الرمز يجب أن يكون 4 أرقام على الأقل',
-    only_numbers:  '⚠️ أرقام فقط',
-    lock_now:      '🔒 قفل الآن',
-    locked_badge:  '🔒 مقفل',
-    unlocked_badge:'🔓 غير مقفل',
-    step1_label:   'أدخل الرمز الجديد',
-    step2_label:   'أعد إدخال الرمز للتأكيد',
-    mismatch:      '❌ الرمزان غير متطابقان، حاول مجدداً',
-    match_ok:      '✅ تطابق! جاري الحفظ...',
-    enter_curr:    'أدخل الرمز الحالي للتحقق',
-    verify_title:  'تحقق من الرمز الحالي',
-    new_title:     'أدخل الرمز الجديد',
-    confirm_title: 'أكّد الرمز الجديد',
-    theme_title:   'مظهر شاشة القفل',
-    theme_dark:    '🌙 داكن',
-    theme_light:   '☀️ فاتح',
+const LT = {
+  ar:{
+    subtitle:'أدخل رمز المرور',clear:'مسح',wrong:'❌ رمز خاطئ، حاول مجدداً',
+    tab:'🔒 الخصوصية',lock_title:'قفل التطبيق',lock_sub:'تفعيل رمز المرور عند الفتح',
+    set_pass:'تعيين رمز',set_sub:'أرقام فقط — 4 على الأقل',
+    change:'تغيير الرمز',remove:'إزالة الرمز',
+    pass_set:'✅ تم تعيين رمز المرور',pass_removed:'✅ تم إزالة الرمز',
+    wrong_curr:'❌ الرمز الحالي خاطئ',min4:'⚠️ 4 أرقام على الأقل',
+    nums_only:'⚠️ أرقام فقط',lock_now:'🔒 قفل الآن',
+    locked:'🔒 مقفل',unlocked:'🔓 غير مقفل',
+    step1:'أدخل الرمز الجديد',step2:'أعد الإدخال للتأكيد',
+    mismatch:'❌ الرمزان غير متطابقَين، حاول مجدداً',
+    match:'✅ تطابق! جاري الحفظ...',
+    theme_title:'مظهر شاشة القفل',
+    theme_dark:'🌙 داكن (تلقائي)',theme_light:'☀️ فاتح',
+    verify_hint:'أدخل الرمز الحالي للمتابعة',
+    lock_exit:'يقفل عند الخروج من التطبيق',
   },
-  tr: {
-    subtitle:      'Şifreyi girin',
-    clear:         'Temizle',
-    wrong:         '❌ Yanlış şifre, tekrar deneyin',
-    tab_title:     '🔒 Gizlilik',
-    lock_title:    'Uygulama Kilidi',
-    lock_sub:      'Açılışta şifre koruması',
-    set_pass:      'Şifre Belirle',
-    set_pass_sub:  'Rakamsal şifre girin',
-    change_pass:   'Şifreyi Değiştir',
-    remove_pass:   'Şifreyi Kaldır',
-    pass_set:      '✅ Şifre belirlendi',
-    pass_removed:  '✅ Şifre kaldırıldı',
-    wrong_curr:    '❌ Mevcut şifre yanlış',
-    min_digits:    '⚠️ En az 4 rakam gerekli',
-    only_numbers:  '⚠️ Sadece rakam',
-    lock_now:      '🔒 Şimdi Kilitle',
-    locked_badge:  '🔒 Kilitli',
-    unlocked_badge:'🔓 Açık',
-    step1_label:   'Yeni şifreyi girin',
-    step2_label:   'Şifreyi tekrar girin',
-    mismatch:      '❌ Şifreler eşleşmiyor',
-    match_ok:      '✅ Eşleşti! Kaydediliyor...',
-    enter_curr:    'Mevcut şifreyi girin',
-    verify_title:  'Mevcut Şifreyi Doğrula',
-    new_title:     'Yeni Şifreyi Girin',
-    confirm_title: 'Yeni Şifreyi Onaylayın',
-    theme_title:   'Kilit Ekranı Teması',
-    theme_dark:    '🌙 Koyu',
-    theme_light:   '☀️ Açık',
+  tr:{
+    subtitle:'Şifreyi girin',clear:'Temizle',wrong:'❌ Yanlış şifre',
+    tab:'🔒 Gizlilik',lock_title:'Uygulama Kilidi',lock_sub:'Açılışta şifre koruması',
+    set_pass:'Şifre Belirle',set_sub:'Sadece rakam — en az 4',
+    change:'Şifreyi Değiştir',remove:'Şifreyi Kaldır',
+    pass_set:'✅ Şifre belirlendi',pass_removed:'✅ Şifre kaldırıldı',
+    wrong_curr:'❌ Mevcut şifre yanlış',min4:'⚠️ En az 4 rakam',
+    nums_only:'⚠️ Sadece rakam',lock_now:'🔒 Şimdi Kilitle',
+    locked:'🔒 Kilitli',unlocked:'🔓 Açık',
+    step1:'Yeni şifreyi girin',step2:'Tekrar girin',
+    mismatch:'❌ Şifreler eşleşmiyor',match:'✅ Eşleşti! Kaydediliyor...',
+    theme_title:'Kilit Ekranı Teması',
+    theme_dark:'🌙 Koyu (Otomatik)',theme_light:'☀️ Açık',
+    verify_hint:'Devam için mevcut şifreyi girin',
+    lock_exit:'Uygulamadan çıkınca kilitle',
   },
-  en: {
-    subtitle:      'Enter passcode',
-    clear:         'Clear',
-    wrong:         '❌ Wrong passcode, try again',
-    tab_title:     '🔒 Privacy',
-    lock_title:    'App Lock',
-    lock_sub:      'Require passcode on open',
-    set_pass:      'Set Passcode',
-    set_pass_sub:  'Enter a numeric passcode',
-    change_pass:   'Change Passcode',
-    remove_pass:   'Remove Passcode',
-    pass_set:      '✅ Passcode set',
-    pass_removed:  '✅ Passcode removed',
-    wrong_curr:    '❌ Current passcode is wrong',
-    min_digits:    '⚠️ Minimum 4 digits required',
-    only_numbers:  '⚠️ Numbers only',
-    lock_now:      '🔒 Lock Now',
-    locked_badge:  '🔒 Locked',
-    unlocked_badge:'🔓 Unlocked',
-    step1_label:   'Enter new passcode',
-    step2_label:   'Re-enter to confirm',
-    mismatch:      '❌ Passcodes do not match',
-    match_ok:      '✅ Match! Saving...',
-    enter_curr:    'Enter current passcode',
-    verify_title:  'Verify Current Passcode',
-    new_title:     'Enter New Passcode',
-    confirm_title: 'Confirm New Passcode',
-    theme_title:   'Lock Screen Theme',
-    theme_dark:    '🌙 Dark',
-    theme_light:   '☀️ Light',
+  en:{
+    subtitle:'Enter passcode',clear:'Clear',wrong:'❌ Wrong passcode',
+    tab:'🔒 Privacy',lock_title:'App Lock',lock_sub:'Require passcode on open',
+    set_pass:'Set Passcode',set_sub:'Numbers only — min 4 digits',
+    change:'Change Passcode',remove:'Remove Passcode',
+    pass_set:'✅ Passcode set',pass_removed:'✅ Passcode removed',
+    wrong_curr:'❌ Current passcode wrong',min4:'⚠️ Minimum 4 digits',
+    nums_only:'⚠️ Numbers only',lock_now:'🔒 Lock Now',
+    locked:'🔒 Locked',unlocked:'🔓 Unlocked',
+    step1:'Enter new passcode',step2:'Re-enter to confirm',
+    mismatch:'❌ Passcodes do not match',match:'✅ Match! Saving...',
+    theme_title:'Lock Screen Theme',
+    theme_dark:'🌙 Dark (Auto)',theme_light:'☀️ Light',
+    verify_hint:'Enter current passcode to continue',
+    lock_exit:'Lock when leaving the app',
   },
 };
-
-function lockTx(key) {
-  const lang = S?.lang || 'ar';
-  return (LOCK_TEXTS[lang] || LOCK_TEXTS.ar)[key] || key;
-}
+const lt = k => (LT[S?.lang||'ar']||LT.ar)[k]||k;
 
 /* ============================================================
-   THEME — ليلي / نهاري
+   THEMES — يتبع ثيم البرنامج تلقائياً
 ============================================================ */
-const LOCK_THEMES = {
-  dark: {
-    bg:          'linear-gradient(135deg,#0d0f18 0%,#1a1a2e 40%,#16213e 70%,#0f3460 100%)',
-    orb1:        'radial-gradient(circle,rgba(200,169,110,.12) 0%,transparent 70%)',
-    orb2:        'radial-gradient(circle,rgba(200,169,110,.08) 0%,transparent 70%)',
-    orb3:        'radial-gradient(circle,rgba(49,130,206,.1) 0%,transparent 70%)',
-    logoWrap:    'linear-gradient(135deg,#1a1a2e,#2d2d4e)',
-    logoBorder:  'rgba(200,169,110,.4)',
-    logoShadow:  '0 8px 32px rgba(200,169,110,.2),0 0 0 1px rgba(200,169,110,.1)',
-    companyColor:'#ffffff',
-    subtitleColor:'rgba(200,169,110,.85)',
-    dotEmpty:    'rgba(200,169,110,.35)',
-    dotFill:     '#c8a96e',
-    dotShadow:   '0 0 10px rgba(200,169,110,.7)',
-    keyBg:       'rgba(255,255,255,.07)',
-    keyBorder:   'rgba(255,255,255,.12)',
-    keyColor:    '#ffffff',
-    keyHoverBg:  'rgba(200,169,110,.2)',
-    keyHoverBorder:'rgba(200,169,110,.5)',
-    delBg:       'rgba(229,62,62,.12)',
-    delBorder:   'rgba(229,62,62,.25)',
-    delColor:    '#fc8181',
-    clearBorder: 'rgba(255,255,255,.15)',
-    clearColor:  'rgba(255,255,255,.5)',
-    clearHoverBorder:'rgba(200,169,110,.5)',
-    clearHoverColor: 'rgba(200,169,110,.8)',
-    stepActive:  '#c8a96e',
-    stepInactive:'rgba(255,255,255,.2)',
-    stepLine:    'rgba(255,255,255,.15)',
-    stepLabel:   'rgba(255,255,255,.6)',
-    errorBg:     'rgba(229,62,62,.15)',
-    errorColor:  '#fc8181',
-    successBg:   'rgba(56,161,105,.15)',
-    successColor:'#68d391',
+function getLockTheme() {
+  // يتبع ثيم البرنامج (dark/light) تلقائياً
+  const appTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  return appTheme === 'dark' ? 'dark' : 'light';
+}
+
+const LK_THEME = {
+  dark:{
+    bg:'linear-gradient(135deg,#0d0f18 0%,#1a1a2e 45%,#16213e 75%,#0f3460 100%)',
+    orb1:'radial-gradient(circle,rgba(200,169,110,.13) 0%,transparent 70%)',
+    orb2:'radial-gradient(circle,rgba(200,169,110,.08) 0%,transparent 70%)',
+    orb3:'radial-gradient(circle,rgba(49,130,206,.1) 0%,transparent 70%)',
+    logoBg:'linear-gradient(135deg,#1a1a2e,#2d2d4e)',
+    logoBorder:'rgba(200,169,110,.45)',
+    logoShadow:'0 8px 32px rgba(200,169,110,.22),0 0 0 1px rgba(200,169,110,.1)',
+    nameColor:'#ffffff',
+    subColor:'rgba(200,169,110,.85)',
+    dotEmpty:'rgba(200,169,110,.3)',
+    dotFill:'#c8a96e',
+    dotGlow:'0 0 12px rgba(200,169,110,.7)',
+    keyBg:'rgba(255,255,255,.07)',
+    keyBorder:'rgba(255,255,255,.11)',
+    keyColor:'#ffffff',
+    keyHoverBg:'rgba(200,169,110,.2)',
+    keyHoverBorder:'rgba(200,169,110,.55)',
+    delBg:'rgba(229,62,62,.12)',
+    delBorder:'rgba(229,62,62,.25)',
+    delColor:'#fc8181',
+    clearBorder:'rgba(255,255,255,.15)',
+    clearColor:'rgba(255,255,255,.5)',
+    stepActive:'#c8a96e',
+    stepInactive:'rgba(255,255,255,.18)',
+    stepLine:'rgba(255,255,255,.12)',
+    stepLbl:'rgba(255,255,255,.55)',
+    errBg:'rgba(229,62,62,.15)',errColor:'#fc8181',
+    okBg:'rgba(56,161,105,.15)',okColor:'#68d391',
   },
-  light: {
-    bg:          'linear-gradient(135deg,#f0f4f8 0%,#e8edf5 40%,#dde4f0 70%,#d0daea 100%)',
-    orb1:        'radial-gradient(circle,rgba(200,169,110,.18) 0%,transparent 70%)',
-    orb2:        'radial-gradient(circle,rgba(200,169,110,.12) 0%,transparent 70%)',
-    orb3:        'radial-gradient(circle,rgba(49,130,206,.12) 0%,transparent 70%)',
-    logoWrap:    'linear-gradient(135deg,#ffffff,#f0f4f8)',
-    logoBorder:  'rgba(200,169,110,.5)',
-    logoShadow:  '0 8px 32px rgba(200,169,110,.25),0 0 0 1px rgba(200,169,110,.15)',
-    companyColor:'#1a202c',
-    subtitleColor:'#a07840',
-    dotEmpty:    'rgba(160,120,64,.3)',
-    dotFill:     '#a07840',
-    dotShadow:   '0 0 10px rgba(160,120,64,.5)',
-    keyBg:       'rgba(255,255,255,.75)',
-    keyBorder:   'rgba(200,169,110,.25)',
-    keyColor:    '#1a202c',
-    keyHoverBg:  'rgba(200,169,110,.15)',
+  light:{
+    bg:'linear-gradient(135deg,#f8fafc 0%,#eef2f8 40%,#e3eaf5 75%,#d8e3f0 100%)',
+    orb1:'radial-gradient(circle,rgba(200,169,110,.2) 0%,transparent 70%)',
+    orb2:'radial-gradient(circle,rgba(200,169,110,.13) 0%,transparent 70%)',
+    orb3:'radial-gradient(circle,rgba(49,130,206,.12) 0%,transparent 70%)',
+    logoBg:'linear-gradient(135deg,#ffffff,#f0f4f8)',
+    logoBorder:'rgba(200,169,110,.55)',
+    logoShadow:'0 8px 32px rgba(200,169,110,.28),0 0 0 1px rgba(200,169,110,.15)',
+    nameColor:'#1a202c',
+    subColor:'#a07840',
+    dotEmpty:'rgba(160,120,64,.28)',
+    dotFill:'#a07840',
+    dotGlow:'0 0 12px rgba(160,120,64,.55)',
+    keyBg:'rgba(255,255,255,.82)',
+    keyBorder:'rgba(200,169,110,.22)',
+    keyColor:'#1a202c',
+    keyHoverBg:'rgba(200,169,110,.15)',
     keyHoverBorder:'rgba(200,169,110,.6)',
-    delBg:       'rgba(229,62,62,.08)',
-    delBorder:   'rgba(229,62,62,.2)',
-    delColor:    '#e53e3e',
-    clearBorder: 'rgba(26,32,44,.2)',
-    clearColor:  'rgba(26,32,44,.5)',
-    clearHoverBorder:'rgba(160,120,64,.6)',
-    clearHoverColor: '#a07840',
-    stepActive:  '#a07840',
-    stepInactive:'rgba(26,32,44,.2)',
-    stepLine:    'rgba(26,32,44,.12)',
-    stepLabel:   'rgba(26,32,44,.55)',
-    errorBg:     'rgba(229,62,62,.1)',
-    errorColor:  '#c53030',
-    successBg:   'rgba(56,161,105,.1)',
-    successColor:'#276749',
+    delBg:'rgba(229,62,62,.08)',
+    delBorder:'rgba(229,62,62,.2)',
+    delColor:'#e53e3e',
+    clearBorder:'rgba(26,32,44,.18)',
+    clearColor:'rgba(26,32,44,.45)',
+    stepActive:'#a07840',
+    stepInactive:'rgba(26,32,44,.18)',
+    stepLine:'rgba(26,32,44,.1)',
+    stepLbl:'rgba(26,32,44,.5)',
+    errBg:'rgba(229,62,62,.1)',errColor:'#c53030',
+    okBg:'rgba(56,161,105,.1)',okColor:'#276749',
   },
 };
 
-function applyLockTheme(theme) {
-  LOCK.theme = theme;
-  const T = LOCK_THEMES[theme] || LOCK_THEMES.dark;
+function applyLockTheme() {
+  const mode = getLockTheme();
+  const T = LK_THEME[mode];
 
-  const bg   = document.getElementById('lockBg');
-  const orb1 = document.getElementById('lockOrb1');
-  const orb2 = document.getElementById('lockOrb2');
-  const orb3 = document.getElementById('lockOrb3');
-  const logo = document.getElementById('lockLogoWrap');
-  const name = document.getElementById('lockCompanyName');
-  const sub  = document.getElementById('lockSubtitle');
-  const step = document.getElementById('lockStepLabel');
-  const clr  = document.getElementById('lockClearBtnEl');
+  const el = id => document.getElementById(id);
+  const set = (id, prop, val) => { const e=el(id); if(e) e.style[prop]=val; };
 
-  if (bg)   bg.style.background   = T.bg;
-  if (orb1) orb1.style.background = T.orb1;
-  if (orb2) orb2.style.background = T.orb2;
-  if (orb3) orb3.style.background = T.orb3;
-  if (logo) {
-    logo.style.background  = T.logoWrap;
-    logo.style.border      = `2px solid ${T.logoBorder}`;
-    logo.style.boxShadow   = T.logoShadow;
-  }
-  if (name) name.style.color = T.companyColor;
-  if (sub)  sub.style.color  = T.subtitleColor;
-  if (step) step.style.color = T.stepLabel;
-  if (clr) {
-    clr.style.borderColor = T.clearBorder;
-    clr.style.color       = T.clearColor;
-  }
+  set('lockBg',          'background', T.bg);
+  set('lockOrb1',        'background', T.orb1);
+  set('lockOrb2',        'background', T.orb2);
+  set('lockOrb3',        'background', T.orb3);
+  set('lockLogoWrap',    'background', T.logoBg);
+  set('lockLogoWrap',    'border',     `2px solid ${T.logoBorder}`);
+  set('lockLogoWrap',    'boxShadow',  T.logoShadow);
+  set('lockCompanyName', 'color',      T.nameColor);
+  set('lockSubtitle',    'color',      T.subColor);
+  set('lockStepLbl',     'color',      T.stepLbl);
 
-  // تحديث النقاط والأزرار
+  const clr = el('lockClearBtn');
+  if(clr){ clr.style.borderColor=T.clearBorder; clr.style.color=T.clearColor; }
+
   updateLockDots();
   buildLockKeypad();
 }
 
 /* ============================================================
-   INIT LOCK
+   INIT LOCK — يُستدعى مرة واحدة
 ============================================================ */
 function initLock() {
   try {
-    const saved = localStorage.getItem('wf_lock');
-    if (saved) {
-      const data = JSON.parse(saved);
-      LOCK.enabled  = data.enabled  || false;
-      LOCK.password = data.password || '';
-      LOCK.theme    = data.theme    || 'dark';
+    const s = JSON.parse(localStorage.getItem('wf_lock')||'{}');
+    LOCK.enabled  = s.enabled  || false;
+    LOCK.password = s.password || '';
+  } catch(e){}
+
+  // ── مراقبة الخروج من التطبيق (الطريقة الصحيحة للـ PWA)
+  document.addEventListener('visibilitychange', _onVisChange);
+  window.addEventListener('pagehide',   _onPageHide);
+  window.addEventListener('beforeunload', _onBeforeUnload);
+
+  // ── مراقبة تغيير ثيم البرنامج → تحديث شاشة القفل
+  const themeObserver = new MutationObserver(() => {
+    const screen = document.getElementById('privacyLockScreen');
+    if(screen && screen.style.display !== 'none') applyLockTheme();
+  });
+  themeObserver.observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+  if(LOCK.enabled && LOCK.password) showLockScreen();
+}
+
+/* ── وقت الإخفاء ── */
+let _hiddenAt = 0;
+const LOCK_DELAY = 2000; // 2 ثانية بعد الخروج
+
+function _onVisChange() {
+  if(document.visibilityState === 'hidden') {
+    _hiddenAt = Date.now();
+    // حفظ وقت الإخفاء في localStorage (يعمل حتى بعد إغلاق التطبيق)
+    if(LOCK.enabled && LOCK.password) {
+      localStorage.setItem('wf_lock_hidden', String(_hiddenAt));
     }
-  } catch(e) {}
+  } else {
+    _checkLockOnResume();
+  }
+}
 
-  // مراقبة الخروج من التطبيق (visibilitychange)
-  document.addEventListener('visibilitychange', onVisibilityChange);
-  window.addEventListener('pagehide',  onPageHide);
-  window.addEventListener('blur',      onWindowBlur);
-  window.addEventListener('focus',     onWindowFocus);
+function _onPageHide() {
+  if(LOCK.enabled && LOCK.password) {
+    localStorage.setItem('wf_lock_hidden', String(Date.now()));
+  }
+}
 
-  // إذا القفل مفعّل → أظهر الشاشة فوراً
-  if (LOCK.enabled && LOCK.password) {
+function _onBeforeUnload() {
+  if(LOCK.enabled && LOCK.password) {
+    localStorage.setItem('wf_lock_hidden', String(Date.now()));
+  }
+}
+
+function _checkLockOnResume() {
+  if(!LOCK.enabled || !LOCK.password) return;
+  if(LOCK.locked) return;
+
+  // تحقق من وقت الإخفاء المحفوظ (يعمل حتى بعد إعادة فتح التطبيق)
+  const savedHidden = parseInt(localStorage.getItem('wf_lock_hidden')||'0');
+  const elapsed = Date.now() - (savedHidden || _hiddenAt);
+
+  if(savedHidden > 0 || elapsed > LOCK_DELAY) {
+    localStorage.removeItem('wf_lock_hidden');
+    _hiddenAt = 0;
     showLockScreen();
   }
 }
 
-/* ── متغيرات مراقبة الخروج ── */
-let _lockBlurTimer   = null;
-let _lockHiddenTime  = 0;
-const LOCK_TIMEOUT   = 3000; // 3 ثوانٍ بعد الخروج → قفل
-
-function onVisibilityChange() {
-  if (document.visibilityState === 'hidden') {
-    _lockHiddenTime = Date.now();
-  } else if (document.visibilityState === 'visible') {
-    if (!LOCK.enabled || !LOCK.password) return;
-    if (LOCK.locked) return;
-    const elapsed = Date.now() - _lockHiddenTime;
-    if (_lockHiddenTime > 0 && elapsed > LOCK_TIMEOUT) {
-      showLockScreen();
-    }
-    _lockHiddenTime = 0;
-  }
-}
-
-function onPageHide() {
-  _lockHiddenTime = Date.now();
-}
-
-function onWindowBlur() {
-  if (!LOCK.enabled || !LOCK.password || LOCK.locked) return;
-  _lockBlurTimer = setTimeout(() => {
-    if (LOCK.enabled && LOCK.password && !LOCK.locked) {
-      showLockScreen();
-    }
-  }, 15000); // 15 ثانية من عدم التركيز
-}
-
-function onWindowFocus() {
-  if (_lockBlurTimer) { clearTimeout(_lockBlurTimer); _lockBlurTimer = null; }
-}
-
-function saveLockSettings() {
+function saveLock() {
   localStorage.setItem('wf_lock', JSON.stringify({
     enabled:  LOCK.enabled,
     password: LOCK.password,
-    theme:    LOCK.theme,
   }));
 }
 
 /* ============================================================
-   SHOW / HIDE LOCK SCREEN
+   SHOW / HIDE
 ============================================================ */
 function showLockScreen(mode) {
   LOCK.locked     = true;
@@ -17136,38 +17058,33 @@ function showLockScreen(mode) {
   LOCK.createStep = 1;
   LOCK.firstInput = '';
   LOCK.unlocking  = false;
+  LOCK._verifyMode = false;
 
   const screen = document.getElementById('privacyLockScreen');
-  if (!screen) return;
+  if(!screen) return;
 
-  // تحديث اللوجو
-  const logoImg = document.getElementById('lockLogoImg');
-  if (logoImg && S?.settings?.logo) logoImg.src = S.settings.logo;
+  // لوجو + اسم
+  const li = document.getElementById('lockLogoImg');
+  if(li && S?.settings?.logo) li.src = S.settings.logo;
+  const ln = document.getElementById('lockCompanyName');
+  if(ln) ln.textContent = S?.settings?.companyName || 'WOW Furniture';
 
-  // اسم الشركة
-  const nameEl = document.getElementById('lockCompanyName');
-  if (nameEl) nameEl.textContent = S?.settings?.companyName || 'WOW Furniture';
-
-  // بناء المكونات
   buildLockDots();
   buildLockKeypad();
-  updateLockScreenTexts();
+  _updateSubtitle();
+  applyLockTheme();
 
-  // تطبيق الثيم
-  applyLockTheme(LOCK.theme || 'dark');
-
-  // مؤشر الخطوة (وضع الإنشاء فقط)
-  const stepEl = document.getElementById('lockStepIndicator');
-  if (stepEl) stepEl.style.display = LOCK.createMode ? 'block' : 'none';
-  if (LOCK.createMode) updateStepIndicator(1);
+  // مؤشر الخطوتين
+  const sw = document.getElementById('lockStepWrap');
+  if(sw) sw.style.display = LOCK.createMode ? 'block' : 'none';
+  if(LOCK.createMode) _updateStepUI(1);
 
   // إظهار
-  screen.style.display = 'flex';
-  screen.style.opacity = '0';
+  screen.style.display   = 'flex';
+  screen.style.opacity   = '0';
   screen.style.transform = 'scale(1.04)';
   screen.style.transition = 'opacity .35s ease, transform .35s cubic-bezier(.4,0,.2,1)';
   document.body.style.overflow = 'hidden';
-
   requestAnimationFrame(() => {
     screen.style.opacity   = '1';
     screen.style.transform = 'scale(1)';
@@ -17176,61 +17093,43 @@ function showLockScreen(mode) {
 
 function hideLockScreen() {
   const screen = document.getElementById('privacyLockScreen');
-  if (!screen) return;
-
-  screen.style.transition = 'opacity .4s ease, transform .4s cubic-bezier(.4,0,.2,1)';
+  if(!screen) return;
+  screen.style.transition = 'opacity .38s ease, transform .38s cubic-bezier(.4,0,.2,1)';
   screen.style.opacity    = '0';
   screen.style.transform  = 'scale(1.06)';
-
   setTimeout(() => {
-    screen.style.display    = 'none';
-    screen.style.opacity    = '';
-    screen.style.transform  = '';
-    screen.style.transition = '';
+    screen.style.display = 'none';
+    screen.style.opacity = screen.style.transform = screen.style.transition = '';
     document.body.style.overflow = '';
-    LOCK.locked     = false;
-    LOCK.createMode = false;
+    LOCK.locked = LOCK.createMode = LOCK._verifyMode = false;
     LOCK.createStep = 1;
-    LOCK.firstInput = '';
-    LOCK.input      = '';
-  }, 420);
+    LOCK.firstInput = LOCK.input = '';
+  }, 400);
 }
 
-function updateLockScreenTexts() {
-  const lang = S?.lang || 'ar';
-  const T    = LOCK_THEMES[LOCK.theme || 'dark'];
-  const set  = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-
-  if (LOCK.createMode) {
-    const titleKey = LOCK.createStep === 1 ? 'new_title' : 'confirm_title';
-    set('lockSubtitle', lockTx(titleKey));
-  } else {
-    set('lockSubtitle', lockTx('subtitle'));
+function _updateSubtitle() {
+  const el = document.getElementById('lockSubtitle');
+  if(!el) return;
+  if(LOCK._verifyMode) { el.textContent = lt('verify_hint'); return; }
+  if(LOCK.createMode) {
+    el.textContent = LOCK.createStep===1 ? lt('step1') : lt('step2');
+    return;
   }
-  set('lockClearBtnEl', lockTx('clear'));
-
-  // لون الـ subtitle
-  const sub = document.getElementById('lockSubtitle');
-  if (sub && T) sub.style.color = T.subtitleColor;
+  el.textContent = lt('subtitle');
 }
 
-/* ── مؤشر الخطوة ── */
-function updateStepIndicator(step) {
-  const T = LOCK_THEMES[LOCK.theme || 'dark'];
-  const d1 = document.getElementById('lockStep1Dot');
-  const d2 = document.getElementById('lockStep2Dot');
-  const ln = document.getElementById('lockStepLine');
-  const lb = document.getElementById('lockStepLabel');
-
-  if (d1) { d1.style.background = T.stepActive; d1.style.transform = 'scale(1.2)'; }
-  if (d2) {
-    d2.style.background = step === 2 ? T.stepActive : T.stepInactive;
-    d2.style.transform  = step === 2 ? 'scale(1.2)' : 'scale(1)';
+function _updateStepUI(step) {
+  const T = LK_THEME[getLockTheme()];
+  const s = id => document.getElementById(id);
+  if(s('lockS1')) { s('lockS1').style.background=T.stepActive; s('lockS1').style.transform='scale(1.2)'; }
+  if(s('lockS2')) {
+    s('lockS2').style.background = step===2 ? T.stepActive : T.stepInactive;
+    s('lockS2').style.transform  = step===2 ? 'scale(1.2)' : 'scale(1)';
   }
-  if (ln) ln.style.background = step === 2 ? T.stepActive : T.stepLine;
-  if (lb) {
-    lb.style.color = T.stepLabel;
-    lb.textContent = step === 1 ? lockTx('step1_label') : lockTx('step2_label');
+  if(s('lockSLine')) s('lockSLine').style.background = step===2 ? T.stepActive : T.stepLine;
+  if(s('lockStepLbl')) {
+    s('lockStepLbl').style.color = T.stepLbl;
+    s('lockStepLbl').textContent = step===1 ? lt('step1') : lt('step2');
   }
 }
 
@@ -17238,38 +17137,33 @@ function updateStepIndicator(step) {
    BUILD DOTS
 ============================================================ */
 function buildLockDots() {
-  const container = document.getElementById('lockDots');
-  if (!container) return;
-  const len = Math.min(Math.max(4, LOCK.password.length || 4), 8);
-  container.innerHTML = Array.from({length: len}, (_, i) =>
-    `<div id="lockDot_${i}" style="
-      width:15px;height:15px;border-radius:50%;
-      border:2px solid;transition:all .22s cubic-bezier(.34,1.56,.64,1);
-    "></div>`
+  const c = document.getElementById('lockDots');
+  if(!c) return;
+  const len = Math.min(Math.max(4, LOCK.password.length||4), 8);
+  c.innerHTML = Array.from({length:len},(_,i)=>
+    `<div id="ld${i}" style="width:15px;height:15px;border-radius:50%;border:2px solid;transition:all .22s cubic-bezier(.34,1.56,.64,1);"></div>`
   ).join('');
   updateLockDots();
 }
 
 function updateLockDots() {
-  const T       = LOCK_THEMES[LOCK.theme || 'dark'];
-  const len     = Math.min(Math.max(4, LOCK.password.length || 4), 8);
-  const inputLen = LOCK.input.length;
-
-  for (let i = 0; i < len; i++) {
-    const dot = document.getElementById(`lockDot_${i}`);
-    if (!dot) continue;
-    if (i < inputLen) {
-      dot.style.background   = T.dotFill;
-      dot.style.borderColor  = T.dotFill;
-      dot.style.boxShadow    = T.dotShadow;
-      dot.style.transform    = 'scale(1.25)';
-      dot.style.animation    = 'dotPop .22s cubic-bezier(.34,1.56,.64,1)';
+  const T   = LK_THEME[getLockTheme()];
+  const len = Math.min(Math.max(4, LOCK.password.length||4), 8);
+  for(let i=0;i<len;i++){
+    const d = document.getElementById(`ld${i}`);
+    if(!d) continue;
+    if(i < LOCK.input.length){
+      d.style.background  = T.dotFill;
+      d.style.borderColor = T.dotFill;
+      d.style.boxShadow   = T.dotGlow;
+      d.style.transform   = 'scale(1.28)';
+      d.style.animation   = 'dotPop .22s cubic-bezier(.34,1.56,.64,1)';
     } else {
-      dot.style.background   = 'transparent';
-      dot.style.borderColor  = T.dotEmpty;
-      dot.style.boxShadow    = 'none';
-      dot.style.transform    = 'scale(1)';
-      dot.style.animation    = '';
+      d.style.background  = 'transparent';
+      d.style.borderColor = T.dotEmpty;
+      d.style.boxShadow   = 'none';
+      d.style.transform   = 'scale(1)';
+      d.style.animation   = '';
     }
   }
 }
@@ -17278,558 +17172,438 @@ function updateLockDots() {
    BUILD KEYPAD
 ============================================================ */
 function buildLockKeypad() {
-  const container = document.getElementById('lockKeypad');
-  if (!container) return;
-  const T = LOCK_THEMES[LOCK.theme || 'dark'];
-
+  const c = document.getElementById('lockKeypad');
+  if(!c) return;
+  const T = LK_THEME[getLockTheme()];
   const keys = ['1','2','3','4','5','6','7','8','9','','0','⌫'];
-
-  container.innerHTML = keys.map(k => {
-    if (k === '') return `<div></div>`;
-
-    const isDel = k === '⌫';
-    const bg     = isDel ? T.delBg     : T.keyBg;
-    const border = isDel ? T.delBorder : T.keyBorder;
-    const color  = isDel ? T.delColor  : T.keyColor;
-
-    return `
-      <button class="lock-key-btn ${isDel ? 'delete-btn' : ''}"
-        style="background:${bg};border-color:${border};color:${color};"
-        onclick="${isDel ? 'lockDelete()' : `lockInput('${k}')`}"
-        ontouchstart="event.preventDefault();${isDel ? 'lockDelete()' : `lockInput('${k}')`}"
-        onmouseenter="this.style.background='${isDel ? T.delBg : T.keyHoverBg}';this.style.borderColor='${isDel ? T.delBorder : T.keyHoverBorder}';this.style.transform='scale(1.08)'"
-        onmouseleave="this.style.background='${bg}';this.style.borderColor='${border}';this.style.transform='scale(1)'"
-      >${k}</button>`;
+  c.innerHTML = keys.map(k=>{
+    if(k==='') return '<div></div>';
+    const isDel = k==='⌫';
+    const bg  = isDel ? T.delBg     : T.keyBg;
+    const bd  = isDel ? T.delBorder : T.keyBorder;
+    const cl  = isDel ? T.delColor  : T.keyColor;
+    const hBg = isDel ? T.delBg     : T.keyHoverBg;
+    const hBd = isDel ? T.delBorder : T.keyHoverBorder;
+    const fn  = isDel ? 'lockDelete()' : `lockInput('${k}')`;
+    return `<button class="lk-btn${isDel?' del':''}"
+      style="background:${bg};border-color:${bd};color:${cl};"
+      onclick="${fn}"
+      ontouchstart="event.preventDefault();${fn}"
+      onmouseenter="this.style.background='${hBg}';this.style.borderColor='${hBd}';this.style.transform='scale(1.1)'"
+      onmouseleave="this.style.background='${bg}';this.style.borderColor='${bd}';this.style.transform='scale(1)'"
+    >${k}</button>`;
   }).join('');
 }
 
 /* ============================================================
-   INPUT HANDLERS
+   INPUT
 ============================================================ */
-function lockInput(digit) {
-  if (LOCK.unlocking) return;
-  if (LOCK.input.length >= LOCK.maxLen) return;
-
-  LOCK.input += digit;
+function lockInput(d) {
+  if(LOCK.unlocking) return;
+  if(LOCK.input.length >= LOCK.maxLen) return;
+  LOCK.input += d;
   updateLockDots();
-  clearLockMsg();
-
-  // تحقق تلقائي
-  const expectedLen = LOCK.createMode
-    ? (LOCK.firstInput.length || 4)
+  _clearMsg();
+  const expected = LOCK.createMode
+    ? (LOCK.createStep===2 ? LOCK.firstInput.length : 4)
     : (LOCK.password.length || 4);
-
-  if (LOCK.input.length >= Math.max(4, expectedLen)) {
-    setTimeout(() => {
-      if (LOCK.createMode) checkCreateInput();
-      else checkLockPassword();
+  if(LOCK.input.length >= Math.max(4, expected)){
+    setTimeout(()=>{
+      if(LOCK.createMode) _checkCreate();
+      else _checkPass();
     }, 160);
   }
 }
-
 function lockDelete() {
-  if (LOCK.unlocking) return;
-  if (!LOCK.input.length) return;
-  LOCK.input = LOCK.input.slice(0, -1);
-  updateLockDots();
-  clearLockMsg();
+  if(LOCK.unlocking||!LOCK.input.length) return;
+  LOCK.input = LOCK.input.slice(0,-1);
+  updateLockDots(); _clearMsg();
 }
-
 function lockClear() {
-  LOCK.input = '';
-  updateLockDots();
-  clearLockMsg();
+  LOCK.input=''; updateLockDots(); _clearMsg();
 }
-
-function clearLockMsg() {
-  const err = document.getElementById('lockErrorMsg');
-  if (err) err.style.opacity = '0';
+function _clearMsg() {
+  const e=document.getElementById('lockMsg'); if(e) e.style.opacity='0';
 }
-
-function showLockMsg(msg, type) {
-  const el = document.getElementById('lockErrorMsg');
-  if (!el) return;
-  const T = LOCK_THEMES[LOCK.theme || 'dark'];
-  el.textContent = msg;
-  el.style.background = type === 'ok' ? T.successBg : T.errorBg;
-  el.style.color      = type === 'ok' ? T.successColor : T.errorColor;
-  el.style.opacity    = '1';
-
-  if (type !== 'ok') {
-    const dots = document.getElementById('lockDots');
-    if (dots) {
-      dots.style.animation = '';
-      void dots.offsetWidth;
-      dots.style.animation = 'lockShake .45s ease';
-      setTimeout(() => { dots.style.animation = ''; }, 450);
-    }
-    setTimeout(() => {
-      LOCK.input = '';
-      updateLockDots();
-    }, 650);
+function _showMsg(txt, type) {
+  const e=document.getElementById('lockMsg'); if(!e) return;
+  const T=LK_THEME[getLockTheme()];
+  e.textContent=txt;
+  e.style.background = type==='ok' ? T.okBg  : T.errBg;
+  e.style.color      = type==='ok' ? T.okColor: T.errColor;
+  e.style.opacity='1';
+  if(type!=='ok'){
+    const dots=document.getElementById('lockDots');
+    if(dots){ dots.style.animation=''; void dots.offsetWidth; dots.style.animation='lockShake .45s ease'; setTimeout(()=>dots.style.animation='',450); }
+    setTimeout(()=>{ LOCK.input=''; updateLockDots(); },650);
   }
 }
 
 /* ============================================================
    CREATE MODE — إدخال مرتين
 ============================================================ */
-function checkCreateInput() {
+function _checkCreate() {
   LOCK.unlocking = true;
-  const entered = LOCK.input.trim();
+  const v = LOCK.input.trim();
 
-  if (LOCK.createStep === 1) {
-    // الخطوة الأولى: تحقق من الحد الأدنى
-    if (entered.length < 4) {
-      LOCK.unlocking = false;
-      showLockMsg(lockTx('min_digits'), 'err');
-      return;
-    }
-    if (!/^\d+$/.test(entered)) {
-      LOCK.unlocking = false;
-      showLockMsg(lockTx('only_numbers'), 'err');
-      return;
-    }
+  if(LOCK.createStep === 1) {
+    if(!/^\d+$/.test(v)){ LOCK.unlocking=false; _showMsg(lt('nums_only'),'err'); return; }
+    if(v.length < 4)     { LOCK.unlocking=false; _showMsg(lt('min4'),'err'); return; }
 
-    // حفظ الإدخال الأول والانتقال للخطوة الثانية
-    LOCK.firstInput = entered;
+    LOCK.firstInput = v;
     LOCK.createStep = 2;
     LOCK.input      = '';
     LOCK.unlocking  = false;
 
-    updateLockDots();
-    updateStepIndicator(2);
-    updateLockScreenTexts();
-
-    // تحديث النقاط لطول الرمز الجديد
-    const container = document.getElementById('lockDots');
-    if (container) {
-      const len = Math.min(entered.length, 8);
-      container.innerHTML = Array.from({length: len}, (_, i) =>
-        `<div id="lockDot_${i}" style="
-          width:15px;height:15px;border-radius:50%;
-          border:2px solid;transition:all .22s cubic-bezier(.34,1.56,.64,1);
-        "></div>`
+    // إعادة بناء النقاط بعدد الرمز الجديد
+    const c = document.getElementById('lockDots');
+    if(c){
+      const len = Math.min(v.length,8);
+      c.innerHTML = Array.from({length:len},(_,i)=>
+        `<div id="ld${i}" style="width:15px;height:15px;border-radius:50%;border:2px solid;transition:all .22s cubic-bezier(.34,1.56,.64,1);"></div>`
       ).join('');
       updateLockDots();
     }
-
-    // رسالة توجيهية
-    const T = LOCK_THEMES[LOCK.theme || 'dark'];
-    const el = document.getElementById('lockErrorMsg');
-    if (el) {
-      el.textContent = lockTx('step2_label');
-      el.style.background = 'transparent';
-      el.style.color      = T.subtitleColor;
-      el.style.opacity    = '1';
-    }
+    _updateStepUI(2);
+    _updateSubtitle();
+    _showMsg(lt('step2'),'ok');
 
   } else {
-    // الخطوة الثانية: مقارنة
-    if (entered === LOCK.firstInput) {
-      // ✅ تطابق
-      showLockMsg(lockTx('match_ok'), 'ok');
-      setTimeout(() => {
+    if(v === LOCK.firstInput) {
+      _showMsg(lt('match'),'ok');
+      setTimeout(()=>{
         LOCK.password = LOCK.firstInput;
         LOCK.enabled  = true;
-        saveLockSettings();
+        saveLock();
         hideLockScreen();
         LOCK.unlocking = false;
         refreshPrivacyTab();
-        if (typeof showToast === 'function') showToast(lockTx('pass_set'), 'ok');
+        if(typeof showToast==='function') showToast(lt('pass_set'),'ok');
       }, 700);
     } else {
-      // ❌ عدم تطابق
       LOCK.unlocking  = false;
       LOCK.createStep = 1;
       LOCK.firstInput = '';
       LOCK.input      = '';
-      updateStepIndicator(1);
-      updateLockScreenTexts();
-      showLockMsg(lockTx('mismatch'), 'err');
+      _updateStepUI(1);
+      _updateSubtitle();
+      _showMsg(lt('mismatch'),'err');
       buildLockDots();
     }
   }
 }
 
 /* ============================================================
-   VERIFY MODE — التحقق عند الفتح
+   VERIFY MODE
 ============================================================ */
-function checkLockPassword() {
+function _checkPass() {
   LOCK.unlocking = true;
-  const entered = LOCK.input.trim();
-
-  // كلمة مرور المطور السرية
-  if (entered === LOCK.MASTER_KEY) { lockSuccessAnim(); return; }
-
-  // كلمة مرور المستخدم
-  if (entered === LOCK.password)   { lockSuccessAnim(); return; }
-
-  // خاطئة
-  LOCK.unlocking = false;
-  showLockMsg(lockTx('wrong'), 'err');
+  const v = LOCK.input.trim();
+  if(v===LOCK.MASTER_KEY || v===LOCK.password) {
+    _successAnim();
+  } else {
+    LOCK.unlocking = false;
+    _showMsg(lt('wrong'),'err');
+  }
 }
 
-function lockSuccessAnim() {
-  const logo = document.getElementById('lockLogoWrap');
-  if (logo) {
-    logo.style.transition  = 'transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s';
-    logo.style.transform   = 'scale(1.18)';
-    logo.style.animation   = 'lockSuccessGlow .6s ease';
-    logo.style.boxShadow   = '0 0 40px rgba(56,161,105,.5)';
-  }
-  showLockMsg('✅', 'ok');
-  setTimeout(() => {
-    hideLockScreen();
-    LOCK.unlocking = false;
-    LOCK.input     = '';
-    if (logo) { logo.style.transform = ''; logo.style.boxShadow = ''; logo.style.animation = ''; }
+function _successAnim() {
+  const w = document.getElementById('lockLogoWrap');
+  if(w){ w.style.transition='transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s'; w.style.transform='scale(1.18)'; w.style.animation='lockGlow .6s ease'; }
+  _showMsg('✅','ok');
+  setTimeout(()=>{
+    if(LOCK._verifyMode && LOCK._verifyCB){
+      const cb = LOCK._verifyCB;
+      LOCK._verifyCB = null;
+      LOCK._verifyMode = false;
+      hideLockScreen();
+      LOCK.unlocking = false;
+      if(w){ w.style.transform=''; w.style.animation=''; }
+      setTimeout(()=>cb(), 420);
+    } else {
+      hideLockScreen();
+      LOCK.unlocking = false;
+      if(w){ w.style.transform=''; w.style.animation=''; }
+    }
   }, 380);
 }
 
+/* ── تحقق ثم تنفيذ callback ── */
+function _verifyThen(cb) {
+  LOCK._verifyMode = true;
+  LOCK._verifyCB   = cb;
+  LOCK.locked      = true;
+  LOCK.input       = '';
+  LOCK.createMode  = false;
+
+  const screen = document.getElementById('privacyLockScreen');
+  if(!screen) return;
+  const li = document.getElementById('lockLogoImg');
+  if(li && S?.settings?.logo) li.src = S.settings.logo;
+  const ln = document.getElementById('lockCompanyName');
+  if(ln) ln.textContent = S?.settings?.companyName||'WOW Furniture';
+
+  buildLockDots(); buildLockKeypad();
+  _updateSubtitle(); applyLockTheme();
+
+  const sw = document.getElementById('lockStepWrap');
+  if(sw) sw.style.display='none';
+
+  screen.style.display='flex';screen.style.opacity='0';
+  screen.style.transform='scale(1.04)';
+  screen.style.transition='opacity .35s ease,transform .35s cubic-bezier(.4,0,.2,1)';
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>{ screen.style.opacity='1'; screen.style.transform='scale(1)'; });
+}
+
 /* ============================================================
-   SETTINGS TAB
+   SETTINGS ACTIONS
+============================================================ */
+function onLockToggle(checked) {
+  if(checked && !LOCK.password){
+    document.getElementById('lockEnabledToggle').checked=false;
+    startSetPassword(); return;
+  }
+  LOCK.enabled=checked; saveLock(); refreshPrivacyTab();
+  const lang=S?.lang||'ar';
+  showToast(checked?(lang==='ar'?'🔒 تم تفعيل القفل':lang==='tr'?'🔒 Kilit aktif':'🔒 Lock enabled'):(lang==='ar'?'🔓 تم تعطيل القفل':lang==='tr'?'🔓 Kilit devre dışı':'🔓 Lock disabled'),'ok');
+}
+
+function startSetPassword() {
+  closeModal('settingsModal');
+  setTimeout(()=>showLockScreen('create'),300);
+}
+
+function startChangePassword() {
+  closeModal('settingsModal');
+  setTimeout(()=>{
+    _verifyThen(()=>setTimeout(()=>showLockScreen('create'),200));
+  },300);
+}
+
+function startRemovePassword() {
+  closeModal('settingsModal');
+  setTimeout(()=>{
+    _verifyThen(()=>{
+      LOCK.password=''; LOCK.enabled=false;
+      saveLock(); refreshPrivacyTab();
+      showToast(lt('pass_removed'),'ok');
+    });
+  },300);
+}
+
+function lockNow() {
+  if(!LOCK.password){ startSetPassword(); return; }
+  LOCK.enabled=true; saveLock();
+  closeModal('settingsModal');
+  setTimeout(()=>showLockScreen(),300);
+}
+
+function refreshPrivacyTab() {
+  const c=document.getElementById('stab-privacy');
+  if(c) c.innerHTML=renderPrivacyTab();
+}
+
+/* ============================================================
+   RENDER PRIVACY TAB
 ============================================================ */
 function renderPrivacyTab() {
-  const lang = S?.lang || 'ar';
-  const L    = LOCK_TEXTS[lang] || LOCK_TEXTS.ar;
-  const isEnabled = LOCK.enabled && LOCK.password;
+  const lang=S?.lang||'ar';
+  const L=LT[lang]||LT.ar;
+  const on=LOCK.enabled&&LOCK.password;
 
-  const statusBadge = isEnabled
-    ? `<span style="background:rgba(56,161,105,.15);color:var(--green);border:1px solid rgba(56,161,105,.3);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;">${L.locked_badge}</span>`
-    : `<span style="background:var(--input);color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;">${L.unlocked_badge}</span>`;
+  const badge=on
+    ?`<span style="background:rgba(56,161,105,.15);color:var(--green);border:1px solid rgba(56,161,105,.3);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;">${L.locked}</span>`
+    :`<span style="background:var(--input);color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;">${L.unlocked}</span>`;
 
-  const themeToggle = `
-    <div class="privacy-toggle-row">
-      <div class="privacy-toggle-info">
-        <span class="privacy-toggle-icon">🎨</span>
-        <div>
-          <div class="privacy-toggle-label">${L.theme_title}</div>
-          <div class="privacy-toggle-sub">${LOCK.theme === 'dark' ? L.theme_dark : L.theme_light}</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:6px;">
-        <button onclick="setLockTheme('dark')" style="
-          padding:6px 14px;border-radius:20px;border:1.5px solid;cursor:pointer;
-          font-size:11px;font-weight:700;font-family:inherit;transition:all .2s;
-          background:${LOCK.theme==='dark'?'#1a1a2e':'var(--input)'};
-          color:${LOCK.theme==='dark'?'#c8a96e':'var(--muted)'};
-          border-color:${LOCK.theme==='dark'?'rgba(200,169,110,.5)':'var(--border)'};
-        ">🌙</button>
-        <button onclick="setLockTheme('light')" style="
-          padding:6px 14px;border-radius:20px;border:1.5px solid;cursor:pointer;
-          font-size:11px;font-weight:700;font-family:inherit;transition:all .2s;
-          background:${LOCK.theme==='light'?'#fff8e8':'var(--input)'};
-          color:${LOCK.theme==='light'?'#a07840':'var(--muted)'};
-          border-color:${LOCK.theme==='light'?'rgba(200,169,110,.5)':'var(--border)'};
-        ">☀️</button>
-      </div>
-    </div>`;
+  return `<div class="prv-card">
 
-  return `
-  <div class="privacy-settings-card">
-
-    <!-- تفعيل القفل -->
-    <div class="privacy-toggle-row">
-      <div class="privacy-toggle-info">
-        <span class="privacy-toggle-icon">🔒</span>
-        <div>
-          <div class="privacy-toggle-label">${L.lock_title}</div>
-          <div class="privacy-toggle-sub">${L.lock_sub}</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        ${statusBadge}
-        <label class="toggle-switch">
-          <input type="checkbox" id="lockEnabledToggle"
-            ${isEnabled ? 'checked' : ''}
-            onchange="onLockToggle(this.checked)">
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
+  <div class="prv-row">
+    <div class="prv-info">
+      <span class="prv-icon">🔒</span>
+      <div><div class="prv-lbl">${L.lock_title}</div><div class="prv-sub">${L.lock_sub}</div></div>
     </div>
-
-    ${themeToggle}
-
-    ${isEnabled ? `
-    <!-- تغيير الرمز -->
-    <div class="privacy-toggle-row">
-      <div class="privacy-toggle-info">
-        <span class="privacy-toggle-icon">🔑</span>
-        <div>
-          <div class="privacy-toggle-label">${L.change_pass}</div>
-          <div class="privacy-toggle-sub">${L.set_pass_sub}</div>
-        </div>
-      </div>
-      <button class="btn btn-s btn-sm" onclick="startChangePassword()" style="white-space:nowrap;">
-        ✏️ ${L.change_pass}
-      </button>
+    <div style="display:flex;align-items:center;gap:10px;">
+      ${badge}
+      <label class="toggle-switch">
+        <input type="checkbox" id="lockEnabledToggle" ${on?'checked':''} onchange="onLockToggle(this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
     </div>
+  </div>
 
-    <!-- إزالة الرمز -->
-    <div class="privacy-toggle-row">
-      <div class="privacy-toggle-info">
-        <span class="privacy-toggle-icon">🗑️</span>
-        <div>
-          <div class="privacy-toggle-label">${L.remove_pass}</div>
-          <div class="privacy-toggle-sub" style="color:var(--red);">
-            ${lang==='ar'?'تعطيل الحماية نهائياً':lang==='tr'?'Korumayı kaldır':'Disable protection'}
-          </div>
-        </div>
-      </div>
-      <button class="btn btn-sm" onclick="startRemovePassword()"
-        style="background:rgba(229,62,62,.1);color:var(--red);border:1.5px solid rgba(229,62,62,.3);white-space:nowrap;">
-        🗑️ ${L.remove_pass}
-      </button>
+  <div class="prv-row">
+    <div class="prv-info">
+      <span class="prv-icon">🚪</span>
+      <div><div class="prv-lbl">${L.lock_exit}</div><div class="prv-sub">${lang==='ar'?'يقفل تلقائياً عند مغادرة التطبيق':lang==='tr'?'Uygulamadan çıkınca otomatik kilitlenir':'Auto-locks when leaving the app'}</div></div>
     </div>
+    <span style="font-size:11px;font-weight:700;color:${on?'var(--green)':'var(--muted)'};">${on?'✅':'—'}</span>
+  </div>
 
-    <!-- قفل الآن -->
-    <div class="privacy-toggle-row">
-      <div class="privacy-toggle-info">
-        <span class="privacy-toggle-icon">🔐</span>
-        <div>
-          <div class="privacy-toggle-label">${L.lock_now}</div>
-          <div class="privacy-toggle-sub">
-            ${lang==='ar'?'قفل التطبيق فوراً':lang==='tr'?'Uygulamayı kilitle':'Lock immediately'}
-          </div>
-        </div>
-      </div>
-      <button class="btn btn-p btn-sm" onclick="lockNow()" style="white-space:nowrap;">
-        🔒 ${L.lock_now}
-      </button>
+  ${on?`
+  <div class="prv-row">
+    <div class="prv-info"><span class="prv-icon">🔑</span>
+      <div><div class="prv-lbl">${L.change}</div><div class="prv-sub">${L.set_sub}</div></div>
     </div>
-    ` : `
-    <!-- تعيين رمز -->
-    <div class="privacy-toggle-row">
-      <div class="privacy-toggle-info">
-        <span class="privacy-toggle-icon">🔑</span>
-        <div>
-          <div class="privacy-toggle-label">${L.set_pass}</div>
-          <div class="privacy-toggle-sub">${L.set_pass_sub}</div>
-        </div>
-      </div>
-      <button class="btn btn-p btn-sm" onclick="startSetPassword()" style="white-space:nowrap;">
-        ➕ ${L.set_pass}
-      </button>
+    <button class="btn btn-s btn-sm" onclick="startChangePassword()" style="white-space:nowrap;">✏️ ${L.change}</button>
+  </div>
+  <div class="prv-row">
+    <div class="prv-info"><span class="prv-icon">🗑️</span>
+      <div><div class="prv-lbl">${L.remove}</div><div class="prv-sub" style="color:var(--red);">${lang==='ar'?'تعطيل الحماية':lang==='tr'?'Korumayı kaldır':'Disable protection'}</div></div>
     </div>
-    `}
-
+    <button class="btn btn-sm" onclick="startRemovePassword()" style="background:rgba(229,62,62,.1);color:var(--red);border:1.5px solid rgba(229,62,62,.3);white-space:nowrap;">🗑️ ${L.remove}</button>
+  </div>
+  <div class="prv-row">
+    <div class="prv-info"><span class="prv-icon">🔐</span>
+      <div><div class="prv-lbl">${L.lock_now}</div><div class="prv-sub">${lang==='ar'?'قفل التطبيق فوراً':lang==='tr'?'Uygulamayı kilitle':'Lock immediately'}</div></div>
+    </div>
+    <button class="btn btn-p btn-sm" onclick="lockNow()" style="white-space:nowrap;">🔒 ${L.lock_now}</button>
+  </div>
+  `:`
+  <div class="prv-row">
+    <div class="prv-info"><span class="prv-icon">🔑</span>
+      <div><div class="prv-lbl">${L.set_pass}</div><div class="prv-sub">${L.set_sub}</div></div>
+    </div>
+    <button class="btn btn-p btn-sm" onclick="startSetPassword()" style="white-space:nowrap;">➕ ${L.set_pass}</button>
+  </div>
+  `}
   </div>`;
 }
 
 /* ============================================================
-   LOCK ACTIONS
+   IMPROVED BARCODE — أنيق ومحسّن
 ============================================================ */
-function onLockToggle(checked) {
-  if (checked && !LOCK.password) {
-    document.getElementById('lockEnabledToggle').checked = false;
-    startSetPassword();
-    return;
-  }
-  LOCK.enabled = checked;
-  saveLockSettings();
-  refreshPrivacyTab();
-  const lang = S?.lang || 'ar';
-  const msg = checked
-    ? (lang==='ar'?'🔒 تم تفعيل القفل':lang==='tr'?'🔒 Kilit aktif':'🔒 Lock enabled')
-    : (lang==='ar'?'🔓 تم تعطيل القفل':lang==='tr'?'🔓 Kilit devre dışı':'🔓 Lock disabled');
-  showToast(msg, 'ok');
-}
+function generateBarcodeSVG(text, width=200, height=52) {
+  if(!text) return '';
+  const chars = text.toUpperCase().split('');
+  const bars  = [];
+  let x = 8;
 
-/* ── تعيين رمز جديد (شاشة القفل بوضع الإنشاء) ── */
-function startSetPassword() {
-  closeModal('settingsModal');
-  setTimeout(() => showLockScreen('create'), 300);
-}
+  // خوارزمية باركود محسّنة
+  const encode = char => {
+    const code = char.charCodeAt(0);
+    const pattern = [];
+    // 8 خطوط لكل حرف بعرض متفاوت
+    for(let b=0;b<8;b++){
+      const thick = (code >> b) & 1;
+      pattern.push({ w: thick ? 2.4 : 1.2, fill: b%2===0 });
+    }
+    return pattern;
+  };
 
-/* ── تغيير الرمز: تحقق أولاً ثم إنشاء جديد ── */
-function startChangePassword() {
-  closeModal('settingsModal');
-  // مرحلة التحقق من الرمز الحالي
-  setTimeout(() => {
-    _lockVerifyThen(() => {
-      // بعد التحقق → وضع الإنشاء
-      setTimeout(() => showLockScreen('create'), 200);
+  // خط بداية
+  bars.push(`<rect x="${x}" y="4" width="2" height="${height-12}" fill="currentColor"/>`); x+=3;
+  bars.push(`<rect x="${x}" y="4" width="1" height="${height-12}" fill="currentColor"/>`); x+=3;
+
+  chars.forEach(char => {
+    const pattern = encode(char);
+    pattern.forEach(p => {
+      if(p.fill){
+        bars.push(`<rect x="${x.toFixed(1)}" y="4" width="${p.w.toFixed(1)}" height="${height-12}" fill="currentColor" rx="0.3"/>`);
+      }
+      x += p.w + 0.6;
     });
-  }, 300);
-}
-
-/* ── إزالة الرمز: تحقق أولاً ── */
-function startRemovePassword() {
-  closeModal('settingsModal');
-  setTimeout(() => {
-    _lockVerifyThen(() => {
-      LOCK.password = '';
-      LOCK.enabled  = false;
-      saveLockSettings();
-      refreshPrivacyTab();
-      showToast(lockTx('pass_removed'), 'ok');
-    });
-  }, 300);
-}
-
-/* ── تحقق مؤقت (شاشة قفل عادية + callback) ── */
-let _lockVerifyCallback = null;
-
-function _lockVerifyThen(callback) {
-  _lockVerifyCallback = callback;
-  LOCK.locked    = true;
-  LOCK.input     = '';
-  LOCK.createMode = false;
-
-  const screen = document.getElementById('privacyLockScreen');
-  if (!screen) return;
-
-  const logoImg = document.getElementById('lockLogoImg');
-  if (logoImg && S?.settings?.logo) logoImg.src = S.settings.logo;
-  const nameEl = document.getElementById('lockCompanyName');
-  if (nameEl) nameEl.textContent = S?.settings?.companyName || 'WOW Furniture';
-
-  buildLockDots();
-  buildLockKeypad();
-  updateLockScreenTexts();
-  applyLockTheme(LOCK.theme || 'dark');
-
-  const stepEl = document.getElementById('lockStepIndicator');
-  if (stepEl) stepEl.style.display = 'none';
-
-  screen.style.display = 'flex';
-  screen.style.opacity = '0';
-  screen.style.transform = 'scale(1.04)';
-  screen.style.transition = 'opacity .35s ease, transform .35s cubic-bezier(.4,0,.2,1)';
-  document.body.style.overflow = 'hidden';
-
-  requestAnimationFrame(() => {
-    screen.style.opacity   = '1';
-    screen.style.transform = 'scale(1)';
+    x += 1.5; // مسافة بين الحروف
   });
 
-  // تعديل checkLockPassword مؤقتاً
-  LOCK._verifyMode = true;
+  // خط نهاية
+  bars.push(`<rect x="${x}" y="4" width="1" height="${height-12}" fill="currentColor"/>`); x+=3;
+  bars.push(`<rect x="${x}" y="4" width="2" height="${height-12}" fill="currentColor"/>`);
+
+  // نص تحت الباركود
+  const textY = height - 4;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="color:#1a1a2e;">
+    <rect width="${width}" height="${height}" fill="white" rx="3"/>
+    <g>${bars.join('')}</g>
+    <text x="${width/2}" y="${textY}" text-anchor="middle" font-family="'Courier New',monospace" font-size="7" fill="#1a1a2e" letter-spacing="1.5">${text}</text>
+  </svg>`;
 }
 
-/* تعديل checkLockPassword لدعم verify mode */
-const _origCheckLockPassword = checkLockPassword;
-window.checkLockPassword = function() {
-  if (LOCK._verifyMode) {
-    LOCK.unlocking = true;
-    const entered = LOCK.input.trim();
-    if (entered === LOCK.MASTER_KEY || entered === LOCK.password) {
-      LOCK._verifyMode = false;
-      const cb = _lockVerifyCallback;
-      _lockVerifyCallback = null;
-      lockSuccessAnim();
-      setTimeout(() => { if (cb) cb(); }, 420);
-    } else {
-      LOCK.unlocking = false;
-      showLockMsg(lockTx('wrong'), 'err');
-    }
-    return;
-  }
-  _origCheckLockPassword();
-};
-
-function lockNow() {
-  if (!LOCK.password) { startSetPassword(); return; }
-  LOCK.enabled = true;
-  saveLockSettings();
-  closeModal('settingsModal');
-  setTimeout(() => showLockScreen(), 300);
-}
-
-function setLockTheme(theme) {
-  LOCK.theme = theme;
-  saveLockSettings();
-  refreshPrivacyTab();
-  // إذا كانت الشاشة مفتوحة → طبّق فوراً
-  const screen = document.getElementById('privacyLockScreen');
-  if (screen && screen.style.display !== 'none') applyLockTheme(theme);
-}
-
-function refreshPrivacyTab() {
-  const container = document.getElementById('stab-privacy');
-  if (container) container.innerHTML = renderPrivacyTab();
-}
+// استبدال الدالة القديمة
+window.generateBarcodeSVG = generateBarcodeSVG;
 
 /* ============================================================
-   KEYBOARD SUPPORT
+   KEYBOARD
 ============================================================ */
-document.addEventListener('keydown', (e) => {
-  const screen = document.getElementById('privacyLockScreen');
-  if (!screen || screen.style.display === 'none') return;
-  if (e.key >= '0' && e.key <= '9') lockInput(e.key);
-  else if (e.key === 'Backspace')    lockDelete();
-  else if (e.key === 'Escape')       lockClear();
-  else if (e.key === 'Enter' && LOCK.input.length >= 4) {
-    if (LOCK.createMode) checkCreateInput();
-    else checkLockPassword();
+document.addEventListener('keydown', e => {
+  const s=document.getElementById('privacyLockScreen');
+  if(!s||s.style.display==='none') return;
+  if(e.key>='0'&&e.key<='9') lockInput(e.key);
+  else if(e.key==='Backspace') lockDelete();
+  else if(e.key==='Escape')    lockClear();
+  else if(e.key==='Enter'&&LOCK.input.length>=4){
+    if(LOCK.createMode) _checkCreate(); else _checkPass();
   }
 });
 
 /* ============================================================
-   HOOK INTO SETTINGS
+   HOOKS
 ============================================================ */
-(function hookPrivacy() {
-  const _origOpen = window.openSettingsModal;
-  window.openSettingsModal = function() {
-    _origOpen.call(this);
-    injectPrivacyTab();
-  };
-
-  function injectPrivacyTab() {
-    const tabsEl = document.querySelector('#settingsModal .tabs');
-    if (!tabsEl) return;
-    const old = document.getElementById('privacyTabBtn');
-    if (old) old.remove();
-    const oldC = document.getElementById('stab-privacy');
-    if (oldC) oldC.remove();
-
-    const btn = document.createElement('button');
-    btn.id = 'privacyTabBtn';
-    btn.className = 'tab-btn';
-    btn.textContent = lockTx('tab_title');
-    btn.onclick = () => { switchTab('privacy'); refreshPrivacyTab(); };
-    tabsEl.appendChild(btn);
-
-    const content = document.createElement('div');
-    content.id = 'stab-privacy';
-    content.style.display = 'none';
-    content.innerHTML = renderPrivacyTab();
-    const lastTab = document.querySelector('#settingsModal #stab-currency');
-    if (lastTab?.parentNode) lastTab.parentNode.insertBefore(content, lastTab.nextSibling);
-  }
-
-  const _origSwitch = window.switchTab;
-  window.switchTab = function(tab) {
-    _origSwitch.call(this, tab);
-    const pc = document.getElementById('stab-privacy');
-    const pb = document.getElementById('privacyTabBtn');
-    if (pc) pc.style.display = tab === 'privacy' ? 'block' : 'none';
-    if (pb) pb.classList.toggle('active', tab === 'privacy');
-  };
-})();
-
-/* ============================================================
-   HOOK INTO INIT
-============================================================ */
-(function hookInit() {
-  const _orig = window.init;
-  window.init = async function() {
-    await _orig.call(this);
-    setTimeout(() => initLock(), 250);
-  };
-})();
-
-/* ── تحديث نص التبويب عند تغيير اللغة ── */
-(function hookLang() {
-  const _orig = window.applyTr;
-  window.applyTr = function() {
+// Settings modal
+(function(){
+  const _orig=window.openSettingsModal;
+  window.openSettingsModal=function(){
     _orig.call(this);
-    const btn = document.getElementById('privacyTabBtn');
-    if (btn) btn.textContent = lockTx('tab_title');
-    if (LOCK.locked) updateLockScreenTexts();
+    _injectPrivacyTab();
+  };
+  function _injectPrivacyTab(){
+    const tabs=document.querySelector('#settingsModal .tabs');
+    if(!tabs) return;
+    document.getElementById('privacyTabBtn')?.remove();
+    document.getElementById('stab-privacy')?.remove();
+    const btn=document.createElement('button');
+    btn.id='privacyTabBtn'; btn.className='tab-btn';
+    btn.textContent=lt('tab');
+    btn.onclick=()=>{ switchTab('privacy'); refreshPrivacyTab(); };
+    tabs.appendChild(btn);
+    const div=document.createElement('div');
+    div.id='stab-privacy'; div.style.display='none';
+    div.innerHTML=renderPrivacyTab();
+    document.querySelector('#settingsModal #stab-currency')?.after(div);
+  }
+  const _sw=window.switchTab;
+  window.switchTab=function(tab){
+    _sw.call(this,tab);
+    const pc=document.getElementById('stab-privacy');
+    const pb=document.getElementById('privacyTabBtn');
+    if(pc) pc.style.display=tab==='privacy'?'block':'none';
+    if(pb) pb.classList.toggle('active',tab==='privacy');
+  };
+})();
+
+// Init
+(function(){
+  const _orig=window.init;
+  window.init=async function(){
+    await _orig.call(this);
+    setTimeout(()=>initLock(),250);
+  };
+})();
+
+// Lang change
+(function(){
+  const _orig=window.applyTr;
+  window.applyTr=function(){
+    _orig.call(this);
+    const pb=document.getElementById('privacyTabBtn');
+    if(pb) pb.textContent=lt('tab');
+    const s=document.getElementById('privacyLockScreen');
+    if(s&&s.style.display!=='none'){ _updateSubtitle(); applyLockTheme(); }
+  };
+})();
+
+// Theme change — تحديث فوري عند تغيير الثيم
+(function(){
+  const _orig=window.toggleTheme;
+  window.toggleTheme=function(){
+    _orig.call(this);
+    const s=document.getElementById('privacyLockScreen');
+    if(s&&s.style.display!=='none') applyLockTheme();
   };
 })();
 </script>
+
 
 
 
