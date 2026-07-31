@@ -15119,20 +15119,34 @@ function renderNoteTemplates() {
   const lang  = S.lang || 'ar';
   const notes = NOTE_BASE_TEMPLATES[lang] || NOTE_BASE_TEMPLATES.ar;
 
-  // التحقق مما إذا كانت هناك ملاحظة مختارة مسبقاً
+  // 1. التحقق مما إذا كان هناك أيام محفوظة في الحقل
   const notesEl = document.getElementById('invNotes');
-  const isSelected = notesEl && notesEl.dataset.templateIdx !== undefined;
+  const hasCustomDays = notesEl && notesEl.dataset.customDays !== undefined;
+  
+  // 2. تحديد هل هو قالب قياسي أم تاريخ مخصص
+  const standardDays = [0, 15, 30, 45];
+  let isCustomDate = false;
+  if (hasCustomDays) {
+     const d = parseInt(notesEl.dataset.customDays);
+     if (!standardDays.includes(d)) {
+         isCustomDate = true;
+     }
+  }
 
-  // نصوص الخيار الافتراضي
-  const defaultOption = {
-    ar: isSelected ? '✅ تم اختيار الملاحظة' : '— اختر ملاحظة جاهزة —',
-    tr: isSelected ? '✅ Not seçildi' : '— Hazır not seçin —',
-    en: isSelected ? '✅ Note selected' : '— Select a template —'
-  };
+  // 3. تحديد النص الافتراضي للقائمة بناءً على الحالة واللغة
+  let defaultText = '';
+  if (isCustomDate) {
+     defaultText = { ar: '✏️ تاريخ مخصص', tr: '✏️ Özel Tarih', en: '✏️ Custom Date' }[lang];
+  } else if (hasCustomDays) {
+     defaultText = { ar: '✅ تم اختيار الشروط', tr: '✅ Şartlar seçildi', en: '✅ Terms selected' }[lang];
+  } else {
+     defaultText = { ar: '— اختر ملاحظة جاهزة —', tr: '— Hazır not seçin —', en: '— Select a template —' }[lang];
+  }
 
+  // 4. بناء القائمة
   let html = `<select class="fc" id="noteTemplateSelect" onchange="if(this.value !== '') { applyNoteTemplate(this.value); }" style="cursor:pointer; width: 100%;">`;
   
-  html += `<option value="" id="noteSelectDefault">${defaultOption[lang] || defaultOption.en}</option>`;
+  html += `<option value="" id="noteSelectDefault">${defaultText}</option>`;
   
   html += notes.map((note, i) => `
     <option value="${i}">${NOTE_TEMPLATE_ICONS[i]} ${note}</option>
@@ -15142,6 +15156,7 @@ function renderNoteTemplates() {
 
   container.innerHTML = html;
 }
+
 
 /* ── دالة مساعدة لتوليد نص التسليم الديناميكي بأي عدد من الأيام ── */
 function getDynamicDeliveryText(days, lang) {
