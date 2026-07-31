@@ -15164,17 +15164,14 @@ function applyNoteTemplate(idx, silent = false) {
   const lang  = S.lang || 'ar';
   const sOpt  = S.shippingOpt || 'client';
   
-  // الأيام المقابلة للخيارات (0: فوري، 1: 15 يوم، 2: 30 يوم، 3: 45 يوم)
   const templateDays = [0, 15, 30, 45];
   const days = templateDays[idx] || 0;
 
-  // 1. تحديث حقل "تاريخ التحميل" تلقائياً
   const regDateVal = document.getElementById('invRegDate').value;
   let baseDate = regDateVal ? new Date(regDateVal) : new Date();
   baseDate.setDate(baseDate.getDate() + days);
   document.getElementById('invLoadDate').value = baseDate.toISOString().split('T')[0];
 
-  // 2. تطبيق النص
   const baseNote = getDynamicDeliveryText(days, lang);
   const shipText = (NOTE_SHIPPING_TEXT[lang] || NOTE_SHIPPING_TEXT.ar)[sOpt];
   const termsArray = NOTE_TERMS[lang] || NOTE_TERMS.ar;
@@ -15185,7 +15182,9 @@ function applyNoteTemplate(idx, silent = false) {
   const el = document.getElementById('invNotes');
   if (el) {
     el.value = finalText;
-    el.dataset.templateIdx = idx;
+    
+    // ✅ حفظ الأيام ونوع الشحن للترجمة
+    el.dataset.customDays = days;
     el.dataset.templateOpt = sOpt;
     
     el.style.height = 'auto';
@@ -15217,17 +15216,15 @@ function onLoadDateChange() {
   const regDateVal = document.getElementById('invRegDate').value;
   if (!loadDateVal) return;
 
-  // حساب الفرق بالأيام
   const loadDate = new Date(loadDateVal);
   const regDate = regDateVal ? new Date(regDateVal) : new Date();
   
-  // تصفير الساعات لضمان دقة الحساب
   loadDate.setHours(0,0,0,0);
   regDate.setHours(0,0,0,0);
 
   const diffTime = loadDate - regDate;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  const days = Math.max(0, diffDays); // لا نقبل أيام بالسالب
+  const days = Math.max(0, diffDays); 
 
   const notesEl = document.getElementById('invNotes');
   if (!notesEl || !notesEl.value) return;
@@ -15235,25 +15232,24 @@ function onLoadDateChange() {
   const lang = S.lang || 'ar';
   const newDeliveryText = getDynamicDeliveryText(days, lang);
 
-  // استبدال الجملة القديمة (مهما كان عدد الأيام فيها) بالجملة الجديدة باستخدام Regex
+  // ✅ حفظ الأيام المخصصة الجديدة لتعمل الترجمة بشكل صحيح
+  notesEl.dataset.customDays = days;
+
   let text = notesEl.value;
   text = text.replace(/(التسليم بعد \d+ يوماً من استلام الدفعة المقدمة|تسليم فوري)/g, newDeliveryText);
   text = text.replace(/(Depozito alındıktan \d+ gün sonra teslimat|Hemen Teslim)/g, newDeliveryText);
   text = text.replace(/(Delivery \d+ days after receiving the deposit|Immediate Delivery)/g, newDeliveryText);
 
   notesEl.value = text;
-  
-  // تمدد الحقل
   notesEl.style.height = 'auto';
   notesEl.style.height = (notesEl.scrollHeight + 2) + 'px';
 
-  // تغيير نص القائمة ليدل على أنه تم تخصيص التاريخ
   const defaultOpt = document.getElementById('noteSelectDefault');
   if (defaultOpt) {
     defaultOpt.textContent = { ar: '✏️ تاريخ مخصص', tr: '✏️ Özel Tarih', en: '✏️ Custom Date' }[lang];
   }
-  delete notesEl.dataset.templateIdx; // إزالة الـ Index لأن النص أصبح مخصصاً
 }
+
 
 
 
@@ -15429,51 +15425,57 @@ function updateStep1Texts() {
   /* ✅ 4 — تحديث شارة وضع التسليم */
   updateDeliveryModeUI();
 
-  /* ✅ 5 — تحديث لغة الشروط إذا كانت مختارة من القائمة ولم تُعدل يدوياً */
+    /* ✅ 5 — تحديث لغة الشروط مع الحفاظ على الأيام المخصصة والشحن */
   const notesEl = document.getElementById('invNotes');
-  if (notesEl && notesEl.dataset.templateIdx !== undefined) {
-    const idx = parseInt(notesEl.dataset.templateIdx);
-    // استدعاء الدالة بوضع silent=true حتى تتغير اللغة بدون إزعاج المستخدم بإشعارات متكررة
-    applyNoteTemplate(idx, true); 
+  if (notesEl && notesEl.dataset.customDays !== undefined) {
+    const days = parseInt(notesEl.dataset.customDays);
+    const sOpt = notesEl.dataset.templateOpt || S.shippingOpt || 'client';
+    
+    // إعادة بناء النص باللغة الجديدة مع الأيام المخصصة
+    const baseNote = getDynamicDeliveryText(days, lang);
+    const shipText = (NOTE_SHIPPING_TEXT[lang] || NOTE_SHIPPING_TEXT.ar)[sOpt];
+    const termsArray = NOTE_TERMS[lang] || NOTE_TERMS.ar;
+
+    const numberedTerms = termsArray.map((term, i) => `(${i + 1}) ${term}`).join('\n');
+    notesEl.value = `${baseNote} — ${shipText}\n\n${numberedTerms}`;
+
+    notesEl.style.height = 'auto';
+    notesEl.style.height = (notesEl.scrollHeight + 2) + 'px';
   }
+
 } // ✅ تم إزالة القوس الزائد من هنا ليعمل الكود بشكل سليم
 
 
 /* ── اختيار خيار الشحن ── */
 /* ── اختيار خيار الشحن ── */
+/* ── اختيار خيار الشحن ── */
 function selectShippingOpt(opt) {
   S.shippingOpt = opt;
   updateShippingUI();
-  renderNoteTemplates(); /* ← يُعيد البناء بلغة البرنامج الحالية فوراً */
+  renderNoteTemplates(); 
 
-  // ✅ التبديل الذكي للنص داخل حقل الشروط
   const notesEl = document.getElementById('invNotes');
   if (notesEl) {
-    if (notesEl.dataset.templateIdx !== undefined) {
-      // 1. إذا كان النص من قالب جاهز، أعد تطبيقه بصمت مع الخيار الجديد
-      applyNoteTemplate(parseInt(notesEl.dataset.templateIdx), true);
-    } else if (notesEl.value) {
-      // 2. إذا كان النص معدلاً يدوياً، ابحث عن جملة الشحن القديمة وبدّلها
-      let text = notesEl.value;
-      const oldOpt = opt === 'client' ? 'company' : 'client';
-      
-      // البحث في اللغات الثلاث واستبدال النص القديم بالجديد
-      ['ar', 'tr', 'en'].forEach(l => {
-        const oldText = (NOTE_SHIPPING_TEXT[l] || NOTE_SHIPPING_TEXT.ar)[oldOpt];
-        const newText = (NOTE_SHIPPING_TEXT[l] || NOTE_SHIPPING_TEXT.ar)[opt];
-        if (text.includes(oldText)) {
-          text = text.replace(oldText, newText);
-        }
-      });
-      
-      notesEl.value = text;
-      
-      // تمدد الحقل تلقائياً ليناسب النص
+    // ✅ حفظ خيار الشحن الجديد للترجمة
+    notesEl.dataset.templateOpt = opt;
+
+    if (notesEl.dataset.customDays !== undefined) {
+      // إذا كان هناك أيام محفوظة (سواء من قالب أو مخصصة)، أعد بناء النص بصمت
+      const lang = S.lang || 'ar';
+      const days = parseInt(notesEl.dataset.customDays);
+      const baseNote = getDynamicDeliveryText(days, lang);
+      const shipText = (NOTE_SHIPPING_TEXT[lang] || NOTE_SHIPPING_TEXT.ar)[opt];
+      const termsArray = NOTE_TERMS[lang] || NOTE_TERMS.ar;
+
+      const numberedTerms = termsArray.map((term, i) => `(${i + 1}) ${term}`).join('\n');
+      notesEl.value = `${baseNote} — ${shipText}\n\n${numberedTerms}`;
+
       notesEl.style.height = 'auto';
       notesEl.style.height = (notesEl.scrollHeight + 2) + 'px';
     }
   }
 }
+
 
 
 /* ── تحديث واجهة الشحن ── */
