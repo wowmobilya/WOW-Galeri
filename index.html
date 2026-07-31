@@ -15050,81 +15050,64 @@ function updateCurrencySelect() {
 }
 
 /* ============================================================
-   NOTE TEMPLATES — 3 LANGUAGES × 2 TYPES × 5 FORMATS
+   NOTE TEMPLATES — 3 LANGUAGES × DYNAMIC SHIPPING × AUTO TERMS
 ============================================================ */
-const NOTE_TEMPLATES = {
-  ar: {
-    client: [
-      'التسليم بعد 45 يوماً من استلام الدفعة المقدمة — الشحن على المشتري',
-'التسليم بعد 30 يوماً من استلام الدفعة المقدمة — الشحن على العميل',
-      'جميع تكاليف الشحن والتخليص الجمركي على عاتق المشتري',
-      'EXW — المشتري مسؤول عن الشحن والتأمين من مستودعاتنا',
-      'الأسعار لا تشمل تكاليف الشحن — يُحدد سعر الشحن بشكل منفصل',
-    ],
-    company: [
-      'التسليم بعد 45 يوماً من استلام الدفعة المقدمة — الشحن مجاني',
-'التسليم بعد 45 يوماً من استلام الدفعة المقدمة — الشحن على حساب الشركة',
-      'الشحن مشمول في السعر — التسليم حتى الباب',
-      'WOW Furniture تتحمل كافة تكاليف الشحن والتأمين',
-      'DDP — التسليم الكامل حتى عنوان المشتري شامل الجمارك',
-    ],
-  },
-  tr: {
-    client: [
-      'Depozito alındıktan 45 gün sonra teslimat — Nakliye alıcıya ait',
-      'DELIVERY AFTER 30 DAYS OF RECEIVING THE DEPOSIT — SHIPPING ON BUYER',
-      'Tüm nakliye ve gümrük masrafları alıcı tarafından karşılanır',
-      'EXW — Alıcı nakliye ve sigortadan fabrikamızdan itibaren sorumludur',
-      'Fiyatlara nakliye dahil değildir — Nakliye ayrıca belirlenir',
-    ],
-    company: [
-      'Depozito alındıktan 45 gün sonra teslimat — Ücretsiz nakliye',
-      'DELIVERY AFTER 45 DAYS OF RECEIVING THE DEPOSIT — FREE SHIPPING',
-      'Nakliye fiyata dahildir — Kapıya kadar teslimat',
-      'WOW Furniture tüm nakliye ve sigorta masraflarını karşılar',
-      'DDP — Gümrük dahil alıcı adresine tam teslimat',
-    ],
-  },
-  en: {
-    client: [
-      'Delivery 45 days after receiving the deposit — Shipping on buyer',
-      'DELIVERY AFTER 45 DAYS OF RECEIVING THE DEPOSIT — SHIPPING ON BUYER',
-      'All shipping and customs clearance costs are borne by the buyer',
-      'EXW — Buyer is responsible for shipping and insurance from our warehouse',
-      'Prices do not include freight — Shipping cost to be determined separately',
-    ],
-    company: [
-      'Delivery 45 days after receiving the deposit — Free shipping',
-      'DELIVERY AFTER 45 DAYS OF RECEIVING THE DEPOSIT — FREE SHIPPING',
-      'Shipping is included in the price — Door-to-door delivery',
-      'WOW Furniture covers all freight and insurance charges',
-      'DDP — Full delivery to buyer\'s address including customs',
-    ],
-  },
+
+// 1. خيارات التسليم الأساسية (تظهر فقط في القائمة المنسدلة)
+const NOTE_BASE_TEMPLATES = {
+  ar: [
+    'تسليم فوري',
+    'التسليم بعد 15 يوماً من استلام الدفعة المقدمة',
+    'التسليم بعد 30 يوماً من استلام الدفعة المقدمة',
+    'التسليم بعد 45 يوماً من استلام الدفعة المقدمة'
+  ],
+  tr: [
+    'Hemen Teslim',
+    'Depozito alındıktan 15 gün sonra teslimat',
+    'Depozito alındıktan 30 gün sonra teslimat',
+    'Depozito alındıktan 45 gün sonra teslimat'
+  ],
+  en: [
+    'Immediate Delivery',
+    'Delivery 15 days after receiving the deposit',
+    'Delivery 30 days after receiving the deposit',
+    'Delivery 45 days after receiving the deposit'
+  ]
 };
 
-const NOTE_TEMPLATE_ICONS  = ['⭐','📋','🚢','📦','📜'];
-const NOTE_TEMPLATE_BG     = [
-  'rgba(200,169,110,.12)',
-  'rgba(49,130,206,.1)',
-  'rgba(56,161,105,.1)',
-  'rgba(128,90,213,.1)',
-  'rgba(229,62,62,.08)',
-];
-const NOTE_TEMPLATE_BORDER = [
-  'rgba(200,169,110,.4)',
-  'rgba(49,130,206,.3)',
-  'rgba(56,161,105,.3)',
-  'rgba(128,90,213,.3)',
-  'rgba(229,62,62,.25)',
-];
-const NOTE_TEMPLATE_COLOR  = [
-  'var(--gold2)',
-  '#2b6cb0',
-  '#276749',
-  '#553c9a',
-  '#c53030',
-];
+// 2. نصوص الشحن الديناميكية (تُضاف بجانب خيار التسليم بناءً على زر اختيار الشحن)
+const NOTE_SHIPPING_TEXT = {
+  ar: { client: 'الشحن على المشتري', company: 'الشحن مجاني / على حساب الشركة' },
+  tr: { client: 'Nakliye alıcıya ait', company: 'Ücretsiz nakliye / Şirket öder' },
+  en: { client: 'Shipping on buyer', company: 'Free shipping / Covered by company' }
+};
+
+// 3. الشروط والأحكام الثابتة (تُضاف كأسطر مخفية عن القائمة ولكن تظهر في مربع النص)
+const NOTE_TERMS = {
+  ar: [
+    'الأسعار صالحة لمدة 15 يوماً من تاريخ الفاتورة',
+    'البضاعة المباعة لا ترد ولا تستبدل',
+    'يجب دفع كامل المبلغ قبل الشحن',
+    'الشركة غير مسؤولة عن أي أضرار ناتجة عن سوء الاستخدام أو التركيب الخاطئ',
+    'أي مطالبات بخصوص التلف أو النقص يجب الإبلاغ عنها خلال 3 أيام من الاستلام'
+  ],
+  tr: [
+    'Fiyatlar fatura tarihinden itibaren 15 gün geçerlidir',
+    'Satılan ürünler iade edilemez veya değiştirilemez',
+    'Sevkiyattan önce tüm tutar ödenmelidir',
+    'Şirket, yanlış kullanım veya hatalı kurulumdan kaynaklanan hasarlardan sorumlu değildir',
+    'Hasar veya eksiklik ile ilgili talepler teslimattan sonraki 3 gün içinde bildirilmelidir'
+  ],
+  en: [
+    'Prices are valid for 15 days from the invoice date',
+    'Sold goods cannot be returned or exchanged',
+    'Full amount must be paid before shipping',
+    'The company is not responsible for damages caused by misuse or incorrect installation',
+    'Any claims regarding damage or shortage must be reported within 3 days of receipt'
+  ]
+};
+
+const NOTE_TEMPLATE_ICONS = ['⚡', '📦', '📦', '📦'];
 
 /* ── رسم القائمة المنسدلة للصيغ الجاهزة ── */
 function renderNoteTemplates() {
@@ -15132,21 +15115,19 @@ function renderNoteTemplates() {
   if (!container) return;
 
   const lang  = S.lang || 'ar';
-  const sOpt  = S.shippingOpt || 'client';
-  const notes = NOTE_TEMPLATES[lang]?.[sOpt] || NOTE_TEMPLATES.ar.client;
+  const notes = NOTE_BASE_TEMPLATES[lang] || NOTE_BASE_TEMPLATES.ar;
 
   // التحقق مما إذا كانت هناك ملاحظة مختارة مسبقاً
   const notesEl = document.getElementById('invNotes');
   const isSelected = notesEl && notesEl.dataset.templateIdx !== undefined;
 
-  // نصوص الخيار الافتراضي (عادي / تم الاختيار) بـ 3 لغات
+  // نصوص الخيار الافتراضي
   const defaultOption = {
     ar: isSelected ? '✅ تم اختيار الملاحظة' : '— اختر ملاحظة جاهزة —',
     tr: isSelected ? '✅ Not seçildi' : '— Hazır not seçin —',
     en: isSelected ? '✅ Note selected' : '— Select a template —'
   };
 
-  // إنشاء القائمة وإعطائها ID للتحكم بها
   let html = `<select class="fc" id="noteTemplateSelect" onchange="if(this.value !== '') { applyNoteTemplate(this.value); }" style="cursor:pointer; width: 100%;">`;
   
   html += `<option value="" id="noteSelectDefault">${defaultOption[lang] || defaultOption.en}</option>`;
@@ -15160,18 +15141,24 @@ function renderNoteTemplates() {
   container.innerHTML = html;
 }
 
-
 /* ── تطبيق الصيغة على حقل الملاحظات ── */
 function applyNoteTemplate(idx) {
   const lang  = S.lang || 'ar';
   const sOpt  = S.shippingOpt || 'client';
-  const notes = NOTE_TEMPLATES[lang]?.[sOpt] || NOTE_TEMPLATES.ar.client;
-  const note  = notes[idx];
-  if (!note) return;
+  
+  // سحب النصوص بناءً على اللغة
+  const baseNote = (NOTE_BASE_TEMPLATES[lang] || NOTE_BASE_TEMPLATES.ar)[idx];
+  const shipText = (NOTE_SHIPPING_TEXT[lang] || NOTE_SHIPPING_TEXT.ar)[sOpt];
+  const terms    = (NOTE_TERMS[lang] || NOTE_TERMS.ar).join('\n');
+
+  if (!baseNote) return;
+
+  // دمج النص النهائي: (التسليم — الشحن) ثم سطرين فارغين ثم الشروط مرتبة
+  const finalText = `${baseNote} — ${shipText}\n\n${terms}`;
 
   const el = document.getElementById('invNotes');
   if (el) {
-    el.value = note;
+    el.value = finalText;
     
     // حفظ رقم الملاحظة ونوع الشحن للترجمة لاحقاً
     el.dataset.templateIdx = idx;
@@ -15186,7 +15173,7 @@ function applyNoteTemplate(idx) {
     }, 900);
   }
 
-  // 👈 الأسطر الجديدة: تغيير نص القائمة إلى "تم الاختيار"
+  // تغيير نص القائمة إلى "تم الاختيار"
   const selectEl = document.getElementById('noteTemplateSelect');
   const defaultOpt = document.getElementById('noteSelectDefault');
   if (selectEl && defaultOpt) {
@@ -15200,12 +15187,13 @@ function applyNoteTemplate(idx) {
   }
 
   const toastMsgs = {
-    ar: `📝 تم تطبيق الملاحظة`,
-    tr: `📝 Not uygulandı`,
-    en: `📝 Note applied`,
+    ar: `📝 تم تطبيق الملاحظة والشروط`,
+    tr: `📝 Not ve şartlar uygulandı`,
+    en: `📝 Note and terms applied`,
   };
   showToast(toastMsgs[lang] || toastMsgs.en, 'ok');
 }
+
 
 
 /* ============================================================
