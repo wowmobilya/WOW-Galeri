@@ -15304,6 +15304,7 @@ const STEP1_TEXTS = {
 
 
 /* ── تحديث كل نصوص الخطوة 1 دفعة واحدة ── */
+/* ── تحديث كل نصوص الخطوة 1 دفعة واحدة ── */
 function updateStep1Texts() {
   const lang = S.lang || 'ar';
   const L    = STEP1_TEXTS[lang] || STEP1_TEXTS.ar;
@@ -15327,7 +15328,6 @@ function updateStep1Texts() {
   set('lbl_plate',              L.lbl_plate);
   set('lbl_truck',              L.lbl_truck);
   set('lbl_shippingTitle',      L.lbl_shippingTitle);
-     set('lbl_shippingTitle',      L.lbl_shippingTitle);
 
   // ✅ تحديث نصوص القائمة المنسدلة للشحن
   const clientOpt  = document.getElementById('shippingOpt_client_opt');
@@ -15366,7 +15366,7 @@ function updateStep1Texts() {
   set('delivery45InfoText',     L.delivery45Info);
   set('lbl_regDate',            L.lbl_regDate);
 
-    /* ✅ 1 — إعادة بناء select العملة بلغة البرنامج */
+  /* ✅ 1 — إعادة بناء select العملة بلغة البرنامج */
   updateCurrencySelect();
 
   /* ✅ 2 — إعادة بناء واجهة الشحن بلغة البرنامج */
@@ -15385,9 +15385,8 @@ function updateStep1Texts() {
     // استدعاء الدالة بوضع silent=true حتى تتغير اللغة بدون إزعاج المستخدم بإشعارات متكررة
     applyNoteTemplate(idx, true); 
   }
+} // ✅ تم إزالة القوس الزائد من هنا ليعمل الكود بشكل سليم
 
-  }
-}
 
 /* ── اختيار خيار الشحن ── */
 function selectShippingOpt(opt) {
