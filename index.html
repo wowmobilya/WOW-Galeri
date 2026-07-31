@@ -5051,8 +5051,10 @@ body {
     </label>
     <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px;" 
       id="noteTemplatesBtns"></div>
-    <textarea class="fc" id="invNotes" rows="3"
-      placeholder="..." style="resize:vertical;" oninput="delete this.dataset.templateIdx;"></textarea>
+   <textarea class="fc" id="invNotes" rows="3"
+  placeholder="..." style="resize:vertical;" 
+  oninput="delete this.dataset.templateIdx; renderNoteTemplates();"></textarea>
+
   </div>
 
 
@@ -15124,8 +15126,7 @@ const NOTE_TEMPLATE_COLOR  = [
   '#c53030',
 ];
 
-/* ── رسم أزرار الصيغ ── */
-/* ── رسم القائمة المنسدلة للصيغ الجاهزة بدلاً من الأزرار ── */
+/* ── رسم القائمة المنسدلة للصيغ الجاهزة ── */
 function renderNoteTemplates() {
   const container = document.getElementById('noteTemplatesBtns');
   if (!container) return;
@@ -15134,20 +15135,22 @@ function renderNoteTemplates() {
   const sOpt  = S.shippingOpt || 'client';
   const notes = NOTE_TEMPLATES[lang]?.[sOpt] || NOTE_TEMPLATES.ar.client;
 
-  // نصوص الخيار الافتراضي للقائمة حسب اللغة
+  // التحقق مما إذا كانت هناك ملاحظة مختارة مسبقاً
+  const notesEl = document.getElementById('invNotes');
+  const isSelected = notesEl && notesEl.dataset.templateIdx !== undefined;
+
+  // نصوص الخيار الافتراضي (عادي / تم الاختيار) بـ 3 لغات
   const defaultOption = {
-    ar: '— اختر ملاحظة جاهزة —',
-    tr: '— Hazır not seçin —',
-    en: '— Select a template —'
+    ar: isSelected ? '✅ تم اختيار الملاحظة' : '— اختر ملاحظة جاهزة —',
+    tr: isSelected ? '✅ Not seçildi' : '— Hazır not seçin —',
+    en: isSelected ? '✅ Note selected' : '— Select a template —'
   };
 
-  // إنشاء القائمة المنسدلة (Select) بتنسيق النظام (fc)
-  let html = `<select class="fc" onchange="if(this.value !== '') { applyNoteTemplate(this.value); this.value=''; }" style="cursor:pointer; width: 100%;">`;
+  // إنشاء القائمة وإعطائها ID للتحكم بها
+  let html = `<select class="fc" id="noteTemplateSelect" onchange="if(this.value !== '') { applyNoteTemplate(this.value); }" style="cursor:pointer; width: 100%;">`;
   
-  // الخيار الأول (فارغ كعنوان)
-  html += `<option value="">${defaultOption[lang] || defaultOption.en}</option>`;
+  html += `<option value="" id="noteSelectDefault">${defaultOption[lang] || defaultOption.en}</option>`;
   
-  // إضافة الملاحظات كخيارات مع الأيقونات
   html += notes.map((note, i) => `
     <option value="${i}">${NOTE_TEMPLATE_ICONS[i]} ${note}</option>
   `).join('');
@@ -15156,6 +15159,7 @@ function renderNoteTemplates() {
 
   container.innerHTML = html;
 }
+
 
 /* ── تطبيق الصيغة على حقل الملاحظات ── */
 function applyNoteTemplate(idx) {
@@ -15180,6 +15184,19 @@ function applyNoteTemplate(idx) {
       el.style.borderColor = '';
       el.style.boxShadow   = '';
     }, 900);
+  }
+
+  // 👈 الأسطر الجديدة: تغيير نص القائمة إلى "تم الاختيار"
+  const selectEl = document.getElementById('noteTemplateSelect');
+  const defaultOpt = document.getElementById('noteSelectDefault');
+  if (selectEl && defaultOpt) {
+    const successMsgs = {
+      ar: '✅ تم اختيار الملاحظة',
+      tr: '✅ Not seçildi',
+      en: '✅ Note selected'
+    };
+    defaultOpt.textContent = successMsgs[lang] || successMsgs.en;
+    selectEl.value = ''; // إعادة القائمة للخيار الأول ليظهر النص الجديد
   }
 
   const toastMsgs = {
