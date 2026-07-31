@@ -15389,11 +15389,41 @@ function updateStep1Texts() {
 
 
 /* ── اختيار خيار الشحن ── */
+/* ── اختيار خيار الشحن ── */
 function selectShippingOpt(opt) {
   S.shippingOpt = opt;
   updateShippingUI();
   renderNoteTemplates(); /* ← يُعيد البناء بلغة البرنامج الحالية فوراً */
+
+  // ✅ التبديل الذكي للنص داخل حقل الشروط
+  const notesEl = document.getElementById('invNotes');
+  if (notesEl) {
+    if (notesEl.dataset.templateIdx !== undefined) {
+      // 1. إذا كان النص من قالب جاهز، أعد تطبيقه بصمت مع الخيار الجديد
+      applyNoteTemplate(parseInt(notesEl.dataset.templateIdx), true);
+    } else if (notesEl.value) {
+      // 2. إذا كان النص معدلاً يدوياً، ابحث عن جملة الشحن القديمة وبدّلها
+      let text = notesEl.value;
+      const oldOpt = opt === 'client' ? 'company' : 'client';
+      
+      // البحث في اللغات الثلاث واستبدال النص القديم بالجديد
+      ['ar', 'tr', 'en'].forEach(l => {
+        const oldText = (NOTE_SHIPPING_TEXT[l] || NOTE_SHIPPING_TEXT.ar)[oldOpt];
+        const newText = (NOTE_SHIPPING_TEXT[l] || NOTE_SHIPPING_TEXT.ar)[opt];
+        if (text.includes(oldText)) {
+          text = text.replace(oldText, newText);
+        }
+      });
+      
+      notesEl.value = text;
+      
+      // تمدد الحقل تلقائياً ليناسب النص
+      notesEl.style.height = 'auto';
+      notesEl.style.height = (notesEl.scrollHeight + 2) + 'px';
+    }
+  }
 }
+
 
 /* ── تحديث واجهة الشحن ── */
 function updateShippingUI() {
