@@ -4926,189 +4926,155 @@ body {
 
   
 
-  <div class="inv-builder">
     <!-- LEFT COLUMN -->
     <div>
 
-     <!-- STEP 1: Invoice Details — REDESIGNED 2026 -->
-<div class="inv-step" id="invStep1">
- <div class="inv-step-hdr" onclick="toggleStep('step1')">
-    <div class="inv-step-num">1</div>
-    <div class="inv-step-title" id="step1Title">تفاصيل الفاتورة</div>
-    <span id="step1Badge" class="inv-step-badge" style="display:none;"></span>
-    <span id="invTypeLabel" style="font-size:11px;font-weight:700;color:var(--gold2);background:var(--gold-light);border:1px solid rgba(200,169,110,.3);border-radius:20px;padding:3px 10px;">🌍 خارجي</span>
-    <span id="step1Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
-</div>
-
-
-
-   
- <div class="inv-step-body" id="step1Body">
-
-  <!-- ══ ROW 1: رقم الفاتورة + الشركة + الدولة + المحافظة ══ -->
-  <div style="display:flex; flex-wrap:wrap; gap:14px; margin-bottom:14px;">
-    
-    <div class="fg" style="flex:1; min-width:140px;">
-      <label class="fl">🔢 <span id="lbl_invNo">رقم الفاتورة</span></label>
-      <div class="inv-num-badge" id="invNumDisplay" 
-        style="width:100%; justify-content:center; box-sizing:border-box;">A5001</div>
-    </div>
-    
-    <div class="fg" style="flex:1; min-width:140px;">
-      <label class="fl">🏢 <span id="lbl_coName">الشركة</span> <span class="req">*</span></label>
-      <select class="fc" id="invCoSel" onchange="onCoSelect()">
-        <option value="">—</option>
-      </select>
-    </div>
-    
-    <div class="fg" id="invCountryField" style="flex:1; min-width:140px;">
-      <label class="fl">🌍 <span id="lbl_country">الدولة</span></label>
-      <input type="text" class="fc" id="invCountry" readonly placeholder="—">
-    </div>
-    
-    <div class="fg" id="invProvinceField" style="display:none; flex:1; min-width:140px;">
-      <label class="fl">🗺️ <span id="lbl_province">المحافظة</span></label>
-      <input type="text" class="fc" id="invProvince" readonly placeholder="—">
-    </div>
-
-  </div>
-
-  <!-- ✦ فاصل عصري ✦ -->
-  <div style="
-    height:1px;
-    background:linear-gradient(90deg, transparent, var(--border), var(--gold), var(--border), transparent);
-    margin:0 0 14px;
-    opacity:0.6;
-  "></div>
-
-  <!-- ══ ROW 2: تاريخ التسجيل + العملة + تاريخ التحميل ══ -->
-  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:14px;">
-    
-    <div class="fg">
-      <label class="fl">📝 <span id="lbl_regDate">تاريخ التسجيل</span></label>
-      <input type="date" class="fc" id="invRegDate">
-    </div>
-
-    <div class="fg">
-      <label class="fl">💱 <span id="lbl_currency">العملة</span></label>
-      <select class="fc" id="invCurrency" onchange="onCurrencyChange()">
-      </select>
-    </div>
-
-   <div class="fg">
-  <label class="fl">📅 <span id="lbl_loadDate">تاريخ التحميل</span></label>
-  <input type="date" class="fc" id="invLoadDate" onchange="onLoadDateChange()">
-</div>
-
-
-  </div>
-
-  <!-- ✦ فاصل عصري ✦ -->
-  <div style="
-    height:1px;
-    background:linear-gradient(90deg, transparent, var(--border), var(--gold), var(--border), transparent);
-    margin:0 0 14px;
-    opacity:0.6;
-  "></div>
-
-  <!-- ══ ROW 3: الشحن + رقم اللوحة + رقم الشاحنة ══ -->
-  <div id="shippingTruckRow" 
-    style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px;">
-
-    <div class="fg">
-      <label class="fl">🚢 <span id="lbl_shippingTitle">الشحن</span></label>
-      <select class="fc" id="invShippingSelect"
-        onchange="selectShippingOpt(this.value); renderNoteTemplates();"
-        style="cursor:pointer;">
-        <option value="client" id="shippingOpt_client_opt">👤 يدفع العميل تكلفة الشحن</option>
-        <option value="company" id="shippingOpt_company_opt">🏢 تتحمل الشركة تكاليف الشحن</option>
-      </select>
-    </div>
-
-    <div class="fg">
-      <label class="fl">🚛 <span id="lbl_plate">رقم اللوحة</span></label>
-      <input type="text" class="fc" id="invPlate" placeholder="33 NMR 34">
-    </div>
-
-    <div class="fg">
-      <label class="fl">🔢 <span id="lbl_truck">رقم الشاحنة</span></label>
-      <input type="text" class="fc" id="invTruck" placeholder="251">
-    </div>
-
-  </div>
-
-  <!-- ✦ فاصل عصري ✦ -->
-  <div style="
-    height:1px;
-    background:linear-gradient(90deg, transparent, var(--border), var(--gold), var(--border), transparent);
-    margin:0 0 14px;
-    opacity:0.6;
-  "></div>
-
-   <!-- ══ NOTES SECTION ══ -->
-  <div style="margin-bottom:4px;">
-    <label class="fl" style="margin-bottom:8px;">
-      📝 <span id="lbl_notes">ملاحظات</span>
-    </label>
-    <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px;" 
-      id="noteTemplatesBtns"></div>
-  <textarea class="fc" id="invNotes" rows="3"
-  placeholder="..." style="resize:none; overflow:hidden;" 
-  oninput="this.style.height='auto'; this.style.height=(this.scrollHeight + 2) + 'px'; delete this.dataset.templateIdx; renderNoteTemplates();"></textarea>
-
-
-  </div>
-
-
-  <!-- نوع الفاتورة -->
-  <div style="margin-top:12px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-   
-    <button class="btn btn-s btn-sm" id="editInvBtn" style="display:none;" 
-      onclick="toggleEditMode()">✏️ <span id="editInvBtnTxt">تعديل</span></button>
-  </div>
-
-</div>
-  </div>
-
-   
-
-
-      <!-- STEP 2: Pricing Tier -->
-      <div class="inv-step">
-        <div class="inv-step-hdr" onclick="toggleStep('step2')">
-          <div class="inv-step-num">2</div>
-          <div class="inv-step-title" data-i18n="inv_tier_title">تسعير الفاتورة</div>
-          <span id="step2Badge" class="inv-step-badge">🎯 A</span>
-          <span id="step2Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
+      <!-- STEP 1: Invoice Details — REDESIGNED 2026 -->
+      <div class="inv-step" id="invStep1">
+        <div class="inv-step-hdr" onclick="toggleStep('step1')">
+          <div class="inv-step-num">1</div>
+          <div class="inv-step-title" id="step1Title">تفاصيل الفاتورة</div>
+          <span id="step1Badge" class="inv-step-badge" style="display:none;"></span>
+          <span id="invTypeLabel" style="font-size:11px;font-weight:700;color:var(--gold2);background:var(--gold-light);border:1px solid rgba(200,169,110,.3);border-radius:20px;padding:3px 10px;">🌍 خارجي</span>
+          <span id="step1Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
         </div>
-        <div class="inv-step-body" id="step2Body">
-          <div style="margin-bottom:10px;font-size:12px;color:var(--muted);" data-i18n="inv_tier_hint">اختر التسعير الذي سيُطبَّق على جميع المنتجات في هذه الفاتورة</div>
-          <div class="price-tier-grp" id="invTierGrp">
-            <div class="price-tier-btn sel" data-tier="A" onclick="selInvTier('A',this)">
-              <span class="tier-lbl">A</span>
-              <span class="tier-val" data-i18n="tier_standard">قياسي</span>
+
+        <div class="inv-step-body" id="step1Body">
+
+          <!-- ══ ROW 1: رقم الفاتورة + الشركة + الدولة + المحافظة ══ -->
+          <div style="display:flex; flex-wrap:wrap; gap:14px; margin-bottom:14px;">
+            <div class="fg" style="flex:1; min-width:140px;">
+              <label class="fl">🔢 <span id="lbl_invNo">رقم الفاتورة</span></label>
+              <div class="inv-num-badge" id="invNumDisplay" style="width:100%; justify-content:center; box-sizing:border-box;">A5001</div>
             </div>
-            <div class="price-tier-btn" data-tier="B" onclick="selInvTier('B',this)">
-              <span class="tier-lbl">B</span>
-              <span class="tier-val" data-i18n="tier_wholesale">جملة</span>
+            <div class="fg" style="flex:1; min-width:140px;">
+              <label class="fl">🏢 <span id="lbl_coName">الشركة</span> <span class="req">*</span></label>
+              <select class="fc" id="invCoSel" onchange="onCoSelect()">
+                <option value="">—</option>
+              </select>
             </div>
-            <div class="price-tier-btn" data-tier="C" onclick="selInvTier('C',this)">
-              <span class="tier-lbl">C</span>
-              <span class="tier-val" data-i18n="tier_special">خاص</span>
+            <div class="fg" id="invCountryField" style="flex:1; min-width:140px;">
+              <label class="fl">🌍 <span id="lbl_country">الدولة</span></label>
+              <input type="text" class="fc" id="invCountry" readonly placeholder="—">
+            </div>
+            <div class="fg" id="invProvinceField" style="display:none; flex:1; min-width:140px;">
+              <label class="fl">🗺️ <span id="lbl_province">المحافظة</span></label>
+              <input type="text" class="fc" id="invProvince" readonly placeholder="—">
             </div>
           </div>
+
+          <!-- ✦ فاصل عصري ✦ -->
+          <div style="height:1px;background:linear-gradient(90deg, transparent, var(--border), var(--gold), var(--border), transparent);margin:0 0 14px;opacity:0.6;"></div>
+
+          <!-- ══ ROW 2: تاريخ التسجيل + العملة + تاريخ التحميل ══ -->
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:14px;">
+            <div class="fg">
+              <label class="fl">📝 <span id="lbl_regDate">تاريخ التسجيل</span></label>
+              <input type="date" class="fc" id="invRegDate">
+            </div>
+            <div class="fg">
+              <label class="fl">💱 <span id="lbl_currency">العملة</span></label>
+              <select class="fc" id="invCurrency" onchange="onCurrencyChange()"></select>
+            </div>
+            <div class="fg">
+              <label class="fl">📅 <span id="lbl_loadDate">تاريخ التحميل</span></label>
+              <input type="date" class="fc" id="invLoadDate" onchange="onLoadDateChange()">
+            </div>
+          </div>
+
+          <!-- ✦ فاصل عصري ✦ -->
+          <div style="height:1px;background:linear-gradient(90deg, transparent, var(--border), var(--gold), var(--border), transparent);margin:0 0 14px;opacity:0.6;"></div>
+
+          <!-- ══ ROW 3: الشحن + رقم اللوحة + رقم الشاحنة ══ -->
+          <div id="shippingTruckRow" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px;">
+            <div class="fg">
+              <label class="fl">🚢 <span id="lbl_shippingTitle">الشحن</span></label>
+              <select class="fc" id="invShippingSelect" onchange="selectShippingOpt(this.value); renderNoteTemplates();" style="cursor:pointer;">
+                <option value="client" id="shippingOpt_client_opt">👤 يدفع العميل تكلفة الشحن</option>
+                <option value="company" id="shippingOpt_company_opt">🏢 تتحمل الشركة تكاليف الشحن</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label class="fl">🚛 <span id="lbl_plate">رقم اللوحة</span></label>
+              <input type="text" class="fc" id="invPlate" placeholder="33 NMR 34">
+            </div>
+            <div class="fg">
+              <label class="fl">🔢 <span id="lbl_truck">رقم الشاحنة</span></label>
+              <input type="text" class="fc" id="invTruck" placeholder="251">
+            </div>
+          </div>
+
+          <!-- ✦ فاصل عصري ✦ -->
+          <div style="height:1px;background:linear-gradient(90deg, transparent, var(--border), var(--gold), var(--border), transparent);margin:0 0 14px;opacity:0.6;"></div>
+
+          <!-- ══ ROW 4: KDV + PRICING TIER (تم النقل هنا) ══ -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+            <!-- KDV -->
+            <div class="fg">
+              <label class="fl">🏛️ <span data-i18n="kdv_title">ضريبة KDV</span></label>
+              <div class="kdv-toggle-row" id="kdvToggleRow" style="margin-top:4px; padding:8px 12px;">
+                <div class="kdv-toggle-info">
+                  <div>
+                    <div class="kdv-toggle-label" data-i18n="kdv_label" style="font-size:12px;">تفعيل KDV في الفاتورة</div>
+                    <div class="kdv-toggle-sub">النسبة: <strong id="kdvRateDisplay">20%</strong></div>
+                  </div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="kdvToggle" onchange="onKdvToggle()">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Pricing Tier -->
+            <div class="fg">
+              <label class="fl">🎯 <span data-i18n="inv_tier_title">تسعير الفاتورة</span></label>
+              <div class="price-tier-grp" id="invTierGrp" style="margin-top:4px; margin-bottom:0;">
+                <div class="price-tier-btn sel" data-tier="A" onclick="selInvTier('A',this)">
+                  <span class="tier-lbl">A</span>
+                  <span class="tier-val" data-i18n="tier_standard">قياسي</span>
+                </div>
+                <div class="price-tier-btn" data-tier="B" onclick="selInvTier('B',this)">
+                  <span class="tier-lbl">B</span>
+                  <span class="tier-val" data-i18n="tier_wholesale">جملة</span>
+                </div>
+                <div class="price-tier-btn" data-tier="C" onclick="selInvTier('C',this)">
+                  <span class="tier-lbl">C</span>
+                  <span class="tier-val" data-i18n="tier_special">خاص</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ✦ فاصل عصري ✦ -->
+          <div style="height:1px;background:linear-gradient(90deg, transparent, var(--border), var(--gold), var(--border), transparent);margin:0 0 14px;opacity:0.6;"></div>
+
+          <!-- ══ NOTES SECTION ══ -->
+          <div style="margin-bottom:4px;">
+            <label class="fl" style="margin-bottom:8px;">
+              📝 <span id="lbl_notes">ملاحظات وشروط البيع والتسليم</span>
+            </label>
+            <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px;" id="noteTemplatesBtns"></div>
+            <textarea class="fc" id="invNotes" rows="3" placeholder="..." style="resize:none; overflow:hidden;" oninput="this.style.height='auto'; this.style.height=(this.scrollHeight + 2) + 'px'; delete this.dataset.templateIdx; renderNoteTemplates();"></textarea>
+          </div>
+
+          <!-- نوع الفاتورة -->
+          <div style="margin-top:12px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-s btn-sm" id="editInvBtn" style="display:none;" onclick="toggleEditMode()">✏️ <span id="editInvBtnTxt">تعديل</span></button>
+          </div>
+
         </div>
       </div>
 
-      <!-- STEP 3: Payment Method -->
+      <!-- STEP 2: Payment Method -->
       <div class="inv-step">
-        <div class="inv-step-hdr" onclick="toggleStep('step3')">
-          <div class="inv-step-num">3</div>
+        <div class="inv-step-hdr" onclick="toggleStep('step2')">
+          <div class="inv-step-num">2</div>
           <div class="inv-step-title" data-i18n="pay_method_title">طريقة الدفع</div>
           <span id="step3Badge" class="inv-step-badge">💵</span>
-          <span id="step3Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
+          <span id="step2Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
         </div>
-        <div class="inv-step-body" id="step3Body">
+        <div class="inv-step-body" id="step2Body" class="collapsed">
           <div class="pay-method-grid" id="payMethodGrid">
             <div class="pay-method-card sel" data-pm="cash" onclick="selPayMethod('cash',this)">
               <div class="pay-method-icon">💵</div>
@@ -5146,40 +5112,15 @@ body {
         </div>
       </div>
 
-      <!-- STEP 4: KDV -->
+      <!-- STEP 3: Products -->
       <div class="inv-step">
-        <div class="inv-step-hdr" onclick="toggleStep('step4')">
-          <div class="inv-step-num">4</div>
-          <div class="inv-step-title" data-i18n="kdv_title">ضريبة KDV</div>
-          <span id="step4Badge" class="inv-step-badge" id="kdvStepBadge">غير مفعّل</span>
-          <span id="step4Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
-        </div>
-        <div class="inv-step-body" id="step4Body">
-          <div class="kdv-toggle-row" id="kdvToggleRow">
-            <div class="kdv-toggle-info">
-              <span class="kdv-toggle-icon">🏛️</span>
-              <div>
-                <div class="kdv-toggle-label" data-i18n="kdv_label">تفعيل KDV في الفاتورة</div>
-                <div class="kdv-toggle-sub">النسبة: <strong id="kdvRateDisplay">20%</strong></div>
-              </div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="kdvToggle" onchange="onKdvToggle()">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 5: Products -->
-      <div class="inv-step">
-        <div class="inv-step-hdr" onclick="toggleStep('step5')">
-          <div class="inv-step-num">5</div>
+        <div class="inv-step-hdr" onclick="toggleStep('step3')">
+          <div class="inv-step-num">3</div>
           <div class="inv-step-title" data-i18n="add_items">إضافة قطع</div>
           <span id="step5Badge" class="inv-step-badge">0 قطعة</span>
-          <span id="step5Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
+          <span id="step3Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
         </div>
-        <div class="inv-step-body" id="step5Body">
+        <div class="inv-step-body" id="step3Body">
           <div style="display:flex;gap:8px;margin-bottom:10px;">
             <input type="text" class="fc" id="invPrSearch" placeholder="🔍 ابحث عن منتج..." oninput="renderPrSelector()" style="flex:1;">
             <button class="btn btn-b btn-sm" onclick="openBarcodeScanner('invoice')">📷</button>
@@ -5188,21 +5129,21 @@ body {
         </div>
       </div>
 
-      <!-- STEP 6: Items Table -->
+      <!-- STEP 4: Items Table -->
       <div class="inv-step" id="invItemsCard" style="display:none;">
-        <div class="inv-step-hdr" onclick="toggleStep('step6')">
-          <div class="inv-step-num">6</div>
+        <div class="inv-step-hdr" onclick="toggleStep('step4')">
+          <div class="inv-step-num">4</div>
           <div class="inv-step-title" data-i18n="inv_items">قطع الفاتورة</div>
           <span id="step6Badge" class="inv-step-badge" id="invItemsBadge">0</span>
-          <span id="step6Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
+          <span id="step4Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
         </div>
-        <div class="inv-step-body" id="step6Body">
+        <div class="inv-step-body" id="step4Body">
           <div class="inv-tbl-wrap">
-                 <table class="inv-tbl">
+            <table class="inv-tbl">
               <thead>
                 <tr>
                   <th>#</th>
-                  <th data-i18n="th_image">الصورة</th> <!-- 👈 تم إضافة عمود الصورة -->
+                  <th data-i18n="th_image">الصورة</th>
                   <th data-i18n="th_name">الاسم</th>
                   <th data-i18n="th_dims">الأبعاد</th>
                   <th data-i18n="th_color">اللون</th>
@@ -5216,7 +5157,6 @@ body {
               <tbody id="invItemsTbody"></tbody>
               <tfoot>
                 <tr>
-                  <!-- 👈 تم تغيير colspan إلى 7 بدلاً من 6 -->
                   <td colspan="7" style="text-align:right;font-weight:700;" data-i18n="total">الإجمالي</td>
                   <td id="invTblTotal" style="color:var(--gold2);font-weight:800;">$0.00</td>
                   <td id="invTblCBM" style="color:var(--gold2);font-weight:800;">0.00</td>
@@ -5228,9 +5168,8 @@ body {
         </div>
       </div>
 
-      
-
     </div><!-- end left column -->
+
 
     <!-- RIGHT COLUMN — SUMMARY -->
     <div>
