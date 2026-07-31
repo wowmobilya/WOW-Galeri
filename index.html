@@ -15116,6 +15116,7 @@ const NOTE_TEMPLATE_COLOR  = [
 ];
 
 /* ── رسم أزرار الصيغ ── */
+/* ── رسم القائمة المنسدلة للصيغ الجاهزة بدلاً من الأزرار ── */
 function renderNoteTemplates() {
   const container = document.getElementById('noteTemplatesBtns');
   if (!container) return;
@@ -15124,35 +15125,27 @@ function renderNoteTemplates() {
   const sOpt  = S.shippingOpt || 'client';
   const notes = NOTE_TEMPLATES[lang]?.[sOpt] || NOTE_TEMPLATES.ar.client;
 
-  container.innerHTML = notes.map((note, i) => `
-    <button
-      type="button"
-      onclick="applyNoteTemplate(${i})"
-      title="${note.replace(/"/g,'&quot;')}"
-      style="
-        display:inline-flex;align-items:center;gap:5px;
-        padding:5px 12px;border-radius:20px;
-        border:1.5px solid ${NOTE_TEMPLATE_BORDER[i]};
-        background:${NOTE_TEMPLATE_BG[i]};
-        color:${NOTE_TEMPLATE_COLOR[i]};
-        font-size:10px;font-weight:700;
-        cursor:pointer;font-family:inherit;
-        transition:all .22s ease;
-        white-space:nowrap;
-        max-width:160px;overflow:hidden;text-overflow:ellipsis;
-      "
-      onmouseenter="
-        this.style.transform='translateY(-2px)';
-        this.style.boxShadow='0 4px 12px ${NOTE_TEMPLATE_BORDER[i]}';
-      "
-      onmouseleave="
-        this.style.transform='';
-        this.style.boxShadow='';
-      "
-    >
-      <span style="font-size:13px;flex-shrink:0;">${NOTE_TEMPLATE_ICONS[i]}</span>
-      <span>${i + 1}</span>
-    </button>`).join('');
+  // نصوص الخيار الافتراضي للقائمة حسب اللغة
+  const defaultOption = {
+    ar: '— اختر ملاحظة جاهزة —',
+    tr: '— Hazır not seçin —',
+    en: '— Select a template —'
+  };
+
+  // إنشاء القائمة المنسدلة (Select) بتنسيق النظام (fc)
+  let html = `<select class="fc" onchange="if(this.value !== '') { applyNoteTemplate(this.value); this.value=''; }" style="cursor:pointer; width: 100%;">`;
+  
+  // الخيار الأول (فارغ كعنوان)
+  html += `<option value="">${defaultOption[lang] || defaultOption.en}</option>`;
+  
+  // إضافة الملاحظات كخيارات مع الأيقونات
+  html += notes.map((note, i) => `
+    <option value="${i}">${NOTE_TEMPLATE_ICONS[i]} ${note}</option>
+  `).join('');
+  
+  html += `</select>`;
+
+  container.innerHTML = html;
 }
 
 /* ── تطبيق الصيغة على حقل الملاحظات ── */
@@ -15165,23 +15158,27 @@ function applyNoteTemplate(idx) {
 
   const el = document.getElementById('invNotes');
   if (el) {
-    el.value = note;
+    el.value = note; // إدراج النص في الحقل
+    
+    // تأثير بصري جميل عند الإدراج (توهج ذهبي)
     el.style.transition  = 'border-color .2s, box-shadow .2s';
-    el.style.borderColor = NOTE_TEMPLATE_BORDER[idx];
-    el.style.boxShadow   = `0 0 0 3px ${NOTE_TEMPLATE_BG[idx]}`;
+    el.style.borderColor = 'var(--gold)';
+    el.style.boxShadow   = '0 0 0 3px rgba(200,169,110,.2)';
     setTimeout(() => {
       el.style.borderColor = '';
       el.style.boxShadow   = '';
     }, 900);
   }
 
+  // إشعار للمستخدم بنجاح العملية
   const toastMsgs = {
-    ar: `📝 تم تطبيق الصيغة ${idx + 1}`,
-    tr: `📝 Şablon ${idx + 1} uygulandı`,
-    en: `📝 Template ${idx + 1} applied`,
+    ar: `📝 تم تطبيق الملاحظة`,
+    tr: `📝 Not uygulandı`,
+    en: `📝 Note applied`,
   };
   showToast(toastMsgs[lang] || toastMsgs.en, 'ok');
 }
+
 
 /* ============================================================
    SHIPPING OPTION — اختيار من يتحمل الشحن
