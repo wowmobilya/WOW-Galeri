@@ -4995,10 +4995,11 @@ body {
       </select>
     </div>
 
-    <div class="fg">
-      <label class="fl">📅 <span id="lbl_loadDate">تاريخ التحميل</span></label>
-      <input type="date" class="fc" id="invLoadDate">
-    </div>
+   <div class="fg">
+  <label class="fl">📅 <span id="lbl_loadDate">تاريخ التحميل</span></label>
+  <input type="date" class="fc" id="invLoadDate" onchange="onLoadDateChange()">
+</div>
+
 
   </div>
 
@@ -15142,66 +15143,116 @@ function renderNoteTemplates() {
   container.innerHTML = html;
 }
 
-/* ── تطبيق الصيغة على حقل الملاحظات ── */
-/* ── تطبيق الصيغة على حقل الشروط ── */
+/* ── دالة مساعدة لتوليد نص التسليم الديناميكي بأي عدد من الأيام ── */
+function getDynamicDeliveryText(days, lang) {
+  if (days <= 0) {
+    return {
+      ar: 'تسليم فوري',
+      tr: 'Hemen Teslim',
+      en: 'Immediate Delivery'
+    }[lang];
+  }
+  return {
+    ar: `التسليم بعد ${days} يوماً من استلام الدفعة المقدمة`,
+    tr: `Depozito alındıktan ${days} gün sonra teslimat`,
+    en: `Delivery ${days} days after receiving the deposit`
+  }[lang];
+}
+
+/* ── تطبيق الصيغة على حقل الشروط وتحديث التاريخ ── */
 function applyNoteTemplate(idx, silent = false) {
   const lang  = S.lang || 'ar';
   const sOpt  = S.shippingOpt || 'client';
   
-  const baseNote = (NOTE_BASE_TEMPLATES[lang] || NOTE_BASE_TEMPLATES.ar)[idx];
+  // الأيام المقابلة للخيارات (0: فوري، 1: 15 يوم، 2: 30 يوم، 3: 45 يوم)
+  const templateDays = [0, 15, 30, 45];
+  const days = templateDays[idx] || 0;
+
+  // 1. تحديث حقل "تاريخ التحميل" تلقائياً
+  const regDateVal = document.getElementById('invRegDate').value;
+  let baseDate = regDateVal ? new Date(regDateVal) : new Date();
+  baseDate.setDate(baseDate.getDate() + days);
+  document.getElementById('invLoadDate').value = baseDate.toISOString().split('T')[0];
+
+  // 2. تطبيق النص
+  const baseNote = getDynamicDeliveryText(days, lang);
   const shipText = (NOTE_SHIPPING_TEXT[lang] || NOTE_SHIPPING_TEXT.ar)[sOpt];
   const termsArray = NOTE_TERMS[lang] || NOTE_TERMS.ar;
 
-  if (!baseNote) return;
-
-  // دمج النص مع الترقيم التلقائي (1) (2) (3)...
   const numberedTerms = termsArray.map((term, i) => `(${i + 1}) ${term}`).join('\n');
   const finalText = `${baseNote} — ${shipText}\n\n${numberedTerms}`;
 
   const el = document.getElementById('invNotes');
   if (el) {
     el.value = finalText;
-    
-    // حفظ رقم الملاحظة للترجمة لاحقاً
     el.dataset.templateIdx = idx;
     el.dataset.templateOpt = sOpt;
     
-    // تمدد الحقل تلقائياً ليناسب المحتوى
     el.style.height = 'auto';
     el.style.height = (el.scrollHeight + 2) + 'px';
     
-    // تأثير بصري عند التطبيق
     el.style.transition  = 'border-color .2s, box-shadow .2s';
     el.style.borderColor = 'var(--gold)';
     el.style.boxShadow   = '0 0 0 3px rgba(200,169,110,.2)';
-    setTimeout(() => {
-      el.style.borderColor = '';
-      el.style.boxShadow   = '';
-    }, 900);
+    setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 900);
   }
 
-  // تغيير نص القائمة إلى "تم الاختيار"
   const selectEl = document.getElementById('noteTemplateSelect');
   const defaultOpt = document.getElementById('noteSelectDefault');
   if (selectEl && defaultOpt) {
-    const successMsgs = {
-      ar: '✅ تم اختيار الشروط',
-      tr: '✅ Şartlar seçildi',
-      en: '✅ Terms selected'
-    };
+    const successMsgs = { ar: '✅ تم اختيار الشروط', tr: '✅ Şartlar seçildi', en: '✅ Terms selected' };
     defaultOpt.textContent = successMsgs[lang] || successMsgs.en;
     selectEl.value = '';
   }
 
-  // إظهار الإشعار فقط إذا لم يكن التحديث صامتاً (بسبب تغيير اللغة)
   if (!silent) {
-    const toastMsgs = {
-      ar: `📝 تم تطبيق شروط التسليم والبيع`,
-      tr: `📝 Teslimat şartları uygulandı`,
-      en: `📝 Delivery terms applied`,
-    };
+    const toastMsgs = { ar: `📝 تم تحديث الشروط والتاريخ`, tr: `📝 Şartlar ve tarih güncellendi`, en: `📝 Terms & date updated` };
     showToast(toastMsgs[lang] || toastMsgs.en, 'ok');
   }
+}
+
+/* ── تحديث النص تلقائياً عند تغيير المستخدم للتاريخ يدوياً ── */
+function onLoadDateChange() {
+  const loadDateVal = document.getElementById('invLoadDate').value;
+  const regDateVal = document.getElementById('invRegDate').value;
+  if (!loadDateVal) return;
+
+  // حساب الفرق بالأيام
+  const loadDate = new Date(loadDateVal);
+  const regDate = regDateVal ? new Date(regDateVal) : new Date();
+  
+  // تصفير الساعات لضمان دقة الحساب
+  loadDate.setHours(0,0,0,0);
+  regDate.setHours(0,0,0,0);
+
+  const diffTime = loadDate - regDate;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const days = Math.max(0, diffDays); // لا نقبل أيام بالسالب
+
+  const notesEl = document.getElementById('invNotes');
+  if (!notesEl || !notesEl.value) return;
+
+  const lang = S.lang || 'ar';
+  const newDeliveryText = getDynamicDeliveryText(days, lang);
+
+  // استبدال الجملة القديمة (مهما كان عدد الأيام فيها) بالجملة الجديدة باستخدام Regex
+  let text = notesEl.value;
+  text = text.replace(/(التسليم بعد \d+ يوماً من استلام الدفعة المقدمة|تسليم فوري)/g, newDeliveryText);
+  text = text.replace(/(Depozito alındıktan \d+ gün sonra teslimat|Hemen Teslim)/g, newDeliveryText);
+  text = text.replace(/(Delivery \d+ days after receiving the deposit|Immediate Delivery)/g, newDeliveryText);
+
+  notesEl.value = text;
+  
+  // تمدد الحقل
+  notesEl.style.height = 'auto';
+  notesEl.style.height = (notesEl.scrollHeight + 2) + 'px';
+
+  // تغيير نص القائمة ليدل على أنه تم تخصيص التاريخ
+  const defaultOpt = document.getElementById('noteSelectDefault');
+  if (defaultOpt) {
+    defaultOpt.textContent = { ar: '✏️ تاريخ مخصص', tr: '✏️ Özel Tarih', en: '✏️ Custom Date' }[lang];
+  }
+  delete notesEl.dataset.templateIdx; // إزالة الـ Index لأن النص أصبح مخصصاً
 }
 
 
