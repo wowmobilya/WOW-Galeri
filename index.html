@@ -5041,7 +5041,7 @@ body {
     opacity:0.6;
   "></div>
 
-   <!-- ══ ROW 4: تسعير الفاتورة + ضريبة KDV (تصميم احترافي بعازل) ══ -->
+  <!-- ══ ROW 4: تسعير الفاتورة + ضريبة KDV (تصميم احترافي بعازل) ══ -->
   <style>
     .premium-split-card {
       display: flex;
@@ -5049,7 +5049,7 @@ body {
       border: 1.5px solid var(--border);
       border-radius: var(--r);
       margin-bottom: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      box-shadow: var(--shadow);
       overflow: hidden;
     }
     .premium-split-left, .premium-split-right {
@@ -5058,12 +5058,7 @@ body {
       display: flex;
       flex-direction: column;
       justify-content: center;
-    }
-    .premium-split-left {
-      background: #ffffff;
-    }
-    .premium-split-right {
-      background: rgb(255 255 255);
+      background: transparent; /* 👈 تم إزالة الألوان الثابتة لدعم الوضع الليلي */
     }
     .premium-divider {
       width: 2px;
@@ -5113,12 +5108,9 @@ body {
       <label class="fl" style="margin-bottom: 12px; font-size: 14px;">
         🏛️ <span data-i18n="kdv_title">ضريبة KDV</span>
       </label>
+      <!-- 👈 تم استخدام متغيرات النظام بدلاً من الألوان الثابتة -->
       <div class="kdv-toggle-row" id="kdvToggleRow" style="
         margin: 0; 
-        padding: 12px 16px; 
-        background:#f8fafc; 
-        border: 1.5px solid #e3e8ef; 
-        border-radius: var(--rs);
         box-shadow: 0 4px 12px rgba(200,169,110,0.15);
       ">
         <div class="kdv-toggle-info">
@@ -5136,6 +5128,7 @@ body {
     </div>
 
   </div>
+
 
   <!-- ✦ فاصل عصري ✦ -->
   <div style="
