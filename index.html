@@ -5141,6 +5141,36 @@ body {
     opacity:0.6;
   "></div>
 
+
+
+  <!-- ══ ROW 5: طريقة الدفع ══ -->
+  <div style="margin-bottom:14px;">
+    <div class="fg">
+      <label class="fl">💳 <span id="lbl_payMethod" data-i18n="pay_method_title">طريقة الدفع</span></label>
+      <select class="fc" id="invPayMethodSelect" onchange="S.invPayMethod=this.value" style="cursor:pointer;">
+        <option value="cash" id="pmOpt_cash">💵 نقداً</option>
+        <option value="bank_transfer" id="pmOpt_bank">🏦 تحويل بنكي</option>
+        <option value="credit_card" id="pmOpt_card">💳 بطاقة ائتمان</option>
+        <option value="check" id="pmOpt_check">📝 شيك</option>
+        <option value="installment" id="pmOpt_install">📅 أقساط</option>
+        <option value="western_union" id="pmOpt_wu">🌐 Western Union</option>
+        <option value="letter_credit" id="pmOpt_lc">📜 اعتماد مستندي</option>
+        <option value="deferred" id="pmOpt_defer">⏳ آجل</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ✦ فاصل عصري ✦ -->
+  <div style="
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--border), var(--gold), var(--border), transparent);
+    margin:0 0 14px;
+    opacity:0.6;
+  "></div>
+
+
+
+    
    <!-- ══ NOTES SECTION ══ -->
   <div style="margin-bottom:4px;">
     <label class="fl" style="margin-bottom:8px;">
@@ -5162,56 +5192,12 @@ body {
 </div>
   </div>
 
-      <!-- STEP 2: Payment Method (تم إعادة الترقيم) -->
-      <div class="inv-step">
-        <div class="inv-step-hdr" onclick="toggleStep('step3')">
-          <div class="inv-step-num">2</div>
-          <div class="inv-step-title" data-i18n="pay_method_title">طريقة الدفع</div>
-          <span id="step3Badge" class="inv-step-badge">💵</span>
-          <span id="step3Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
-        </div>
-        <div class="inv-step-body" id="step3Body">
-          <div class="pay-method-grid" id="payMethodGrid">
-            <div class="pay-method-card sel" data-pm="cash" onclick="selPayMethod('cash',this)">
-              <div class="pay-method-icon">💵</div>
-              <div class="pay-method-lbl" data-i18n="pm_cash">نقداً</div>
-            </div>
-            <div class="pay-method-card" data-pm="bank_transfer" onclick="selPayMethod('bank_transfer',this)">
-              <div class="pay-method-icon">🏦</div>
-              <div class="pay-method-lbl" data-i18n="pm_bank">تحويل بنكي</div>
-            </div>
-            <div class="pay-method-card" data-pm="credit_card" onclick="selPayMethod('credit_card',this)">
-              <div class="pay-method-icon">💳</div>
-              <div class="pay-method-lbl" data-i18n="pm_card">بطاقة ائتمان</div>
-            </div>
-            <div class="pay-method-card" data-pm="check" onclick="selPayMethod('check',this)">
-              <div class="pay-method-icon">📝</div>
-              <div class="pay-method-lbl" data-i18n="pm_check">شيك</div>
-            </div>
-            <div class="pay-method-card" data-pm="installment" onclick="selPayMethod('installment',this)">
-              <div class="pay-method-icon">📅</div>
-              <div class="pay-method-lbl" data-i18n="pm_install">أقساط</div>
-            </div>
-            <div class="pay-method-card" data-pm="western_union" onclick="selPayMethod('western_union',this)">
-              <div class="pay-method-icon">🌐</div>
-              <div class="pay-method-lbl" data-i18n="pm_wu">Western Union</div>
-            </div>
-            <div class="pay-method-card" data-pm="letter_credit" onclick="selPayMethod('letter_credit',this)">
-              <div class="pay-method-icon">📜</div>
-              <div class="pay-method-lbl" data-i18n="pm_lc">اعتماد مستندي</div>
-            </div>
-            <div class="pay-method-card" data-pm="deferred" onclick="selPayMethod('deferred',this)">
-              <div class="pay-method-icon">⏳</div>
-              <div class="pay-method-lbl" data-i18n="pm_defer">آجل</div>
-            </div>
-          </div>
-        </div>
-      </div>
+   
 
       <!-- STEP 3: Products (تم إعادة الترقيم) -->
       <div class="inv-step">
         <div class="inv-step-hdr" onclick="toggleStep('step5')">
-          <div class="inv-step-num">3</div>
+          <div class="inv-step-num">2</div>
           <div class="inv-step-title" data-i18n="add_items">إضافة قطع</div>
           <span id="step5Badge" class="inv-step-badge">0 قطعة</span>
           <span id="step5Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
@@ -5228,7 +5214,7 @@ body {
       <!-- STEP 4: Items Table (تم إعادة الترقيم) -->
       <div class="inv-step" id="invItemsCard" style="display:none;">
         <div class="inv-step-hdr" onclick="toggleStep('step6')">
-          <div class="inv-step-num">4</div>
+          <div class="inv-step-num">3</div>
           <div class="inv-step-title" data-i18n="inv_items">قطع الفاتورة</div>
           <span id="step6Badge" class="inv-step-badge" id="invItemsBadge">0</span>
           <span id="step6Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
@@ -10406,8 +10392,9 @@ function initCreateInv(){
 
   selInvType(S.invType||'external');
   selInvTier(S.invTier||'A',null);
-  document.querySelectorAll('.pay-method-card').forEach(c=>c.classList.toggle('sel',c.dataset.pm==='cash'));
-  S.invPayMethod='cash';
+S.invPayMethod = 'cash';
+  const pmSel = document.getElementById('invPayMethodSelect');
+  if (pmSel) pmSel.value = 'cash';  S.invPayMethod='cash';
   const ldEl=document.getElementById('invLoadDate');
   if(ldEl&&!ldEl.value)ldEl.value=new Date().toISOString().split('T')[0];
   
@@ -11522,8 +11509,8 @@ function editInv(id){
     sv('invCurrency',inv.currency||'USD');
     onCoSelect();onCurrencyChange();
     selInvTier(inv.tier||'A',null);
-    document.querySelectorAll('.pay-method-card').forEach(c=>c.classList.toggle('sel',c.dataset.pm===inv.payMethod));
-    document.getElementById('kdvToggle').checked=S.kdvEnabled;
+const pmSel = document.getElementById('invPayMethodSelect');
+    if (pmSel) pmSel.value = inv.payMethod || 'cash';    document.getElementById('kdvToggle').checked=S.kdvEnabled;
     document.getElementById('kdvToggleRow').classList.toggle('active',S.kdvEnabled);
     document.getElementById('sumKdvRow').style.display=S.kdvEnabled?'flex':'none';
     const editBtn=document.getElementById('editInvBtn');if(editBtn)editBtn.style.display='inline-flex';
@@ -15404,8 +15391,6 @@ const STEP1_TEXTS = {
 };
 
 
-/* ── تحديث كل نصوص الخطوة 1 دفعة واحدة ── */
-/* ── تحديث كل نصوص الخطوة 1 دفعة واحدة ── */
 function updateStep1Texts() {
   const lang = S.lang || 'ar';
   const L    = STEP1_TEXTS[lang] || STEP1_TEXTS.ar;
@@ -15479,7 +15464,7 @@ function updateStep1Texts() {
   /* ✅ 4 — تحديث شارة وضع التسليم */
   updateDeliveryModeUI();
 
-    /* ✅ 5 — تحديث لغة الشروط مع الحفاظ على الأيام المخصصة والشحن */
+  /* ✅ 5 — تحديث لغة الشروط مع الحفاظ على الأيام المخصصة والشحن */
   const notesEl = document.getElementById('invNotes');
   if (notesEl && notesEl.dataset.customDays !== undefined) {
     const days = parseInt(notesEl.dataset.customDays);
@@ -15497,7 +15482,28 @@ function updateStep1Texts() {
     notesEl.style.height = (notesEl.scrollHeight + 2) + 'px';
   }
 
-} // ✅ تم إزالة القوس الزائد من هنا ليعمل الكود بشكل سليم
+  /* ✅ 6 — التعديل الجديد: تحديث نصوص قائمة طريقة الدفع المنسدلة */
+  const pmLabels = {
+    ar: { cash:'💵 نقداً', bank:'🏦 تحويل بنكي', card:'💳 بطاقة ائتمان', check:'📝 شيك', install:'📅 أقساط', wu:'🌐 ويسترن يونيون', lc:'📜 اعتماد مستندي', defer:'⏳ آجل' },
+    tr: { cash:'💵 Nakit', bank:'🏦 Banka Transferi', card:'💳 Kredi Kartı', check:'📝 Çek', install:'📅 Taksit', wu:'🌐 Western Union', lc:'📜 Akreditif', defer:'⏳ Vadeli' },
+    en: { cash:'💵 Cash', bank:'🏦 Bank Transfer', card:'💳 Credit Card', check:'📝 Check', install:'📅 Installment', wu:'🌐 Western Union', lc:'📜 Letter of Credit', defer:'⏳ Deferred' }
+  };
+  const pms = pmLabels[lang] || pmLabels.en;
+  
+  const setOpt = (id, txt) => { const el = document.getElementById(id); if(el) el.textContent = txt; };
+  setOpt('pmOpt_cash', pms.cash);
+  setOpt('pmOpt_bank', pms.bank);
+  setOpt('pmOpt_card', pms.card);
+  setOpt('pmOpt_check', pms.check);
+  setOpt('pmOpt_install', pms.install);
+  setOpt('pmOpt_wu', pms.wu);
+  setOpt('pmOpt_lc', pms.lc);
+  setOpt('pmOpt_defer', pms.defer);
+  
+  // مزامنة القيمة الحالية
+  const pmSel = document.getElementById('invPayMethodSelect');
+  if(pmSel) pmSel.value = S.invPayMethod || 'cash';
+}
 
 
 /* ── اختيار خيار الشحن ── */
