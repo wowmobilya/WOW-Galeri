@@ -4036,112 +4036,92 @@ body {
 
 
 /* ============================================================
-   SMART IMAGE VIEWER MODAL (تصميم زجاجي عصري وذكي لجميع الشاشات)
+   ULTIMATE IMAGE VIEWER MODAL (مقاوم للصور العملاقة)
 ============================================================ */
 #imgViewerModal {
   position: fixed;
   inset: 0;
-  z-index: 999999; /* ليكون فوق كل شيء */
-  background: rgba(10, 15, 30, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+  z-index: 9999999 !important; /* لضمان ظهوره فوق كل شيء */
+  background: rgba(10, 15, 30, 0.92);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.3s ease;
 }
 #imgViewerModal.open {
   opacity: 1;
   pointer-events: all;
 }
 
-/* الحاوية الذكية للصورة */
+/* الحاوية تجبر الصورة على البقاء داخل الشاشة */
 .img-viewer-content {
-  position: relative;
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* 👈 تقييد الحجم الأقصى لضمان عدم الخروج عن الشاشة في الكمبيوتر */
-  width: 100%;
-  height: 100%;
-  max-width: 90vw;
-  max-height: 90vh;
-  transform: scale(0.9) translateY(20px);
-  opacity: 0;
-  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  padding: 80px 20px 20px 20px; /* مساحة 80 بكسل من الأعلى لحماية زر الإغلاق */
 }
-#imgViewerModal.open .img-viewer-content {
-  transform: scale(1) translateY(0);
+
+/* تقييد صارم للصورة */
+.img-viewer-content img {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  transform: scale(0.85);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none; /* لمنع سحب الصورة */
+}
+#imgViewerModal.open .img-viewer-content img {
+  transform: scale(1);
   opacity: 1;
 }
 
-/* الصورة تتكيف بذكاء مع أي شاشة */
-.img-viewer-content img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain; /* 👈 يحافظ على أبعاد الصورة بدون تشويه */
-  border-radius: 12px;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
-  border: 1px solid rgba(255,255,255,0.1);
-  user-select: none;
-  pointer-events: none; /* لمنع سحب الصورة بالخطأ */
-}
-
-/* زر الإغلاق الزجاجي العائم */
+/* زر الإغلاق الزجاجي */
 .img-viewer-close-glass {
-  position: fixed; /* 👈 تم التعديل إلى fixed ليبقى دائماً في زاوية الشاشة */
-  top: 24px;
-  right: 24px;
-  width: 44px;
-  height: 44px;
+  position: absolute;
+  top: 20px;
+  left: 20px; /* في الواجهة العربية (RTL) الأفضل أن يكون يساراً */
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 9999999; /* 👈 ليكون فوق الصورة دائماً */
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  transition: all 0.25s ease;
 }
-.img-viewer-close-glass svg {
-  width: 20px;
-  height: 20px;
-  transition: transform 0.3s ease;
+/* للواجهة الإنجليزية/التركية ينتقل لليمين */
+[dir="ltr"] .img-viewer-close-glass {
+  left: auto;
+  right: 20px;
 }
+
 .img-viewer-close-glass:hover {
-  background: rgba(229, 62, 62, 0.85); /* أحمر أنيق عند التمرير */
-  border-color: rgba(229, 62, 62, 1);
-  transform: scale(1.1);
-}
-.img-viewer-close-glass:hover svg {
-  transform: rotate(90deg);
+  background: #e53e3e;
+  border-color: #e53e3e;
+  transform: scale(1.1) rotate(90deg);
 }
 .img-viewer-close-glass:active {
   transform: scale(0.95);
 }
-
-/* استجابة ذكية للهواتف والتابليت */
-@media (max-width: 768px) {
-  .img-viewer-content {
-    max-width: 95vw;
-    max-height: 85vh;
-  }
-  .img-viewer-close-glass {
-    top: 16px;
-    right: 16px;
-    width: 40px;
-    height: 40px;
-  }
+.img-viewer-close-glass svg {
+  width: 24px;
+  height: 24px;
 }
 
 
