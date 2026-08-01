@@ -3951,58 +3951,79 @@ body {
 
 
 /* ============================================================
-   TOP SHARE DROPDOWN - COMPLETE FIX
+   SHARE DROPDOWN — FIXED POSITION (يعمل على الكمبيوتر والهاتف)
 ============================================================ */
 .share-dropdown-wrap {
   position: relative !important;
-  z-index: 9999 !important;
-  /* ✅ المفتاح: السماح للمحتوى بالخروج من الحاوية */
   overflow: visible !important;
+  z-index: auto !important;
 }
 
 #shareDropdownMenu.share-dropdown-menu {
-  position: fixed !important;   /* ← تغيير absolute إلى fixed */
+  /* ✅ fixed بدلاً من absolute — يتجاوز كل overflow:hidden */
+  position: fixed !important;
+  
   background: var(--card) !important;
   border: 1.5px solid var(--gold, #c8a96e) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.25) !important;
-  min-width: 200px !important;
+  border-radius: 14px !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.18), 0 4px 16px rgba(200,169,110,0.15) !important;
+  min-width: 210px !important;
+  
   display: flex !important;
   flex-direction: column !important;
-  padding: 6px !important;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-8px);
-  transition: all 0.2s ease !important;
+  gap: 2px !important;
+  padding: 8px !important;
+  
+  /* الإخفاء الافتراضي */
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(-10px) scale(0.97) !important;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s !important;
+  
   z-index: 999999 !important;
+  pointer-events: none !important;
 }
 
+/* حالة الظهور */
 #shareDropdownMenu.share-dropdown-menu.show {
   opacity: 1 !important;
   visibility: visible !important;
-  transform: translateY(0) !important;
+  transform: translateY(0) scale(1) !important;
+  pointer-events: all !important;
 }
 
+/* أزرار القائمة */
 #shareDropdownMenu.share-dropdown-menu button {
   background: transparent !important;
   border: none !important;
-  padding: 10px 14px !important;
-  text-align: start !important;
+  padding: 11px 16px !important;
+  text-align: right !important;
   font-size: 13px !important;
   font-weight: 600 !important;
-  color: var(--text, #333) !important;
-  border-radius: 8px !important;
+  color: var(--text, #1a202c) !important;
+  border-radius: 10px !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: 10px !important;
   width: 100% !important;
-  transition: background 0.15s ease !important;
+  font-family: inherit !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+  white-space: nowrap !important;
+  direction: rtl !important;
 }
 
 #shareDropdownMenu.share-dropdown-menu button:hover {
-  background: var(--gold-light, #fdfaf2) !important;
-  color: var(--gold2, #b89656) !important;
+  background: var(--gold-light, #fdf6e8) !important;
+  color: var(--gold2, #a07840) !important;
+}
+
+/* الفاصل داخل القائمة */
+#shareDropdownMenu.share-dropdown-menu hr,
+#shareDropdownMenu.share-dropdown-menu [style*="height:1px"] {
+  border: none !important;
+  border-top: 1px solid var(--border, #e2e8f0) !important;
+  margin: 4px 8px !important;
 }
 
 
@@ -8577,67 +8598,74 @@ function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 
 /* ============================================================
-   SHARE DROPDOWN LOGIC (القائمة المنسدلة للمشاركة)
+   SHARE DROPDOWN — SMART POSITIONING
 ============================================================ */
 window.toggleShareDropdown = function(e) {
   e.preventDefault();
   e.stopPropagation();
 
   const menu = document.getElementById('shareDropdownMenu');
-  const btn  = e.currentTarget || e.target.closest('button');
-  if (!menu || !btn) return;
+  if (!menu) return;
 
-  const isOpen = menu.classList.contains('show');
-
-  if (isOpen) {
+  // إذا كانت مفتوحة → أغلقها
+  if (menu.classList.contains('show')) {
     menu.classList.remove('show');
     return;
   }
 
-  // ✅ حساب موضع الزر وتثبيت القائمة بـ fixed
+  // ── حساب موضع الزر بدقة
+  const btn  = e.currentTarget || e.target.closest('button');
   const rect = btn.getBoundingClientRect();
-  const menuWidth = 210;
 
-  // تحديد الاتجاه (RTL أم LTR)
-  const isRtl = document.documentElement.dir === 'rtl';
+  const menuWidth  = 215;
+  const menuHeight = 260; // تقديري
+  const margin     = 8;
 
-  if (isRtl) {
-    // في RTL: القائمة تبدأ من يمين الزر
-    let left = rect.right - menuWidth;
-    if (left < 8) left = 8;
-    menu.style.left  = left + 'px';
-    menu.style.right = 'auto';
-  } else {
-    // في LTR: القائمة تبدأ من يسار الزر
-    let left = rect.left;
-    if (left + menuWidth > window.innerWidth - 8) {
-      left = window.innerWidth - menuWidth - 8;
-    }
-    menu.style.left  = left + 'px';
-    menu.style.right = 'auto';
+  // ── الموضع العمودي: أسفل الزر
+  let top = rect.bottom + 6;
+
+  // إذا القائمة ستخرج من أسفل الشاشة → اعرضها فوق الزر
+  if (top + menuHeight > window.innerHeight - margin) {
+    top = rect.top - menuHeight - 6;
   }
 
-  // الموضع العمودي: أسفل الزر مباشرة
-  menu.style.top = (rect.bottom + 6) + 'px';
+  // ── الموضع الأفقي: محاذاة مع الزر من اليمين (RTL)
+  let right = window.innerWidth - rect.right;
+
+  // منع الخروج من يسار الشاشة
+  if (rect.right - menuWidth < margin) {
+    right = window.innerWidth - rect.left - menuWidth;
+  }
+
+  // ── تطبيق الموضع
+  menu.style.top   = top + 'px';
+  menu.style.right = right + 'px';
+  menu.style.left  = 'auto';
 
   menu.classList.add('show');
 };
 
-// إغلاق عند النقر خارجاً
+// ── إغلاق عند النقر خارج القائمة
 document.addEventListener('click', function(e) {
   const menu = document.getElementById('shareDropdownMenu');
-  if (menu && menu.classList.contains('show')) {
-    if (!e.target.closest('.share-dropdown-wrap')) {
-      menu.classList.remove('show');
-    }
+  if (!menu || !menu.classList.contains('show')) return;
+  if (!e.target.closest('.share-dropdown-wrap') && 
+      !e.target.closest('#shareDropdownMenu')) {
+    menu.classList.remove('show');
   }
 });
 
-// إغلاق عند التمرير (مهم في الكمبيوتر)
+// ── إغلاق عند التمرير (مهم في الكمبيوتر)
 window.addEventListener('scroll', function() {
   const menu = document.getElementById('shareDropdownMenu');
   if (menu) menu.classList.remove('show');
-}, true);
+}, { passive: true, capture: true });
+
+// ── إغلاق عند تغيير حجم النافذة
+window.addEventListener('resize', function() {
+  const menu = document.getElementById('shareDropdownMenu');
+  if (menu) menu.classList.remove('show');
+});
 
 
    
