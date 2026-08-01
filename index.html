@@ -4030,6 +4030,116 @@ body {
 }
 
 
+
+
+
+
+
+/* ============================================================
+   SMART IMAGE VIEWER MODAL (تصميم زجاجي عصري وذكي)
+============================================================ */
+#imgViewerModal {
+  position: fixed;
+  inset: 0;
+  z-index: 999999; /* ليكون فوق كل شيء */
+  background: rgba(10, 15, 30, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#imgViewerModal.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* الحاوية الذكية للصورة */
+.img-viewer-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 40px 20px; /* مساحة آمنة من الحواف */
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#imgViewerModal.open .img-viewer-content {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* الصورة تتكيف بذكاء مع أي شاشة */
+.img-viewer-content img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.1);
+  user-select: none;
+  pointer-events: none; /* لمنع سحب الصورة */
+}
+
+/* زر الإغلاق الزجاجي العائم */
+.img-viewer-close-glass {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.img-viewer-close-glass svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+.img-viewer-close-glass:hover {
+  background: rgba(229, 62, 62, 0.85); /* أحمر أنيق عند التمرير */
+  border-color: rgba(229, 62, 62, 1);
+  transform: scale(1.1);
+}
+.img-viewer-close-glass:hover svg {
+  transform: rotate(90deg);
+}
+.img-viewer-close-glass:active {
+  transform: scale(0.95);
+}
+
+/* استجابة ذكية للهواتف والتابليت */
+@media (max-width: 768px) {
+  .img-viewer-content {
+    padding: 80px 16px 40px; /* مساحة أكبر من الأعلى للزر في الهواتف */
+  }
+  .img-viewer-close-glass {
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+
    
 
 
@@ -6339,10 +6449,17 @@ body {
 </div>
 
 
-<!-- ========== MODAL: IMAGE VIEWER ========== -->
-<div class="modal-ov" id="imgViewerModal" onclick="closeImgViewer(event)">
+<!-- ========== MODAL: SMART IMAGE VIEWER ========== -->
+<div class="modal-ov" id="imgViewerModal">
+  <!-- زر الإغلاق الزجاجي -->
+  <button class="img-viewer-close-glass" onclick="closeImgViewer()" title="إغلاق (Esc)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </button>
+  
   <div class="img-viewer-content">
-    <button class="img-viewer-close" onclick="closeImgViewer(event)">✕</button>
     <img id="imgViewerSrc" src="" alt="Preview">
   </div>
 </div>
@@ -17090,8 +17207,8 @@ window.addEventListener('resize', closeShareMenu);
 
 
 
-   /* ============================================================
-   IMAGE VIEWER LOGIC
+  /* ============================================================
+   SMART IMAGE VIEWER LOGIC
 ============================================================ */
 function openImgViewer(src) {
   const modal = document.getElementById('imgViewerModal');
@@ -17099,23 +17216,34 @@ function openImgViewer(src) {
   if(modal && img) {
     img.src = src;
     modal.classList.add('open');
+    
+    // تفعيل الاستماع لزر Esc عند فتح الصورة
+    document.addEventListener('keydown', imgViewerEscHandler);
   }
 }
 
-function closeImgViewer(e) {
-  // منع الإغلاق إذا تم النقر على الصورة نفسها (إلا إذا كان زر الإغلاق)
-  if (e && e.target.tagName === 'IMG' && !e.target.classList.contains('img-viewer-close')) return;
-  
+function closeImgViewer() {
   const modal = document.getElementById('imgViewerModal');
   if(modal) {
     modal.classList.remove('open');
-    // تفريغ الصورة بعد انتهاء الأنيميشن لتخفيف الذاكرة
+    
+    // إيقاف الاستماع لزر Esc لتخفيف الضغط على المتصفح
+    document.removeEventListener('keydown', imgViewerEscHandler);
+    
+    // تفريغ الصورة بعد انتهاء تأثير الاختفاء (0.35s)
     setTimeout(() => {
-      document.getElementById('imgViewerSrc').src = '';
-    }, 300); 
+      const img = document.getElementById('imgViewerSrc');
+      if (img) img.src = '';
+    }, 350); 
   }
 }
 
+// دالة التقاط زر Esc
+function imgViewerEscHandler(e) {
+  if (e.key === 'Escape') {
+    closeImgViewer();
+  }
+}
 
 
    
