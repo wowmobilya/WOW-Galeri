@@ -15482,9 +15482,9 @@ function updateStep1Texts() {
     notesEl.style.height = (notesEl.scrollHeight + 2) + 'px';
   }
 
-  /* ✅ 6 — التعديل الجديد: تحديث نصوص قائمة طريقة الدفع المنسدلة */
+  /* ✅ 6 — تحديث نصوص قائمة طريقة الدفع المنسدلة */
   const pmLabels = {
-    ar: { cash:'💵 نقداً', bank:'🏦 تحويل بنكي', card:'💳 بطاقة ائتمان', check:'📝 شيك', install:'📅 أقساط', wu:'🌐 ويسترن يونيون', lc:'📜 اعتماد مستندي', defer:'⏳ آجل' },
+    ar: { cash:'💵 نقداً', bank:'🏦 تحويل بنكي', card:'💳 بطاقة ائتمان', check:'📝 شيك', install:'📅 أقساط', wu:'🌐 Western Union', lc:'📜 اعتماد مستندي', defer:'⏳ آجل' },
     tr: { cash:'💵 Nakit', bank:'🏦 Banka Transferi', card:'💳 Kredi Kartı', check:'📝 Çek', install:'📅 Taksit', wu:'🌐 Western Union', lc:'📜 Akreditif', defer:'⏳ Vadeli' },
     en: { cash:'💵 Cash', bank:'🏦 Bank Transfer', card:'💳 Credit Card', check:'📝 Check', install:'📅 Installment', wu:'🌐 Western Union', lc:'📜 Letter of Credit', defer:'⏳ Deferred' }
   };
@@ -15500,10 +15500,32 @@ function updateStep1Texts() {
   setOpt('pmOpt_lc', pms.lc);
   setOpt('pmOpt_defer', pms.defer);
   
-  // مزامنة القيمة الحالية
   const pmSel = document.getElementById('invPayMethodSelect');
   if(pmSel) pmSel.value = S.invPayMethod || 'cash';
+
+  /* ✅ 7 — التعديل الجديد: تحديث شارة نوع الفاتورة (خارجي/داخلي) بـ 3 لغات */
+  const currentTp = S.invType || 'external';
+  const trLang = TR[lang] || TR.en;
+  
+  // شارة تفاصيل الفاتورة (مع الإيموجي)
+  const typeLabelsWithIcon = {
+    external: '🌍 ' + (trLang.t_ext || 'External'),
+    internal_retail: '🏠 ' + (trLang.t_int_retail || 'Internal Retail'),
+    internal_wholesale: '📦 ' + (trLang.t_int_whl || 'Internal Wholesale')
+  };
+  const invTypeLabelEl = document.getElementById('invTypeLabel');
+  if (invTypeLabelEl) invTypeLabelEl.textContent = typeLabelsWithIcon[currentTp];
+
+  // شارة الشريط العلوي (بدون إيموجي لأن الإيموجي ثابت في HTML)
+  const typeLabelsTextOnly = {
+    external: (trLang.t_ext || 'External'),
+    internal_retail: (trLang.t_int_retail || 'Internal Retail'),
+    internal_wholesale: (trLang.t_int_whl || 'Internal Wholesale')
+  };
+  const invTypeChipTxt = document.getElementById('invTypeChipTxt');
+  if (invTypeChipTxt) invTypeChipTxt.textContent = typeLabelsTextOnly[currentTp];
 }
+
 
 
 /* ── اختيار خيار الشحن ── */
