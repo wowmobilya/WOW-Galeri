@@ -3955,6 +3955,7 @@ body {
 ============================================================ */
 .share-dropdown-wrap {
   position: relative;
+  z-index: 9999; /* 👈 لضمان ظهورها فوق ملخص الفاتورة وأي عنصر آخر */
 }
 
 .share-dropdown-menu {
@@ -3972,17 +3973,27 @@ body {
   visibility: hidden;
   transform: translateY(-10px);
   transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
-  z-index: 2000;
+  z-index: 9999;
 }
 
 /* ضبط الاتجاه حسب لغة الواجهة */
 [dir="rtl"] .share-dropdown-menu { left: 0; right: auto; }
 [dir="ltr"] .share-dropdown-menu { right: 0; left: auto; }
 
+/* إظهار القائمة عند النقر (للهواتف) */
 .share-dropdown-menu.show {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+}
+
+/* 👈 التعديل الجديد: إظهار القائمة عند تمرير الماوس في شاشات الكمبيوتر */
+@media (min-width: 1025px) {
+  .share-dropdown-wrap:hover .share-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
 }
 
 .share-dropdown-menu button {
@@ -4006,8 +4017,6 @@ body {
   background: var(--gold-light);
   color: var(--gold2);
 }
-
-
 
    
 
@@ -8582,7 +8591,10 @@ function closeModal(id){document.getElementById(id).classList.remove('open')}
    SHARE DROPDOWN LOGIC (القائمة المنسدلة للمشاركة)
 ============================================================ */
 function toggleShareDropdown(e) {
-  e.stopPropagation(); // يمنع انتقال النقرة للعناصر الأخرى
+  if (e) {
+    e.preventDefault();  // يمنع أي تحديث للصفحة
+    e.stopPropagation(); // يمنع تداخل النقرات
+  }
   const menu = document.getElementById('shareDropdownMenu');
   if (menu) {
     menu.classList.toggle('show');
@@ -8593,7 +8605,6 @@ function toggleShareDropdown(e) {
 document.addEventListener('click', function(e) {
   const menu = document.getElementById('shareDropdownMenu');
   if (menu && menu.classList.contains('show')) {
-    // إذا لم يكن النقر داخل زر المشاركة أو القائمة نفسها
     if (!e.target.closest('.share-dropdown-wrap')) {
       menu.classList.remove('show');
     }
