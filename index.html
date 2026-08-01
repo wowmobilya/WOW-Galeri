@@ -5427,104 +5427,6 @@ body {
         </div>
       </div>
 
-
-<!-- ══ SUMMARY INLINE — داخل قطع الفاتورة ══ -->
-<div class="inv-step" id="invSummaryInlineCard" style="display:none;">
-  <div class="inv-step-hdr" onclick="toggleStep('stepSummary')">
-    <div class="inv-step-num">4</div>
-    <div class="inv-step-title" id="stepSummaryTitle">ملخص الفاتورة</div>
-    <span id="stepSummaryArrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
-  </div>
-  <div class="inv-step-body" id="stepSummaryBody">
-
-    <div class="inv-summary" style="position:static;margin-top:0;box-shadow:none;border:none;padding:0;">
-
-      <!-- شارة العملة -->
-      <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;margin-bottom:14px;
-                  background:var(--input);border:1px solid var(--border);border-radius:10px;"
-           id="sumCurrencyBadge2">
-        <span id="sumCurrencyIcon2" style="font-size:16px;">💵</span>
-        <div style="flex:1;min-width:0;">
-          <div id="sumCurrencyName2" style="font-size:11px;font-weight:800;color:var(--text);line-height:1.2;">USD — Dollar</div>
-          <div id="sumRateInfo2" style="font-size:9px;color:var(--muted);margin-top:1px;">1 USD = ₺47.17</div>
-        </div>
-        <div id="sumInvoiceLabel2" style="font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;">INVOICE</div>
-      </div>
-
-      <!-- SUMMARY -->
-      <div style="font-size:9px;font-weight:800;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px;">SUMMARY</div>
-      <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;">
-
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-bottom:1px solid var(--border);">
-          <span style="font-size:11px;color:var(--text2);" data-i18n="sum_subtotal">Subtotal</span>
-          <span id="sumSubtotal2" style="font-size:12px;font-weight:700;color:var(--text);">$0.00</span>
-        </div>
-
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 12px;border-bottom:1px solid var(--border);">
-          <span style="font-size:11px;color:var(--text2);" data-i18n="sum_deposit">Deposit</span>
-          <span id="sumDeposit2" style="font-size:12px;font-weight:700;color:var(--text);">$0.00</span>
-        </div>
-
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 12px;border-bottom:1px solid var(--border);">
-          <span style="font-size:11px;color:var(--text2);" data-i18n="sum_discount">Discount</span>
-          <span id="sumDiscount2" style="font-size:12px;font-weight:700;color:var(--text);">$0.00</span>
-        </div>
-
-        <div id="sumKdvRow2" style="display:none;justify-content:space-between;align-items:center;padding:9px 12px;border-bottom:1px solid var(--border);">
-          <span style="font-size:11px;color:var(--text2);">KDV <span style="font-size:9px;color:var(--muted);">(<span id="sumKdvPct2">20</span>%)</span></span>
-          <span id="sumKdvAmt2" style="font-size:12px;font-weight:700;color:var(--text);">$0.00</span>
-        </div>
-
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 12px;background:var(--gold-light);">
-          <span style="font-size:12px;font-weight:800;color:var(--gold2);" data-i18n="sum_grand_total">Grand Total</span>
-          <span id="sumTotal2" style="font-size:16px;font-weight:900;color:var(--gold2);">$0.00</span>
-        </div>
-      </div>
-
-      <!-- PAYMENTS -->
-      <div style="font-size:9px;font-weight:800;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px;">PAYMENTS</div>
-      <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-bottom:1px solid var(--border);">
-          <span style="font-size:11px;color:var(--text2);" data-i18n="sum_total_paid">Total Paid</span>
-          <span id="sumTotalPaid2" style="font-size:12px;font-weight:700;color:var(--text);">$0.00</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 12px;background:var(--input);">
-          <span style="font-size:12px;font-weight:700;color:var(--text);" data-i18n="sum_balance_due">Balance Due</span>
-          <span id="sumRemaining2" style="font-size:15px;font-weight:900;color:var(--text);">$0.00</span>
-        </div>
-      </div>
-
-      <!-- EQUIVALENTS -->
-      <div style="font-size:9px;font-weight:800;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px;">EQUIVALENTS</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;">
-        <div style="border:1px solid var(--border);border-radius:8px;padding:8px 10px;text-align:center;background:var(--input);">
-          <div id="sumEquivLbl1b" style="font-size:8px;color:var(--muted);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px;">TRY</div>
-          <div id="sumEquivVal1b" style="font-size:12px;font-weight:800;color:var(--text);">₺0.00</div>
-        </div>
-        <div style="border:1px solid var(--border);border-radius:8px;padding:8px 10px;text-align:center;background:var(--input);">
-          <div id="sumEquivLbl2b" style="font-size:8px;color:var(--muted);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px;">EUR</div>
-          <div id="sumEquivVal2b" style="font-size:12px;font-weight:800;color:var(--text);">€0.00</div>
-        </div>
-      </div>
-
-      <!-- SHIPPING -->
-      <div style="font-size:9px;font-weight:800;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px;">SHIPPING</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px;">
-        <div style="border:1px solid var(--border);border-radius:8px;padding:8px 10px;text-align:center;background:var(--input);">
-          <div style="font-size:8px;color:var(--muted);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px;">CBM</div>
-          <div id="sumCBM2" style="font-size:12px;font-weight:800;color:var(--text);">0.0000</div>
-        </div>
-        <div style="border:1px solid var(--border);border-radius:8px;padding:8px 10px;text-align:center;background:var(--input);">
-          <div style="font-size:8px;color:var(--muted);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px;">PKTS</div>
-          <div id="sumPackets2" style="font-size:12px;font-weight:800;color:var(--text);">0</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-       
     </div><!-- end left column -->
 
 
@@ -5532,7 +5434,231 @@ body {
     <!-- RIGHT COLUMN — SUMMARY -->
     <div>
 
- 
+   <div class="inv-summary">
+
+  <!-- ══ شارة العملة ══ -->
+  <div style="
+    display:flex;align-items:center;gap:8px;
+    padding:8px 12px;margin-bottom:14px;
+    background:var(--input);
+    border:1px solid var(--border);
+    border-radius:10px;
+  " id="sumCurrencyBadge">
+    <span id="sumCurrencyIcon" style="font-size:16px;">💵</span>
+    <div style="flex:1;min-width:0;">
+      <div id="sumCurrencyName"
+        style="font-size:11px;font-weight:800;color:var(--text);line-height:1.2;">
+        USD — Dollar
+      </div>
+      <div id="sumRateInfo"
+        style="font-size:9px;color:var(--muted);margin-top:1px;">
+        1 USD = ₺47.17
+      </div>
+    </div>
+    <div id="sumInvoiceLabel"
+      style="font-size:9px;font-weight:700;color:var(--muted);
+             letter-spacing:.5px;text-transform:uppercase;">
+      INVOICE
+    </div>
+  </div>
+
+  <!-- ══ SUMMARY ══ -->
+  <div id="sumSectionLabel"
+    style="font-size:9px;font-weight:800;color:var(--muted);
+           letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px;">
+    SUMMARY
+  </div>
+
+  <div style="border:1px solid var(--border);border-radius:10px;
+              overflow:hidden;margin-bottom:12px;">
+
+    <!-- 1. المجموع الفرعي -->
+    <div style="display:flex;justify-content:space-between;align-items:center;
+                padding:9px 12px;border-bottom:1px solid var(--border);">
+      <span style="font-size:11px;color:var(--text2);"
+            data-i18n="sum_subtotal">Subtotal</span>
+      <span id="sumSubtotal"
+            style="font-size:12px;font-weight:700;color:var(--text);">
+        $0.00
+      </span>
+    </div>
+
+    <!-- 2. العربون -->
+    <div style="display:flex;justify-content:space-between;align-items:center;
+                padding:7px 12px;border-bottom:1px solid var(--border);">
+      <span style="font-size:11px;color:var(--text2);"
+            data-i18n="sum_deposit">Deposit</span>
+      <input type="number" id="sumDeposit" value="0" min="0"
+        oninput="updateSummary()"
+        style="width:80px;text-align:right;padding:4px 8px;
+               border:1px solid var(--border);border-radius:6px;
+               background:var(--input);color:var(--text);
+               font-size:12px;font-weight:600;font-family:inherit;outline:none;
+               transition:border-color .2s;"
+        onfocus="this.style.borderColor='var(--gold)'"
+        onblur="this.style.borderColor='var(--border)'">
+    </div>
+
+    <!-- 3. الخصم -->
+    <div style="display:flex;justify-content:space-between;align-items:center;
+                padding:7px 12px;border-bottom:1px solid var(--border);">
+      <span style="font-size:11px;color:var(--text2);"
+            data-i18n="sum_discount">Discount</span>
+      <input type="number" id="sumDiscount" value="0" min="0"
+        oninput="updateSummary()"
+        style="width:80px;text-align:right;padding:4px 8px;
+               border:1px solid var(--border);border-radius:6px;
+               background:var(--input);color:var(--text);
+               font-size:12px;font-weight:600;font-family:inherit;outline:none;
+               transition:border-color .2s;"
+        onfocus="this.style.borderColor='var(--gold)'"
+        onblur="this.style.borderColor='var(--border)'">
+    </div>
+
+    <!-- 4. KDV -->
+    <div id="sumKdvRow"
+      style="display:none;justify-content:space-between;align-items:center;
+             padding:9px 12px;border-bottom:1px solid var(--border);">
+      <span style="font-size:11px;color:var(--text2);">
+        KDV
+        <span style="font-size:9px;color:var(--muted);">
+          (<span id="sumKdvPct">20</span>%)
+        </span>
+      </span>
+      <span id="sumKdvAmt"
+            style="font-size:12px;font-weight:700;color:var(--text);">
+        $0.00
+      </span>
+    </div>
+
+    <!-- 5. المجموع النهائي -->
+    <div style="display:flex;justify-content:space-between;align-items:center;
+                padding:11px 12px;background:var(--gold-light);">
+      <span style="font-size:12px;font-weight:800;color:var(--gold2);"
+            data-i18n="sum_grand_total">Grand Total</span>
+      <span id="sumTotal"
+            style="font-size:16px;font-weight:900;color:var(--gold2);">
+        $0.00
+      </span>
+    </div>
+
+  </div>
+
+  <!-- ══ PAYMENTS ══ -->
+  <div id="sumPaySection"
+    style="font-size:9px;font-weight:800;color:var(--muted);
+           letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px;">
+    PAYMENTS
+  </div>
+
+  <div style="border:1px solid var(--border);border-radius:10px;
+              overflow:hidden;margin-bottom:12px;">
+
+    <!-- إجمالي المدفوع -->
+    <div style="display:flex;justify-content:space-between;align-items:center;
+                padding:9px 12px;border-bottom:1px solid var(--border);">
+      <span style="font-size:11px;color:var(--text2);"
+            data-i18n="sum_total_paid">Total Paid</span>
+      <span id="sumTotalPaid"
+            style="font-size:12px;font-weight:700;color:var(--text);">
+        $0.00
+      </span>
+    </div>
+
+    <!-- المتبقي -->
+    <div style="display:flex;justify-content:space-between;align-items:center;
+                padding:11px 12px;background:var(--input);">
+      <span style="font-size:12px;font-weight:700;color:var(--text);"
+            data-i18n="sum_balance_due">Balance Due</span>
+      <span id="sumRemaining"
+            style="font-size:15px;font-weight:900;color:var(--text);">
+        $0.00
+      </span>
+    </div>
+
+  </div>
+
+
+  <!-- ══ EQUIVALENTS ══ -->
+  <div id="sumEquivSection"
+    style="font-size:9px;font-weight:800;color:var(--muted);
+           letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px;">
+    EQUIVALENTS
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;
+              margin-bottom:12px;">
+
+    <div style="border:1px solid var(--border);border-radius:8px;
+                padding:8px 10px;text-align:center;background:var(--input);">
+      <div id="sumEquivLbl1"
+        style="font-size:8px;color:var(--muted);font-weight:700;
+               letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px;">
+        TRY
+      </div>
+      <div id="sumEquivVal1"
+           style="font-size:12px;font-weight:800;color:var(--text);">
+        ₺0.00
+      </div>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:8px;
+                padding:8px 10px;text-align:center;background:var(--input);">
+      <div id="sumEquivLbl2"
+        style="font-size:8px;color:var(--muted);font-weight:700;
+               letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px;">
+        EUR
+      </div>
+      <div id="sumEquivVal2"
+           style="font-size:12px;font-weight:800;color:var(--text);">
+        €0.00
+      </div>
+    </div>
+
+  </div>
+
+   <!-- ══ SHIPPING ══ -->
+  <div id="sumShipSection"
+    style="font-size:9px;font-weight:800;color:var(--muted);
+           letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px;">
+    SHIPPING
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;
+              margin-bottom:14px;">
+
+    <div style="border:1px solid var(--border);border-radius:8px;
+                padding:8px 10px;text-align:center;background:var(--input);">
+      <div style="font-size:8px;color:var(--muted);font-weight:700;
+                  letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px;">
+        CBM
+      </div>
+      <div id="sumCBM"
+           style="font-size:12px;font-weight:800;color:var(--text);">
+        0.0000
+      </div>
+    </div>
+
+    <div style="border:1px solid var(--border);border-radius:8px;
+                padding:8px 10px;text-align:center;background:var(--input);">
+      <div id="sumPktsLabel"
+        style="font-size:8px;color:var(--muted);font-weight:700;
+               letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px;">
+        PKTS
+      </div>
+      <div id="sumPackets"
+           style="font-size:12px;font-weight:800;color:var(--text);">
+        0
+      </div>
+    </div>
+
+  </div>
+
+</div> <!-- نهاية inv-summary -->
+
+    </div> <!-- نهاية العمود الأيمن -->
+  </div> <!-- نهاية inv-builder -->
+</section> <!-- نهاية صفحة create-invoice -->
 
 
 <!-- ========== PAYMENT MANAGEMENT PAGE — ENHANCED ========== -->
@@ -10719,48 +10845,6 @@ function updateSummary(){
     set('sumEquivLbl1','بالدولار');set('sumEquivLbl2','باليورو');
   }
   const kdvRow=document.getElementById('sumKdvRow');if(kdvRow)kdvRow.style.display=S.kdvEnabled?'flex':'none';
-
-  // ══ مزامنة الملخص الثاني (داخل قطع الفاتورة) ══
-
-  const syncIds = [
-    ['sumSubtotal',      'sumSubtotal2'],
-    ['sumTotal',         'sumTotal2'],
-    ['sumTotalPaid',     'sumTotalPaid2'],
-    ['sumRemaining',     'sumRemaining2'],
-    ['sumKdvAmt',        'sumKdvAmt2'],
-    ['sumCBM',           'sumCBM2'],
-    ['sumPackets',       'sumPackets2'],
-    ['sumEquivVal1',     'sumEquivVal1b'],
-    ['sumEquivVal2',     'sumEquivVal2b'],
-    ['sumEquivLbl1',     'sumEquivLbl1b'],
-    ['sumEquivLbl2',     'sumEquivLbl2b'],
-    ['sumKdvPct',        'sumKdvPct2'],
-    ['sumCurrencyIcon',  'sumCurrencyIcon2'],
-    ['sumCurrencyName',  'sumCurrencyName2'],
-    ['sumRateInfo',      'sumRateInfo2'],
-    ['sumInvoiceLabel',  'sumInvoiceLabel2'],
-  ];
-
-  syncIds.forEach(([src, dst]) => {
-    const s = document.getElementById(src);
-    const d = document.getElementById(dst);
-    if (s && d) d.textContent = s.textContent;
-  });
-
-  // مزامنة قيم الإيداع والخصم كنص
-  const dep2 = document.getElementById('sumDeposit2');
-  if (dep2) dep2.textContent = fmtCurr(depositUSD, cur);
-
-  const dis2 = document.getElementById('sumDiscount2');
-  if (dis2) dis2.textContent = fmtCurr(discountUSD, cur);
-
-  // مزامنة صف KDV في الملخص الثاني
-  const kdvRow2 = document.getElementById('sumKdvRow2');
-  if (kdvRow2) kdvRow2.style.display = S.kdvEnabled ? 'flex' : 'none';
-
-  // إظهار أو إخفاء كارد الملخص الثاني بناءً على وجود قطع
-  const inlineCard = document.getElementById('invSummaryInlineCard');
-  if (inlineCard) inlineCard.style.display = S.invItems.length ? 'block' : 'none';
 }
 
 /* ============================================================
