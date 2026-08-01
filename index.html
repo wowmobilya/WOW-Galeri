@@ -17068,14 +17068,23 @@ function toggleShareMenu(e) {
   
   // ── حساب الموضع من الزر
   const rect = btn.getBoundingClientRect();
+  const menuWidth = 210; // العرض التقريبي للقائمة المنسدلة
+  const margin = 12;     // هامش أمان لمنع الالتصاق بحافة الشاشة
   
   popup.style.display = 'flex';
   popup.style.top     = (rect.bottom + 6) + 'px';
   
-  // محاذاة من اليمين في RTL
-  const rightPos = window.innerWidth - rect.right;
-  popup.style.right = rightPos + 'px';
-  popup.style.left  = 'auto';
+  // ── محاذاة ذكية تمنع خروج القائمة عن الشاشة ──
+  if (rect.right - menuWidth < margin) {
+    // إذا لم تكن هناك مساحة كافية على اليسار، نحاذي القائمة من جهة اليسار
+    popup.style.right = 'auto';
+    popup.style.left  = Math.max(margin, rect.left) + 'px';
+  } else {
+    // الوضع الطبيعي: محاذاة من اليمين (RTL)
+    const rightPos = window.innerWidth - rect.right;
+    popup.style.right = rightPos + 'px';
+    popup.style.left  = 'auto';
+  }
   
   // أنيميشن
   popup.style.opacity   = '0';
@@ -17116,7 +17125,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// إغلاق عند التمرير
+// إغلاق عند التمرير أو تغيير حجم الشاشة
 window.addEventListener('scroll', closeShareMenu, { passive:true, capture:true });
 window.addEventListener('resize', closeShareMenu);
 
