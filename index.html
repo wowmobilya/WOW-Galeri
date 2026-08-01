@@ -3951,54 +3951,45 @@ body {
 
 
 /* ============================================================
-   TOP SHARE DROPDOWN - FORCE STYLES (نسخة مضادة للتعارض)
+   TOP SHARE DROPDOWN - COMPLETE FIX
 ============================================================ */
 .share-dropdown-wrap {
   position: relative !important;
-  z-index: 99999 !important;
+  z-index: 9999 !important;
+  /* ✅ المفتاح: السماح للمحتوى بالخروج من الحاوية */
+  overflow: visible !important;
 }
 
-/* إجبار الحاوية على أن تكون قائمة عمودية مطلقة */
 #shareDropdownMenu.share-dropdown-menu {
-  position: absolute !important;
-  top: calc(100% + 8px) !important;
-  background: #ffffff !important; 
+  position: fixed !important;   /* ← تغيير absolute إلى fixed */
+  background: var(--card) !important;
   border: 1.5px solid var(--gold, #c8a96e) !important;
   border-radius: 12px !important;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.2) !important;
-  min-width: 190px !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25) !important;
+  min-width: 200px !important;
   display: flex !important;
-  flex-direction: column !important; /* 👈 هذا ما سيجعل الأزرار تحت بعضها */
+  flex-direction: column !important;
   padding: 6px !important;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px);
+  transform: translateY(-8px);
   transition: all 0.2s ease !important;
   z-index: 999999 !important;
-  right: 0 !important; 
 }
 
-/* دعم اتجاه اللغة العربية */
-[dir="rtl"] #shareDropdownMenu.share-dropdown-menu {
-  right: auto !important;
-  left: 0 !important;
-}
-
-/* إظهار القائمة عند النقر */
 #shareDropdownMenu.share-dropdown-menu.show {
   opacity: 1 !important;
   visibility: visible !important;
   transform: translateY(0) !important;
 }
 
-/* إجبار الأزرار الداخلية على التخلي عن تصميمها الافتراضي */
 #shareDropdownMenu.share-dropdown-menu button {
   background: transparent !important;
   border: none !important;
-  padding: 10px 12px !important;
+  padding: 10px 14px !important;
   text-align: start !important;
   font-size: 13px !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   color: var(--text, #333) !important;
   border-radius: 8px !important;
   cursor: pointer !important;
@@ -4006,12 +3997,9 @@ body {
   align-items: center !important;
   gap: 8px !important;
   width: 100% !important;
-  margin: 0 !important;
-  box-shadow: none !important; 
-  height: auto !important;
+  transition: background 0.15s ease !important;
 }
 
-/* تأثير تمرير الماوس على الأزرار */
 #shareDropdownMenu.share-dropdown-menu button:hover {
   background: var(--gold-light, #fdfaf2) !important;
   color: var(--gold2, #b89656) !important;
@@ -8592,16 +8580,50 @@ function closeModal(id){document.getElementById(id).classList.remove('open')}
    SHARE DROPDOWN LOGIC (القائمة المنسدلة للمشاركة)
 ============================================================ */
 window.toggleShareDropdown = function(e) {
-  e.preventDefault();  // يمنع أي سلوك افتراضي للزر
-  e.stopPropagation(); // يمنع تداخل النقرات
-  
+  e.preventDefault();
+  e.stopPropagation();
+
   const menu = document.getElementById('shareDropdownMenu');
-  if (menu) {
-    menu.classList.toggle('show');
+  const btn  = e.currentTarget || e.target.closest('button');
+  if (!menu || !btn) return;
+
+  const isOpen = menu.classList.contains('show');
+
+  if (isOpen) {
+    menu.classList.remove('show');
+    return;
   }
+
+  // ✅ حساب موضع الزر وتثبيت القائمة بـ fixed
+  const rect = btn.getBoundingClientRect();
+  const menuWidth = 210;
+
+  // تحديد الاتجاه (RTL أم LTR)
+  const isRtl = document.documentElement.dir === 'rtl';
+
+  if (isRtl) {
+    // في RTL: القائمة تبدأ من يمين الزر
+    let left = rect.right - menuWidth;
+    if (left < 8) left = 8;
+    menu.style.left  = left + 'px';
+    menu.style.right = 'auto';
+  } else {
+    // في LTR: القائمة تبدأ من يسار الزر
+    let left = rect.left;
+    if (left + menuWidth > window.innerWidth - 8) {
+      left = window.innerWidth - menuWidth - 8;
+    }
+    menu.style.left  = left + 'px';
+    menu.style.right = 'auto';
+  }
+
+  // الموضع العمودي: أسفل الزر مباشرة
+  menu.style.top = (rect.bottom + 6) + 'px';
+
+  menu.classList.add('show');
 };
 
-// إغلاق القائمة عند النقر في أي مكان آخر في الصفحة
+// إغلاق عند النقر خارجاً
 document.addEventListener('click', function(e) {
   const menu = document.getElementById('shareDropdownMenu');
   if (menu && menu.classList.contains('show')) {
@@ -8610,6 +8632,12 @@ document.addEventListener('click', function(e) {
     }
   }
 });
+
+// إغلاق عند التمرير (مهم في الكمبيوتر)
+window.addEventListener('scroll', function() {
+  const menu = document.getElementById('shareDropdownMenu');
+  if (menu) menu.classList.remove('show');
+}, true);
 
 
    
