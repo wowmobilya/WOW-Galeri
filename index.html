@@ -3951,64 +3951,72 @@ body {
 
 
 /* ============================================================
-   TOP SHARE DROPDOWN (مربع المشاركة العلوي)
+   TOP SHARE DROPDOWN - FORCE STYLES (نسخة مضادة للتعارض)
 ============================================================ */
 .share-dropdown-wrap {
-  position: relative;
+  position: relative !important;
   z-index: 99999 !important;
 }
 
-.share-dropdown-menu {
-  position: absolute;
-  top: 115%;
-  background: var(--card);
-  border: 1.5px solid var(--gold);
-  border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(0,0,0,.3) !important;
-  min-width: 180px;
-  display: flex;
-  flex-direction: column;
-  padding: 6px;
+/* إجبار الحاوية على أن تكون قائمة عمودية مطلقة */
+#shareDropdownMenu.share-dropdown-menu {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  background: #ffffff !important; 
+  border: 1.5px solid var(--gold, #c8a96e) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.2) !important;
+  min-width: 190px !important;
+  display: flex !important;
+  flex-direction: column !important; /* 👈 هذا ما سيجعل الأزرار تحت بعضها */
+  padding: 6px !important;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
-  transition: all 0.2s ease;
-  z-index: 999999 !important; /* 👈 رقم ضخم لضمان ظهورها فوق كل شيء */
+  transition: all 0.2s ease !important;
+  z-index: 999999 !important;
+  right: 0 !important; 
 }
 
-/* ضبط الاتجاه حسب لغة الواجهة */
-[dir="rtl"] .share-dropdown-menu { left: 0; right: auto; }
-[dir="ltr"] .share-dropdown-menu { right: 0; left: auto; }
+/* دعم اتجاه اللغة العربية */
+[dir="rtl"] #shareDropdownMenu.share-dropdown-menu {
+  right: auto !important;
+  left: 0 !important;
+}
 
 /* إظهار القائمة عند النقر */
-.share-dropdown-menu.show {
+#shareDropdownMenu.share-dropdown-menu.show {
   opacity: 1 !important;
   visibility: visible !important;
   transform: translateY(0) !important;
 }
 
-.share-dropdown-menu button {
-  background: transparent;
-  border: none;
-  padding: 10px 12px;
-  text-align: start;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: inherit;
-  width: 100%; /* 👈 لضمان أن الزر يملأ العرض بالكامل */
+/* إجبار الأزرار الداخلية على التخلي عن تصميمها الافتراضي */
+#shareDropdownMenu.share-dropdown-menu button {
+  background: transparent !important;
+  border: none !important;
+  padding: 10px 12px !important;
+  text-align: start !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: var(--text, #333) !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  box-shadow: none !important; 
+  height: auto !important;
 }
 
-.share-dropdown-menu button:hover {
-  background: var(--gold-light);
-  color: var(--gold2);
+/* تأثير تمرير الماوس على الأزرار */
+#shareDropdownMenu.share-dropdown-menu button:hover {
+  background: var(--gold-light, #fdfaf2) !important;
+  color: var(--gold2, #b89656) !important;
 }
+
 
    
 
