@@ -5469,7 +5469,7 @@ body {
   <div style="border:1px solid var(--border);border-radius:10px;
               overflow:hidden;margin-bottom:12px;">
 
-    <!-- المجموع الفرعي -->
+    <!-- 1. المجموع الفرعي -->
     <div style="display:flex;justify-content:space-between;align-items:center;
                 padding:9px 12px;border-bottom:1px solid var(--border);">
       <span style="font-size:11px;color:var(--text2);"
@@ -5480,7 +5480,23 @@ body {
       </span>
     </div>
 
-    <!-- الخصم -->
+    <!-- 2. العربون -->
+    <div style="display:flex;justify-content:space-between;align-items:center;
+                padding:7px 12px;border-bottom:1px solid var(--border);">
+      <span style="font-size:11px;color:var(--text2);"
+            data-i18n="sum_deposit">Deposit</span>
+      <input type="number" id="sumDeposit" value="0" min="0"
+        oninput="updateSummary()"
+        style="width:80px;text-align:right;padding:4px 8px;
+               border:1px solid var(--border);border-radius:6px;
+               background:var(--input);color:var(--text);
+               font-size:12px;font-weight:600;font-family:inherit;outline:none;
+               transition:border-color .2s;"
+        onfocus="this.style.borderColor='var(--gold)'"
+        onblur="this.style.borderColor='var(--border)'">
+    </div>
+
+    <!-- 3. الخصم -->
     <div style="display:flex;justify-content:space-between;align-items:center;
                 padding:7px 12px;border-bottom:1px solid var(--border);">
       <span style="font-size:11px;color:var(--text2);"
@@ -5496,7 +5512,7 @@ body {
         onblur="this.style.borderColor='var(--border)'">
     </div>
 
-    <!-- KDV -->
+    <!-- 4. KDV -->
     <div id="sumKdvRow"
       style="display:none;justify-content:space-between;align-items:center;
              padding:9px 12px;border-bottom:1px solid var(--border);">
@@ -5512,7 +5528,7 @@ body {
       </span>
     </div>
 
-    <!-- المجموع النهائي -->
+    <!-- 5. المجموع النهائي -->
     <div style="display:flex;justify-content:space-between;align-items:center;
                 padding:11px 12px;background:var(--gold-light);">
       <span style="font-size:12px;font-weight:800;color:var(--gold2);"
@@ -5534,22 +5550,6 @@ body {
 
   <div style="border:1px solid var(--border);border-radius:10px;
               overflow:hidden;margin-bottom:12px;">
-
-    <!-- العربون -->
-    <div style="display:flex;justify-content:space-between;align-items:center;
-                padding:7px 12px;border-bottom:1px solid var(--border);">
-      <span style="font-size:11px;color:var(--text2);"
-            data-i18n="sum_deposit">Deposit</span>
-      <input type="number" id="sumDeposit" value="0" min="0"
-        oninput="updateSummary()"
-        style="width:80px;text-align:right;padding:4px 8px;
-               border:1px solid var(--border);border-radius:6px;
-               background:var(--input);color:var(--text);
-               font-size:12px;font-weight:600;font-family:inherit;outline:none;
-               transition:border-color .2s;"
-        onfocus="this.style.borderColor='var(--gold)'"
-        onblur="this.style.borderColor='var(--border)'">
-    </div>
 
     <!-- إجمالي المدفوع -->
     <div style="display:flex;justify-content:space-between;align-items:center;
@@ -5574,6 +5574,7 @@ body {
     </div>
 
   </div>
+
 
   <!-- ══ EQUIVALENTS ══ -->
   <div id="sumEquivSection"
@@ -12271,16 +12272,17 @@ if (hasConv) {
     <div class="ip-bottom">
       <div class="ip-payment">
         <div class="ip-sec-title">${L.payMethod.toUpperCase()}: ${payMethodLabel}</div>
+        <div class="ip-pay-row"><span>${L.deposit}</span><span style="color:#38a169;">${fmt(inv.depositUSD||0)}</span></div>
         ${inv.discountUSD>0?`<div class="ip-pay-row"><span>${L.discount}</span><span>- ${fmt(inv.discountUSD)}</span></div>`:''}
         ${kdvRow}
         <div class="ip-pay-row bold"><span>${L.grandTotal}</span><span>${fmt(inv.grandTotal||0)}</span></div>
-        <div class="ip-pay-row"><span>${L.deposit}</span><span style="color:#38a169;">${fmt(inv.depositUSD||0)}</span></div>
         <div class="ip-pay-row"><span>${L.paid}</span><span style="color:#38a169;font-weight:700;">${fmt(totalPaid)}</span></div>
         <div class="ip-pay-row" style="background:rgba(229,62,62,.06);padding:5px 6px;border-radius:4px;"><span style="font-weight:700;">${L.remaining}</span><span style="color:#e53e3e;font-weight:800;">${fmt(remaining)}</span></div>
         ${payHistoryHTML}
       </div>
       ${bankHTML}
     </div>
+
     ${notesHTML}
     ${sigHTML}
     <div class="ip-verify">${L.verify} &nbsp;|&nbsp; ${st.phone||''} &nbsp;|&nbsp; ${inv.invNo||'—'}</div>
