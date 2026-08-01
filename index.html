@@ -5613,7 +5613,7 @@ body {
 
   </div>
 
-  <!-- ══ SHIPPING ══ -->
+   <!-- ══ SHIPPING ══ -->
   <div id="sumShipSection"
     style="font-size:9px;font-weight:800;color:var(--muted);
            letter-spacing:1.8px;text-transform:uppercase;margin-bottom:10px;">
@@ -5650,65 +5650,12 @@ body {
 
   </div>
 
-  <!-- ══ فاصل ══ -->
-  <div style="height:1px;background:var(--border);margin-bottom:14px;"></div>
+</div> <!-- نهاية inv-summary -->
 
-  <!-- ══ الأزرار الرئيسية ══ -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;
-              margin-bottom:7px;">
+    </div> <!-- نهاية العمود الأيمن -->
+  </div> <!-- نهاية inv-builder -->
+</section> <!-- نهاية صفحة create-invoice -->
 
-    <!-- معاينة — يمتد عرض كامل -->
-    <button class="btn btn-p" onclick="previewInvoice()"
-      style="grid-column:1/-1;justify-content:center;
-             font-size:12px;padding:11px 8px;border-radius:9px;">
-      👁️ <span data-i18n="sum_btn_preview">Preview</span>
-    </button>
-
-    <button class="btn btn-g" onclick="saveInvoice()"
-      style="justify-content:center;font-size:11px;
-             padding:10px 8px;border-radius:9px;">
-      💾 <span data-i18n="sum_btn_save">Save</span>
-    </button>
-
-    <button class="btn btn-b" onclick="downloadPDF()"
-      style="justify-content:center;font-size:11px;
-             padding:10px 8px;border-radius:9px;">
-      📥 PDF
-    </button>
-
-  </div>
-
-  <!-- ══ أزرار المشاركة ══ -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-
-    <button class="btn btn-s" onclick="shareWA()"
-      style="justify-content:center;flex-direction:column;
-             gap:3px;font-size:10px;padding:8px 4px;border-radius:9px;">
-      <span style="font-size:15px;line-height:1;">💬</span>
-      <span>WhatsApp</span>
-    </button>
-
-    <button class="btn btn-s" onclick="shareEmail()"
-      style="justify-content:center;flex-direction:column;
-             gap:3px;font-size:10px;padding:8px 4px;border-radius:9px;">
-      <span style="font-size:15px;line-height:1;">📧</span>
-      <span>Email</span>
-    </button>
-
-    <button class="btn btn-s" onclick="printInvoice()"
-      style="justify-content:center;flex-direction:column;
-             gap:3px;font-size:10px;padding:8px 4px;border-radius:9px;">
-      <span style="font-size:15px;line-height:1;">🖨️</span>
-      <span data-i18n="sum_btn_print">Print</span>
-    </button>
-
-  </div>
-
-</div>
-
-    </div>
-  </div>
-</section>
 
 <!-- ========== PAYMENT MANAGEMENT PAGE — ENHANCED ========== -->
 <section class="page" id="page-payment-management">
