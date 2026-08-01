@@ -1084,7 +1084,12 @@ textarea.fc{resize:vertical;min-height:72px}
 /* ============================================================
    ✏️ INVOICE BUILDER — NEW IMPROVED LAYOUT
 ============================================================ */
-.inv-builder{display:grid;grid-template-columns:minmax(0, 1fr) 340px;gap:16px;align-items:start}
+.inv-builder {
+  display: grid;
+  grid-template-columns: 1fr; /* 👈 تغيير إلى عمود واحد ليطابق الهاتف */
+  gap: 16px;
+  align-items: start;
+}
 
 /* STEP SECTIONS */
 .inv-step{
@@ -1545,10 +1550,7 @@ textarea.fc{resize:vertical;min-height:72px}
 /* ============================================================
    RESPONSIVE
 ============================================================ */
-@media(max-width:1200px){
-  .inv-builder{grid-template-columns:1fr}
-  .inv-summary{position:static; margin-top: 20px;}
-}
+
 
 @media(max-width:1024px){
   :root{--side-w:0px}
@@ -3719,10 +3721,11 @@ textarea.fc{resize:vertical;min-height:72px}
   background: var(--card);
   border-radius: var(--r);
   border: 1px solid var(--border);
-  padding: 16px;
+  padding: 18px;
   box-shadow: var(--shadow);
-  position: sticky;
-  top: 70px;
+  /* 👈 إلغاء التثبيت الجانبي (sticky) وجعله ثابتاً في الأسفل مثل الهاتف */
+  position: static; 
+  margin-top: 20px;
 }
 
 /* أزرار المشاركة — flex عمودي */
