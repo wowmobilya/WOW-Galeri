@@ -10369,6 +10369,8 @@ function selPayMethod(pm,el){
 function toggleEditMode(){
   showToast('✏️ وضع التعديل نشط','in');
 }
+
+   
 function initCreateInv(){
   if(!S.editInvId){
     S.invItems=[];S.currentInvPayments=[];S.kdvEnabled=false;
@@ -10378,7 +10380,6 @@ function initCreateInv(){
     document.getElementById('sumDeposit').value='0';
     const editBtn=document.getElementById('editInvBtn');if(editBtn)editBtn.style.display='none';
     
-    // 👈 1. أضف هذا السطر لتفريغ حقل الملاحظات دائماً في الفاتورة الجديدة
     const notesEl = document.getElementById('invNotes');
     if(notesEl) notesEl.value = '';
   }
@@ -10386,31 +10387,32 @@ function initCreateInv(){
   updateInvNumDisplay();populateCoSelect();renderPrSelector();
   renderInvTable();updateSummary();updateKdvDisplay();
   
-  // 👈 2. قم بحذف أو وضع تعليق (//) على هذين السطرين لمنع سحب النص الافتراضي
-  // const notesEl=document.getElementById('invNotes');
-  // if(notesEl&&!notesEl.value)notesEl.value=S.settings.defaultNotes;
-
   selInvType(S.invType||'external');
   selInvTier(S.invTier||'A',null);
-S.invPayMethod = 'cash';
+  
+  S.invPayMethod = 'cash';
   const pmSel = document.getElementById('invPayMethodSelect');
-  if (pmSel) pmSel.value = 'cash';  S.invPayMethod='cash';
+  if (pmSel) pmSel.value = 'cash';
+  
   const ldEl=document.getElementById('invLoadDate');
   if(ldEl&&!ldEl.value)ldEl.value=new Date().toISOString().split('T')[0];
   
-  // إضافة تاريخ التسجيل التلقائي
   const regDateEl = document.getElementById('invRegDate');
   if(regDateEl && !regDateEl.value) regDateEl.value = new Date().toISOString().split('T')[0];
 
   updateSumCurrencyBadge();
 
-  // reset step badges
+  // ✅ التعديل الجديد: تم تبسيط هذا الجزء لأن updateStep1Texts ستتكفل بالترجمة
   const b4=document.getElementById('step4Badge');if(b4)b4.textContent=t('kdv_off')||'غير مفعّل';
-  const b5=document.getElementById('step5Badge');if(b5)b5.textContent='0 '+t('items_count')||'0 قطعة';
+  const itemLbls = { ar: 'قطعة', tr: 'ürün', en: 'items' };
+  const b5 = document.getElementById('step5Badge');
+  if (b5) b5.textContent = `0 ${itemLbls[S.lang || 'ar'] || itemLbls.en}`;
+  
   S.shippingOpt  = S.shippingOpt  || 'client';
   S.deliveryMode = S.deliveryMode || 'manual';
   updateStep1Texts();
 }
+
 
 function getAutoInvNo(type) {
   if (type === 'internal_retail') return (S.settings.prefixRet || 'b') + (S.settings.nextNoRet || 3000);
@@ -15420,18 +15422,9 @@ function updateStep1Texts() {
   const companyOpt = document.getElementById('shippingOpt_company_opt');
 
   const shippingOptLabels = {
-    ar: {
-      client:  '👤 يدفع العميل تكلفة الشحن',
-      company: '🏢 تتحمل الشركة تكاليف الشحن',
-    },
-    tr: {
-      client:  '👤 Nakliye alıcıya ait',
-      company: '🏢 WOW Furniture nakliyeyi üstlenir',
-    },
-    en: {
-      client:  '👤 Buyer pays shipping costs',
-      company: '🏢 Company covers shipping costs',
-    },
+    ar: { client: '👤 يدفع العميل تكلفة الشحن', company: '🏢 تتحمل الشركة تكاليف الشحن' },
+    tr: { client: '👤 Nakliye alıcıya ait', company: '🏢 WOW Furniture nakliyeyi üstlenir' },
+    en: { client: '👤 Buyer pays shipping costs', company: '🏢 Company covers shipping costs' },
   };
 
   const sOpts = shippingOptLabels[lang] || shippingOptLabels.en;
@@ -15470,7 +15463,6 @@ function updateStep1Texts() {
     const days = parseInt(notesEl.dataset.customDays);
     const sOpt = notesEl.dataset.templateOpt || S.shippingOpt || 'client';
     
-    // إعادة بناء النص باللغة الجديدة مع الأيام المخصصة
     const baseNote = getDynamicDeliveryText(days, lang);
     const shipText = (NOTE_SHIPPING_TEXT[lang] || NOTE_SHIPPING_TEXT.ar)[sOpt];
     const termsArray = NOTE_TERMS[lang] || NOTE_TERMS.ar;
@@ -15503,11 +15495,10 @@ function updateStep1Texts() {
   const pmSel = document.getElementById('invPayMethodSelect');
   if(pmSel) pmSel.value = S.invPayMethod || 'cash';
 
-  /* ✅ 7 — التعديل الجديد: تحديث شارة نوع الفاتورة (خارجي/داخلي) بـ 3 لغات */
+  /* ✅ 7 — تحديث شارة نوع الفاتورة (خارجي/داخلي) بـ 3 لغات */
   const currentTp = S.invType || 'external';
   const trLang = TR[lang] || TR.en;
   
-  // شارة تفاصيل الفاتورة (مع الإيموجي)
   const typeLabelsWithIcon = {
     external: '🌍 ' + (trLang.t_ext || 'External'),
     internal_retail: '🏠 ' + (trLang.t_int_retail || 'Internal Retail'),
@@ -15516,7 +15507,6 @@ function updateStep1Texts() {
   const invTypeLabelEl = document.getElementById('invTypeLabel');
   if (invTypeLabelEl) invTypeLabelEl.textContent = typeLabelsWithIcon[currentTp];
 
-  // شارة الشريط العلوي (بدون إيموجي لأن الإيموجي ثابت في HTML)
   const typeLabelsTextOnly = {
     external: (trLang.t_ext || 'External'),
     internal_retail: (trLang.t_int_retail || 'Internal Retail'),
@@ -15524,6 +15514,12 @@ function updateStep1Texts() {
   };
   const invTypeChipTxt = document.getElementById('invTypeChipTxt');
   if (invTypeChipTxt) invTypeChipTxt.textContent = typeLabelsTextOnly[currentTp];
+
+  /* ✅ 8 — التعديل الجديد: تحديث شارة "إضافة قطع" (عدد القطع) باللغات الثلاث */
+  const itemsCount = (S.invItems && S.invItems.length) ? S.invItems.length : 0;
+  const itemLbls = { ar: 'قطعة', tr: 'ürün', en: 'items' };
+  const b5 = document.getElementById('step5Badge');
+  if (b5) b5.textContent = `${itemsCount} ${itemLbls[lang] || itemLbls.en}`;
 }
 
 
