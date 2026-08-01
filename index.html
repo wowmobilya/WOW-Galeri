@@ -3955,45 +3955,36 @@ body {
 ============================================================ */
 .share-dropdown-wrap {
   position: relative;
-  z-index: 9999; /* 👈 لضمان ظهورها فوق ملخص الفاتورة وأي عنصر آخر */
+  z-index: 99999 !important;
 }
 
 .share-dropdown-menu {
   position: absolute;
-  top: calc(100% + 8px);
+  top: 115%;
   background: var(--card);
   border: 1.5px solid var(--gold);
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.15);
-  min-width: 170px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.3) !important;
+  min-width: 180px;
   display: flex;
   flex-direction: column;
   padding: 6px;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
-  transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
-  z-index: 9999;
+  transition: all 0.2s ease;
+  z-index: 999999 !important; /* 👈 رقم ضخم لضمان ظهورها فوق كل شيء */
 }
 
 /* ضبط الاتجاه حسب لغة الواجهة */
 [dir="rtl"] .share-dropdown-menu { left: 0; right: auto; }
 [dir="ltr"] .share-dropdown-menu { right: 0; left: auto; }
 
-/* إظهار القائمة عند النقر (للهواتف) */
+/* إظهار القائمة عند النقر */
 .share-dropdown-menu.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-/* 👈 التعديل الجديد: إظهار القائمة عند تمرير الماوس في شاشات الكمبيوتر */
-@media (min-width: 1025px) {
-  .share-dropdown-wrap:hover .share-dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
 }
 
 .share-dropdown-menu button {
@@ -4001,16 +3992,17 @@ body {
   border: none;
   padding: 10px 12px;
   text-align: start;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--text);
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   gap: 8px;
   font-family: inherit;
+  width: 100%; /* 👈 لضمان أن الزر يملأ العرض بالكامل */
 }
 
 .share-dropdown-menu button:hover {
@@ -5000,8 +4992,8 @@ body {
         👁️ <span data-i18n="sum_btn_preview">معاينة</span>
       </button>
 
-      <!-- زر المشاركة (قائمة منسدلة) -->
-      <div class="share-dropdown-wrap" style="position:relative;">
+          <!-- زر المشاركة (قائمة منسدلة) -->
+      <div class="share-dropdown-wrap" style="position:relative; overflow:visible !important;">
         <button class="btn btn-s btn-sm" onclick="toggleShareDropdown(event)" style="white-space:nowrap; border-color:var(--gold); color:var(--gold2); background:var(--gold-light);">
           📤 <span>مشاركة</span> <span style="font-size:10px; margin-inline-start:4px;">▼</span>
         </button>
@@ -5016,6 +5008,7 @@ body {
           <button onclick="openPrintOptionsModal()" style="color:var(--gold2); font-weight:700;">⚙️ إعدادات الطباعة</button>
         </div>
       </div>
+
 
     </div>
   </div>
@@ -8590,16 +8583,15 @@ function closeModal(id){document.getElementById(id).classList.remove('open')}
 /* ============================================================
    SHARE DROPDOWN LOGIC (القائمة المنسدلة للمشاركة)
 ============================================================ */
-function toggleShareDropdown(e) {
-  if (e) {
-    e.preventDefault();  // يمنع أي تحديث للصفحة
-    e.stopPropagation(); // يمنع تداخل النقرات
-  }
+window.toggleShareDropdown = function(e) {
+  e.preventDefault();  // يمنع أي سلوك افتراضي للزر
+  e.stopPropagation(); // يمنع تداخل النقرات
+  
   const menu = document.getElementById('shareDropdownMenu');
   if (menu) {
     menu.classList.toggle('show');
   }
-}
+};
 
 // إغلاق القائمة عند النقر في أي مكان آخر في الصفحة
 document.addEventListener('click', function(e) {
@@ -8610,6 +8602,7 @@ document.addEventListener('click', function(e) {
     }
   }
 });
+
 
    
 /* ============================================================
