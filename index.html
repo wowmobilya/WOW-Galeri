@@ -6338,6 +6338,18 @@ body {
   </div>
 </div>
 
+
+<!-- ========== MODAL: IMAGE VIEWER ========== -->
+<div class="modal-ov" id="imgViewerModal" onclick="closeImgViewer(event)">
+  <div class="img-viewer-content">
+    <button class="img-viewer-close" onclick="closeImgViewer(event)">✕</button>
+    <img id="imgViewerSrc" src="" alt="Preview">
+  </div>
+</div>
+
+
+
+   
 <!-- ========== MODAL: SETTINGS ========== -->
 <div class="modal-ov" id="settingsModal">
   <div class="modal" style="max-width:580px;">
@@ -10701,23 +10713,37 @@ function addItemToInv(product){
   renderInvTable();updateSummary();
   showToast(`✅ ${product.name} ${t('added_to_inv')}`,'ok');
 }
+/* ============================================================
+   RENDER INVOICE TABLE (مُحدثة مع ميزة تكبير الصور)
+============================================================ */
 function renderInvTable(){
-  const tbody=document.getElementById('invItemsTbody');if(!tbody)return;
+  const tbody = document.getElementById('invItemsTbody');
+  if(!tbody) return;
+  
+  // إخفاء الجدول إذا لم تكن هناك قطع
   if(!S.invItems.length){
-    const card=document.getElementById('invItemsCard');if(card)card.style.display='none';
+    const card = document.getElementById('invItemsCard');
+    if(card) card.style.display = 'none';
     return;
   }
   
+  // رسم صفوف الجدول
   tbody.innerHTML = S.invItems.map((item, i) => {
-    // 👈 تجهيز الصورة أو أيقونة بديلة في حال عدم وجود صورة
+    
+    // 👈 تجهيز الصورة مع ميزة التكبير (Lightbox) وتأثير الـ Hover
     const imgHtml = item.image 
-      ? `<img src="${item.image}" style="width:38px;height:38px;object-fit:cover;border-radius:6px;margin:0 auto;border:1px solid var(--border);">` 
+      ? `<img src="${item.image}" 
+              onclick="openImgViewer('${item.image}')" 
+              title="انقر لتكبير الصورة"
+              style="width:38px;height:38px;object-fit:cover;border-radius:6px;margin:0 auto;border:1px solid var(--border);cursor:zoom-in;transition:transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);" 
+              onmouseover="this.style.transform='scale(1.15)'" 
+              onmouseout="this.style.transform='scale(1)'">` 
       : `<div style="width:38px;height:38px;background:var(--input);border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:18px;border:1px solid var(--border);">🛋️</div>`;
 
     return `
     <tr>
       <td>${i+1}</td>
-      <td style="text-align:center; padding:4px;">${imgHtml}</td> <!-- 👈 عرض الصورة هنا -->
+      <td style="text-align:center; padding:4px;">${imgHtml}</td>
       <td style="font-weight:600;text-align:right;">${item.name}</td>
       <td>${item.dimensions||'—'}</td>
       <td>${item.color}</td>
@@ -10735,12 +10761,20 @@ function renderInvTable(){
     </tr>`;
   }).join('');
 
-  const totUSD=S.invItems.reduce((s,i)=>s+i.totalUSD,0);
-  const totCBM=S.invItems.reduce((s,i)=>s+(i.cbm*i.qty),0);
-  const t1=document.getElementById('invTblTotal');if(t1)t1.textContent=fmtCurr(totUSD,S.invCurrency);
-  const t2=document.getElementById('invTblCBM');if(t2)t2.textContent=totCBM.toFixed(4);
-  const chip=document.getElementById('invCBMChip');if(chip)chip.textContent=totCBM.toFixed(4);
+  // حساب الإجماليات وتحديثها أسفل الجدول
+  const totUSD = S.invItems.reduce((s,i) => s + i.totalUSD, 0);
+  const totCBM = S.invItems.reduce((s,i) => s + (i.cbm * i.qty), 0);
+  
+  const t1 = document.getElementById('invTblTotal');
+  if(t1) t1.textContent = fmtCurr(totUSD, S.invCurrency);
+  
+  const t2 = document.getElementById('invTblCBM');
+  if(t2) t2.textContent = totCBM.toFixed(4);
+  
+  const chip = document.getElementById('invCBMChip');
+  if(chip) chip.textContent = totCBM.toFixed(4);
 }
+
 
 function changeQty(i,d){
   const item=S.invItems[i];if(!item)return;
@@ -17047,6 +17081,44 @@ window.addEventListener('resize', closeShareMenu);
 
 
 
+
+
+
+
+
+
+
+
+
+   /* ============================================================
+   IMAGE VIEWER LOGIC
+============================================================ */
+function openImgViewer(src) {
+  const modal = document.getElementById('imgViewerModal');
+  const img = document.getElementById('imgViewerSrc');
+  if(modal && img) {
+    img.src = src;
+    modal.classList.add('open');
+  }
+}
+
+function closeImgViewer(e) {
+  // منع الإغلاق إذا تم النقر على الصورة نفسها (إلا إذا كان زر الإغلاق)
+  if (e && e.target.tagName === 'IMG' && !e.target.classList.contains('img-viewer-close')) return;
+  
+  const modal = document.getElementById('imgViewerModal');
+  if(modal) {
+    modal.classList.remove('open');
+    // تفريغ الصورة بعد انتهاء الأنيميشن لتخفيف الذاكرة
+    setTimeout(() => {
+      document.getElementById('imgViewerSrc').src = '';
+    }, 300); 
+  }
+}
+
+
+
+   
    
    
 
