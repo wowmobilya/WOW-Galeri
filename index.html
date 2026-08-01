@@ -15515,11 +15515,20 @@ function updateStep1Texts() {
   const invTypeChipTxt = document.getElementById('invTypeChipTxt');
   if (invTypeChipTxt) invTypeChipTxt.textContent = typeLabelsTextOnly[currentTp];
 
-  /* ✅ 8 — التعديل الجديد: تحديث شارة "إضافة قطع" (عدد القطع) باللغات الثلاث */
+  /* ✅ 8 — تحديث شارة "إضافة قطع" (عدد القطع) باللغات الثلاث */
   const itemsCount = (S.invItems && S.invItems.length) ? S.invItems.length : 0;
   const itemLbls = { ar: 'قطعة', tr: 'ürün', en: 'items' };
   const b5 = document.getElementById('step5Badge');
   if (b5) b5.textContent = `${itemsCount} ${itemLbls[lang] || itemLbls.en}`;
+
+  /* ✅ 9 — التعديل الجديد: تحديث placeholder البحث عن منتج بـ 3 لغات */
+  const searchPh = {
+    ar: '🔍 ابحث عن منتج...',
+    tr: '🔍 Ürün ara...',
+    en: '🔍 Search for a product...'
+  };
+  const invPrSearch = document.getElementById('invPrSearch');
+  if (invPrSearch) invPrSearch.placeholder = searchPh[lang] || searchPh.en;
 }
 
 
