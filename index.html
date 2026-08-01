@@ -3950,6 +3950,69 @@ body {
 
 
 
+/* ============================================================
+   TOP SHARE DROPDOWN (مربع المشاركة العلوي)
+============================================================ */
+.share-dropdown-wrap {
+  position: relative;
+}
+
+.share-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  background: var(--card);
+  border: 1.5px solid var(--gold);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  min-width: 170px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+  z-index: 2000;
+}
+
+/* ضبط الاتجاه حسب لغة الواجهة */
+[dir="rtl"] .share-dropdown-menu { left: 0; right: auto; }
+[dir="ltr"] .share-dropdown-menu { right: 0; left: auto; }
+
+.share-dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.share-dropdown-menu button {
+  background: transparent;
+  border: none;
+  padding: 10px 12px;
+  text-align: start;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+}
+
+.share-dropdown-menu button:hover {
+  background: var(--gold-light);
+  color: var(--gold2);
+}
+
+
+
+   
+
+
+
 </style>
 </head>
 <body>
@@ -4903,7 +4966,7 @@ body {
 <!-- ========== CREATE INVOICE — NEW IMPROVED LAYOUT ========== -->
 <section class="page" id="page-create-invoice">
   <div class="sct-sticky-header">
-<button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
+    <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
     <div class="sct-sticky-title">
       <h1 data-i18n="create_title">✏️ إنشاء فاتورة</h1>
       <div class="chip-row">
@@ -4914,13 +4977,38 @@ body {
         <div class="chip">🎯 <strong id="invTierChip">A</strong></div>
       </div>
     </div>
-    <!-- ✅ زر خيارات الطباعة الثابت -->
-    <button class="btn btn-s btn-sm" onclick="openPrintOptionsModal()" id="printOptionsHeaderBtn"
-      style="flex-shrink:0;display:flex;align-items:center;gap:5px;white-space:nowrap;
-             border:1.5px solid var(--gold);color:var(--gold2);background:var(--gold-light);">
-<!-- بعد -->
-🖨️ <span id="printOptionsBtnLabel">إعدادات طباعة</span>
-    </button>
+    
+    <!-- ✅ مجموعة الأزرار العلوية الجديدة -->
+    <div style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
+      
+      <!-- زر الحفظ -->
+      <button class="btn btn-g btn-sm" onclick="saveInvoice()" style="white-space:nowrap; box-shadow:0 2px 8px rgba(56,161,105,.3);">
+        💾 <span data-i18n="sum_btn_save">حفظ</span>
+      </button>
+
+      <!-- زر المعاينة -->
+      <button class="btn btn-p btn-sm" onclick="previewInvoice()" style="white-space:nowrap; box-shadow:0 2px 8px rgba(200,169,110,.3);">
+        👁️ <span data-i18n="sum_btn_preview">معاينة</span>
+      </button>
+
+      <!-- زر المشاركة (قائمة منسدلة) -->
+      <div class="share-dropdown-wrap" style="position:relative;">
+        <button class="btn btn-s btn-sm" onclick="toggleShareDropdown(event)" style="white-space:nowrap; border-color:var(--gold); color:var(--gold2); background:var(--gold-light);">
+          📤 <span>مشاركة</span> <span style="font-size:10px; margin-inline-start:4px;">▼</span>
+        </button>
+        
+        <!-- القائمة المنسدلة -->
+        <div class="share-dropdown-menu" id="shareDropdownMenu">
+          <button onclick="downloadPDF()">📥 تحميل PDF</button>
+          <button onclick="printInvoice()">🖨️ طباعة الفاتورة</button>
+          <button onclick="shareWA()">💬 إرسال WhatsApp</button>
+          <button onclick="shareEmail()">📧 إرسال Email</button>
+          <div style="height:1px; background:var(--border); margin:4px 0;"></div>
+          <button onclick="openPrintOptionsModal()" style="color:var(--gold2); font-weight:700;">⚙️ إعدادات الطباعة</button>
+        </div>
+      </div>
+
+    </div>
   </div>
 
 
@@ -8490,6 +8578,29 @@ function showToast(msg,type='ok'){
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 
+/* ============================================================
+   SHARE DROPDOWN LOGIC (القائمة المنسدلة للمشاركة)
+============================================================ */
+function toggleShareDropdown(e) {
+  e.stopPropagation(); // يمنع انتقال النقرة للعناصر الأخرى
+  const menu = document.getElementById('shareDropdownMenu');
+  if (menu) {
+    menu.classList.toggle('show');
+  }
+}
+
+// إغلاق القائمة عند النقر في أي مكان آخر في الصفحة
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('shareDropdownMenu');
+  if (menu && menu.classList.contains('show')) {
+    // إذا لم يكن النقر داخل زر المشاركة أو القائمة نفسها
+    if (!e.target.closest('.share-dropdown-wrap')) {
+      menu.classList.remove('show');
+    }
+  }
+});
+
+   
 /* ============================================================
    VISUAL VIEWPORT WATCHER — منع تغطية لوحة المفاتيح
 ============================================================ */
