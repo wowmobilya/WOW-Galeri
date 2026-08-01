@@ -5009,22 +5009,91 @@ body {
         👁️ <span data-i18n="sum_btn_preview">معاينة</span>
       </button>
 
-          <!-- زر المشاركة (قائمة منسدلة) -->
-      <div class="share-dropdown-wrap" style="position:relative; overflow:visible !important;">
-        <button class="btn btn-s btn-sm" onclick="toggleShareDropdown(event)" style="white-space:nowrap; border-color:var(--gold); color:var(--gold2); background:var(--gold-light);">
-          📤 <span>مشاركة</span> <span style="font-size:10px; margin-inline-start:4px;">▼</span>
-        </button>
-        
-        <!-- القائمة المنسدلة -->
-        <div class="share-dropdown-menu" id="shareDropdownMenu">
-          <button onclick="downloadPDF()">📥 تحميل PDF</button>
-          <button onclick="printInvoice()">🖨️ طباعة الفاتورة</button>
-          <button onclick="shareWA()">💬 إرسال WhatsApp</button>
-          <button onclick="shareEmail()">📧 إرسال Email</button>
-          <div style="height:1px; background:var(--border); margin:4px 0;"></div>
-          <button onclick="openPrintOptionsModal()" style="color:var(--gold2); font-weight:700;">⚙️ إعدادات الطباعة</button>
-        </div>
-      </div>
+        <!-- ✅ زر المشاركة الجديد -->
+<div style="position:relative; display:inline-block;">
+  
+  <button 
+    id="shareMainBtn"
+    onclick="toggleShareMenu(event)"
+    class="btn btn-s btn-sm" 
+    style="white-space:nowrap; border-color:var(--gold); color:var(--gold2); background:var(--gold-light); gap:5px;">
+    📤 <span>مشاركة</span> <span id="shareArrow" style="font-size:10px; transition:transform 0.2s;">▼</span>
+  </button>
+
+</div>
+
+<!-- ✅ القائمة المنسدلة — خارج كل الحاويات تماماً -->
+<div id="shareMenuPopup" style="
+  display: none;
+  position: fixed;
+  z-index: 999999;
+  background: var(--card);
+  border: 1.5px solid var(--gold);
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+  min-width: 210px;
+  padding: 8px;
+  flex-direction: column;
+  gap: 2px;
+">
+  <button onclick="downloadPDF(); closeShareMenu()" style="
+    background:transparent; border:none; padding:11px 16px;
+    text-align:right; font-size:13px; font-weight:600;
+    color:var(--text); border-radius:10px; cursor:pointer;
+    display:flex; align-items:center; gap:10px; width:100%;
+    font-family:inherit; transition:background 0.15s;
+  " onmouseover="this.style.background='var(--gold-light)';this.style.color='var(--gold2)'"
+     onmouseout="this.style.background='transparent';this.style.color='var(--text)'">
+    📥 تحميل PDF
+  </button>
+
+  <button onclick="printInvoice(); closeShareMenu()" style="
+    background:transparent; border:none; padding:11px 16px;
+    text-align:right; font-size:13px; font-weight:600;
+    color:var(--text); border-radius:10px; cursor:pointer;
+    display:flex; align-items:center; gap:10px; width:100%;
+    font-family:inherit; transition:background 0.15s;
+  " onmouseover="this.style.background='var(--gold-light)';this.style.color='var(--gold2)'"
+     onmouseout="this.style.background='transparent';this.style.color='var(--text)'">
+    🖨️ طباعة الفاتورة
+  </button>
+
+  <button onclick="shareWA(); closeShareMenu()" style="
+    background:transparent; border:none; padding:11px 16px;
+    text-align:right; font-size:13px; font-weight:600;
+    color:var(--text); border-radius:10px; cursor:pointer;
+    display:flex; align-items:center; gap:10px; width:100%;
+    font-family:inherit; transition:background 0.15s;
+  " onmouseover="this.style.background='var(--gold-light)';this.style.color='var(--gold2)'"
+     onmouseout="this.style.background='transparent';this.style.color='var(--text)'">
+    💬 إرسال WhatsApp
+  </button>
+
+  <button onclick="shareEmail(); closeShareMenu()" style="
+    background:transparent; border:none; padding:11px 16px;
+    text-align:right; font-size:13px; font-weight:600;
+    color:var(--text); border-radius:10px; cursor:pointer;
+    display:flex; align-items:center; gap:10px; width:100%;
+    font-family:inherit; transition:background 0.15s;
+  " onmouseover="this.style.background='var(--gold-light)';this.style.color='var(--gold2)'"
+     onmouseout="this.style.background='transparent';this.style.color='var(--text)'">
+    📧 إرسال Email
+  </button>
+
+  <div style="height:1px; background:var(--border); margin:4px 8px;"></div>
+
+  <button onclick="openPrintOptionsModal(); closeShareMenu()" style="
+    background:transparent; border:none; padding:11px 16px;
+    text-align:right; font-size:13px; font-weight:700;
+    color:var(--gold2); border-radius:10px; cursor:pointer;
+    display:flex; align-items:center; gap:10px; width:100%;
+    font-family:inherit; transition:background 0.15s;
+  " onmouseover="this.style.background='var(--gold-light)'"
+     onmouseout="this.style.background='transparent'">
+    ⚙️ إعدادات الطباعة
+  </button>
+</div>
+
 
 
     </div>
@@ -16978,6 +17047,78 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(_ddUpdateUI, 400)
 
 
 
+/* ============================================================
+   SHARE MENU — SIMPLE & RELIABLE
+============================================================ */
+function toggleShareMenu(e) {
+  e.stopPropagation();
+  
+  const popup = document.getElementById('shareMenuPopup');
+  const btn   = document.getElementById('shareMainBtn');
+  const arrow = document.getElementById('shareArrow');
+  
+  if (!popup) return;
+  
+  const isOpen = popup.style.display === 'flex';
+  
+  if (isOpen) {
+    closeShareMenu();
+    return;
+  }
+  
+  // ── حساب الموضع من الزر
+  const rect = btn.getBoundingClientRect();
+  
+  popup.style.display = 'flex';
+  popup.style.top     = (rect.bottom + 6) + 'px';
+  
+  // محاذاة من اليمين في RTL
+  const rightPos = window.innerWidth - rect.right;
+  popup.style.right = rightPos + 'px';
+  popup.style.left  = 'auto';
+  
+  // أنيميشن
+  popup.style.opacity   = '0';
+  popup.style.transform = 'translateY(-8px) scale(0.97)';
+  popup.style.transition = 'opacity 0.18s ease, transform 0.18s ease';
+  
+  requestAnimationFrame(() => {
+    popup.style.opacity   = '1';
+    popup.style.transform = 'translateY(0) scale(1)';
+  });
+  
+  if (arrow) arrow.style.transform = 'rotate(180deg)';
+}
+
+function closeShareMenu() {
+  const popup = document.getElementById('shareMenuPopup');
+  const arrow = document.getElementById('shareArrow');
+  
+  if (!popup) return;
+  
+  popup.style.opacity   = '0';
+  popup.style.transform = 'translateY(-8px) scale(0.97)';
+  
+  setTimeout(() => {
+    popup.style.display = 'none';
+  }, 180);
+  
+  if (arrow) arrow.style.transform = 'rotate(0deg)';
+}
+
+// إغلاق عند النقر خارجاً
+document.addEventListener('click', function(e) {
+  const popup = document.getElementById('shareMenuPopup');
+  if (!popup || popup.style.display !== 'flex') return;
+  if (!e.target.closest('#shareMenuPopup') && 
+      !e.target.closest('#shareMainBtn')) {
+    closeShareMenu();
+  }
+});
+
+// إغلاق عند التمرير
+window.addEventListener('scroll', closeShareMenu, { passive:true, capture:true });
+window.addEventListener('resize', closeShareMenu);
 
 
 
