@@ -13563,42 +13563,33 @@ function updateQblTexts() {
 function initQblPage() {
   updateQblTexts();
 
-  // ✅ إعادة تعيين الحالة الكاملة
+  // إعادة تعيين الحالة الكاملة
   QBL.currentProduct = null;
   QBL.selectedTier   = null;
   QBL.phase          = 1;
   QBL.pendingQty     = 1;
-
-  // ✅ إعادة تعيين حالة الـ Dropdown
-  qblDropdownOpen = false;
-  qblActiveType   = null;
+  qblDropdownOpen    = false;
+  qblActiveType      = null;
 
   const inp = document.getElementById('qblInput');
   if (inp) inp.value = '';
 
-  // ✅ إعادة Phase 1 للظهور الكامل
+  // ✅ إجبار المرحلة الأولى على الظهور بشكل قاطع
   const p1 = document.getElementById('qblPhase1');
   if (p1) {
+    p1.style.display       = 'block'; // إضافة لضمان الظهور
     p1.style.opacity       = '1';
-    p1.style.transform     = '';
+    p1.style.transform     = 'none';
     p1.style.pointerEvents = 'all';
-    p1.style.maxHeight     = '';
-    p1.style.overflow      = '';
+    p1.style.maxHeight     = 'none';
+    p1.style.overflow      = 'visible';
   }
 
-  // ✅ إخفاء Phase 2
-  const p2   = document.getElementById('qblPhase2');
-  const blur = document.getElementById('qblPhase2Blur');
-  const card = document.getElementById('qblTierCard');
-  if (p2)   { p2.style.opacity = '0'; p2.style.pointerEvents = 'none'; p2.style.background = 'rgba(0,0,0,0)'; }
-  if (blur) { blur.style.backdropFilter = 'blur(0px)'; }
-  if (card) { card.style.transform = 'translateY(40px) scale(.92)'; }
+  // إخفاء المراحل الأخرى
+  qblHidePhase2(false);
+  qblHidePhase3();
 
-  // ✅ إخفاء Phase 3
-  const p3 = document.getElementById('qblPhase3');
-  if (p3) { p3.style.maxHeight = '0'; p3.style.opacity = '0'; }
-
-  // ✅ إعادة زر القائمة لحالته الأصلية
+  // إعادة زر القائمة لحالته الأصلية
   const ddBtn = document.getElementById('qblDropdownBtn');
   if (ddBtn) {
     ddBtn.style.borderColor = 'var(--border)';
@@ -13607,29 +13598,25 @@ function initQblPage() {
     ddBtn.innerHTML         = '☰';
   }
 
-  // ✅ إخفاء الـ Dropdown إذا كان مفتوحاً
+  // إخفاء القائمة المنسدلة
   const dd = document.getElementById('qblDropdown');
   if (dd) {
     dd.style.display   = 'none';
     dd.style.opacity   = '0';
-    dd.style.transform = 'translateY(-12px) scale(.98)';
   }
 
-  // ✅ إعادة إظهار الكاميرا
+  // إظهار الكاميرا ومحاولة تشغيلها
   const cam = document.getElementById('qblCameraWrap');
   if (cam) {
     cam.style.opacity      = '1';
-    cam.style.transform    = '';
+    cam.style.transform    = 'none';
     cam.style.pointerEvents = 'all';
   }
 
-  // ✅ تشغيل الكاميرا
   qblStartCamera();
 
   const statusEl = document.getElementById('qblStatus');
   if (statusEl) statusEl.textContent = qblTx('scan_hint');
-
-// setTimeout(() => { if (inp) inp.focus(); }, 500);
 }
 
 /* ══════════════════════════════════════════
