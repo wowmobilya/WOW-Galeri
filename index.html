@@ -8850,56 +8850,74 @@ window.addEventListener('resize', function() {
 /* ============================================================
    SIDEBAR / NAVIGATION
 ============================================================ */
-let _isPopState=false;
-function showPage(id,pushHistory=true){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');
-  const map={dashboard:0,companies:1,products:2,invoices:3,'add-company':4,'add-product':5,'create-invoice':6};
-  const items=document.querySelectorAll('.nav-item');
-  if(map[id]!==undefined&&items[map[id]])items[map[id]].classList.add('active');
-  if(id==='dashboard')updateDash();
-  if(id==='companies')renderCo();
-  if(id==='products')renderPr();
-if(id==='add-product'){
-  document.getElementById('pr-type-select-view').style.display = 'block';
-  document.getElementById('pr-form-view').style.display = 'none';
-  renderPrTypeStepCards();
-}
+let _isPopState = false;
 
-  if(id==='invoices'){renderInvList();updateInvClientFilterBar();}
-  else{S.invClientFilter=null;}
+function showPage(id, pushHistory = true) {
+  // 1. إخفاء كل الصفحات وإزالة التفعيل من الأزرار
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  
+  // 2. إظهار الصفحة المطلوبة
+  const pg = document.getElementById('page-' + id);
+  if (pg) pg.classList.add('active');
+  
+  // 3. تفعيل الزر المناسب في القائمة الجانبية
+  const map = { dashboard: 0, companies: 1, products: 2, invoices: 3, 'add-company': 4, 'add-product': 5, 'create-invoice': 6 };
+  const items = document.querySelectorAll('.nav-item');
+  if (map[id] !== undefined && items[map[id]]) items[map[id]].classList.add('active');
+  
+  // 4. استدعاء دوال التهيئة حسب الصفحة
+  if (id === 'dashboard') updateDash();
+  if (id === 'companies') renderCo();
+  if (id === 'products') renderPr();
+  
+  if (id === 'add-product') {
+    document.getElementById('pr-type-select-view').style.display = 'block';
+    document.getElementById('pr-form-view').style.display = 'none';
+    renderPrTypeStepCards();
+  }
 
-  if(id==='create-invoice')initCreateInv();
+  if (id === 'invoices') {
+    renderInvList();
+    updateInvClientFilterBar();
+  } else {
+    S.invClientFilter = null;
+  }
+
+  if (id === 'create-invoice') initCreateInv();
+  
+  // 5. ✅ تهيئة قسم الباركود السريع (الكود الصحيح)
   if (id === 'quick-barcode') {
-  updateQblTexts();
-  // ✅ أوقف الكاميرا القديمة أولاً قبل إعادة التهيئة
-  qblStopCamera();
-  // ✅ ثم أعد التهيئة
-  setTimeout(() => initQblPage(), 50);
+    updateQblTexts();
+    // ✅ أوقف الكاميرا القديمة أولاً قبل إعادة التهيئة
+    qblStopCamera();
+    // ✅ ثم أعد التهيئة
+    setTimeout(() => initQblPage(), 50);
 
-  const bar = document.getElementById('qblStickyCart');
-  if (bar) bar.classList.remove('visible');
-  const mainEl = document.getElementById('mainContent');
-  if (mainEl) mainEl.classList.remove('cart-bar-visible');
-  qblUpdateCartUI();
-} else {
-  qblStopCamera();
-  qblCloseCart();
-  setTimeout(() => qblUpdateCartUI(), 100);
-}
+    const bar = document.getElementById('qblStickyCart');
+    if (bar) bar.classList.remove('visible');
+    const mainEl = document.getElementById('mainContent');
+    if (mainEl) mainEl.classList.remove('cart-bar-visible');
+    qblUpdateCartUI();
+  } else {
+    qblStopCamera();
+    qblCloseCart();
+    setTimeout(() => qblUpdateCartUI(), 100);
+  }
 
-
-
-closeSidebar();
-updateQabActive(id); // ✅ أضف هنا
-window.scrollTo({top:0,behavior:'smooth'});
-  if(pushHistory&&!_isPopState){
-    const url='#'+id;
-    if(window.location.hash===url)history.replaceState({page:id},'',url);
-    else history.pushState({page:id},'',url);
+  // 6. إغلاق القائمة الجانبية وتحديث القائمة السفلية
+  closeSidebar();
+  updateQabActive(id); // ✅ تحديث القائمة السفلية
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  // 7. تحديث رابط المتصفح
+  if (pushHistory && !_isPopState) {
+    const url = '#' + id;
+    if (window.location.hash === url) history.replaceState({ page: id }, '', url);
+    else history.pushState({ page: id }, '', url);
   }
 }
+
 function getCurrentPage(){const active=document.querySelector('.page.active');return active?active.id.replace('page-',''):'dashboard';}
 window.addEventListener('popstate',(e)=>{
   const openModalEl=document.querySelector('.modal-ov.open');
