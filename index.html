@@ -8871,29 +8871,23 @@ if(id==='add-product'){
   else{S.invClientFilter=null;}
 
   if(id==='create-invoice')initCreateInv();
-    if (id === 'quick-barcode') {
-    try {
-      // إظهار الصفحة فوراً لتجنب الشاشة البيضاء
-      const p1 = document.getElementById('qblPhase1');
-      if (p1) {
-        p1.style.opacity = '1';
-        p1.style.pointerEvents = 'all';
-      }
-      
-      updateQblTexts();
-      qblStopCamera();
-      
-      setTimeout(() => {
-        try { initQblPage(); } catch(e) { console.error('Barcode Init Error:', e); }
-      }, 50);
+  if (id === 'quick-barcode') {
+  updateQblTexts();
+  // ✅ أوقف الكاميرا القديمة أولاً قبل إعادة التهيئة
+  qblStopCamera();
+  // ✅ ثم أعد التهيئة
+  setTimeout(() => initQblPage(), 50);
 
-      const bar = document.getElementById('qblStickyCart');
-      if (bar) bar.classList.remove('visible');
-      const mainEl = document.getElementById('mainContent');
-      if (mainEl) mainEl.classList.remove('cart-bar-visible');
-      
-      qblUpdateCartUI();
-    } catch (err) {
+  const bar = document.getElementById('qblStickyCart');
+  if (bar) bar.classList.remove('visible');
+  const mainEl = document.getElementById('mainContent');
+  if (mainEl) mainEl.classList.remove('cart-bar-visible');
+  qblUpdateCartUI();
+} else {
+  qblStopCamera();
+  qblCloseCart();
+  setTimeout(() => qblUpdateCartUI(), 100);
+}
 
 
 
