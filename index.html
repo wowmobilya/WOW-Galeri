@@ -8871,23 +8871,12 @@ if(id==='add-product'){
   else{S.invClientFilter=null;}
 
   if(id==='create-invoice')initCreateInv();
- if (id === 'quick-barcode') {
+  if (id === 'quick-barcode') {
   updateQblTexts();
+  // ✅ أوقف الكاميرا القديمة أولاً قبل إعادة التهيئة
   qblStopCamera();
-  setTimeout(() => {
-    // إعادة تعيين كاملة لحالة الـ phases قبل التهيئة
-    QBL.phase = 1;
-    QBL.currentProduct = null;
-    QBL.selectedTier = null;
-    
-    // إعادة إظهار Phase 1 بشكل صريح قبل initQblPage
-    const p1 = document.getElementById('qblPhase1');
-    if (p1) {
-      p1.style.cssText = 'opacity:1; transform:none; pointer-events:all; max-height:none; overflow:visible; transition:none;';
-    }
-    
-    initQblPage();
-  }, 80);
+  // ✅ ثم أعد التهيئة
+  setTimeout(() => initQblPage(), 50);
 
   const bar = document.getElementById('qblStickyCart');
   if (bar) bar.classList.remove('visible');
@@ -13588,22 +13577,14 @@ function initQblPage() {
   if (inp) inp.value = '';
 
   // ✅ إعادة Phase 1 للظهور الكامل
- const p1 = document.getElementById('qblPhase1');
-if (p1) {
-  // إعادة تعيين شاملة بدون transition لضمان الظهور الفوري
-  p1.style.transition    = 'none';
-  p1.style.opacity       = '1';
-  p1.style.transform     = 'none';
-  p1.style.pointerEvents = 'all';
-  p1.style.maxHeight     = 'none';
-  p1.style.overflow      = 'visible';
-  p1.style.display       = 'block';
-  
-  // إعادة تفعيل الـ transition بعد frame واحد
-  requestAnimationFrame(() => {
-    p1.style.transition = '';
-  });
-}
+  const p1 = document.getElementById('qblPhase1');
+  if (p1) {
+    p1.style.opacity       = '1';
+    p1.style.transform     = '';
+    p1.style.pointerEvents = 'all';
+    p1.style.maxHeight     = '';
+    p1.style.overflow      = '';
+  }
 
   // ✅ إخفاء Phase 2
   const p2   = document.getElementById('qblPhase2');
