@@ -8842,12 +8842,12 @@ if(id==='add-product'){
   else{S.invClientFilter=null;}
 
   if(id==='create-invoice')initCreateInv();
-  if (id === 'quick-barcode') {
+ if (id === 'quick-barcode') {
   updateQblTexts();
-  // ✅ أوقف الكاميرا القديمة أولاً قبل إعادة التهيئة
   qblStopCamera();
-  // ✅ ثم أعد التهيئة
-  setTimeout(() => initQblPage(), 50);
+  forceShowQuickBarcodePage();
+  setTimeout(() => initQblPage(), 80);
+
 
   const bar = document.getElementById('qblStickyCart');
   if (bar) bar.classList.remove('visible');
@@ -13532,17 +13532,17 @@ function updateQblTexts() {
    تهيئة الصفحة
 ══════════════════════════════════════════ */
 function initQblPage() {
+  forceShowQuickBarcodePage();
   updateQblTexts();
 
-  // ✅ إعادة تعيين الحالة الكاملة
   QBL.currentProduct = null;
-  QBL.selectedTier   = null;
-  QBL.phase          = 1;
-  QBL.pendingQty     = 1;
+  QBL.selectedTier = null;
+  QBL.phase = 1;
+  QBL.pendingQty = 1;
 
-  // ✅ إعادة تعيين حالة الـ Dropdown
   qblDropdownOpen = false;
-  qblActiveType   = null;
+  qblActiveType = null;
+
 
   const inp = document.getElementById('qblInput');
   if (inp) inp.value = '';
@@ -17292,7 +17292,77 @@ function imgViewerEscHandler(e) {
 }
 
 
-   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   function forceShowQuickBarcodePage() {
+  const p1 = document.getElementById('qblPhase1');
+  const p2 = document.getElementById('qblPhase2');
+  const p3 = document.getElementById('qblPhase3');
+  const cam = document.getElementById('qblCameraWrap');
+  const dd = document.getElementById('qblDropdown');
+  const statusEl = document.getElementById('qblStatus');
+  const inp = document.getElementById('qblInput');
+
+  if (p1) {
+    p1.style.display = 'block';
+    p1.style.opacity = '1';
+    p1.style.maxHeight = '';
+    p1.style.overflow = '';
+    p1.style.transform = '';
+    p1.style.pointerEvents = 'all';
+  }
+
+  if (p2) {
+    p2.style.opacity = '0';
+    p2.style.pointerEvents = 'none';
+    p2.style.background = 'rgba(0,0,0,0)';
+  }
+
+  if (p3) {
+    p3.style.maxHeight = '0';
+    p3.style.opacity = '0';
+    p3.style.overflow = 'hidden';
+  }
+
+  if (cam) {
+    cam.style.display = 'block';
+    cam.style.opacity = '1';
+    cam.style.transform = '';
+    cam.style.pointerEvents = 'all';
+  }
+
+  if (dd) {
+    dd.style.display = 'none';
+    dd.style.opacity = '0';
+    dd.style.transform = 'translateY(-12px) scale(.98)';
+  }
+
+  if (statusEl) statusEl.textContent = qblTx('scan_hint');
+  if (inp) inp.value = '';
+
+  QBL.currentProduct = null;
+  QBL.selectedTier = null;
+  QBL.phase = 1;
+  QBL.pendingQty = 1;
+  qblDropdownOpen = false;
+  qblActiveType = null;
+}
+
    
    
 
