@@ -13402,7 +13402,7 @@ function togglePrDetails(id, btn) {
 
 
 /* ============================================================
-   QUICK BARCODE — CINEMATIC 3-PHASE EXPERIENCE & CART STATE
+   QUICK BARCODE — CINEMATIC 3-PHASE EXPERIENCE
 ============================================================ */
 const QBL = {
   stream:         null,
@@ -13413,13 +13413,7 @@ const QBL = {
   pendingQty:     1,   // ← الكمية المختارة قبل الإضافة
 };
 
-// ✅ 1. تم نقل تعريف السلة إلى هنا لتجنب خطأ الشاشة الفارغة
-const QBL_CART = {
-  items: [],
-  open: false,
-};
-
-/* ── نصوص 3 لغات للباركود ── */
+/* ── نصوص 3 لغات ── */
 const QBL_TEXTS = {
   ar: {
     back:          'رجوع',
@@ -13510,59 +13504,10 @@ const QBL_TEXTS = {
   },
 };
 
-// ✅ 2. تم نقل نصوص السلة إلى هنا أيضاً
-const QBL_CART_TEXTS = {
-  ar: {
-    title:        'السلة',
-    fab:          'السلة',
-    summary:      'الإجمالي',
-    invoice_btn:  'إنشاء الفاتورة',
-    clear_btn:    'مسح السلة',
-    add_btn:      '🛒 أضف للسلة',
-    added_toast:  'أُضيف للسلة',
-    sent_toast:   '✅ تم نقل السلة للفاتورة',
-    empty:        'السلة فارغة',
-    items_label:  n => `${n} ${n===1?'منتج':'منتجات'}`,
-    sticky_invoice: 'فاتورة',
-  },
-  tr: {
-    title:        'Sepet',
-    fab:          'Sepet',
-    summary:      'Toplam',
-    invoice_btn:  'Fatura Oluştur',
-    clear_btn:    'Sepeti Temizle',
-    add_btn:      '🛒 Sepete Ekle',
-    added_toast:  'Sepete eklendi',
-    sent_toast:   '✅ Sepet faturaya aktarıldı',
-    empty:        'Sepet boş',
-    items_label:  n => `${n} ürün`,
-    sticky_invoice: 'Fatura',
-  },
-  en: {
-    title:        'Cart',
-    fab:          'Cart',
-    summary:      'Total',
-    invoice_btn:  'Create Invoice',
-    clear_btn:    'Clear Cart',
-    add_btn:      '🛒 Add to Cart',
-    added_toast:  'Added to cart',
-    sent_toast:   '✅ Cart sent to invoice',
-    empty:        'Cart is empty',
-    items_label:  n => `${n} item${n!==1?'s':''}`,
-    sticky_invoice: 'Invoice',
-  },
-};
-
 function qblTx(key) {
   const lang = S.lang || 'ar';
   return (QBL_TEXTS[lang] || QBL_TEXTS.ar)[key] || key;
 }
-
-function qblCartTx(key) {
-  const lang = S.lang || 'ar';
-  return (QBL_CART_TEXTS[lang] || QBL_CART_TEXTS.ar)[key] || key;
-}
-
 
 /* ══════════════════════════════════════════
    تحديث نصوص الصفحة
@@ -14261,7 +14206,10 @@ function qblShowNotFound(query) {
 /* ============================================================
    QBL CART STATE
 ============================================================ */
-
+const QBL_CART = {
+  items: [],
+  open: false,
+};
 
 /* ============================================================
    QBL CART — حفظ واسترجاع من localStorage
@@ -14350,6 +14298,10 @@ const QBL_CART_TEXTS = {
   },
 };
 
+function qblCartTx(key) {
+  const lang = S.lang || 'ar';
+  return (QBL_CART_TEXTS[lang] || QBL_CART_TEXTS.ar)[key] || key;
+}
 
 /* ── إضافة للسلة (يُستدعى من زر "أضف للسلة") ── */
 function qblAddToInvoice() {
