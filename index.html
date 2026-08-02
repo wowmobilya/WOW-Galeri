@@ -5969,126 +5969,123 @@ body {
 
 <section class="page" id="page-quick-barcode">
 
-<!-- ══ PHASE 1: SCAN ══ -->
-<div id="qblPhase1" style="transition:all .5s cubic-bezier(.4,0,.2,1);">
-  <div class="sct-sticky-header">
-   <button class="sct-back-btn" onclick="goBack()">← <span id="qblBackTxt">رجوع</span></button>
-
-    <div class="sct-sticky-title">
-      <h1 id="qblPageTitle">📷 باركود سريع</h1>
-      <p id="qblPageSub">امسح الباركود أو ابحث باسم الموديل</p>
+  <!-- ══ PHASE 1: SCAN ══ -->
+  <div id="qblPhase1" style="transition:all .5s cubic-bezier(.4,0,.2,1);">
+    <div class="sct-sticky-header">
+      <button class="sct-back-btn" onclick="goBack()">← <span id="qblBackTxt">رجوع</span></button>
+      <div class="sct-sticky-title">
+        <h1 id="qblPageTitle">📷 باركود سريع</h1>
+        <p id="qblPageSub">امسح الباركود أو ابحث باسم الموديل</p>
+      </div>
     </div>
-  </div>
 
-  <div style="max-width:480px;margin:20px auto 0;">
-    <div class="card" style="padding:0;overflow:hidden;border-radius:20px;">
+    <div style="max-width:480px;margin:20px auto 0;">
+      <div class="card" style="padding:0;overflow:hidden;border-radius:20px;">
 
-          <!-- Scanner + Dropdown Container -->
-<div style="position:relative;height:310px;">
+        <!-- Scanner + Dropdown Container -->
+        <div style="position:relative;height:310px;">
 
-        <!-- الكاميرا -->
-        <div id="qblCameraWrap" style="
-          position:absolute;inset:0;
-          background:#000;overflow:hidden;
-          border-radius:0;
-          transition:opacity .35s ease, transform .35s cubic-bezier(.4,0,.2,1);
-        ">
-          <video id="qblVideo" autoplay playsinline muted
-            style="width:100%;height:100%;object-fit:cover;display:block;"></video>
-          <div style="position:absolute;inset:0;pointer-events:none;">
-            <div style="position:absolute;top:18px;right:18px;width:28px;height:28px;
-              border-top:3px solid var(--gold);border-right:3px solid var(--gold);border-radius:0 6px 0 0;"></div>
-            <div style="position:absolute;top:18px;left:18px;width:28px;height:28px;
-              border-top:3px solid var(--gold);border-left:3px solid var(--gold);border-radius:6px 0 0 0;"></div>
-            <div style="position:absolute;bottom:18px;right:18px;width:28px;height:28px;
-              border-bottom:3px solid var(--gold);border-right:3px solid var(--gold);border-radius:0 0 6px 0;"></div>
-            <div style="position:absolute;bottom:18px;left:18px;width:28px;height:28px;
-              border-bottom:3px solid var(--gold);border-left:3px solid var(--gold);border-radius:0 0 0 6px;"></div>
-            <div style="position:absolute;left:18px;right:18px;height:2px;
-              background:linear-gradient(90deg,transparent,var(--gold),transparent);
-              top:50%;animation:scanLine 2s ease-in-out infinite;
-              box-shadow:0 0 12px var(--gold);"></div>
+          <!-- الكاميرا -->
+          <div id="qblCameraWrap" style="
+            position:absolute;inset:0;
+            background:#000;overflow:hidden;
+            border-radius:0;
+            transition:opacity .35s ease, transform .35s cubic-bezier(.4,0,.2,1);
+          ">
+            <video id="qblVideo" autoplay playsinline muted
+              style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <div style="position:absolute;inset:0;pointer-events:none;">
+              <div style="position:absolute;top:18px;right:18px;width:28px;height:28px;
+                border-top:3px solid var(--gold);border-right:3px solid var(--gold);border-radius:0 6px 0 0;"></div>
+              <div style="position:absolute;top:18px;left:18px;width:28px;height:28px;
+                border-top:3px solid var(--gold);border-left:3px solid var(--gold);border-radius:6px 0 0 0;"></div>
+              <div style="position:absolute;bottom:18px;right:18px;width:28px;height:28px;
+                border-bottom:3px solid var(--gold);border-right:3px solid var(--gold);border-radius:0 0 6px 0;"></div>
+              <div style="position:absolute;bottom:18px;left:18px;width:28px;height:28px;
+                border-bottom:3px solid var(--gold);border-left:3px solid var(--gold);border-radius:0 0 0 6px;"></div>
+              <div style="position:absolute;left:18px;right:18px;height:2px;
+                background:linear-gradient(90deg,transparent,var(--gold),transparent);
+                top:50%;animation:scanLine 2s ease-in-out infinite;
+                box-shadow:0 0 12px var(--gold);"></div>
+            </div>
+            <div style="position:absolute;bottom:14px;left:0;right:0;text-align:center;">
+              <span style="background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
+                color:#fff;font-size:11px;font-weight:700;padding:5px 16px;
+                border-radius:20px;border:1px solid rgba(255,255,255,.15);"
+                id="qblStatus">وجّه الكاميرا نحو الباركود</span>
+            </div>
           </div>
-          <div style="position:absolute;bottom:14px;left:0;right:0;text-align:center;">
-            <span style="background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
-              color:#fff;font-size:11px;font-weight:700;padding:5px 16px;
-              border-radius:20px;border:1px solid rgba(255,255,255,.15);"
-              id="qblStatus">وجّه الكاميرا نحو الباركود</span>
+
+          <!-- القائمة المنسدلة — تحل محل الكاميرا -->
+          <div id="qblDropdown" style="
+            position:absolute;inset:0;
+            background:var(--card);
+            border-radius:0;
+            display:none;
+            flex-direction:column;
+            overflow:hidden;
+            opacity:0;
+            transform:translateY(-12px) scale(.98);
+            transition:opacity .3s ease, transform .3s cubic-bezier(.34,1.2,.64,1);
+            z-index:10;
+          ">
+            <!-- رأس القائمة — أزرار الفئات -->
+            <div style="
+              padding:10px 12px 10px;
+              border-bottom:1px solid var(--border);
+              background:var(--card);
+              flex-shrink:0;
+            ">
+              <div id="qblDdTabs" style="
+                display:grid;grid-template-columns:repeat(4,1fr);gap:6px;
+              "></div>
+            </div>
+
+            <!-- قائمة الموديلات -->
+            <div id="qblDdList" style="
+              flex:1;overflow-y:auto;
+              overscroll-behavior:contain;
+            "></div>
+
           </div>
+
         </div>
 
-        <!-- القائمة المنسدلة — تحل محل الكاميرا -->
-        <div id="qblDropdown" style="
-          position:absolute;inset:0;
-          background:var(--card);
-          border-radius:0;
-          display:none;
-          flex-direction:column;
-          overflow:hidden;
-          opacity:0;
-          transform:translateY(-12px) scale(.98);
-          transition:opacity .3s ease, transform .3s cubic-bezier(.34,1.2,.64,1);
-          z-index:10;
-        ">
-          <!-- رأس القائمة — أزرار الفئات -->
-          <div style="
-            padding:10px 12px 10px;
-            border-bottom:1px solid var(--border);
-            background:var(--card);
-            flex-shrink:0;
-          ">
-            <div id="qblDdTabs" style="
-              display:grid;grid-template-columns:repeat(4,1fr);gap:6px;
-            "></div>
+        <!-- حقل البحث -->
+        <div style="padding:14px;">
+          <div style="display:flex;gap:8px;">
+
+            <input type="text" id="qblInput" class="fc"
+              placeholder="اسم الموديل أو الباركود..."
+              oninput="onQblInput()"
+              onkeydown="if(event.key==='Enter')searchQbl()"
+              style="flex:1;">
+
+            <!-- زر القائمة -->
+            <button onclick="qblToggleDropdown()" id="qblDropdownBtn"
+              style="
+                width:42px;height:42px;border-radius:10px;flex-shrink:0;
+                background:var(--input);border:1.5px solid var(--border);
+                color:var(--text2);font-size:16px;cursor:pointer;
+                display:flex;align-items:center;justify-content:center;
+                transition:all var(--tr);
+              "
+            >☰</button>
+
+            <button class="btn btn-p" onclick="searchQbl()"
+              style="width:42px;height:42px;padding:0;flex-shrink:0;
+                display:flex;align-items:center;justify-content:center;">
+              🔍
+            </button>
+
           </div>
-
-          <!-- قائمة الموديلات -->
-          <div id="qblDdList" style="
-            flex:1;overflow-y:auto;
-            overscroll-behavior:contain;
-          "></div>
-
         </div>
 
       </div>
+    </div>
+  </div>
 
-
-               <!-- حقل البحث -->
-      <div style="padding:14px;">
-        <div style="display:flex;gap:8px;">
-
-          <input type="text" id="qblInput" class="fc"
-            placeholder="اسم الموديل أو الباركود..."
-            oninput="onQblInput()"
-            onkeydown="if(event.key==='Enter')searchQbl()"
-            style="flex:1;">
-
-          <!-- زر القائمة -->
-          <button onclick="qblToggleDropdown()" id="qblDropdownBtn"
-            style="
-              width:42px;height:42px;border-radius:10px;flex-shrink:0;
-              background:var(--input);border:1.5px solid var(--border);
-              color:var(--text2);font-size:16px;cursor:pointer;
-              display:flex;align-items:center;justify-content:center;
-              transition:all var(--tr);
-            "
-          >☰</button>
-
-                          <button class="btn btn-p" onclick="searchQbl()"
-                    style="width:42px;height:42px;padding:0;flex-shrink:0;
-                      display:flex;align-items:center;justify-content:center;">
-                    🔍
-                  </button>
-
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-    <!-- ══ PHASE 2: TIER SELECTION ══ -->
-
+  <!-- ══ PHASE 2: TIER SELECTION ══ -->
   <div id="qblPhase2" style="
     position:fixed;inset:0;z-index:1500;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -6157,201 +6154,195 @@ body {
     </div>
   </div>
 
+  <!-- ══ PHASE 3: PRODUCT RESULT ══ -->
+  <div id="qblPhase3" style="
+    max-height:0;overflow:hidden;opacity:0;
+    transition:max-height .5s cubic-bezier(.4,0,.2,1), opacity .4s ease;
+  ">
+    <div style="max-width:380px;margin:0 auto;padding:16px 16px 24px;">
 
-<!-- ══ PHASE 3: PRODUCT RESULT ══ -->
-<div id="qblPhase3" style="
-  max-height:0;overflow:hidden;opacity:0;
-  transition:max-height .5s cubic-bezier(.4,0,.2,1), opacity .4s ease;
-">
-  <div style="max-width:380px;margin:0 auto;padding:16px 16px 24px;">
-
-        <!-- بطاقة المنتج -->
-    <div class="card" id="qblProductCard" style="
-      padding:0;overflow:hidden;
-      border-radius:18px;
-      box-shadow:0 8px 32px rgba(0,0,0,.15);
-    ">
-
-
-      <!-- صورة المنتج -->
-      <div id="qblFinalImg" style="
-        width:100%;height:170px;
-        background:linear-gradient(180deg,#1a3a5c,#1a1b2d);
-        display:flex;align-items:center;justify-content:center;
-        overflow:hidden;position:relative;flex-shrink:0;
+      <!-- بطاقة المنتج -->
+      <div class="card" id="qblProductCard" style="
+        padding:0;overflow:hidden;
+        border-radius:18px;
+        box-shadow:0 8px 32px rgba(0,0,0,.15);
       ">
-        <span id="qblFinalImgIcon" style="font-size:64px;
-          filter:drop-shadow(0 4px 20px rgba(0,0,0,.4));">🛋️</span>
-      </div>
 
-      <!-- معلومات المنتج -->
-      <div style="padding:14px;">
-
-        <!-- الاسم -->
-        <div style="
-          text-align:center;
-          background:var(--input);border:1px solid var(--border);
-          border-radius:10px;padding:10px 12px;margin-bottom:12px;
+        <!-- صورة المنتج -->
+        <div id="qblFinalImg" style="
+          width:100%;height:170px;
+          background:linear-gradient(180deg,#1a3a5c,#1a1b2d);
+          display:flex;align-items:center;justify-content:center;
+          overflow:hidden;position:relative;flex-shrink:0;
         ">
-          <div id="qblFinalName" style="
-            font-size:17px;font-weight:900;color:var(--text);line-height:1.2;
-          ">—</div>
-          <div id="qblFinalTypeLbl" style="
-            font-size:9px;color:var(--muted);font-weight:600;margin-top:2px;
-          ">—</div>
+          <span id="qblFinalImgIcon" style="font-size:64px;
+            filter:drop-shadow(0 4px 20px rgba(0,0,0,.4));">🛋️</span>
         </div>
 
-        <!-- التفاصيل -->
-        <div id="qblFinalDetails" style="
-          display:grid;grid-template-columns:1fr 1fr;
-          gap:5px;margin-bottom:12px;
-        "></div>
+        <!-- معلومات المنتج -->
+        <div style="padding:14px;">
 
-        <!-- السعر المختار فقط -->
-        <div id="qblFinalPriceBox" style="
-          border-radius:12px;padding:14px;
-          margin-bottom:12px;
-          border:2px solid var(--gold);
-          background:linear-gradient(135deg,rgba(200,169,110,.12),rgba(200,169,110,.04));
-        ">
-          
-          <!-- صفوف الأسعار — سعر واحد فقط -->
-          <div style="display:flex;flex-direction:column;gap:6px;" id="qblPriceRows">
-          </div>
-        </div>
-
-               <!-- أزرار الإجراءات -->
-        <div style="display:flex;flex-direction:column;gap:8px;">
-
-          <!-- ══ عداد الكمية ══ -->
-          <div id="qblQtyWrap" style="
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            background:var(--input);
-            border:1.5px solid var(--border);
-            border-radius:14px;
-            padding:10px 14px;
-            gap:12px;
+          <!-- الاسم -->
+          <div style="
+            text-align:center;
+            background:var(--input);border:1px solid var(--border);
+            border-radius:10px;padding:10px 12px;margin-bottom:12px;
           ">
-            <!-- تسمية -->
-            <span style="
-              font-size:12px;
-              font-weight:700;
-              color:var(--text2);
-              flex-shrink:0;
-            " id="qblQtyLabel">الكمية</span>
+            <div id="qblFinalName" style="
+              font-size:17px;font-weight:900;color:var(--text);line-height:1.2;
+            ">—</div>
+            <div id="qblFinalTypeLbl" style="
+              font-size:9px;color:var(--muted);font-weight:600;margin-top:2px;
+            ">—</div>
+          </div>
 
-            <!-- عداد -->
-            <div style="
+          <!-- التفاصيل -->
+          <div id="qblFinalDetails" style="
+            display:grid;grid-template-columns:1fr 1fr;
+            gap:5px;margin-bottom:12px;
+          "></div>
+
+          <!-- السعر المختار فقط -->
+          <div id="qblFinalPriceBox" style="
+            border-radius:12px;padding:14px;
+            margin-bottom:12px;
+            border:2px solid var(--gold);
+            background:linear-gradient(135deg,rgba(200,169,110,.12),rgba(200,169,110,.04));
+          ">
+            <!-- صفوف الأسعار — سعر واحد فقط -->
+            <div style="display:flex;flex-direction:column;gap:6px;" id="qblPriceRows">
+            </div>
+          </div>
+
+          <!-- أزرار الإجراءات -->
+          <div style="display:flex;flex-direction:column;gap:8px;">
+
+            <!-- ══ عداد الكمية ══ -->
+            <div id="qblQtyWrap" style="
               display:flex;
               align-items:center;
-              gap:0;
-              background:var(--card);
+              justify-content:space-between;
+              background:var(--input);
               border:1.5px solid var(--border);
-              border-radius:12px;
-              overflow:hidden;
+              border-radius:14px;
+              padding:10px 14px;
+              gap:12px;
             ">
-              <button onclick="qblChangeQty(-1)" style="
-                width:40px;height:40px;
-                border:none;background:transparent;
-                color:var(--text2);font-size:20px;font-weight:700;
-                cursor:pointer;font-family:inherit;
-                transition:all var(--tr);
-                display:flex;align-items:center;justify-content:center;
-                border-right:1px solid var(--border);
-              "
-              onmouseenter="this.style.background='var(--red)';this.style.color='#fff'"
-              onmouseleave="this.style.background='transparent';this.style.color='var(--text2)'"
-              >−</button>
+              <!-- تسمية -->
+              <span style="
+                font-size:12px;
+                font-weight:700;
+                color:var(--text2);
+                flex-shrink:0;
+              " id="qblQtyLabel">الكمية</span>
 
-              <span id="qblQtyNum" style="
-                min-width:52px;
-                text-align:center;
-                font-size:22px;
-                font-weight:900;
-                color:var(--text);
-                padding:0 8px;
-                line-height:40px;
-              ">1</span>
+              <!-- عداد -->
+              <div style="
+                display:flex;
+                align-items:center;
+                gap:0;
+                background:var(--card);
+                border:1.5px solid var(--border);
+                border-radius:12px;
+                overflow:hidden;
+              ">
+                <button onclick="qblChangeQty(-1)" style="
+                  width:40px;height:40px;
+                  border:none;background:transparent;
+                  color:var(--text2);font-size:20px;font-weight:700;
+                  cursor:pointer;font-family:inherit;
+                  transition:all var(--tr);
+                  display:flex;align-items:center;justify-content:center;
+                  border-right:1px solid var(--border);
+                "
+                onmouseenter="this.style.background='var(--red)';this.style.color='#fff'"
+                onmouseleave="this.style.background='transparent';this.style.color='var(--text2)'"
+                >−</button>
 
-              <button onclick="qblChangeQty(+1)" style="
-                width:40px;height:40px;
-                border:none;background:transparent;
-                color:var(--text2);font-size:20px;font-weight:700;
-                cursor:pointer;font-family:inherit;
-                transition:all var(--tr);
-                display:flex;align-items:center;justify-content:center;
-                border-left:1px solid var(--border);
-              "
-              onmouseenter="this.style.background='var(--green)';this.style.color='#fff'"
-              onmouseleave="this.style.background='transparent';this.style.color='var(--text2)'"
-              >+</button>
+                <span id="qblQtyNum" style="
+                  min-width:52px;
+                  text-align:center;
+                  font-size:22px;
+                  font-weight:900;
+                  color:var(--text);
+                  padding:0 8px;
+                  line-height:40px;
+                ">1</span>
+
+                <button onclick="qblChangeQty(+1)" style="
+                  width:40px;height:40px;
+                  border:none;background:transparent;
+                  color:var(--text2);font-size:20px;font-weight:700;
+                  cursor:pointer;font-family:inherit;
+                  transition:all var(--tr);
+                  display:flex;align-items:center;justify-content:center;
+                  border-left:1px solid var(--border);
+                "
+                onmouseenter="this.style.background='var(--green)';this.style.color='#fff'"
+                onmouseleave="this.style.background='transparent';this.style.color='var(--text2)'"
+                >+</button>
+              </div>
+
+              <!-- السعر × الكمية -->
+              <div style="text-align:center;flex-shrink:0;">
+                <div style="font-size:9px;color:var(--muted);font-weight:600;" id="qblQtyPriceLabel">الإجمالي</div>
+                <div style="font-size:15px;font-weight:900;color:var(--green);" id="qblQtyTotal">$0.00</div>
+              </div>
             </div>
 
-            <!-- السعر × الكمية -->
-            <div style="text-align:center;flex-shrink:0;">
-              <div style="font-size:9px;color:var(--muted);font-weight:600;" id="qblQtyPriceLabel">الإجمالي</div>
-              <div style="font-size:15px;font-weight:900;color:var(--green);" id="qblQtyTotal">$0.00</div>
+            <!-- زر إضافة للسلة -->
+            <button class="btn w100" onclick="qblAddToInvoice()"
+              style="
+                font-size:14px;padding:13px;
+                background:linear-gradient(135deg,var(--gold),var(--gold2));
+                color:#fff;border:none;border-radius:14px;
+                box-shadow:0 4px 16px rgba(200,169,110,.4);
+                font-weight:800;cursor:pointer;font-family:inherit;
+                display:flex;align-items:center;justify-content:center;gap:8px;
+                transition:all .25s cubic-bezier(.34,1.56,.64,1);
+              "
+              onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(200,169,110,.5)'"
+              onmouseleave="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(200,169,110,.4)'"
+            >
+              🛒 <span id="qblAddToInvLbl">أضف للسلة</span>
+            </button>
+
+            <!-- أزرار ثانوية -->
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-s" onclick="qblChangeTier()"
+                style="font-size:12px;padding:9px;flex:1;border-radius:12px;">
+                🔄 <span id="qblChangeTierLbl">تغيير الفئة</span>
+              </button>
+              <button class="btn btn-s" onclick="qblResetToScan()"
+                style="font-size:12px;padding:9px;flex:1;border-radius:12px;">
+                📷 <span id="qblRescanLbl">مسح آخر</span>
+              </button>
             </div>
-          </div>
 
-          <!-- زر إضافة للسلة -->
-          <button class="btn w100" onclick="qblAddToInvoice()"
-            style="
-              font-size:14px;padding:13px;
-              background:linear-gradient(135deg,var(--gold),var(--gold2));
-              color:#fff;border:none;border-radius:14px;
-              box-shadow:0 4px 16px rgba(200,169,110,.4);
-              font-weight:800;cursor:pointer;font-family:inherit;
-              display:flex;align-items:center;justify-content:center;gap:8px;
-              transition:all .25s cubic-bezier(.34,1.56,.64,1);
-            "
-            onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(200,169,110,.5)'"
-            onmouseleave="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(200,169,110,.4)'"
-          >
-            🛒 <span id="qblAddToInvLbl">أضف للسلة</span>
-          </button>
-
-          <!-- أزرار ثانوية -->
-          <div style="display:flex;gap:6px;">
-            <button class="btn btn-s" onclick="qblChangeTier()"
-              style="font-size:12px;padding:9px;flex:1;border-radius:12px;">
-              🔄 <span id="qblChangeTierLbl">تغيير الفئة</span>
-            </button>
-            <button class="btn btn-s" onclick="qblResetToScan()"
-              style="font-size:12px;padding:9px;flex:1;border-radius:12px;">
-              📷 <span id="qblRescanLbl">مسح آخر</span>
-            </button>
           </div>
 
         </div>
-
-
       </div>
-    </div>
 
       <!-- غير موجود -->
-    <div id="qblNotFound" class="card" style="
-      display:none;text-align:center;padding:40px 20px;border-radius:18px;
-    ">
-      <div style="font-size:56px;margin-bottom:12px;">🤷‍♂️</div>
-      <div id="qblNotFoundTitle" style="
-        font-size:18px;font-weight:800;color:var(--text2);margin-bottom:6px;
-      ">لم يُعثر على المنتج</div>
-      <div id="qblNotFoundSub" style="font-size:13px;color:var(--muted);margin-bottom:24px;">
-        تأكد من اسم الموديل أو الباركود
+      <div id="qblNotFound" class="card" style="
+        display:none;text-align:center;padding:40px 20px;border-radius:18px;
+      ">
+        <div style="font-size:56px;margin-bottom:12px;">🤷‍♂️</div>
+        <div id="qblNotFoundTitle" style="
+          font-size:18px;font-weight:800;color:var(--text2);margin-bottom:6px;
+        ">لم يُعثر على المنتج</div>
+        <div id="qblNotFoundSub" style="font-size:13px;color:var(--muted);margin-bottom:24px;">
+          تأكد من اسم الموديل أو الباركود
+        </div>
+        <!-- زر العودة للكاميرا -->
+        <button class="btn btn-s" onclick="qblResetToScan()" style="justify-content:center; width:100%; border-radius:12px; padding:12px; font-size:14px; font-weight:700; background:var(--input); border:2px solid var(--border);">
+          <span id="qblNotFoundRescanLbl">📷 مسح منتج آخر</span>
+        </button>
       </div>
-      <!-- زر العودة للكاميرا -->
-      <button class="btn btn-s" onclick="qblResetToScan()" style="justify-content:center; width:100%; border-radius:12px; padding:12px; font-size:14px; font-weight:700; background:var(--input); border:2px solid var(--border);">
-        <span id="qblNotFoundRescanLbl">📷 مسح منتج آخر</span>
-      </button>
+
     </div>
-
-
   </div>
-</div>
-
 
 </section>
 
