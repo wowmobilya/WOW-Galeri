@@ -5105,17 +5105,15 @@ body {
         👁️ <span data-i18n="sum_btn_preview">معاينة</span>
       </button>
 
-        <!-- ✅ زر المشاركة الجديد -->
+     <!-- ✅ زر المشاركة الجديد -->
 <div style="position:relative; display:inline-block;">
-  
   <button 
     id="shareMainBtn"
     onclick="toggleShareMenu(event)"
     class="btn btn-s btn-sm" 
     style="white-space:nowrap; border-color:var(--gold); color:var(--gold2); background:var(--gold-light); gap:5px;">
-    📤 <span>مشاركة</span> <span id="shareArrow" style="font-size:10px; transition:transform 0.2s;">▼</span>
+    📤 <span data-i18n="share_btn">مشاركة</span> <span id="shareArrow" style="font-size:10px; transition:transform 0.2s;">▼</span>
   </button>
-
 </div>
 
 <!-- ✅ القائمة المنسدلة — خارج كل الحاويات تماماً -->
@@ -5140,7 +5138,7 @@ body {
     font-family:inherit; transition:background 0.15s;
   " onmouseover="this.style.background='var(--gold-light)';this.style.color='var(--gold2)'"
      onmouseout="this.style.background='transparent';this.style.color='var(--text)'">
-    📥 تحميل PDF
+    📥 <span data-i18n="share_pdf">تحميل PDF</span>
   </button>
 
   <button onclick="printInvoice(); closeShareMenu()" style="
@@ -5151,7 +5149,7 @@ body {
     font-family:inherit; transition:background 0.15s;
   " onmouseover="this.style.background='var(--gold-light)';this.style.color='var(--gold2)'"
      onmouseout="this.style.background='transparent';this.style.color='var(--text)'">
-    🖨️ طباعة الفاتورة
+    🖨️ <span data-i18n="share_print">طباعة الفاتورة</span>
   </button>
 
   <button onclick="shareWA(); closeShareMenu()" style="
@@ -5162,7 +5160,7 @@ body {
     font-family:inherit; transition:background 0.15s;
   " onmouseover="this.style.background='var(--gold-light)';this.style.color='var(--gold2)'"
      onmouseout="this.style.background='transparent';this.style.color='var(--text)'">
-    💬 إرسال WhatsApp
+    💬 <span data-i18n="share_wa">إرسال WhatsApp</span>
   </button>
 
   <button onclick="shareEmail(); closeShareMenu()" style="
@@ -5173,7 +5171,7 @@ body {
     font-family:inherit; transition:background 0.15s;
   " onmouseover="this.style.background='var(--gold-light)';this.style.color='var(--gold2)'"
      onmouseout="this.style.background='transparent';this.style.color='var(--text)'">
-    📧 إرسال Email
+    📧 <span data-i18n="share_email">إرسال Email</span>
   </button>
 
   <div style="height:1px; background:var(--border); margin:4px 8px;"></div>
@@ -5186,7 +5184,7 @@ body {
     font-family:inherit; transition:background 0.15s;
   " onmouseover="this.style.background='var(--gold-light)'"
      onmouseout="this.style.background='transparent'">
-    ⚙️ إعدادات الطباعة
+    ⚙️ <span data-i18n="share_settings">إعدادات الطباعة</span>
   </button>
 </div>
 
@@ -7164,6 +7162,12 @@ sum_btn_print:   'طباعة',
  pr_tab_coffee:'طاولة قهوة', pr_tab_dresser:'مدخل', pr_tab_side:'طاولة جانبية', pr_tab_tv:'طاولة تلفاز',
 st_seq_ext: 'تسلسل الخارجي (A)', st_seq_ret: 'تسلسل المفرق (B)', st_seq_whl: 'تسلسل الجملة (C)',
 kdv_rate_word: 'النسبة:',
+share_btn: 'مشاركة',
+share_pdf: 'تحميل PDF',
+share_print: 'طباعة الفاتورة',
+share_wa: 'إرسال WhatsApp',
+share_email: 'إرسال Email',
+share_settings: 'إعدادات الطباعة',
 
     pm_stat_paid:'المدفوع',pm_stat_remaining:'المتبقي',
     add_payment:'إضافة دفعة جديدة',pay_amount:'المبلغ',pay_date:'التاريخ',
@@ -7247,6 +7251,12 @@ sum_btn_print:   'Yazdır',
  pr_tab_coffee:'Orta Sehpa', pr_tab_dresser:'DRESUAR', pr_tab_side:'Yan Sehpa', pr_tab_tv:'TV Ünitesi',
 st_seq_ext: 'Dış Fatura Serisi (A)', st_seq_ret: 'Perakende Serisi (B)', st_seq_whl: 'Toptan Serisi (C)',
 kdv_rate_word: 'Oran:',
+share_btn: 'Paylaş',
+share_pdf: 'PDF İndir',
+share_print: 'Faturayı Yazdır',
+share_wa: 'WhatsApp Gönder',
+share_email: 'E-posta Gönder',
+share_settings: 'Yazdırma Ayarları',
 
     pr_desc:'Açıklama',pricing:'Fiyatlandırma',pricing_hint:'Temel para birimi: USD',
     active_tier:'Aktif Fiyat Kademesi',
@@ -7375,6 +7385,12 @@ sum_btn_print:   'Print',
     pr_tab_coffee:'Coffee Table', pr_tab_dresser:'Dresser', pr_tab_side:'Side Table', pr_tab_tv:'TV Table',
 st_seq_ext: 'External Sequence (A)', st_seq_ret: 'Retail Sequence (B)', st_seq_whl: 'Wholesale Sequence (C)',
 kdv_rate_word: 'Rate:',
+share_btn: 'Share',
+share_pdf: 'Download PDF',
+share_print: 'Print Invoice',
+share_wa: 'Send WhatsApp',
+share_email: 'Send Email',
+share_settings: 'Print Settings',
 
     pr_type:'Product Type',pr_info:'Product Info',pr_name:'Product Name',
     pr_desc:'Description',pricing:'Pricing',pricing_hint:'Base currency: USD',
