@@ -4205,36 +4205,6 @@ body {
 
 <!-- NAVBAR -->
 <nav class="navbar">
-<!-- ========== QBL STICKY CART TOP BAR ========== -->
-<div class="qbl-sticky-cart" id="qblStickyCart">
-  <div class="qbl-sticky-cart-row">
-
-    <!-- أيقونة -->
-    <span class="qbl-sticky-cart-icon">🛒</span>
-
-    <!-- عداد المنتجات -->
-    <span class="qbl-sticky-cart-badge" id="qblStickyBadge">0</span>
-
-    <!-- فاصل مرن -->
-    <div style="flex:1;"></div>
-
-    <!-- الإجمالي -->
-    <span class="qbl-sticky-cart-total" id="qblStickyTotal">$0.00</span>
-
-    <!-- زر الفاتورة -->
-    <button class="qbl-sticky-invoice-btn" onclick="qblSendToInvoice()">
-      📄 <span id="qblStickyInvoiceBtn">فاتورة</span>
-    </button>
-
-    <!-- زر المسح -->
-    <button class="qbl-sticky-clear-btn"
-      onclick="qblClearCartConfirm()"
-      title="مسح السلة">✕</button>
-
-  </div>
-
-</div>
-
   <div class="nb-brand">
     <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
       <span></span><span></span><span></span>
@@ -4255,6 +4225,22 @@ body {
   </div>
 </nav>
 
+<!-- ========== QBL STICKY CART TOP BAR ========== -->
+<div class="qbl-sticky-cart" id="qblStickyCart">
+  <div class="qbl-sticky-cart-row">
+    <span class="qbl-sticky-cart-icon">🛒</span>
+    <span class="qbl-sticky-cart-badge" id="qblStickyBadge">0</span>
+    <div style="flex:1;"></div>
+    <span class="qbl-sticky-cart-total" id="qblStickyTotal">$0.00</span>
+    <button class="qbl-sticky-invoice-btn" onclick="qblSendToInvoice()">
+      📄 <span id="qblStickyInvoiceBtn">فاتورة</span>
+    </button>
+    <button class="qbl-sticky-clear-btn"
+      onclick="qblClearCartConfirm()"
+      title="مسح السلة">✕</button>
+  </div>
+</div>
+
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="side-sec" data-i18n="nav_main">القائمة</div>
@@ -4265,12 +4251,11 @@ body {
   <div class="nav-divider"></div>
   <div class="side-sec" data-i18n="nav_actions">إجراءات</div>
   <button class="nav-item" onclick="showPage('select-client-type')"><span class="nav-icon">➕</span><span data-i18n="nav_add_co">إضافة عميل</span></button>
-  <button class="nav-item" onclick="showPage('add-product')"><span class="nav-icon">📦</span><span data-i18n="nav_add_pr">إضافة منتج</span></button><button class="nav-item" onclick="showPage('quick-barcode')">
-  <span class="nav-icon">📷</span>
-  <span id="qblSidebarBtn">باركود سريع</span>
-</button>
-
-
+  <button class="nav-item" onclick="showPage('add-product')"><span class="nav-icon">📦</span><span data-i18n="nav_add_pr">إضافة منتج</span></button>
+  <button class="nav-item" onclick="showPage('quick-barcode')">
+    <span class="nav-icon">📷</span>
+    <span id="qblSidebarBtn">باركود سريع</span>
+  </button>
   <button class="nav-item" onclick="showPage('select-invoice-type')"><span class="nav-icon">✏️</span><span data-i18n="nav_create">إنشاء فاتورة</span></button>
 </aside>
 
