@@ -13576,14 +13576,15 @@ function initQblPage() {
   const inp = document.getElementById('qblInput');
   if (inp) inp.value = '';
 
-  // ✅ إعادة Phase 1 للظهور الكامل
+  // ✅ إعادة Phase 1 للظهور الكامل — مع إزالة كل القيود
   const p1 = document.getElementById('qblPhase1');
   if (p1) {
-    p1.style.opacity       = '1';
-    p1.style.transform     = '';
-    p1.style.pointerEvents = 'all';
-    p1.style.maxHeight     = '';
-    p1.style.overflow      = '';
+    p1.style.opacity        = '1';
+    p1.style.transform      = '';
+    p1.style.pointerEvents  = 'all';
+    p1.style.maxHeight      = 'none';  // ← كان '' وهذا قد لا يكفي
+    p1.style.overflow       = 'visible';
+    p1.style.transition     = 'none';  // ← منع أي transition متبقي
   }
 
   // ✅ إخفاء Phase 2
@@ -13596,7 +13597,7 @@ function initQblPage() {
 
   // ✅ إخفاء Phase 3
   const p3 = document.getElementById('qblPhase3');
-  if (p3) { p3.style.maxHeight = '0'; p3.style.opacity = '0'; }
+  if (p3) { p3.style.maxHeight = '0'; p3.style.opacity = '0'; p3.style.overflow = 'hidden'; }
 
   // ✅ إعادة زر القائمة لحالته الأصلية
   const ddBtn = document.getElementById('qblDropdownBtn');
@@ -13615,21 +13616,22 @@ function initQblPage() {
     dd.style.transform = 'translateY(-12px) scale(.98)';
   }
 
-  // ✅ إعادة إظهار الكاميرا
+  // ✅ إعادة إظهار الكاميرا بشكل صريح
   const cam = document.getElementById('qblCameraWrap');
   if (cam) {
-    cam.style.opacity      = '1';
-    cam.style.transform    = '';
+    cam.style.opacity       = '1';
+    cam.style.transform     = 'none';
     cam.style.pointerEvents = 'all';
+    cam.style.display       = '';  // ← تأكد أنها ليست مخفية
   }
 
-  // ✅ تشغيل الكاميرا
-  qblStartCamera();
+  // ✅ تشغيل الكاميرا بعد تأخير بسيط لضمان ظهور العناصر
+  setTimeout(() => {
+    qblStartCamera();
+  }, 150);
 
   const statusEl = document.getElementById('qblStatus');
   if (statusEl) statusEl.textContent = qblTx('scan_hint');
-
-// setTimeout(() => { if (inp) inp.focus(); }, 500);
 }
 
 /* ══════════════════════════════════════════
@@ -13824,15 +13826,23 @@ function qblResetToScan() {
   qblHidePhase3();
   qblHidePhase2(false);
 
-  // إعادة إظهار Phase 1
+  // إعادة إظهار Phase 1 بشكل كامل
   const p1 = document.getElementById('qblPhase1');
   if (p1) {
-    p1.style.transition    = 'opacity .4s ease, max-height .5s ease';
+    p1.style.transition    = 'opacity .4s ease';
     p1.style.opacity       = '1';
-    p1.style.maxHeight     = '';
-    p1.style.overflow      = '';
+    p1.style.maxHeight     = 'none';
+    p1.style.overflow      = 'visible';
     p1.style.transform     = '';
     p1.style.pointerEvents = 'all';
+  }
+
+  // إعادة إظهار الكاميرا
+  const cam = document.getElementById('qblCameraWrap');
+  if (cam) {
+    cam.style.opacity       = '1';
+    cam.style.transform     = 'none';
+    cam.style.pointerEvents = 'all';
   }
 
   const inp = document.getElementById('qblInput');
@@ -13841,8 +13851,9 @@ function qblResetToScan() {
   if (st) st.textContent = qblTx('scan_hint');
 
   // إعادة تشغيل الكاميرا
-  qblStartCamera();
+  setTimeout(() => qblStartCamera(), 100);
 }
+
 
 /* تغيير الفئة → رجوع لـ Phase 2 */
 function qblChangeTier() {
@@ -14176,22 +14187,22 @@ function qblHidePhase3() {
 function qblShowNotFound(query) {
   qblHidePhase2(false);
   
-  // 1. إخفاء الكاميرا وقسم البحث بالكامل
-  const p1 = document.getElementById('qblPhase1');
-  if (p1) {
-    p1.style.transition = 'opacity .4s ease, max-height .5s ease';
-    p1.style.opacity = '0';
-    p1.style.maxHeight = '0';
-    p1.style.overflow = 'hidden';
-    p1.style.pointerEvents = 'none';
+  // ✅ إخفاء الكاميرا فقط — مع إبقاء Phase 1 ظاهراً (لزر الرجوع)
+  const cam = document.getElementById('qblCameraWrap');
+  if (cam) {
+    cam.style.opacity       = '0';
+    cam.style.pointerEvents = 'none';
   }
-  qblStopCamera(); // إيقاف الكاميرا لتوفير البطارية
+  qblStopCamera();
 
-  // 2. إخفاء بطاقة المنتج
+  // ✅ لا نخفي Phase 1 بالكامل — فقط نخفي محتوى الكاميرا
+  // (زر الرجوع والعنوان يبقيان ظاهرين)
+
+  // إخفاء بطاقة المنتج
   const pc = document.getElementById('qblProductCard');
   if (pc) pc.style.display = 'none';
 
-  // 3. إظهار بطاقة "غير موجود"
+  // إظهار بطاقة "غير موجود"
   const nf = document.getElementById('qblNotFound');
   if (nf) nf.style.display = 'block';
   
