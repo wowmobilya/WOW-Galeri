@@ -5084,7 +5084,7 @@ body {
   <div class="sct-sticky-header">
     <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
     <div class="sct-sticky-title">
-      <h1 data-i18n="create_title">✏️ إنشاء فاتورة</h1>
+<h1 id="invFormTitle" data-i18n="create_title">✏️ إنشاء فاتورة</h1>
       <div class="chip-row">
         <div class="chip">📄 <span data-i18n="inv_no">رقم:</span> <strong id="curInvNum">A5001</strong></div>
         <div class="chip">📦 CBM: <strong id="invCBMChip">0.00</strong></div>
@@ -5096,9 +5096,10 @@ body {
     <div style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
       
       <!-- زر الحفظ -->
-      <button class="btn btn-g btn-sm" onclick="saveInvoice()" style="white-space:nowrap; box-shadow:0 2px 8px rgba(56,161,105,.3);">
-        💾 <span data-i18n="sum_btn_save">حفظ</span>
-      </button>
+    <button class="btn btn-g btn-sm" onclick="saveInvoice()" style="white-space:nowrap; box-shadow:0 2px 8px rgba(56,161,105,.3);">
+  💾 <span id="invSaveBtnTxt" data-i18n="sum_btn_save">حفظ</span>
+</button>
+
 
       <!-- زر المعاينة -->
       <button class="btn btn-p btn-sm" onclick="previewInvoice()" style="white-space:nowrap; box-shadow:0 2px 8px rgba(200,169,110,.3);">
@@ -8582,9 +8583,11 @@ updateStep1Texts();
 updateDash();
 updatePrInfoLabels();
 updatePrFormBtnLabels(); // ← السطر الجديد
-updatePrDimLabels();
+updateInvFormLabels();
+   updatePrDimLabels();
    updateTierLabels();
 updateCostBoxLabels();
+   
 
 
   // ✅ تحديث نص زر حذف صورة القطعة
@@ -10662,21 +10665,53 @@ function toggleEditMode(){
 }
 
    
+/* ============================================================
+   CREATE INVOICE INIT
+============================================================ */
 function initCreateInv(){
   if(!S.editInvId){
-    S.invItems=[];S.currentInvPayments=[];S.kdvEnabled=false;
-    document.getElementById('kdvToggle').checked=false;
-    document.getElementById('kdvToggleRow').classList.remove('active');
-    document.getElementById('sumDiscount').value='0';
-    document.getElementById('sumDeposit').value='0';
-    const editBtn=document.getElementById('editInvBtn');if(editBtn)editBtn.style.display='none';
+    // 1. تفريغ المصفوفات والمتغيرات البرمجية
+    S.invItems=[];
+    S.currentInvPayments=[];
+    S.kdvEnabled=false;
+
+    // 2. تفريغ الحقول النصية في واجهة المستخدم (تصفير النموذج)
+    const sv = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
     
-    const notesEl = document.getElementById('invNotes');
-    if(notesEl) notesEl.value = '';
+    sv('invCoSel', '');
+    sv('invCountry', '');
+    sv('invProvince', '');
+    sv('invPlate', '');
+    sv('invTruck', '');
+    sv('sumDiscount', '0');
+    sv('sumDeposit', '0');
+    sv('invNotes', '');
+    
+    // إعادة التواريخ لليوم الحالي
+    const today = new Date().toISOString().split('T')[0];
+    sv('invRegDate', today);
+    sv('invLoadDate', today);
+
+    // إعادة تعيين مفتاح KDV
+    document.getElementById('kdvToggle').checked = false;
+    document.getElementById('kdvToggleRow').classList.remove('active');
+    const sumKdvRow = document.getElementById('sumKdvRow');
+    if(sumKdvRow) sumKdvRow.style.display = 'none';
+
+    // إخفاء زر "تعديل" وإخفاء جدول المنتجات لأنه فارغ
+    const editBtn = document.getElementById('editInvBtn');
+    if(editBtn) editBtn.style.display = 'none';
+    
+    const card = document.getElementById('invItemsCard');
+    if(card) card.style.display = 'none';
   }
   
-  updateInvNumDisplay();populateCoSelect();renderPrSelector();
-  renderInvTable();updateSummary();updateKdvDisplay();
+  updateInvNumDisplay();
+  populateCoSelect();
+  renderPrSelector();
+  renderInvTable();
+  updateSummary();
+  updateKdvDisplay();
   
   selInvType(S.invType||'external');
   selInvTier(S.invTier||'A',null);
@@ -10685,15 +10720,8 @@ function initCreateInv(){
   const pmSel = document.getElementById('invPayMethodSelect');
   if (pmSel) pmSel.value = 'cash';
   
-  const ldEl=document.getElementById('invLoadDate');
-  if(ldEl&&!ldEl.value)ldEl.value=new Date().toISOString().split('T')[0];
-  
-  const regDateEl = document.getElementById('invRegDate');
-  if(regDateEl && !regDateEl.value) regDateEl.value = new Date().toISOString().split('T')[0];
-
   updateSumCurrencyBadge();
 
-  // ✅ التعديل الجديد: تم تبسيط هذا الجزء لأن updateStep1Texts ستتكفل بالترجمة
   const b4=document.getElementById('step4Badge');if(b4)b4.textContent=t('kdv_off')||'غير مفعّل';
   const itemLbls = { ar: 'قطعة', tr: 'ürün', en: 'items' };
   const b5 = document.getElementById('step5Badge');
@@ -10702,6 +10730,9 @@ function initCreateInv(){
   S.shippingOpt  = S.shippingOpt  || 'client';
   S.deliveryMode = S.deliveryMode || 'manual';
   updateStep1Texts();
+
+  // ✅ استدعاء دالة تحديث العناوين (إنشاء / تعديل)
+  if (typeof updateInvFormLabels === 'function') updateInvFormLabels();
 }
 
 
@@ -11812,7 +11843,8 @@ function editInv(id){
   S.invType=inv.companyType||'external';
   S.currentInvPayments=S.payments.filter(p=>p.invoiceId===id);
   showPage('create-invoice');
-   setTimeout(()=>{
+  
+  setTimeout(()=>{
     const sv=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
     sv('invCoSel',inv.companyId);
     sv('invRegDate',inv.regDate); // استرجاع تاريخ التسجيل
@@ -11824,15 +11856,29 @@ function editInv(id){
     sv('invCurrency',inv.currency||'USD');
     onCoSelect();onCurrencyChange();
     selInvTier(inv.tier||'A',null);
-const pmSel = document.getElementById('invPayMethodSelect');
-    if (pmSel) pmSel.value = inv.payMethod || 'cash';    document.getElementById('kdvToggle').checked=S.kdvEnabled;
+    
+    const pmSel = document.getElementById('invPayMethodSelect');
+    if (pmSel) pmSel.value = inv.payMethod || 'cash';    
+    
+    document.getElementById('kdvToggle').checked=S.kdvEnabled;
     document.getElementById('kdvToggleRow').classList.toggle('active',S.kdvEnabled);
     document.getElementById('sumKdvRow').style.display=S.kdvEnabled?'flex':'none';
+    
     const editBtn=document.getElementById('editInvBtn');if(editBtn)editBtn.style.display='inline-flex';
     const card=document.getElementById('invItemsCard');if(card&&S.invItems.length)card.style.display='block';
-    renderInvTable();updateSummary();renderPrSelector();updateKdvDisplay();
+    
+    renderInvTable();
+    updateSummary();
+    renderPrSelector();
+    updateKdvDisplay();
+    
+    // ✅ السطر الجديد لتحديث نصوص الصفحة (تعديل الفاتورة)
+    updateInvFormLabels(); 
+    
   },150);
 }
+
+   
 async function deleteInv(id){
   const inv=S.invoices.find(i=>i.id===id);if(!inv)return;
   openDM(inv.invNo||'—',async()=>{
@@ -12525,6 +12571,34 @@ function updatePrFormBtnLabels() {
 }
 
 
+
+/* ============================================================
+   SMART INVOICE LABELS (CREATE vs EDIT)
+============================================================ */
+function updateInvFormLabels() {
+  const lang = S.lang || 'ar';
+  const isEdit = !!S.editInvId; // إذا كان هناك ID فهذا يعني أننا في وضع التعديل
+
+  const labels = {
+    titleAdd:  { ar:'✏️ إنشاء فاتورة', tr:'✏️ Yeni Fatura', en:'✏️ Create Invoice' },
+    titleEdit: { ar:'✏️ تعديل الفاتورة', tr:'✏️ Faturayı Düzenle', en:'✏️ Edit Invoice' },
+    saveAdd:   { ar:'حفظ', tr:'Kaydet', en:'Save' },
+    saveEdit:  { ar:'حفظ التعديل', tr:'Değişiklikleri Kaydet', en:'Save Edit' }
+  };
+
+  const titleEl = document.getElementById('invFormTitle');
+  const saveBtnEl = document.getElementById('invSaveBtnTxt');
+
+  if (titleEl) {
+    titleEl.textContent = isEdit ? (labels.titleEdit[lang] || labels.titleEdit.en) : (labels.titleAdd[lang] || labels.titleAdd.en);
+  }
+  if (saveBtnEl) {
+    saveBtnEl.textContent = isEdit ? (labels.saveEdit[lang] || labels.saveEdit.en) : (labels.saveAdd[lang] || labels.saveAdd.en);
+  }
+}
+
+
+   
    
 /* ── بناء قائمة الألوان من FURNITURE_COLORS ── */
 function buildPrColorSelect() {
