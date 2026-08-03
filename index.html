@@ -8855,7 +8855,19 @@ function showPage(id,pushHistory=true){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   const pg=document.getElementById('page-'+id);if(pg)pg.classList.add('active');
-  const map={dashboard:0,companies:1,products:2,invoices:3,'add-company':4,'add-product':5,'create-invoice':6};
+const map = {
+  dashboard:             0,
+  companies:             1,
+  products:              2,
+  invoices:              3,
+  'add-company':         4,
+  'select-client-type':  4,
+  'add-product':         5,
+  'quick-barcode':       6,
+  'select-invoice-type': 7,
+  'create-invoice':      7,
+  'payment-management':  3,
+};
   const items=document.querySelectorAll('.nav-item');
   if(map[id]!==undefined&&items[map[id]])items[map[id]].classList.add('active');
   if(id==='dashboard')updateDash();
@@ -15280,16 +15292,20 @@ function openPrintOptionsModal() {
 }
 
 function syncPrintOptsToModal() {
-  const map = {
-    showBarcode:    0,
-    showImages:     1,
-    showWeights:    2,
-    showCBM:        3,
-    showSignatures: 4,
-    showNotes:      5,
-    showBankInfo:   6,
-    showRates:      7,
-  };
+const map = {
+  dashboard:              0,
+  companies:              1,
+  products:               2,
+  invoices:               3,
+  'add-company':          4,
+  'select-client-type':   4,   // ← إضافة عميل
+  'add-product':          5,
+  'quick-barcode':        6,   // ← باركود سريع
+  'select-invoice-type':  7,   // ← إنشاء فاتورة
+  'create-invoice':       7,
+  'payment-management':   3,
+};
+
   const labels = document.querySelectorAll('#printOptionsModal .print-opt-item');
   Object.entries(map).forEach(([key, idx]) => {
     const label = labels[idx];
