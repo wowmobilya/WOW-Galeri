@@ -10934,18 +10934,18 @@ function renderInvTable(){
       </div>
     ` : '';
 
-    // 🌟 معالجة خلية الأبعاد (تراعي اللغات والاتجاهات)
+    // 🌟 معالجة خلية الأبعاد (تراعي اللغات والاتجاهات وتمنع الانكماش)
     let dimsHTML = '';
     if (item.dimPieces && item.dimPieces.length > 0) {
       dimsHTML = item.dimPieces.map((dp, pIdx) => {
         return `
-          <div style="display:flex; align-items:center; gap:2px; margin-bottom:4px; justify-content:center; direction:${dimDir};">
-            <span style="background:var(--gold);color:#fff;border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;">${pIdx+1}</span>
-            <input type="number" class="fc" style="width:38px;padding:2px;font-size:10px;text-align:center;border-radius:4px;direction:ltr;" value="${dp.l||0}" onchange="changeInvItemDim(${i}, ${pIdx}, 'l', this.value)" title="${L_title}">
-            <span style="font-size:10px;color:var(--muted);">×</span>
-            <input type="number" class="fc" style="width:38px;padding:2px;font-size:10px;text-align:center;border-radius:4px;direction:ltr;" value="${dp.w||0}" onchange="changeInvItemDim(${i}, ${pIdx}, 'w', this.value)" title="${W_title}">
-            <span style="font-size:10px;color:var(--muted);">×</span>
-            <input type="number" class="fc" style="width:38px;padding:2px;font-size:10px;text-align:center;border-radius:4px;direction:ltr;" value="${dp.h||0}" onchange="changeInvItemDim(${i}, ${pIdx}, 'h', this.value)" title="${H_title}">
+          <div style="display:flex; align-items:center; gap:4px; margin-bottom:6px; justify-content:center; direction:${dimDir}; flex-wrap:nowrap;">
+            <span style="background:var(--gold);color:#fff;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;">${pIdx+1}</span>
+            <input type="number" class="fc" style="width:46px !important; padding:4px 2px !important; font-size:11px; text-align:center; border-radius:4px; direction:ltr; flex-shrink:0;" value="${dp.l||0}" onchange="changeInvItemDim(${i}, ${pIdx}, 'l', this.value)" title="${L_title}">
+            <span style="font-size:11px;color:var(--muted);flex-shrink:0;">×</span>
+            <input type="number" class="fc" style="width:46px !important; padding:4px 2px !important; font-size:11px; text-align:center; border-radius:4px; direction:ltr; flex-shrink:0;" value="${dp.w||0}" onchange="changeInvItemDim(${i}, ${pIdx}, 'w', this.value)" title="${W_title}">
+            <span style="font-size:11px;color:var(--muted);flex-shrink:0;">×</span>
+            <input type="number" class="fc" style="width:46px !important; padding:4px 2px !important; font-size:11px; text-align:center; border-radius:4px; direction:ltr; flex-shrink:0;" value="${dp.h||0}" onchange="changeInvItemDim(${i}, ${pIdx}, 'h', this.value)" title="${H_title}">
           </div>
         `;
       }).join('');
@@ -10959,8 +10959,8 @@ function renderInvTable(){
       <td style="text-align:center; padding:4px;">${imgHtml}</td>
       <td style="font-weight:600;text-align:${isRtl ? 'right' : 'left'};">${item.name}</td>
       
-      <!-- 🌟 خلية الأبعاد -->
-      <td style="vertical-align:middle;">${dimsHTML}</td>
+      <!-- 🌟 خلية الأبعاد (تم إعطاؤها عرض أدنى لمنع التداخل) -->
+      <td style="vertical-align:middle; min-width:190px;">${dimsHTML}</td>
       
       <td style="text-align:center; vertical-align:middle;">
         ${colorSelectHTML}
