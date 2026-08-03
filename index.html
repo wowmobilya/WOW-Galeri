@@ -10907,7 +10907,9 @@ function renderInvTable(){
       <td style="text-align:center; padding:4px;">${imgHtml}</td>
       <td style="font-weight:600;text-align:right;">${item.name}</td>
       <td>${item.dimensions||'—'}</td>
-      <td>${item.color}</td>
+<td style="min-width:130px;">
+  ${buildInvItemColorSelect(i, item.color)}
+</td>
       <td>
         <div class="qty-ctrl">
           <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
@@ -10937,6 +10939,108 @@ function renderInvTable(){
 }
 
 
+
+/* ============================================================
+   INV ITEM COLOR SELECT — قائمة اللون في قطع الفاتورة
+============================================================ */
+function buildInvItemColorSelect(idx, currentColor) {
+  const lang   = S.lang || 'ar';
+  const colors = FURNITURE_COLORS[lang] || FURNITURE_COLORS.en;
+
+  // تحديد ما إذا كان اللون معروفاً في القائمة أم مخصص
+  const isKnown   = colors.some(c => c.val === currentColor);
+  const selectVal = isKnown ? (currentColor || 'STANDARD') : 'CUSTOM';
+
+  // بناء HTML القائمة المنسدلة
+  const optionsHTML = buildColorSelectHTML(selectVal);
+
+  const customDisplay = (!isKnown && currentColor && currentColor !== 'STANDARD')
+    ? 'flex' : 'none';
+  const customValue = (!isKnown && currentColor) ? currentColor : '';
+
+  return `
+    <div style="position:relative;">
+      <select
+        class="fc"
+        style="font-size:10px;padding:4px 6px;cursor:pointer;min-width:120px;"
+        onchange="onInvItemColorChange(${idx}, this)"
+        onclick="event.stopPropagation()"
+      >${optionsHTML}</select>
+
+      <!-- حقل اللون المخصص -->
+      <div id="invColorCustomWrap_${idx}" style="
+        display:${customDisplay};
+        align-items:center;gap:5px;
+        margin-top:4px;
+      ">
+        <input
+          type="text"
+          id="invColorCustom_${idx}"
+          class="fc"
+          value="${customValue}"
+          placeholder="..."
+          style="font-size:10px;padding:4px 6px;flex:1;"
+          oninput="onInvItemColorCustomInput(${idx}, this.value)"
+          onclick="event.stopPropagation()"
+        >
+        <button type="button"
+          onclick="event.stopPropagation(); cancelInvItemColorCustom(${idx})"
+          style="
+            width:22px;height:22px;border-radius:5px;border:none;
+            background:rgba(229,62,62,.1);color:var(--red);
+            cursor:pointer;font-size:11px;flex-shrink:0;
+            display:flex;align-items:center;justify-content:center;
+          "
+        >✕</button>
+      </div>
+    </div>`;
+}
+
+/* ── عند تغيير القائمة ── */
+function onInvItemColorChange(idx, selectEl) {
+  const val = selectEl.value;
+  const customWrap = document.getElementById(`invColorCustomWrap_${idx}`);
+  const customInp  = document.getElementById(`invColorCustom_${idx}`);
+
+  if (val === 'CUSTOM') {
+    if (customWrap) customWrap.style.display = 'flex';
+    if (customInp)  setTimeout(() => customInp.focus(), 60);
+    return;
+  }
+
+  if (customWrap) customWrap.style.display = 'none';
+
+  // تحديث اللون في مصفوفة الفاتورة فقط — لا يمس المنتج الأصلي
+  if (S.invItems[idx]) {
+    S.invItems[idx].color = val;
+  }
+}
+
+/* ── عند الكتابة اليدوية ── */
+function onInvItemColorCustomInput(idx, value) {
+  if (S.invItems[idx]) {
+    S.invItems[idx].color = value;
+  }
+}
+
+/* ── إلغاء الكتابة اليدوية ── */
+function cancelInvItemColorCustom(idx) {
+  const customWrap = document.getElementById(`invColorCustomWrap_${idx}`);
+  const customInp  = document.getElementById(`invColorCustom_${idx}`);
+  const select     = customWrap?.previousElementSibling;
+
+  if (customWrap) customWrap.style.display = 'none';
+  if (customInp)  customInp.value = '';
+  if (select)     select.value = 'STANDARD';
+
+  if (S.invItems[idx]) {
+    S.invItems[idx].color = 'STANDARD';
+  }
+}
+
+
+
+   
 function changeQty(i,d){
   const item=S.invItems[i];if(!item)return;
   item.qty=Math.max(1,item.qty+d);
