@@ -8861,83 +8861,58 @@ function showPage(id,pushHistory=true){
   if(id==='dashboard')updateDash();
   if(id==='companies')renderCo();
   if(id==='products')renderPr();
-  if(id==='add-product'){
-    document.getElementById('pr-type-select-view').style.display = 'block';
-    document.getElementById('pr-form-view').style.display = 'none';
-    renderPrTypeStepCards();
-  }
+if(id==='add-product'){
+  document.getElementById('pr-type-select-view').style.display = 'block';
+  document.getElementById('pr-form-view').style.display = 'none';
+  renderPrTypeStepCards();
+}
+
   if(id==='invoices'){renderInvList();updateInvClientFilterBar();}
   else{S.invClientFilter=null;}
+
   if(id==='create-invoice')initCreateInv();
+  if (id === 'quick-barcode') {
+  updateQblTexts();
+  // ✅ أوقف الكاميرا القديمة أولاً قبل إعادة التهيئة
+  qblStopCamera();
+  // ✅ ثم أعد التهيئة
+  setTimeout(() => initQblPage(), 50);
 
-  if(id==='quick-barcode'){
-    updateQblTexts();
-    // ✅ أوقف الكاميرا القديمة أولاً
-    qblStopCamera();
-    // ✅ أعد التهيئة الكاملة بعد توقف الكاميرا
-    setTimeout(()=>{
-      initQblPage();
-      // ✅ بناء التبويبات مسبقاً حتى تكون جاهزة فور الضغط
-      qblBuildTabs();
-    }, 80);
-    // ✅ إخفاء شريط السلة
-    const bar=document.getElementById('qblStickyCart');
-    if(bar)bar.classList.remove('visible');
-    const mainEl=document.getElementById('mainContent');
-    if(mainEl)mainEl.classList.remove('cart-bar-visible');
-    qblUpdateCartUI();
-  } else {
-    qblStopCamera();
-    qblCloseCart();
-    setTimeout(()=>qblUpdateCartUI(),100);
-  }
+  const bar = document.getElementById('qblStickyCart');
+  if (bar) bar.classList.remove('visible');
+  const mainEl = document.getElementById('mainContent');
+  if (mainEl) mainEl.classList.remove('cart-bar-visible');
+  qblUpdateCartUI();
+} else {
+  qblStopCamera();
+  qblCloseCart();
+  setTimeout(() => qblUpdateCartUI(), 100);
+}
 
-  closeSidebar();
-  updateQabActive(id);
-  window.scrollTo({top:0,behavior:'smooth'});
+
+
+closeSidebar();
+updateQabActive(id); // ✅ أضف هنا
+window.scrollTo({top:0,behavior:'smooth'});
   if(pushHistory&&!_isPopState){
     const url='#'+id;
     if(window.location.hash===url)history.replaceState({page:id},'',url);
     else history.pushState({page:id},'',url);
   }
 }
-
-function getCurrentPage(){
-  const active=document.querySelector('.page.active');
-  return active?active.id.replace('page-',''):'dashboard';
-}
-
+function getCurrentPage(){const active=document.querySelector('.page.active');return active?active.id.replace('page-',''):'dashboard';}
 window.addEventListener('popstate',(e)=>{
   const openModalEl=document.querySelector('.modal-ov.open');
-  if(openModalEl){
-    openModalEl.classList.remove('open');
-    if(openModalEl.id==='scannerModal')closeScanner();
-    history.pushState({page:getCurrentPage()},'','#'+getCurrentPage());
-    return;
-  }
-  if(document.getElementById('sidebar').classList.contains('open')){
-    closeSidebar();
-    history.pushState({page:getCurrentPage()},'','#'+getCurrentPage());
-    return;
-  }
+  if(openModalEl){openModalEl.classList.remove('open');if(openModalEl.id==='scannerModal')closeScanner();history.pushState({page:getCurrentPage()},'','#'+getCurrentPage());return;}
+  if(document.getElementById('sidebar').classList.contains('open')){closeSidebar();history.pushState({page:getCurrentPage()},'','#'+getCurrentPage());return;}
   const cur=getCurrentPage();
-  if(cur==='dashboard'){
-    history.pushState({page:'dashboard'},'','#dashboard');
-    return;
-  }
+  if(cur==='dashboard'){history.pushState({page:'dashboard'},'','#dashboard');return;}
   _isPopState=true;goBack();_isPopState=false;
   history.pushState({page:getCurrentPage()},'','#'+getCurrentPage());
+
 });
-
-function toggleSidebar(){
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sideOv').classList.toggle('open');
-}
-function closeSidebar(){
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sideOv').classList.remove('open');
-}
-
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sideOv').classList.toggle('open');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sideOv').classList.remove('open');}
    /* ============================================================
    SMART BACK — الرجوع الهرمي الذكي
 ============================================================ */
@@ -13643,19 +13618,18 @@ function initQblPage() {
   // ✅ إعادة إظهار الكاميرا
   const cam = document.getElementById('qblCameraWrap');
   if (cam) {
-    cam.style.opacity       = '1';
-    cam.style.transform     = '';
+    cam.style.opacity      = '1';
+    cam.style.transform    = '';
     cam.style.pointerEvents = 'all';
   }
-
-  // ✅ بناء التبويبات مسبقاً حتى تكون جاهزة فور الضغط
-  qblBuildTabs();
 
   // ✅ تشغيل الكاميرا
   qblStartCamera();
 
   const statusEl = document.getElementById('qblStatus');
   if (statusEl) statusEl.textContent = qblTx('scan_hint');
+
+// setTimeout(() => { if (inp) inp.focus(); }, 500);
 }
 
 /* ══════════════════════════════════════════
