@@ -4187,111 +4187,58 @@ body {
 
 
 /* ============================================================
-   SCROLLBAR — WIDER & TOUCH-FRIENDLY (MOBILE + IPAD)
+   🚀 تحسينات التمرير ومساحات اللمس (الهواتف والآيباد)
 ============================================================ */
 
-/* ── الـ Scrollbar العام (كل الصفحة) ── */
+/* 1. تكبير شريط التمرير قليلاً ليكون مرئياً وأسهل في الاستخدام */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 10px; /* ← أعرض للتمرير الأفقي */
-}
-::-webkit-scrollbar-track {
-  background: var(--input);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--gold);
-  border-radius: 10px;
-  border: 2px solid var(--input); /* ← مساحة فارغة حول الـ thumb */
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--gold2);
+  width: 8px !important;  /* كان 4 بكسل */
+  height: 8px !important; /* كان 4 بكسل */
 }
 
-/* ── جدول الفاتورة — أعرض وأسهل للمس ── */
+/* 2. توسيع المساحة السفلية والجانبية للمحتوى الرئيسي لإنشاء مساحة آمنة للإصبع */
+.main {
+  padding: 24px 24px 120px 24px !important; 
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 20px 16px 140px 16px !important; /* مساحة سفلية ضخمة لمنع التداخل مع القائمة السفلية */
+  }
+}
+
+/* 3. ضمان وجود مساحة فارغة دائماً في نهاية أي صفحة */
+.page {
+  padding-bottom: 140px !important; 
+}
+
+/* 4. زيادة المسافات (الفراغات) بين البطاقات ليتمكن المستخدم من التمرير من خلالها */
+.pr-grid-new, 
+.inv-grid, 
+.co-grid {
+  gap: 20px !important; /* كان 16 بكسل - تمت زيادته لإعطاء مساحة للإصبع */
+  padding-bottom: 20px;
+}
+
+/* 5. تحسين تمرير الجداول (الفواتير) لتجنب الضغط العشوائي على الصفوف */
 .inv-tbl-wrap {
-  overflow-x: auto !important;
+  padding-bottom: 15px !important; /* مساحة سفلية للتمرير الأفقي */
+  margin-bottom: 20px !important;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
-  
-  /* ✅ مساحة سفلية للـ scrollbar */
-  padding-bottom: 14px !important;
-  margin-bottom: 8px;
-  
-  /* ✅ الـ scrollbar أعرض داخل الجدول */
-  scrollbar-width: thin;
-  scrollbar-color: var(--gold) var(--input);
 }
 
-.inv-tbl-wrap::-webkit-scrollbar {
-  height: 14px; /* ← أعرض بكثير */
+/* 6. تكبير المساحة القابلة للمس في القائمة الجانبية (Sidebar) لتجنب الأخطاء */
+.nav-item {
+  padding: 14px 16px !important; /* زيادة الحجم العمودي والجانبي */
+  margin-bottom: 6px !important;
 }
 
-.inv-tbl-wrap::-webkit-scrollbar-track {
-  background: var(--input);
-  border-radius: 10px;
-  margin: 0 4px; /* ← مساحة من الجانبين */
-  border: 3px solid var(--card); /* ← مساحة فارغة */
+/* 7. إضافة مساحة فارغة أسفل القوائم المنسدلة (Dropdowns) الطويلة */
+#hsDropdown, 
+#descDropdown {
+  padding-bottom: 40px !important;
 }
 
-.inv-tbl-wrap::-webkit-scrollbar-thumb {
-  background: linear-gradient(90deg, var(--gold), var(--gold2));
-  border-radius: 10px;
-  border: 3px solid var(--card); /* ← مساحة فارغة تجعله أسهل للمس */
-  min-width: 50px; /* ← حد أدنى للعرض */
-}
-
-.inv-tbl-wrap::-webkit-scrollbar-thumb:active {
-  background: var(--gold2);
-}
-
-/* ✅ مؤشر التمرير الأفقي (سهم متحرك) */
-.inv-tbl-wrap::after {
-  content: '← تمرير →';
-  display: block;
-  text-align: center;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--gold2);
-  opacity: 0.6;
-  padding: 4px 0 2px;
-  letter-spacing: 1px;
-  pointer-events: none;
-}
-
-/* ── على الموبايل والآيباد ── */
-@media (max-width: 1024px) {
-  .inv-tbl-wrap {
-    padding-bottom: 18px !important;
-    /* ✅ منطقة لمس أكبر */
-    cursor: grab;
-  }
-  
-  .inv-tbl-wrap:active {
-    cursor: grabbing;
-  }
-  
-  .inv-tbl-wrap::-webkit-scrollbar {
-    height: 18px; /* ← أعرض على اللمس */
-  }
-  
-  .inv-tbl-wrap::-webkit-scrollbar-thumb {
-    border: 4px solid var(--card);
-    min-width: 60px;
-  }
-}
-
-/* ── آيباد تحديداً ── */
-@media (min-width: 601px) and (max-width: 1024px) {
-  .inv-tbl-wrap::-webkit-scrollbar {
-    height: 20px;
-  }
-  
-  .inv-tbl-wrap::-webkit-scrollbar-thumb {
-    border: 5px solid var(--card);
-    border-radius: 12px;
-  }
-}
 
 
    
