@@ -4244,105 +4244,212 @@ html, body {
 
 
 
-
 /* ============================================================
-   VOICE ASSISTANT CARD
+   SETTINGS PAGE — FULL PAGE (بديل النافذة المنبثقة)
 ============================================================ */
-.voice-assistant-card {
-  background: linear-gradient(135deg, var(--nav), #2d2d4e);
-  border-radius: var(--r);
-  padding: 16px 20px;
-  margin-bottom: 20px;
+.settings-page-nav {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  border: 1.5px solid var(--gold);
-  box-shadow: 0 8px 24px rgba(200, 169, 110, 0.15);
-  transition: all var(--tr);
-  position: relative;
-  overflow: hidden;
-}
-
-.voice-assistant-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(200, 169, 110, 0.25);
-}
-
-.voice-assistant-card:active {
-  transform: scale(0.98);
-}
-
-.va-icon {
-  font-size: 32px;
-  width: 54px;
-  height: 54px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border: 1px solid rgba(200, 169, 110, 0.3);
-  transition: all 0.3s ease;
-}
-
-.va-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.va-title {
-  font-size: 15px;
-  font-weight: 800;
-  color: #fff;
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
   gap: 6px;
+  background: var(--input);
+  border-radius: var(--r);
+  padding: 6px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  position: sticky;
+  top: calc(var(--nav-h) + 8px);
+  z-index: 400;
+  box-shadow: var(--shadow);
 }
+.settings-page-nav::-webkit-scrollbar { display: none; }
 
-.va-sub {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.4;
+.settings-nav-btn {
+  flex: 1;
+  min-width: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 8px;
+  border-radius: var(--rs);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  background: transparent;
+  color: var(--muted);
+  transition: all var(--tr);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-
-.va-mic-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+.settings-nav-btn:hover {
+  background: var(--card);
+  color: var(--gold2);
+}
+.settings-nav-btn.active {
   background: linear-gradient(135deg, var(--gold), var(--gold2));
   color: #fff;
-  font-size: 20px;
+  box-shadow: 0 4px 14px rgba(200,169,110,.35);
+}
+.settings-nav-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+.settings-nav-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+
+/* بطاقة قسم الإعدادات */
+.settings-section-card {
+  background: var(--card);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+  animation: fadeUp .3s ease;
+}
+.settings-section-hdr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.settings-section-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: var(--gold-light);
+  border: 1px solid rgba(200,169,110,.2);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 20px;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(200, 169, 110, 0.4);
+}
+.settings-section-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+}
+.settings-section-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
 }
 
-/* تأثير النبض أثناء الاستماع */
-.voice-assistant-card.listening .va-mic-btn {
-  animation: micPulse 1.2s infinite;
-  background: #e53e3e; /* يتحول للأحمر للتنبيه أنه يستمع */
+/* شريط الحفظ الثابت */
+.settings-save-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 600;
+  background: var(--card);
+  border-top: 1.5px solid var(--border);
+  padding: 10px 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+  margin-right: var(--side-w);
 }
-.voice-assistant-card.listening .va-icon {
-  transform: scale(1.1) rotate(5deg);
+[dir="ltr"] .settings-save-bar { margin-right: 0; margin-left: var(--side-w); }
+@media (max-width: 1024px) {
+  .settings-save-bar { margin-right: 0; margin-left: 0; }
+}
+[data-theme="dark"] .settings-save-bar {
+  background: rgba(22,25,39,.96);
+}
+.settings-save-bar .btn {
+  flex: 1;
+  max-width: 200px;
+  justify-content: center;
 }
 
-@keyframes micPulse {
-  0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.5); }
-  70% { box-shadow: 0 0 0 15px rgba(229, 62, 62, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); }
+/* مساحة أسفل الصفحة */
+#page-settings { padding-bottom: 80px; }
+
+/* شارة الصرف في صفحة العملات */
+.curr-rate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gold-light);
+  border: 1px solid rgba(200,169,110,.3);
+  border-radius: var(--rs);
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold2);
+  margin-bottom: 14px;
+  width: 100%;
+  justify-content: center;
+}
+
+/* شبكة أسعار الصرف */
+.curr-rates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.curr-rate-item {
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: var(--rs);
+  padding: 12px;
+  text-align: center;
+  transition: all var(--tr);
+}
+.curr-rate-item:hover { border-color: var(--gold); }
+.curr-rate-item-flag { font-size: 22px; margin-bottom: 4px; }
+.curr-rate-item-pair { font-size: 10px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+.curr-rate-item-val { font-size: 15px; font-weight: 900; color: var(--gold2); }
+
+/* لوجو الإعدادات */
+.settings-logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.settings-logo-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 20px;
+  background: var(--gold-light);
+  border: 2px solid rgba(200,169,110,.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--gold2);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(200,169,110,.2);
+}
+.settings-logo-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.settings-logo-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 
 
    
+
 
 
    
@@ -4470,7 +4577,7 @@ html, body {
       <button class="lang-btn" onclick="setLang('en')">EN</button>
     </div>
     <button class="icon-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
-    <button class="icon-btn" onclick="openSettingsModal()">⚙️</button>
+<button class="icon-btn" onclick="openSettingsModal()">⚙️</button>
   </div>
 </nav>
 
@@ -4514,22 +4621,6 @@ html, body {
     </div>
   </div>
 
-
-
-
-<!-- المساعد الصوتي الذكي -->
-<div class="voice-assistant-card" id="voiceAssistantCard" onclick="startVoiceAssistant()">
-  <div class="va-icon" id="vaIcon">🤖</div>
-  <div class="va-content">
-    <div class="va-title">المساعد الذكي <span style="background:var(--gold);color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;">BETA</span></div>
-    <div class="va-sub" id="vaStatusText">اضغط وتحدث: "أنشئ فاتورة لشركة ستار..."</div>
-  </div>
-  <div class="va-mic-btn" id="vaMicBtn">🎤</div>
-</div>
-
-
-
-   
   <div class="card tip-card-standalone" id="tipCardStandalone">
     <div class="tip-card-inner">
       <div class="tip-card-icon">💡</div>
@@ -6641,6 +6732,323 @@ html, body {
 
 
 
+
+
+
+
+
+
+
+
+<!-- ========== SETTINGS PAGE — FULL PAGE ========== -->
+<section class="page" id="page-settings">
+
+  <!-- رأس الصفحة -->
+  <div class="sct-sticky-header">
+    <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
+    <div class="sct-sticky-title">
+      <h1 id="settingsPageTitle">⚙️ الإعدادات</h1>
+      <p id="settingsPageSub">إدارة إعدادات التطبيق</p>
+    </div>
+  </div>
+
+  <!-- شريط التنقل العلوي بالرموز -->
+  <div class="settings-page-nav" id="settingsPageNav">
+
+    <button class="settings-nav-btn active" id="snav-company"
+      onclick="switchSettingsTab('company')">
+      <span class="settings-nav-icon">🏢</span>
+      <span class="settings-nav-label" id="snav-company-lbl">الشركة</span>
+    </button>
+
+    <button class="settings-nav-btn" id="snav-bank"
+      onclick="switchSettingsTab('bank')">
+      <span class="settings-nav-icon">🏦</span>
+      <span class="settings-nav-label" id="snav-bank-lbl">البنك</span>
+    </button>
+
+    <button class="settings-nav-btn" id="snav-invoice"
+      onclick="switchSettingsTab('invoice')">
+      <span class="settings-nav-icon">📄</span>
+      <span class="settings-nav-label" id="snav-invoice-lbl">الفاتورة</span>
+    </button>
+
+    <button class="settings-nav-btn" id="snav-currency"
+      onclick="switchSettingsTab('currency')">
+      <span class="settings-nav-icon">💱</span>
+      <span class="settings-nav-label" id="snav-currency-lbl">الصرف</span>
+    </button>
+
+  </div>
+
+  <!-- ══ قسم: الشركة ══ -->
+  <div id="stab-page-company">
+
+    <!-- اللوجو -->
+    <div class="settings-section-card">
+      <div class="settings-section-hdr">
+        <div class="settings-section-icon">🖼️</div>
+        <div>
+          <div class="settings-section-title" id="st-logo-title">لوجو الشركة</div>
+          <div class="settings-section-sub" id="st-logo-sub">صورة تظهر في الفواتير والتطبيق</div>
+        </div>
+      </div>
+      <div class="settings-logo-wrap">
+        <div class="settings-logo-circle" id="settingsLogoCircle">W</div>
+        <div class="settings-logo-btns">
+          <div style="position:relative;display:inline-block;">
+            <button class="btn btn-p btn-sm">🖼️ <span id="st-change-logo-btn">تغيير اللوجو</span></button>
+            <input type="file" accept="image/*" onchange="handleSettingsLogoPage(event)"
+              style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+          </div>
+          <button class="btn btn-s btn-sm" onclick="resetSettingsLogoPage()">
+            🔄 <span id="st-reset-logo-btn">استعادة الافتراضي</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- معلومات الشركة -->
+    <div class="settings-section-card">
+      <div class="settings-section-hdr">
+        <div class="settings-section-icon">🏢</div>
+        <div>
+          <div class="settings-section-title" id="st-company-title">معلومات الشركة</div>
+          <div class="settings-section-sub" id="st-company-sub">البيانات الأساسية للشركة</div>
+        </div>
+      </div>
+      <div class="fgrid">
+        <div class="fg">
+          <label class="fl">🏢 <span data-i18n="company_name_setting">اسم الشركة</span></label>
+          <input type="text" class="fc" id="stCompanyNameP" placeholder="WOW Furniture">
+        </div>
+        <div class="fg">
+          <label class="fl">📍 <span data-i18n="address">العنوان</span></label>
+          <input type="text" class="fc" id="stAddressP">
+        </div>
+        <div class="fg">
+          <label class="fl">📞 <span data-i18n="phone">الهاتف</span></label>
+          <input type="text" class="fc" id="stPhoneP">
+        </div>
+        <div class="fg">
+          <label class="fl">📧 <span data-i18n="email">البريد</span></label>
+          <input type="text" class="fc" id="stEmailP">
+        </div>
+        <div class="fg">
+          <label class="fl">🌐 <span data-i18n="website">الموقع</span></label>
+          <input type="text" class="fc" id="stWebsiteP">
+        </div>
+        <div class="fg">
+          <label class="fl">🆔 Mersis</label>
+          <input type="text" class="fc" id="stMersisP">
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ قسم: البنك ══ -->
+  <div id="stab-page-bank" style="display:none;">
+    <div class="settings-section-card">
+      <div class="settings-section-hdr">
+        <div class="settings-section-icon">🏦</div>
+        <div>
+          <div class="settings-section-title" id="st-bank-title">معلومات البنك</div>
+          <div class="settings-section-sub" id="st-bank-sub">بيانات التحويل البنكي للفواتير</div>
+        </div>
+      </div>
+      <div class="fgrid">
+        <div class="fg">
+          <label class="fl">🏦 <span data-i18n="bank_name">البنك</span></label>
+          <input type="text" class="fc" id="stBankNameP">
+        </div>
+        <div class="fg">
+          <label class="fl">👤 <span data-i18n="beneficiary">المستفيد</span></label>
+          <input type="text" class="fc" id="stBeneficiaryP">
+        </div>
+        <div class="fg">
+          <label class="fl">💵 IBAN USD</label>
+          <input type="text" class="fc" id="stIbanUSDp">
+        </div>
+        <div class="fg">
+          <label class="fl">🇹🇷 IBAN TRY</label>
+          <input type="text" class="fc" id="stIbanTRYp">
+        </div>
+        <div class="fg">
+          <label class="fl">💶 IBAN EUR</label>
+          <input type="text" class="fc" id="stIbanEURp">
+        </div>
+        <div class="fg">
+          <label class="fl">🔑 SWIFT</label>
+          <input type="text" class="fc" id="stSwiftP">
+        </div>
+        <div class="fg">
+          <label class="fl">🔢 <span data-i18n="account_no">رقم الحساب</span></label>
+          <input type="text" class="fc" id="stAccountNoP">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ قسم: الفاتورة ══ -->
+  <div id="stab-page-invoice" style="display:none;">
+    <div class="settings-section-card">
+      <div class="settings-section-hdr">
+        <div class="settings-section-icon">📄</div>
+        <div>
+          <div class="settings-section-title" id="st-invoice-title">إعدادات الفاتورة</div>
+          <div class="settings-section-sub" id="st-invoice-sub">تسلسل الأرقام والضريبة والملاحظات</div>
+        </div>
+      </div>
+      <div class="fgrid">
+        <!-- تسلسل الخارجي -->
+        <div class="fg full">
+          <label class="fl">🌍 <span data-i18n="st_seq_ext">تسلسل الخارجي (A)</span></label>
+          <div style="display:flex;gap:5px;">
+            <input type="text" class="fc" id="stPrefixExtP" placeholder="a"
+              style="width:30%;text-align:center;font-weight:bold;">
+            <input type="number" class="fc" id="stNextNoExtP" placeholder="5000"
+              style="width:70%;font-weight:bold;">
+          </div>
+        </div>
+        <!-- تسلسل المفرق -->
+        <div class="fg full">
+          <label class="fl">🏠 <span data-i18n="st_seq_ret">تسلسل المفرق (B)</span></label>
+          <div style="display:flex;gap:5px;">
+            <input type="text" class="fc" id="stPrefixRetP" placeholder="b"
+              style="width:30%;text-align:center;font-weight:bold;">
+            <input type="number" class="fc" id="stNextNoRetP" placeholder="3000"
+              style="width:70%;font-weight:bold;">
+          </div>
+        </div>
+        <!-- تسلسل الجملة -->
+        <div class="fg full">
+          <label class="fl">📦 <span data-i18n="st_seq_whl">تسلسل الجملة (C)</span></label>
+          <div style="display:flex;gap:5px;">
+            <input type="text" class="fc" id="stPrefixWhlP" placeholder="c"
+              style="width:30%;text-align:center;font-weight:bold;">
+            <input type="number" class="fc" id="stNextNoWhlP" placeholder="1000"
+              style="width:70%;font-weight:bold;">
+          </div>
+        </div>
+        <div class="fg">
+          <label class="fl">👤 <span data-i18n="auth_person">الشخص المخوّل</span></label>
+          <input type="text" class="fc" id="stAuthPersonP">
+        </div>
+        <div class="fg">
+          <label class="fl">🏛️ <span data-i18n="kdv_rate_setting">نسبة KDV (%)</span></label>
+          <input type="number" class="fc" id="stKdvRateP" placeholder="20"
+            min="0" max="100" step="0.1" value="20">
+        </div>
+        <div class="fg full">
+          <label class="fl">📝 <span data-i18n="default_notes">ملاحظات افتراضية</span></label>
+          <textarea class="fc" id="stDefaultNotesP" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ قسم: الصرف ══ -->
+  <div id="stab-page-currency" style="display:none;">
+
+    <!-- شبكة الأسعار الحية -->
+    <div class="settings-section-card">
+      <div class="settings-section-hdr">
+        <div class="settings-section-icon">📊</div>
+        <div>
+          <div class="settings-section-title" id="st-rates-title">أسعار الصرف الحالية</div>
+          <div class="settings-section-sub" id="st-rates-sub">محدّثة تلقائياً من الإنترنت</div>
+        </div>
+      </div>
+
+      <div class="curr-rate-badge">
+        ⏱ <span id="stRateTimePage">—</span>
+      </div>
+
+      <div class="curr-rates-grid">
+        <div class="curr-rate-item">
+          <div class="curr-rate-item-flag">💵</div>
+          <div class="curr-rate-item-pair">USD → TRY</div>
+          <div class="curr-rate-item-val" id="st-usdTryP">—</div>
+        </div>
+        <div class="curr-rate-item">
+          <div class="curr-rate-item-flag">💵</div>
+          <div class="curr-rate-item-pair">USD → EUR</div>
+          <div class="curr-rate-item-val" id="st-usdEurP">—</div>
+        </div>
+        <div class="curr-rate-item">
+          <div class="curr-rate-item-flag">🇹🇷</div>
+          <div class="curr-rate-item-pair">TRY → USD</div>
+          <div class="curr-rate-item-val" id="st-tryUsdP">—</div>
+        </div>
+        <div class="curr-rate-item">
+          <div class="curr-rate-item-flag">🇹🇷</div>
+          <div class="curr-rate-item-pair">TRY → EUR</div>
+          <div class="curr-rate-item-val" id="st-tryEurP">—</div>
+        </div>
+        <div class="curr-rate-item">
+          <div class="curr-rate-item-flag">💶</div>
+          <div class="curr-rate-item-pair">EUR → USD</div>
+          <div class="curr-rate-item-val" id="st-eurUsdP">—</div>
+        </div>
+        <div class="curr-rate-item">
+          <div class="curr-rate-item-flag">💶</div>
+          <div class="curr-rate-item-pair">EUR → TRY</div>
+          <div class="curr-rate-item-val" id="st-eurTryP">—</div>
+        </div>
+      </div>
+
+      <button class="btn btn-p w100" onclick="fetchRateAndUpdatePage()">
+        🔄 <span id="st-update-rates-btn">تحديث الأسعار</span>
+      </button>
+    </div>
+
+    <!-- أسعار يدوية -->
+    <div class="settings-section-card">
+      <div class="settings-section-hdr">
+        <div class="settings-section-icon">✏️</div>
+        <div>
+          <div class="settings-section-title" id="st-manual-title">أسعار يدوية</div>
+          <div class="settings-section-sub" id="st-manual-sub">اتركها فارغة للأسعار التلقائية</div>
+        </div>
+      </div>
+      <div class="fgrid">
+        <div class="fg">
+          <label class="fl">💵 <span data-i18n="manual_usd_try">USD/TRY يدوي</span></label>
+          <input type="number" class="fc" id="stManualUsdTryP"
+            placeholder="46.98" step="0.01" min="0">
+        </div>
+        <div class="fg">
+          <label class="fl">💶 <span data-i18n="manual_usd_eur">USD/EUR يدوي</span></label>
+          <input type="number" class="fc" id="stManualUsdEurP"
+            placeholder="0.92" step="0.001" min="0">
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- شريط الحفظ الثابت -->
+  <div class="settings-save-bar">
+    <button class="btn btn-p" onclick="saveSettingsPage()">
+      💾 <span id="st-save-btn">حفظ الإعدادات</span>
+    </button>
+    <button class="btn btn-s" onclick="goBack()">
+      ✕ <span id="st-cancel-btn">إلغاء</span>
+    </button>
+  </div>
+
+</section>
+
+
+
+
+
+
+       
+
+
+       
 
 
 
@@ -17783,14 +18191,6 @@ function imgViewerEscHandler(e) {
 }
 
 
-   
-   
-
-
-
-
-
-
 
 
 
@@ -17803,239 +18203,338 @@ function imgViewerEscHandler(e) {
 
 
 /* ============================================================
-   WOW ROBOT - MULTILINGUAL VOICE ASSISTANT (مساعد صوتي)
+   SETTINGS PAGE — FULL PAGE CONTROLLER
 ============================================================ */
-let recognition;
-let isListening = false;
 
-// ── 1. دالة نطق الروبوت (Text-to-Speech) ──
-function speakText(text) {
-  // إيقاف أي نطق سابق
-  window.speechSynthesis.cancel(); 
-  
-  const utterance = new SpeechSynthesisUtterance(text);
-  // تحديد لغة النطق بناءً على لغة النظام الحالية
-  utterance.lang = S.lang === 'ar' ? 'ar-SA' : (S.lang === 'tr' ? 'tr-TR' : 'en-US');
-  
-  // تعديل نبرة الصوت لتبدو أكثر ودية
-  utterance.pitch = 1.1; 
-  utterance.rate = 1.0;  
+let _settingsCurrentTab = 'company';
 
-  window.speechSynthesis.speak(utterance);
+/* ── فتح صفحة الإعدادات ── */
+function openSettingsModal() {
+  loadSettingsToPageForm();
+  updateSettingsPageTexts();
+  showPage('settings');
 }
 
-// ── 2. تهيئة أذن الروبوت (Speech Recognition) ──
-function initSpeechRecognition() {
-  window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!window.SpeechRecognition) {
-    showToast('متصفحك لا يدعم الأوامر الصوتية', 'er');
-    return false;
-  }
-  
-  recognition = new SpeechRecognition();
-  // الاستماع بنفس لغة النظام
-  recognition.lang = S.lang === 'ar' ? 'ar-SA' : (S.lang === 'tr' ? 'tr-TR' : 'en-US');
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
+/* ── تبديل التبويبات ── */
+function switchSettingsTab(tab) {
+  _settingsCurrentTab = tab;
+  const tabs = ['company','bank','invoice','currency'];
 
-  recognition.onstart = function() {
-    isListening = true;
-    window.speechSynthesis.cancel(); // إسكات الروبوت إذا كان يتحدث ليبدأ الاستماع
-    document.getElementById('voiceAssistantCard').classList.add('listening');
-    
-    const listeningMsgs = {
-      ar: 'أنا أستمع إليك الآن...',
-      tr: 'Sizi dinliyorum...',
-      en: 'I am listening to you...'
-    };
-    document.getElementById('vaStatusText').textContent = listeningMsgs[S.lang] || listeningMsgs.en;
-  };
+  tabs.forEach(t => {
+    const btn  = document.getElementById('snav-' + t);
+    const body = document.getElementById('stab-page-' + t);
+    if (btn)  btn.classList.toggle('active', t === tab);
+    if (body) body.style.display = t === tab ? 'block' : 'none';
+  });
 
-  recognition.onresult = function(event) {
-    const transcript = event.results[0][0].transcript;
-    document.getElementById('vaStatusText').textContent = `"${transcript}"`;
-    processSmartCommand(transcript);
-  };
-
-  recognition.onerror = function(event) {
-    const errorMsgs = {
-      ar: 'لم أتمكن من سماعك بوضوح، حاول مجدداً.',
-      tr: 'Sizi net duyamadım, lütfen tekrar deneyin.',
-      en: 'I could not hear you clearly, please try again.'
-    };
-    document.getElementById('vaStatusText').textContent = errorMsgs[S.lang] || errorMsgs.en;
-    stopListeningUI();
-  };
-
-  recognition.onend = function() {
-    stopListeningUI();
-  };
-  
-  return true;
+  // تحديث أسعار الصرف عند فتح تبويب العملات
+  if (tab === 'currency') updateSettingsRatesPage();
 }
 
-function stopListeningUI() {
-  isListening = false;
-  const card = document.getElementById('voiceAssistantCard');
-  if(card) card.classList.remove('listening');
-  
-  setTimeout(() => {
-    const status = document.getElementById('vaStatusText');
-    const defaultMsgs = {
-      ar: 'اضغط وتحدث: "أنشئ فاتورة لشركة..."',
-      tr: 'Dokun ve konuş: "Fatura oluştur..."',
-      en: 'Tap and speak: "Create invoice for..."'
-    };
-    if(status && !isListening) status.textContent = defaultMsgs[S.lang] || defaultMsgs.en;
-  }, 5000);
-}
-
-function startVoiceAssistant() {
-  if (isListening) {
-    recognition.stop();
-    return;
-  }
-  // إعادة التهيئة في كل مرة لضمان التقاط اللغة الحالية للنظام
-  if (initSpeechRecognition()) {
-    try { recognition.start(); } catch(e) {}
-  }
-}
-
-// ── 3. العقل المدبر: تحليل النوايا (Intent Recognition) ──
-function processSmartCommand(text) {
-  const lowerText = text.toLowerCase().replace(/[.,!؟?]/g, '');
-  const lang = S.lang || 'ar';
-
-  // --- النية الأولى: سؤال عن الهوية (Who are you?) ---
-  const isIdentityQuestion = 
-    (lang === 'ar' && (lowerText.includes('من تكون') || lowerText.includes('من أنت') || lowerText.includes('اسمك'))) ||
-    (lang === 'tr' && (lowerText.includes('kimsin') || lowerText.includes('adın ne'))) ||
-    (lang === 'en' && (lowerText.includes('who are you') || lowerText.includes('your name')));
-
-  if (isIdentityQuestion) {
-    const identityReplies = {
-      ar: 'أهلاً بك! أنا واو روبوت، مساعدك الذكي لإدارة الفواتير والمنتجات. كيف يمكنني مساعدتك اليوم؟',
-      tr: 'Merhaba! Ben WOW Robot, fatura ve ürün yönetimi için akıllı asistanınızım. Bugün size nasıl yardımcı olabilirim?',
-      en: 'Hello! I am WOW Robot, your smart assistant for invoice and product management. How can I help you today?'
-    };
-    const reply = identityReplies[lang];
-    document.getElementById('vaStatusText').textContent = '🤖 ' + reply;
-    speakText(reply); // نطق الإجابة
-    return;
-  }
-
-  // --- النية الثانية: إنشاء فاتورة ---
-  const isInvoiceIntent = 
-    (lang === 'ar' && (lowerText.includes('فاتورة') || lowerText.includes('انشئ'))) ||
-    (lang === 'tr' && (lowerText.includes('fatura') || lowerText.includes('oluştur'))) ||
-    (lang === 'en' && (lowerText.includes('invoice') || lowerText.includes('create')));
-
-  if (!isInvoiceIntent) {
-    const notUnderstood = {
-      ar: 'عذراً، لم أفهم طلبك. جرب سؤالي "من أنت؟" أو قل "أنشئ فاتورة".',
-      tr: 'Üzgünüm, anlayamadım. "Kimsin?" veya "Fatura oluştur" demeyi deneyin.',
-      en: 'Sorry, I didn\'t catch that. Try asking "Who are you?" or say "Create invoice".'
-    };
-    document.getElementById('vaStatusText').textContent = notUnderstood[lang];
-    speakText(notUnderstood[lang]);
-    return;
-  }
-
-  // إذا كانت النية فاتورة، نخبر المستخدم أننا نجهزها صوتياً
-  const processingMsgs = {
-    ar: 'حاضر، جاري تجهيز الفاتورة الآن.',
-    tr: 'Tamam, faturayı şimdi hazırlıyorum.',
-    en: 'Sure, preparing the invoice now.'
+/* ── تحميل البيانات إلى الحقول ── */
+function loadSettingsToPageForm() {
+  const sv = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val || '';
   };
-  speakText(processingMsgs[lang]);
-  showToast('🤖 ' + processingMsgs[lang], 'in');
 
-  // استخراج البيانات بناءً على اللغة
-  let companyName = null;
-  let qty = 1;
-  let prType = 'coffee_table';
-  let tier = 'A';
+  sv('stCompanyNameP',  S.settings.companyName);
+  sv('stAddressP',      S.settings.address);
+  sv('stPhoneP',        S.settings.phone);
+  sv('stEmailP',        S.settings.email);
+  sv('stWebsiteP',      S.settings.website);
+  sv('stMersisP',       S.settings.mersis);
+  sv('stBankNameP',     S.settings.bankName);
+  sv('stBeneficiaryP',  S.settings.beneficiary);
+  sv('stIbanUSDp',      S.settings.ibanUSD);
+  sv('stIbanTRYp',      S.settings.ibanTRY);
+  sv('stIbanEURp',      S.settings.ibanEUR);
+  sv('stSwiftP',        S.settings.swift);
+  sv('stAccountNoP',    S.settings.accountNo);
+  sv('stPrefixExtP',    S.settings.prefixExt || 'a');
+  sv('stNextNoExtP',    S.settings.nextNoExt || 5000);
+  sv('stPrefixRetP',    S.settings.prefixRet || 'b');
+  sv('stNextNoRetP',    S.settings.nextNoRet || 3000);
+  sv('stPrefixWhlP',    S.settings.prefixWhl || 'c');
+  sv('stNextNoWhlP',    S.settings.nextNoWhl || 1000);
+  sv('stAuthPersonP',   S.settings.authPerson);
+  sv('stKdvRateP',      S.settings.kdvRate || 20);
+  sv('stDefaultNotesP', S.settings.defaultNotes);
+  sv('stManualUsdTryP', S.settings.manualUsdTry || '');
+  sv('stManualUsdEurP', S.settings.manualUsdEur || '');
 
-  if (lang === 'ar') {
-    const coMatch = lowerText.match(/(?:لشركة|شركة)\s+([أ-يa-zA-Z\s]+?)(?:\s+أضف|\s+اضف|\s+و|\s+بعدد|$)/);
-    if (coMatch) companyName = coMatch[1].trim();
-    const qtyMatch = lowerText.match(/(\d+)\s*(?:طاولات|طاولة|قطعة|حبات|حبة)/);
-    if (qtyMatch) qty = parseInt(qtyMatch[1]);
-    if (lowerText.includes('تلفاز') || lowerText.includes('تلفزيون')) prType = 'tv_table';
-    else if (lowerText.includes('جانبية') || lowerText.includes('جانبي')) prType = 'side_table';
-    else if (lowerText.includes('مدخل') || lowerText.includes('درسوار')) prType = 'dresser';
-    if (lowerText.includes('b') || lowerText.includes('ب') || lowerText.includes('جملة')) tier = 'B';
-    if (lowerText.includes('c') || lowerText.includes('ج') || lowerText.includes('خاص')) tier = 'C';
-
-  } else if (lang === 'tr') {
-    const coMatch = lowerText.match(/([a-zA-ZğüşöçİĞÜŞÖÇ\s]+?)\s+(?:için|firması|şirketi)/);
-    if (coMatch) companyName = coMatch[1].trim();
-    const qtyMatch = lowerText.match(/(\d+)\s*(?:adet|tane|parça)/);
-    if (qtyMatch) qty = parseInt(qtyMatch[1]);
-    if (lowerText.includes('tv') || lowerText.includes('ünite')) prType = 'tv_table';
-    else if (lowerText.includes('yan')) prType = 'side_table';
-    else if (lowerText.includes('dresuar') || lowerText.includes('konsol')) prType = 'dresser';
-    if (lowerText.includes('b') || lowerText.includes('toptan')) tier = 'B';
-    if (lowerText.includes('c') || lowerText.includes('özel')) tier = 'C';
-
-  } else {
-    const coMatch = lowerText.match(/(?:for|company)\s+([a-zA-Z\s]+?)(?:\s+add|\s+with|$)/);
-    if (coMatch) companyName = coMatch[1].trim();
-    const qtyMatch = lowerText.match(/(\d+)\s*(?:pieces|piece|tables|table)/);
-    if (qtyMatch) qty = parseInt(qtyMatch[1]);
-    if (lowerText.includes('tv')) prType = 'tv_table';
-    else if (lowerText.includes('side')) prType = 'side_table';
-    else if (lowerText.includes('dresser') || lowerText.includes('console')) prType = 'dresser';
-    if (lowerText.includes('b') || lowerText.includes('wholesale')) tier = 'B';
-    if (lowerText.includes('c') || lowerText.includes('special')) tier = 'C';
-  }
-
-  // إذا لم نجد كمية بالكلمات الدلالية، نبحث عن أي رقم
-  if (qty === 1) {
-    const anyNum = lowerText.match(/(\d+)/);
-    if (anyNum) qty = parseInt(anyNum[1]);
-  }
-
-  // تنفيذ الإجراءات
-  let targetCompany = null;
-  if (companyName) {
-    targetCompany = S.companies.find(c => c.name.toLowerCase().includes(companyName) || (c.buyerName && c.buyerName.toLowerCase().includes(companyName)));
-  }
-  if (!targetCompany && S.companies.length > 0) targetCompany = S.companies[0];
-
-  let targetProduct = S.products.find(p => p.type === prType);
-  if (!targetProduct && S.products.length > 0) targetProduct = S.products[0];
-
-  S.editInvId = null;
-  S.invType = targetCompany ? targetCompany.type : 'external';
-  
-  initCreateInv();
-  
-  if (targetCompany) {
-    const coSel = document.getElementById('invCoSel');
-    if (coSel) { coSel.value = targetCompany.id; onCoSelect(); }
-  }
-
-  selInvTier(tier, null);
-
-  if (targetProduct) {
-    addItemToInv(targetProduct);
-    const lastItem = S.invItems[S.invItems.length - 1];
-    if (lastItem) {
-      lastItem.qty = qty;
-      lastItem.totalUSD = lastItem.qty * lastItem.priceUSD;
-      lastItem.totalTRY = lastItem.qty * lastItem.priceTRY;
-      lastItem.totalEUR = lastItem.qty * lastItem.priceEUR;
-      lastItem.totalCBM = (lastItem.cbm || 0) * lastItem.qty;
+  // اللوجو
+  const logoEl = document.getElementById('settingsLogoCircle');
+  if (logoEl) {
+    if (S.settings.logo) {
+      logoEl.innerHTML = `<img src="${S.settings.logo}" alt="logo">`;
+    } else {
+      logoEl.textContent = (S.settings.companyName || 'W')[0].toUpperCase();
     }
   }
 
-  renderInvTable();
-  updateSummary();
-  showPage('create-invoice');
+  // تحديث الأسعار
+  updateSettingsRatesPage();
+
+  // العودة للتبويب الأول
+  switchSettingsTab('company');
+}
+
+/* ── تحديث عرض أسعار الصرف ── */
+function updateSettingsRatesPage() {
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('st-usdTryP',  S.usdTry.toFixed(2));
+  set('st-usdEurP',  S.usdEur.toFixed(4));
+  set('st-tryUsdP',  (1/S.usdTry).toFixed(6));
+  set('st-tryEurP',  ((1/S.usdTry)*S.usdEur).toFixed(6));
+  set('st-eurUsdP',  (1/S.usdEur).toFixed(4));
+  set('st-eurTryP',  ((1/S.usdEur)*S.usdTry).toFixed(2));
+  set('stRateTimePage', S.rateTime ? `⏱ ${S.rateTime}` : '—');
+}
+
+/* ── تحديث الأسعار من الإنترنت ── */
+async function fetchRateAndUpdatePage() {
+  await fetchRate();
+  updateSettingsRatesPage();
+}
+
+/* ── حفظ الإعدادات من الصفحة ── */
+async function saveSettingsPage() {
+  const gv = id => {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  };
+
+  S.settings.companyName   = gv('stCompanyNameP');
+  S.settings.address       = gv('stAddressP');
+  S.settings.phone         = gv('stPhoneP');
+  S.settings.email         = gv('stEmailP');
+  S.settings.website       = gv('stWebsiteP');
+  S.settings.mersis        = gv('stMersisP');
+  S.settings.bankName      = gv('stBankNameP');
+  S.settings.beneficiary   = gv('stBeneficiaryP');
+  S.settings.ibanUSD       = gv('stIbanUSDp');
+  S.settings.ibanTRY       = gv('stIbanTRYp');
+  S.settings.ibanEUR       = gv('stIbanEURp');
+  S.settings.swift         = gv('stSwiftP');
+  S.settings.accountNo     = gv('stAccountNoP');
+  S.settings.prefixExt     = gv('stPrefixExtP') || 'a';
+  S.settings.nextNoExt     = parseInt(gv('stNextNoExtP')) || 5000;
+  S.settings.prefixRet     = gv('stPrefixRetP') || 'b';
+  S.settings.nextNoRet     = parseInt(gv('stNextNoRetP')) || 3000;
+  S.settings.prefixWhl     = gv('stPrefixWhlP') || 'c';
+  S.settings.nextNoWhl     = parseInt(gv('stNextNoWhlP')) || 1000;
+  S.settings.authPerson    = gv('stAuthPersonP');
+  S.settings.kdvRate       = parseFloat(gv('stKdvRateP')) || 20;
+  S.settings.defaultNotes  = gv('stDefaultNotesP');
+
+  const manTry = parseFloat(gv('stManualUsdTryP'));
+  const manEur = parseFloat(gv('stManualUsdEurP'));
+  S.settings.manualUsdTry  = manTry || null;
+  S.settings.manualUsdEur  = manEur || null;
+  if (manTry) S.usdTry = manTry;
+  if (manEur) S.usdEur = manEur;
+
+  await dbPut('settings', { id:'main', ...S.settings });
+
+  // تحديث الـ Navbar
+  const navTxt = document.getElementById('navTitle');
+  if (navTxt && S.settings.companyName) {
+    const parts = S.settings.companyName.split(' ');
+    navTxt.innerHTML = `<span>${parts[0]}</span> ${parts.slice(1).join(' ')}`;
+  }
+  const navLogoTxt = document.getElementById('navLogoTxt');
+  if (navLogoTxt) navLogoTxt.textContent = (S.settings.companyName || 'W')[0].toUpperCase();
+  if (S.settings.logo) {
+    const nl = document.getElementById('navLogo');
+    if (nl) nl.innerHTML = `<img src="${S.settings.logo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
+  }
+
+  updateRateUI();
+  updateKdvDisplay();
+  showToast(t('settings_saved'), 'ok');
+  goBack();
+}
+
+/* ── معالج اللوجو في صفحة الإعدادات ── */
+function handleSettingsLogoPage(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    S.settings.logo = ev.target.result;
+    const logoEl = document.getElementById('settingsLogoCircle');
+    if (logoEl) logoEl.innerHTML = `<img src="${ev.target.result}" alt="logo">`;
+    const nl = document.getElementById('navLogo');
+    if (nl) nl.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
+  };
+  r.readAsDataURL(f);
+}
+
+/* ── استعادة اللوجو الافتراضي ── */
+function resetSettingsLogoPage() {
+  const defaultLogo = 'https://h.top4top.io/p_3861refg81.png';
+  S.settings.logo = defaultLogo;
+  const logoEl = document.getElementById('settingsLogoCircle');
+  if (logoEl) logoEl.innerHTML = `<img src="${defaultLogo}" alt="logo">`;
+  const nl = document.getElementById('navLogo');
+  if (nl) nl.innerHTML = `<img src="${defaultLogo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
+  showToast(t('logo_restored'), 'ok');
+}
+
+/* ── تحديث نصوص الصفحة حسب اللغة ── */
+function updateSettingsPageTexts() {
+  const lang = S.lang || 'ar';
+  const set  = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+
+  // عناوين التبويبات
+  const navLabels = {
+    ar: { company:'الشركة', bank:'البنك', invoice:'الفاتورة', currency:'الصرف' },
+    tr: { company:'Şirket', bank:'Banka', invoice:'Fatura', currency:'Döviz' },
+    en: { company:'Company', bank:'Bank', invoice:'Invoice', currency:'Currency' },
+  };
+  const nl = navLabels[lang] || navLabels.ar;
+  set('snav-company-lbl', nl.company);
+  set('snav-bank-lbl',    nl.bank);
+  set('snav-invoice-lbl', nl.invoice);
+  set('snav-currency-lbl',nl.currency);
+
+  // عنوان الصفحة
+  const pageTitles = {
+    ar: '⚙️ الإعدادات',
+    tr: '⚙️ Ayarlar',
+    en: '⚙️ Settings',
+  };
+  const pageSubs = {
+    ar: 'إدارة إعدادات التطبيق',
+    tr: 'Uygulama ayarlarını yönetin',
+    en: 'Manage application settings',
+  };
+  set('settingsPageTitle', pageTitles[lang] || pageTitles.ar);
+  set('settingsPageSub',   pageSubs[lang]   || pageSubs.ar);
+
+  // أزرار اللوجو
+  const logoLabels = {
+    ar: { change:'تغيير اللوجو', reset:'استعادة الافتراضي' },
+    tr: { change:'Logo Değiştir', reset:'Varsayılana Dön' },
+    en: { change:'Change Logo', reset:'Restore Default' },
+  };
+  const ll = logoLabels[lang] || logoLabels.ar;
+  set('st-change-logo-btn', ll.change);
+  set('st-reset-logo-btn',  ll.reset);
+
+  // أزرار الحفظ
+  const saveLabels = {
+    ar: { save:'حفظ الإعدادات', cancel:'إلغاء' },
+    tr: { save:'Ayarları Kaydet', cancel:'İptal' },
+    en: { save:'Save Settings', cancel:'Cancel' },
+  };
+  const sl = saveLabels[lang] || saveLabels.ar;
+  set('st-save-btn',   sl.save);
+  set('st-cancel-btn', sl.cancel);
+
+  // عناوين الأقسام
+  const sectionTitles = {
+    ar: {
+      logo:      'لوجو الشركة',
+      logoSub:   'صورة تظهر في الفواتير والتطبيق',
+      company:   'معلومات الشركة',
+      companySub:'البيانات الأساسية للشركة',
+      bank:      'معلومات البنك',
+      bankSub:   'بيانات التحويل البنكي للفواتير',
+      invoice:   'إعدادات الفاتورة',
+      invoiceSub:'تسلسل الأرقام والضريبة والملاحظات',
+      rates:     'أسعار الصرف الحالية',
+      ratesSub:  'محدّثة تلقائياً من الإنترنت',
+      manual:    'أسعار يدوية',
+      manualSub: 'اتركها فارغة للأسعار التلقائية',
+      updateBtn: 'تحديث الأسعار',
+    },
+    tr: {
+      logo:      'Şirket Logosu',
+      logoSub:   'Faturalarda ve uygulamada görünen resim',
+      company:   'Şirket Bilgileri',
+      companySub:'Temel şirket verileri',
+      bank:      'Banka Bilgileri',
+      bankSub:   'Faturalar için banka transfer bilgileri',
+      invoice:   'Fatura Ayarları',
+      invoiceSub:'Seri numaraları, vergi ve notlar',
+      rates:     'Güncel Döviz Kurları',
+      ratesSub:  'İnternetten otomatik güncellenir',
+      manual:    'Manuel Kurlar',
+      manualSub: 'Otomatik kur için boş bırakın',
+      updateBtn: 'Kurları Güncelle',
+    },
+    en: {
+      logo:      'Company Logo',
+      logoSub:   'Image shown in invoices and the app',
+      company:   'Company Information',
+      companySub:'Basic company data',
+      bank:      'Bank Information',
+      bankSub:   'Bank transfer details for invoices',
+      invoice:   'Invoice Settings',
+      invoiceSub:'Number sequences, tax and notes',
+      rates:     'Current Exchange Rates',
+      ratesSub:  'Auto-updated from the internet',
+      manual:    'Manual Rates',
+      manualSub: 'Leave empty for automatic rates',
+      updateBtn: 'Update Rates',
+    },
+  };
+  const st = sectionTitles[lang] || sectionTitles.ar;
+  set('st-logo-title',    st.logo);
+  set('st-logo-sub',      st.logoSub);
+  set('st-company-title', st.company);
+  set('st-company-sub',   st.companySub);
+  set('st-bank-title',    st.bank);
+  set('st-bank-sub',      st.bankSub);
+  set('st-invoice-title', st.invoice);
+  set('st-invoice-sub',   st.invoiceSub);
+  set('st-rates-title',   st.rates);
+  set('st-rates-sub',     st.ratesSub);
+  set('st-manual-title',  st.manual);
+  set('st-manual-sub',    st.manualSub);
+  set('st-update-rates-btn', st.updateBtn);
+}
+
+/* ── ربط مع showPage لتحديث النصوص تلقائياً ── */
+const _origShowPageSettings = window.showPage;
+window.showPage = function(id, pushHistory = true) {
+  _origShowPageSettings.call(this, id, pushHistory);
+  if (id === 'settings') {
+    setTimeout(() => updateSettingsPageTexts(), 50);
+  }
+};
+
+/* ── تحديث النصوص عند تغيير اللغة ── */
+const _origApplyTrSettings = window.applyTr;
+window.applyTr = function() {
+  _origApplyTrSettings.call(this);
+  const currentPage = getCurrentPage();
+  if (currentPage === 'settings') {
+    updateSettingsPageTexts();
+  }
+};
+
+/* ── إضافة صفحة settings لخريطة PARENT_MAP ── */
+if (typeof PARENT_MAP !== 'undefined') {
+  PARENT_MAP['settings'] = 'dashboard';
+}
+
+/* ── إضافة settings لخريطة التنقل ── */
+if (typeof BNAV_CONFIG !== 'undefined' && BNAV_CONFIG.pages) {
+  BNAV_CONFIG.pages['settings'] = 2;
 }
 
 
+
+
+
+
+   
+
+   
+   
    
 
 
