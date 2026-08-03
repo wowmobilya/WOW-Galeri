@@ -4187,57 +4187,52 @@ body {
 
 
 /* ============================================================
-   🚀 تحسينات التمرير ومساحات اللمس (الهواتف والآيباد)
+   📱 إصلاح وتوسيع مساحات التمرير للهواتف والآيباد (2026)
 ============================================================ */
 
-/* 1. تكبير شريط التمرير قليلاً ليكون مرئياً وأسهل في الاستخدام */
-::-webkit-scrollbar {
-  width: 8px !important;  /* كان 4 بكسل */
-  height: 8px !important; /* كان 4 بكسل */
-}
-
-/* 2. توسيع المساحة السفلية والجانبية للمحتوى الرئيسي لإنشاء مساحة آمنة للإصبع */
-.main {
-  padding: 24px 24px 120px 24px !important; 
+/* 1️⃣ زيادة المساحة الجانبية (يمين ويسار) لتوفير مساحة مريحة للإصبع */
+@media (max-width: 1024px) {
+  .main {
+    padding: 24px 32px !important; /* مساحة واسعة للآيباد */
+  }
 }
 
 @media (max-width: 600px) {
   .main {
-    padding: 20px 16px 140px 16px !important; /* مساحة سفلية ضخمة لمنع التداخل مع القائمة السفلية */
+    padding: 20px 24px !important; /* مساحة مريحة للهواتف */
   }
 }
 
-/* 3. ضمان وجود مساحة فارغة دائماً في نهاية أي صفحة */
-.page {
-  padding-bottom: 140px !important; 
+@media (max-width: 380px) {
+  .main {
+    padding: 16px 20px !important; /* للهواتف الصغيرة جداً */
+  }
 }
 
-/* 4. زيادة المسافات (الفراغات) بين البطاقات ليتمكن المستخدم من التمرير من خلالها */
-.pr-grid-new, 
-.inv-grid, 
-.co-grid {
-  gap: 20px !important; /* كان 16 بكسل - تمت زيادته لإعطاء مساحة للإصبع */
-  padding-bottom: 20px;
+/* 2️⃣ تحرير التمرير: السماح للصفحة بالنزول والصعود حتى عند لمس البطاقات */
+.main, .co-grid, .pr-grid-new, .inv-grid {
+  overscroll-behavior: auto !important;
+  touch-action: pan-y !important; /* إجبار المتصفح على قبول التمرير العمودي */
 }
 
-/* 5. تحسين تمرير الجداول (الفواتير) لتجنب الضغط العشوائي على الصفوف */
+/* منع البطاقات من حظر التمرير العمودي عند لمسها */
+.card, .co-card, .pr-card-new, .inv-card, .client-type-step-card, .pr-type-step-card {
+  touch-action: pan-y !important;
+}
+
+/* 3️⃣ تفعيل التمرير السلس (Smooth Momentum Scrolling) لأجهزة آبل (آيباد/آيفون) */
+html, body {
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-y: auto !important;
+}
+
+/* 4️⃣ التأكد من أن الجداول الأفقية لا تعطل التمرير العمودي للصفحة */
 .inv-tbl-wrap {
-  padding-bottom: 15px !important; /* مساحة سفلية للتمرير الأفقي */
-  margin-bottom: 20px !important;
-  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y !important;
+  overscroll-behavior-x: contain !important;
+  overscroll-behavior-y: auto !important;
 }
 
-/* 6. تكبير المساحة القابلة للمس في القائمة الجانبية (Sidebar) لتجنب الأخطاء */
-.nav-item {
-  padding: 14px 16px !important; /* زيادة الحجم العمودي والجانبي */
-  margin-bottom: 6px !important;
-}
-
-/* 7. إضافة مساحة فارغة أسفل القوائم المنسدلة (Dropdowns) الطويلة */
-#hsDropdown, 
-#descDropdown {
-  padding-bottom: 40px !important;
-}
 
 
 
