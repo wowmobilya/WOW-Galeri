@@ -4179,6 +4179,124 @@ body {
 
 
 
+
+
+
+
+
+
+
+/* ============================================================
+   SCROLLBAR — WIDER & TOUCH-FRIENDLY (MOBILE + IPAD)
+============================================================ */
+
+/* ── الـ Scrollbar العام (كل الصفحة) ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 10px; /* ← أعرض للتمرير الأفقي */
+}
+::-webkit-scrollbar-track {
+  background: var(--input);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 10px;
+  border: 2px solid var(--input); /* ← مساحة فارغة حول الـ thumb */
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold2);
+}
+
+/* ── جدول الفاتورة — أعرض وأسهل للمس ── */
+.inv-tbl-wrap {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  
+  /* ✅ مساحة سفلية للـ scrollbar */
+  padding-bottom: 14px !important;
+  margin-bottom: 8px;
+  
+  /* ✅ الـ scrollbar أعرض داخل الجدول */
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) var(--input);
+}
+
+.inv-tbl-wrap::-webkit-scrollbar {
+  height: 14px; /* ← أعرض بكثير */
+}
+
+.inv-tbl-wrap::-webkit-scrollbar-track {
+  background: var(--input);
+  border-radius: 10px;
+  margin: 0 4px; /* ← مساحة من الجانبين */
+  border: 3px solid var(--card); /* ← مساحة فارغة */
+}
+
+.inv-tbl-wrap::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, var(--gold), var(--gold2));
+  border-radius: 10px;
+  border: 3px solid var(--card); /* ← مساحة فارغة تجعله أسهل للمس */
+  min-width: 50px; /* ← حد أدنى للعرض */
+}
+
+.inv-tbl-wrap::-webkit-scrollbar-thumb:active {
+  background: var(--gold2);
+}
+
+/* ✅ مؤشر التمرير الأفقي (سهم متحرك) */
+.inv-tbl-wrap::after {
+  content: '← تمرير →';
+  display: block;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gold2);
+  opacity: 0.6;
+  padding: 4px 0 2px;
+  letter-spacing: 1px;
+  pointer-events: none;
+}
+
+/* ── على الموبايل والآيباد ── */
+@media (max-width: 1024px) {
+  .inv-tbl-wrap {
+    padding-bottom: 18px !important;
+    /* ✅ منطقة لمس أكبر */
+    cursor: grab;
+  }
+  
+  .inv-tbl-wrap:active {
+    cursor: grabbing;
+  }
+  
+  .inv-tbl-wrap::-webkit-scrollbar {
+    height: 18px; /* ← أعرض على اللمس */
+  }
+  
+  .inv-tbl-wrap::-webkit-scrollbar-thumb {
+    border: 4px solid var(--card);
+    min-width: 60px;
+  }
+}
+
+/* ── آيباد تحديداً ── */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .inv-tbl-wrap::-webkit-scrollbar {
+    height: 20px;
+  }
+  
+  .inv-tbl-wrap::-webkit-scrollbar-thumb {
+    border: 5px solid var(--card);
+    border-radius: 12px;
+  }
+}
+
+
+   
+
+
 </style>
 </head>
 <body>
