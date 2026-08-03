@@ -8574,22 +8574,30 @@ function applyTr(){
   else{sb.style.left='0';sb.style.right='auto';mc.style.marginLeft='var(--side-w)';mc.style.marginRight='0';}
   updateGreeting(false);updateKdvDisplay();
 
-  renderCo();renderPr();renderInvList();renderPrSelector();updateInvClientFilterBar();
-  updateSCTTexts();updateSITTexts();updateSummary();
+  renderCo();
+  renderPr();
+  renderInvList();
+  renderPrSelector();
+  
+  // 🌟 السطر الجديد: إعادة رسم جدول الفاتورة لتحديث لغة الألوان فوراً
+  renderInvTable(); 
+
+  updateInvClientFilterBar();
+  updateSCTTexts();
+  updateSITTexts();
+  updateSummary();
   updateReceiptTypeLabels();
-updatePrintOptsBtnLabel();
-updateSumSectionLabels();
-updateStep1Texts();
-updateDash();
-updatePrInfoLabels();
-updatePrFormBtnLabels(); // ← السطر الجديد
-updateInvFormLabels();
-   updatePrDimLabels();
-   updateTierLabels();
-updateCostBoxLabels();
+  updatePrintOptsBtnLabel();
+  updateSumSectionLabels();
+  updateStep1Texts();
+  updateDash();
+  updatePrInfoLabels();
+  updatePrFormBtnLabels(); 
+  updateInvFormLabels();
+  updatePrDimLabels();
+  updateTierLabels();
+  updateCostBoxLabels();
    
-
-
   // ✅ تحديث نص زر حذف صورة القطعة
   const prImgDelTxt = document.getElementById('prImgDeleteBtnTxt');
   if(prImgDelTxt){
@@ -8597,30 +8605,25 @@ updateCostBoxLabels();
     prImgDelTxt.textContent = labels[S.lang] || labels.en;
   }
 
-// ✅ تحديث بانر النوع المختار عند تغيير اللغة
-const formView = document.getElementById('pr-form-view');
-if (formView && formView.style.display !== 'none') {
-  updatePrSelectedTypeBanner(S.prType);
-}
+  // ✅ تحديث بانر النوع المختار عند تغيير اللغة
+  const formView = document.getElementById('pr-form-view');
+  if (formView && formView.style.display !== 'none') {
+    updatePrSelectedTypeBanner(S.prType);
+  }
 
-   
-  // ✅ موجود مسبقاً
   updateAddCoTypeBadge(S.clientType || 'external');
-
-  // ✅ أضف هذا السطر الجديد
   updateAddCoStickyBar();
 
-    const prTypeView = document.getElementById('pr-type-select-view');
+  const prTypeView = document.getElementById('pr-type-select-view');
   if(prTypeView && prTypeView.style.display !== 'none'){
     renderPrTypeStepCards();
   }
 
-   // ✅ إعادة بناء قائمة الدول والمحافظات عند تغيير اللغة
+  // ✅ إعادة بناء قائمة الدول والمحافظات عند تغيير اللغة
   const countryEl2  = document.getElementById('coCountry');
   const provinceEl2 = document.getElementById('coProvince');
   if (countryEl2)  buildCountrySelect(countryEl2,  countryEl2.value);
   if (provinceEl2) buildProvinceSelect(provinceEl2, provinceEl2.value);
-
 }
 
 
