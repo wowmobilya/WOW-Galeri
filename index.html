@@ -10860,12 +10860,12 @@ function addItemToInv(product){
     ex.totalUSD=ex.qty*price;ex.totalTRY=ex.qty*priceTRY;ex.totalEUR=ex.qty*priceEUR;
     ex.totalCBM=(ex.cbm||0)*ex.qty;
   }else{
-    // نسخ أبعاد الباكيتات بشكل مستقل للفاتورة
+    // 🌟 الأولوية لجلب "الأبعاد (سم)" الأساسية للمنتج
     let dp = [];
-    if (product.dimPieces && product.dimPieces.length > 0) {
-      dp = JSON.parse(JSON.stringify(product.dimPieces));
-    } else if (product.dims && product.dims.length > 0) {
+    if (product.dims && product.dims.length > 0) {
       dp = JSON.parse(JSON.stringify(product.dims));
+    } else if (product.dimPieces && product.dimPieces.length > 0) {
+      dp = JSON.parse(JSON.stringify(product.dimPieces));
     } else {
       dp = [{l: product.dimL||0, w: product.dimW||0, h: product.dimH||0}];
     }
@@ -10873,7 +10873,7 @@ function addItemToInv(product){
     S.invItems.push({
       productId:product.id,name:product.name,
       dimensions:product.dimensions||'',
-      dimPieces: dp, // الأبعاد القابلة للتعديل
+      dimPieces: dp, // تخزين الأبعاد هنا لتعديلها داخل الفاتورة
       color:product.color||'STANDARD',
       priceUSD:price,priceTRY,priceEUR,
       qty:1,totalUSD:price,totalTRY:priceTRY,totalEUR:priceEUR,
@@ -10925,12 +10925,12 @@ function renderInvTable(){
       </div>
     ` : '';
 
-    // 🌟 معالجة خلية الأبعاد (باكيتات قابلة للتعديل)
+    // 🌟 معالجة خلية الأبعاد (تظهر تحت بعضها 1، 2، 3...)
     let dimsHTML = '';
     if (item.dimPieces && item.dimPieces.length > 0) {
       dimsHTML = item.dimPieces.map((dp, pIdx) => {
         return `
-          <div style="display:flex; align-items:center; gap:2px; margin-bottom:4px; justify-content:center;">
+          <div style="display:flex; align-items:center; gap:2px; margin-bottom:4px; justify-content:center; direction:ltr;">
             <span style="background:var(--gold);color:#fff;border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;">${pIdx+1}</span>
             <input type="number" class="fc" style="width:38px;padding:2px;font-size:10px;text-align:center;border-radius:4px;" value="${dp.l||0}" onchange="changeInvItemDim(${i}, ${pIdx}, 'l', this.value)" title="الطول">
             <span style="font-size:10px;color:var(--muted);">×</span>
@@ -10950,7 +10950,7 @@ function renderInvTable(){
       <td style="text-align:center; padding:4px;">${imgHtml}</td>
       <td style="font-weight:600;text-align:right;">${item.name}</td>
       
-      <!-- 🌟 خلية الأبعاد الجديدة -->
+      <!-- 🌟 خلية الأبعاد -->
       <td style="vertical-align:middle;">${dimsHTML}</td>
       
       <td style="text-align:center; vertical-align:middle;">
@@ -14749,25 +14749,21 @@ function qblSendToInvoice() {
         const priceTRY = usdToTry(price);
         const priceEUR = usdToEur(price);
 
-        // 🌟 استنساخ أبعاد الباكيتات بشكل مستقل للفاتورة
+        // 🌟 الأولوية لجلب "الأبعاد (سم)" الأساسية للمنتج
         let dp = [];
-        if (cartItem.product.dimPieces && cartItem.product.dimPieces.length > 0) {
-          dp = JSON.parse(JSON.stringify(cartItem.product.dimPieces));
-        } else if (cartItem.product.dims && cartItem.product.dims.length > 0) {
+        if (cartItem.product.dims && cartItem.product.dims.length > 0) {
           dp = JSON.parse(JSON.stringify(cartItem.product.dims));
+        } else if (cartItem.product.dimPieces && cartItem.product.dimPieces.length > 0) {
+          dp = JSON.parse(JSON.stringify(cartItem.product.dimPieces));
         } else {
-          dp = [{
-            l: cartItem.product.dimL || 0, 
-            w: cartItem.product.dimW || 0, 
-            h: cartItem.product.dimH || 0
-          }];
+          dp = [{l: cartItem.product.dimL||0, w: cartItem.product.dimW||0, h: cartItem.product.dimH||0}];
         }
 
         S.invItems.push({
           productId:  cartItem.product.id,
           name:       cartItem.product.name,
           dimensions: cartItem.product.dimensions || '',
-          dimPieces:  dp, // 👈 الأبعاد القابلة للتعديل
+          dimPieces:  dp,
           color:      cartItem.product.color || 'STANDARD',
           priceUSD:   price,
           priceTRY,
@@ -14786,6 +14782,7 @@ function qblSendToInvoice() {
           tier:       cartItem.tier,
           hsCode:     cartItem.product.hsCode || '',
         });
+
       }
     });
 
