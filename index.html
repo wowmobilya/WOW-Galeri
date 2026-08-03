@@ -13563,30 +13563,27 @@ function updateQblTexts() {
 function initQblPage() {
   updateQblTexts();
 
-  // ✅ إعادة تعيين الحالة الكاملة
   QBL.currentProduct = null;
   QBL.selectedTier   = null;
   QBL.phase          = 1;
   QBL.pendingQty     = 1;
 
-  // ✅ إعادة تعيين حالة الـ Dropdown
   qblDropdownOpen = false;
   qblActiveType   = null;
 
   const inp = document.getElementById('qblInput');
   if (inp) inp.value = '';
 
-  // ✅ إعادة Phase 1 للظهور الكامل
+  // ✅ الإصلاح الجذري — إعادة Phase 1 بشكل كامل
   const p1 = document.getElementById('qblPhase1');
   if (p1) {
+    p1.style.cssText = ''; // ← مسح كل الـ styles دفعة واحدة
     p1.style.opacity       = '1';
-    p1.style.transform     = '';
     p1.style.pointerEvents = 'all';
-    p1.style.maxHeight     = '';
-    p1.style.overflow      = '';
+    p1.style.display       = 'block';
   }
 
-  // ✅ إخفاء Phase 2
+  // إخفاء Phase 2
   const p2   = document.getElementById('qblPhase2');
   const blur = document.getElementById('qblPhase2Blur');
   const card = document.getElementById('qblTierCard');
@@ -13594,11 +13591,11 @@ function initQblPage() {
   if (blur) { blur.style.backdropFilter = 'blur(0px)'; }
   if (card) { card.style.transform = 'translateY(40px) scale(.92)'; }
 
-  // ✅ إخفاء Phase 3
+  // إخفاء Phase 3
   const p3 = document.getElementById('qblPhase3');
   if (p3) { p3.style.maxHeight = '0'; p3.style.opacity = '0'; }
 
-  // ✅ إعادة زر القائمة لحالته الأصلية
+  // إعادة زر القائمة
   const ddBtn = document.getElementById('qblDropdownBtn');
   if (ddBtn) {
     ddBtn.style.borderColor = 'var(--border)';
@@ -13607,7 +13604,7 @@ function initQblPage() {
     ddBtn.innerHTML         = '☰';
   }
 
-  // ✅ إخفاء الـ Dropdown إذا كان مفتوحاً
+  // إخفاء الـ Dropdown
   const dd = document.getElementById('qblDropdown');
   if (dd) {
     dd.style.display   = 'none';
@@ -13615,21 +13612,18 @@ function initQblPage() {
     dd.style.transform = 'translateY(-12px) scale(.98)';
   }
 
-  // ✅ إعادة إظهار الكاميرا
+  // إعادة إظهار الكاميرا
   const cam = document.getElementById('qblCameraWrap');
   if (cam) {
+    cam.style.cssText = ''; // ← مسح كل الـ styles
     cam.style.opacity      = '1';
-    cam.style.transform    = '';
     cam.style.pointerEvents = 'all';
   }
 
-  // ✅ تشغيل الكاميرا
   qblStartCamera();
 
   const statusEl = document.getElementById('qblStatus');
   if (statusEl) statusEl.textContent = qblTx('scan_hint');
-
-// setTimeout(() => { if (inp) inp.focus(); }, 500);
 }
 
 /* ══════════════════════════════════════════
