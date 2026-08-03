@@ -4243,6 +4243,108 @@ html, body {
 
 
 
+
+
+/* ============================================================
+   VOICE ASSISTANT CARD
+============================================================ */
+.voice-assistant-card {
+  background: linear-gradient(135deg, var(--nav), #2d2d4e);
+  border-radius: var(--r);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  border: 1.5px solid var(--gold);
+  box-shadow: 0 8px 24px rgba(200, 169, 110, 0.15);
+  transition: all var(--tr);
+  position: relative;
+  overflow: hidden;
+}
+
+.voice-assistant-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(200, 169, 110, 0.25);
+}
+
+.voice-assistant-card:active {
+  transform: scale(0.98);
+}
+
+.va-icon {
+  font-size: 32px;
+  width: 54px;
+  height: 54px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(200, 169, 110, 0.3);
+  transition: all 0.3s ease;
+}
+
+.va-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.va-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.va-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.va-mic-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: #fff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(200, 169, 110, 0.4);
+}
+
+/* تأثير النبض أثناء الاستماع */
+.voice-assistant-card.listening .va-mic-btn {
+  animation: micPulse 1.2s infinite;
+  background: #e53e3e; /* يتحول للأحمر للتنبيه أنه يستمع */
+}
+.voice-assistant-card.listening .va-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+@keyframes micPulse {
+  0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.5); }
+  70% { box-shadow: 0 0 0 15px rgba(229, 62, 62, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); }
+}
+
+
+
+   
+
+
    
 
 
@@ -4412,6 +4514,22 @@ html, body {
     </div>
   </div>
 
+
+
+
+<!-- المساعد الصوتي الذكي -->
+<div class="voice-assistant-card" id="voiceAssistantCard" onclick="startVoiceAssistant()">
+  <div class="va-icon" id="vaIcon">🤖</div>
+  <div class="va-content">
+    <div class="va-title">المساعد الذكي <span style="background:var(--gold);color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;">BETA</span></div>
+    <div class="va-sub" id="vaStatusText">اضغط وتحدث: "أنشئ فاتورة لشركة ستار..."</div>
+  </div>
+  <div class="va-mic-btn" id="vaMicBtn">🎤</div>
+</div>
+
+
+
+   
   <div class="card tip-card-standalone" id="tipCardStandalone">
     <div class="tip-card-inner">
       <div class="tip-card-icon">💡</div>
@@ -17667,6 +17785,257 @@ function imgViewerEscHandler(e) {
 
    
    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============================================================
+   WOW ROBOT - MULTILINGUAL VOICE ASSISTANT (مساعد صوتي)
+============================================================ */
+let recognition;
+let isListening = false;
+
+// ── 1. دالة نطق الروبوت (Text-to-Speech) ──
+function speakText(text) {
+  // إيقاف أي نطق سابق
+  window.speechSynthesis.cancel(); 
+  
+  const utterance = new SpeechSynthesisUtterance(text);
+  // تحديد لغة النطق بناءً على لغة النظام الحالية
+  utterance.lang = S.lang === 'ar' ? 'ar-SA' : (S.lang === 'tr' ? 'tr-TR' : 'en-US');
+  
+  // تعديل نبرة الصوت لتبدو أكثر ودية
+  utterance.pitch = 1.1; 
+  utterance.rate = 1.0;  
+
+  window.speechSynthesis.speak(utterance);
+}
+
+// ── 2. تهيئة أذن الروبوت (Speech Recognition) ──
+function initSpeechRecognition() {
+  window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!window.SpeechRecognition) {
+    showToast('متصفحك لا يدعم الأوامر الصوتية', 'er');
+    return false;
+  }
+  
+  recognition = new SpeechRecognition();
+  // الاستماع بنفس لغة النظام
+  recognition.lang = S.lang === 'ar' ? 'ar-SA' : (S.lang === 'tr' ? 'tr-TR' : 'en-US');
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = function() {
+    isListening = true;
+    window.speechSynthesis.cancel(); // إسكات الروبوت إذا كان يتحدث ليبدأ الاستماع
+    document.getElementById('voiceAssistantCard').classList.add('listening');
+    
+    const listeningMsgs = {
+      ar: 'أنا أستمع إليك الآن...',
+      tr: 'Sizi dinliyorum...',
+      en: 'I am listening to you...'
+    };
+    document.getElementById('vaStatusText').textContent = listeningMsgs[S.lang] || listeningMsgs.en;
+  };
+
+  recognition.onresult = function(event) {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById('vaStatusText').textContent = `"${transcript}"`;
+    processSmartCommand(transcript);
+  };
+
+  recognition.onerror = function(event) {
+    const errorMsgs = {
+      ar: 'لم أتمكن من سماعك بوضوح، حاول مجدداً.',
+      tr: 'Sizi net duyamadım, lütfen tekrar deneyin.',
+      en: 'I could not hear you clearly, please try again.'
+    };
+    document.getElementById('vaStatusText').textContent = errorMsgs[S.lang] || errorMsgs.en;
+    stopListeningUI();
+  };
+
+  recognition.onend = function() {
+    stopListeningUI();
+  };
+  
+  return true;
+}
+
+function stopListeningUI() {
+  isListening = false;
+  const card = document.getElementById('voiceAssistantCard');
+  if(card) card.classList.remove('listening');
+  
+  setTimeout(() => {
+    const status = document.getElementById('vaStatusText');
+    const defaultMsgs = {
+      ar: 'اضغط وتحدث: "أنشئ فاتورة لشركة..."',
+      tr: 'Dokun ve konuş: "Fatura oluştur..."',
+      en: 'Tap and speak: "Create invoice for..."'
+    };
+    if(status && !isListening) status.textContent = defaultMsgs[S.lang] || defaultMsgs.en;
+  }, 5000);
+}
+
+function startVoiceAssistant() {
+  if (isListening) {
+    recognition.stop();
+    return;
+  }
+  // إعادة التهيئة في كل مرة لضمان التقاط اللغة الحالية للنظام
+  if (initSpeechRecognition()) {
+    try { recognition.start(); } catch(e) {}
+  }
+}
+
+// ── 3. العقل المدبر: تحليل النوايا (Intent Recognition) ──
+function processSmartCommand(text) {
+  const lowerText = text.toLowerCase().replace(/[.,!؟?]/g, '');
+  const lang = S.lang || 'ar';
+
+  // --- النية الأولى: سؤال عن الهوية (Who are you?) ---
+  const isIdentityQuestion = 
+    (lang === 'ar' && (lowerText.includes('من تكون') || lowerText.includes('من أنت') || lowerText.includes('اسمك'))) ||
+    (lang === 'tr' && (lowerText.includes('kimsin') || lowerText.includes('adın ne'))) ||
+    (lang === 'en' && (lowerText.includes('who are you') || lowerText.includes('your name')));
+
+  if (isIdentityQuestion) {
+    const identityReplies = {
+      ar: 'أهلاً بك! أنا واو روبوت، مساعدك الذكي لإدارة الفواتير والمنتجات. كيف يمكنني مساعدتك اليوم؟',
+      tr: 'Merhaba! Ben WOW Robot, fatura ve ürün yönetimi için akıllı asistanınızım. Bugün size nasıl yardımcı olabilirim?',
+      en: 'Hello! I am WOW Robot, your smart assistant for invoice and product management. How can I help you today?'
+    };
+    const reply = identityReplies[lang];
+    document.getElementById('vaStatusText').textContent = '🤖 ' + reply;
+    speakText(reply); // نطق الإجابة
+    return;
+  }
+
+  // --- النية الثانية: إنشاء فاتورة ---
+  const isInvoiceIntent = 
+    (lang === 'ar' && (lowerText.includes('فاتورة') || lowerText.includes('انشئ'))) ||
+    (lang === 'tr' && (lowerText.includes('fatura') || lowerText.includes('oluştur'))) ||
+    (lang === 'en' && (lowerText.includes('invoice') || lowerText.includes('create')));
+
+  if (!isInvoiceIntent) {
+    const notUnderstood = {
+      ar: 'عذراً، لم أفهم طلبك. جرب سؤالي "من أنت؟" أو قل "أنشئ فاتورة".',
+      tr: 'Üzgünüm, anlayamadım. "Kimsin?" veya "Fatura oluştur" demeyi deneyin.',
+      en: 'Sorry, I didn\'t catch that. Try asking "Who are you?" or say "Create invoice".'
+    };
+    document.getElementById('vaStatusText').textContent = notUnderstood[lang];
+    speakText(notUnderstood[lang]);
+    return;
+  }
+
+  // إذا كانت النية فاتورة، نخبر المستخدم أننا نجهزها صوتياً
+  const processingMsgs = {
+    ar: 'حاضر، جاري تجهيز الفاتورة الآن.',
+    tr: 'Tamam, faturayı şimdi hazırlıyorum.',
+    en: 'Sure, preparing the invoice now.'
+  };
+  speakText(processingMsgs[lang]);
+  showToast('🤖 ' + processingMsgs[lang], 'in');
+
+  // استخراج البيانات بناءً على اللغة
+  let companyName = null;
+  let qty = 1;
+  let prType = 'coffee_table';
+  let tier = 'A';
+
+  if (lang === 'ar') {
+    const coMatch = lowerText.match(/(?:لشركة|شركة)\s+([أ-يa-zA-Z\s]+?)(?:\s+أضف|\s+اضف|\s+و|\s+بعدد|$)/);
+    if (coMatch) companyName = coMatch[1].trim();
+    const qtyMatch = lowerText.match(/(\d+)\s*(?:طاولات|طاولة|قطعة|حبات|حبة)/);
+    if (qtyMatch) qty = parseInt(qtyMatch[1]);
+    if (lowerText.includes('تلفاز') || lowerText.includes('تلفزيون')) prType = 'tv_table';
+    else if (lowerText.includes('جانبية') || lowerText.includes('جانبي')) prType = 'side_table';
+    else if (lowerText.includes('مدخل') || lowerText.includes('درسوار')) prType = 'dresser';
+    if (lowerText.includes('b') || lowerText.includes('ب') || lowerText.includes('جملة')) tier = 'B';
+    if (lowerText.includes('c') || lowerText.includes('ج') || lowerText.includes('خاص')) tier = 'C';
+
+  } else if (lang === 'tr') {
+    const coMatch = lowerText.match(/([a-zA-ZğüşöçİĞÜŞÖÇ\s]+?)\s+(?:için|firması|şirketi)/);
+    if (coMatch) companyName = coMatch[1].trim();
+    const qtyMatch = lowerText.match(/(\d+)\s*(?:adet|tane|parça)/);
+    if (qtyMatch) qty = parseInt(qtyMatch[1]);
+    if (lowerText.includes('tv') || lowerText.includes('ünite')) prType = 'tv_table';
+    else if (lowerText.includes('yan')) prType = 'side_table';
+    else if (lowerText.includes('dresuar') || lowerText.includes('konsol')) prType = 'dresser';
+    if (lowerText.includes('b') || lowerText.includes('toptan')) tier = 'B';
+    if (lowerText.includes('c') || lowerText.includes('özel')) tier = 'C';
+
+  } else {
+    const coMatch = lowerText.match(/(?:for|company)\s+([a-zA-Z\s]+?)(?:\s+add|\s+with|$)/);
+    if (coMatch) companyName = coMatch[1].trim();
+    const qtyMatch = lowerText.match(/(\d+)\s*(?:pieces|piece|tables|table)/);
+    if (qtyMatch) qty = parseInt(qtyMatch[1]);
+    if (lowerText.includes('tv')) prType = 'tv_table';
+    else if (lowerText.includes('side')) prType = 'side_table';
+    else if (lowerText.includes('dresser') || lowerText.includes('console')) prType = 'dresser';
+    if (lowerText.includes('b') || lowerText.includes('wholesale')) tier = 'B';
+    if (lowerText.includes('c') || lowerText.includes('special')) tier = 'C';
+  }
+
+  // إذا لم نجد كمية بالكلمات الدلالية، نبحث عن أي رقم
+  if (qty === 1) {
+    const anyNum = lowerText.match(/(\d+)/);
+    if (anyNum) qty = parseInt(anyNum[1]);
+  }
+
+  // تنفيذ الإجراءات
+  let targetCompany = null;
+  if (companyName) {
+    targetCompany = S.companies.find(c => c.name.toLowerCase().includes(companyName) || (c.buyerName && c.buyerName.toLowerCase().includes(companyName)));
+  }
+  if (!targetCompany && S.companies.length > 0) targetCompany = S.companies[0];
+
+  let targetProduct = S.products.find(p => p.type === prType);
+  if (!targetProduct && S.products.length > 0) targetProduct = S.products[0];
+
+  S.editInvId = null;
+  S.invType = targetCompany ? targetCompany.type : 'external';
+  
+  initCreateInv();
+  
+  if (targetCompany) {
+    const coSel = document.getElementById('invCoSel');
+    if (coSel) { coSel.value = targetCompany.id; onCoSelect(); }
+  }
+
+  selInvTier(tier, null);
+
+  if (targetProduct) {
+    addItemToInv(targetProduct);
+    const lastItem = S.invItems[S.invItems.length - 1];
+    if (lastItem) {
+      lastItem.qty = qty;
+      lastItem.totalUSD = lastItem.qty * lastItem.priceUSD;
+      lastItem.totalTRY = lastItem.qty * lastItem.priceTRY;
+      lastItem.totalEUR = lastItem.qty * lastItem.priceEUR;
+      lastItem.totalCBM = (lastItem.cbm || 0) * lastItem.qty;
+    }
+  }
+
+  renderInvTable();
+  updateSummary();
+  showPage('create-invoice');
+}
+
+
    
 
 
