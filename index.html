@@ -4125,7 +4125,223 @@ body {
 }
 
 
-   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   /* ============================================================
+   INVOICE ITEM COLOR DROPDOWN
+============================================================ */
+.inv-color-cell {
+  position: relative;
+  cursor: pointer;
+  min-width: 90px;
+}
+
+.inv-color-display {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 7px;
+  border: 1.5px solid var(--border);
+  background: var(--input);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  transition: all var(--tr);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+  justify-content: space-between;
+}
+
+.inv-color-display:hover {
+  border-color: var(--gold);
+  background: var(--gold-light);
+  color: var(--gold2);
+}
+
+.inv-color-display .icd-arrow {
+  font-size: 9px;
+  opacity: .6;
+  flex-shrink: 0;
+  transition: transform .22s ease;
+}
+
+.inv-color-display.open .icd-arrow {
+  transform: rotate(180deg);
+}
+
+/* القائمة المنسدلة */
+.inv-color-dropdown {
+  position: fixed;
+  z-index: 99999;
+  background: var(--card);
+  border: 1.5px solid var(--gold);
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(0,0,0,.22), 0 4px 16px rgba(200,169,110,.15);
+  width: 240px;
+  max-height: 320px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: none;
+  flex-direction: column;
+  animation: fadeUp .18s ease;
+  overscroll-behavior: contain;
+}
+
+.inv-color-dropdown.show {
+  display: flex;
+}
+
+/* نص مخصص في الأعلى */
+.inv-color-dd-header {
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--gold-light), rgba(200,169,110,.05));
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+.inv-color-dd-header-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--gold2);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.inv-color-dd-header-sub {
+  font-size: 9px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* حقل الكتابة اليدوية */
+.inv-color-custom-row {
+  display: none;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(200,169,110,.05);
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.inv-color-custom-row.show {
+  display: flex;
+}
+
+.inv-color-custom-inp {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1.5px solid var(--gold);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  outline: none;
+}
+
+.inv-color-custom-ok {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  border: none;
+  background: var(--gold);
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--tr);
+}
+
+.inv-color-custom-ok:hover {
+  background: var(--gold2);
+  transform: scale(1.1);
+}
+
+/* مجموعة */
+.inv-color-dd-group {
+  padding: 5px 12px 3px;
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--muted);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  background: var(--input);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* عنصر */
+.inv-color-dd-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  transition: background .15s ease;
+}
+
+.inv-color-dd-item:last-child {
+  border-bottom: none;
+}
+
+.inv-color-dd-item:hover {
+  background: var(--gold-light);
+  color: var(--gold2);
+}
+
+.inv-color-dd-item.selected {
+  background: rgba(200,169,110,.12);
+  color: var(--gold2);
+  font-weight: 800;
+}
+
+.inv-color-dd-item .icd-check {
+  margin-inline-start: auto;
+  font-size: 12px;
+  color: var(--gold2);
+  flex-shrink: 0;
+}
+
+/* scrollbar خفيف */
+.inv-color-dropdown::-webkit-scrollbar { width: 3px; }
+.inv-color-dropdown::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 2px;
+}
+
 
 
 
@@ -10907,8 +11123,16 @@ function renderInvTable(){
       <td style="text-align:center; padding:4px;">${imgHtml}</td>
       <td style="font-weight:600;text-align:right;">${item.name}</td>
       <td>${item.dimensions||'—'}</td>
-<td style="min-width:130px;">
-  ${buildInvItemColorSelect(i, item.color)}
+<td class="inv-color-cell" id="invColorCell_${i}">
+  ${buildInvColorCellHTML(i,
+    (() => {
+      const lang = S.lang || 'ar';
+      const colors = FURNITURE_COLORS[lang] || FURNITURE_COLORS.en;
+      const found = colors.find(c => c.val === item.color);
+      return found ? found.label : (item.color || 'STANDARD');
+    })(),
+    item.color || 'STANDARD'
+  )}
 </td>
       <td>
         <div class="qty-ctrl">
@@ -10939,108 +11163,6 @@ function renderInvTable(){
 }
 
 
-
-/* ============================================================
-   INV ITEM COLOR SELECT — قائمة اللون في قطع الفاتورة
-============================================================ */
-function buildInvItemColorSelect(idx, currentColor) {
-  const lang   = S.lang || 'ar';
-  const colors = FURNITURE_COLORS[lang] || FURNITURE_COLORS.en;
-
-  // تحديد ما إذا كان اللون معروفاً في القائمة أم مخصص
-  const isKnown   = colors.some(c => c.val === currentColor);
-  const selectVal = isKnown ? (currentColor || 'STANDARD') : 'CUSTOM';
-
-  // بناء HTML القائمة المنسدلة
-  const optionsHTML = buildColorSelectHTML(selectVal);
-
-  const customDisplay = (!isKnown && currentColor && currentColor !== 'STANDARD')
-    ? 'flex' : 'none';
-  const customValue = (!isKnown && currentColor) ? currentColor : '';
-
-  return `
-    <div style="position:relative;">
-      <select
-        class="fc"
-        style="font-size:10px;padding:4px 6px;cursor:pointer;min-width:120px;"
-        onchange="onInvItemColorChange(${idx}, this)"
-        onclick="event.stopPropagation()"
-      >${optionsHTML}</select>
-
-      <!-- حقل اللون المخصص -->
-      <div id="invColorCustomWrap_${idx}" style="
-        display:${customDisplay};
-        align-items:center;gap:5px;
-        margin-top:4px;
-      ">
-        <input
-          type="text"
-          id="invColorCustom_${idx}"
-          class="fc"
-          value="${customValue}"
-          placeholder="..."
-          style="font-size:10px;padding:4px 6px;flex:1;"
-          oninput="onInvItemColorCustomInput(${idx}, this.value)"
-          onclick="event.stopPropagation()"
-        >
-        <button type="button"
-          onclick="event.stopPropagation(); cancelInvItemColorCustom(${idx})"
-          style="
-            width:22px;height:22px;border-radius:5px;border:none;
-            background:rgba(229,62,62,.1);color:var(--red);
-            cursor:pointer;font-size:11px;flex-shrink:0;
-            display:flex;align-items:center;justify-content:center;
-          "
-        >✕</button>
-      </div>
-    </div>`;
-}
-
-/* ── عند تغيير القائمة ── */
-function onInvItemColorChange(idx, selectEl) {
-  const val = selectEl.value;
-  const customWrap = document.getElementById(`invColorCustomWrap_${idx}`);
-  const customInp  = document.getElementById(`invColorCustom_${idx}`);
-
-  if (val === 'CUSTOM') {
-    if (customWrap) customWrap.style.display = 'flex';
-    if (customInp)  setTimeout(() => customInp.focus(), 60);
-    return;
-  }
-
-  if (customWrap) customWrap.style.display = 'none';
-
-  // تحديث اللون في مصفوفة الفاتورة فقط — لا يمس المنتج الأصلي
-  if (S.invItems[idx]) {
-    S.invItems[idx].color = val;
-  }
-}
-
-/* ── عند الكتابة اليدوية ── */
-function onInvItemColorCustomInput(idx, value) {
-  if (S.invItems[idx]) {
-    S.invItems[idx].color = value;
-  }
-}
-
-/* ── إلغاء الكتابة اليدوية ── */
-function cancelInvItemColorCustom(idx) {
-  const customWrap = document.getElementById(`invColorCustomWrap_${idx}`);
-  const customInp  = document.getElementById(`invColorCustom_${idx}`);
-  const select     = customWrap?.previousElementSibling;
-
-  if (customWrap) customWrap.style.display = 'none';
-  if (customInp)  customInp.value = '';
-  if (select)     select.value = 'STANDARD';
-
-  if (S.invItems[idx]) {
-    S.invItems[idx].color = 'STANDARD';
-  }
-}
-
-
-
-   
 function changeQty(i,d){
   const item=S.invItems[i];if(!item)return;
   item.qty=Math.max(1,item.qty+d);
@@ -17441,7 +17563,234 @@ function imgViewerEscHandler(e) {
 }
 
 
-   
+
+
+
+
+
+
+
+
+
+
+   /* ============================================================
+   INVOICE ITEM COLOR — DROPDOWN SYSTEM
+============================================================ */
+
+/* ── نص الهيدر × 3 لغات ── */
+const INV_COLOR_DD_HEADER = {
+  ar: {
+    title:   '🎨 لون القطعة في الفاتورة',
+    sub:     'يمكن تغييره بشكل مستقل — لن يؤثر على بيانات المنتج',
+    custom:  '✏️ اكتب لوناً مخصصاً',
+    confirm: '✓',
+  },
+  tr: {
+    title:   '🎨 Faturadaki Ürün Rengi',
+    sub:     'Bağımsız değiştirilebilir — ürün verisini etkilemez',
+    custom:  '✏️ Özel renk yaz',
+    confirm: '✓',
+  },
+  en: {
+    title:   '🎨 Item Color in Invoice',
+    sub:     'Can be changed independently — won\'t affect product data',
+    custom:  '✏️ Type a custom color',
+    confirm: '✓',
+  },
+};
+
+/* ── مرجع القائمة المفتوحة حالياً ── */
+let _invColorDDOpen = null; // { itemIdx, el }
+
+/* ── فتح القائمة ── */
+function openInvColorDD(itemIdx, triggerEl) {
+  // إغلاق أي قائمة مفتوحة
+  closeInvColorDD();
+
+  const lang = S.lang || 'ar';
+  const hdr  = INV_COLOR_DD_HEADER[lang] || INV_COLOR_DD_HEADER.en;
+  const item = S.invItems[itemIdx];
+  if (!item) return;
+
+  const currentColor = item.color || 'STANDARD';
+  const colors = FURNITURE_COLORS[lang] || FURNITURE_COLORS.en;
+  const groupLabels = COLOR_GROUP_LABELS[lang] || COLOR_GROUP_LABELS.en;
+  const groupOrder  = ['default','walnut','oak','beech','solid','finish'];
+
+  /* ── بناء HTML ── */
+  const grouped = {};
+  groupOrder.forEach(g => { grouped[g] = []; });
+  colors.forEach(c => { if (grouped[c.group]) grouped[c.group].push(c); });
+
+  let itemsHTML = '';
+  groupOrder.forEach(g => {
+    if (!grouped[g].length) return;
+    itemsHTML += `<div class="inv-color-dd-group">${groupLabels[g] || g}</div>`;
+    grouped[g].forEach(c => {
+      const isSel = c.val === currentColor;
+      const isCustom = c.val === 'CUSTOM';
+      itemsHTML += `
+        <div class="inv-color-dd-item${isSel ? ' selected' : ''}"
+          onclick="selectInvColor(${itemIdx}, '${c.val}', ${isCustom})">
+          <span>${c.label}</span>
+          ${isSel ? '<span class="icd-check">✓</span>' : ''}
+        </div>`;
+    });
+  });
+
+  /* ── إنشاء العنصر ── */
+  const dd = document.createElement('div');
+  dd.className = 'inv-color-dropdown show';
+  dd.id = 'invColorDD';
+  dd.innerHTML = `
+    <!-- هيدر مخصص ثابت في الأعلى -->
+    <div class="inv-color-dd-header">
+      <div class="inv-color-dd-header-title">${hdr.title}</div>
+      <div class="inv-color-dd-header-sub">${hdr.sub}</div>
+    </div>
+
+    <!-- حقل الكتابة اليدوية (مخفي افتراضياً) -->
+    <div class="inv-color-custom-row" id="invColorCustomRow_${itemIdx}">
+      <input type="text" class="inv-color-custom-inp"
+        id="invColorCustomInp_${itemIdx}"
+        placeholder="${hdr.custom}"
+        onkeydown="if(event.key==='Enter')confirmInvCustomColor(${itemIdx})">
+      <button class="inv-color-custom-ok"
+        onclick="confirmInvCustomColor(${itemIdx})">${hdr.confirm}</button>
+    </div>
+
+    <!-- العناصر -->
+    ${itemsHTML}
+  `;
+
+  document.body.appendChild(dd);
+
+  /* ── تحديد الموضع ── */
+  positionInvColorDD(dd, triggerEl);
+
+  /* ── تحديث الـ trigger ── */
+  triggerEl.classList.add('open');
+  _invColorDDOpen = { itemIdx, triggerEl, dd };
+
+  /* ── إغلاق عند النقر خارجاً ── */
+  setTimeout(() => {
+    document.addEventListener('click', _invColorOutside, { once: true });
+  }, 60);
+}
+
+/* ── تحديد موضع القائمة بذكاء ── */
+function positionInvColorDD(dd, triggerEl) {
+  const rect    = triggerEl.getBoundingClientRect();
+  const ddW     = 240;
+  const ddMaxH  = 320;
+  const margin  = 10;
+  const vw      = window.innerWidth;
+  const vh      = window.innerHeight;
+
+  /* ── أفقي: يمين أو يسار ── */
+  let left = rect.left;
+  if (left + ddW > vw - margin) {
+    left = rect.right - ddW;
+  }
+  left = Math.max(margin, left);
+
+  /* ── عمودي: أسفل أو أعلى ── */
+  let top = rect.bottom + 4;
+  if (top + ddMaxH > vh - margin) {
+    top = rect.top - Math.min(ddMaxH, 280) - 4;
+  }
+  top = Math.max(margin, top);
+
+  dd.style.left = left + 'px';
+  dd.style.top  = top  + 'px';
+}
+
+/* ── إغلاق القائمة ── */
+function closeInvColorDD() {
+  const old = document.getElementById('invColorDD');
+  if (old) old.remove();
+  if (_invColorDDOpen?.triggerEl) {
+    _invColorDDOpen.triggerEl.classList.remove('open');
+  }
+  _invColorDDOpen = null;
+  document.removeEventListener('click', _invColorOutside);
+}
+
+function _invColorOutside(e) {
+  const dd = document.getElementById('invColorDD');
+  if (dd && !dd.contains(e.target)) closeInvColorDD();
+  else if (dd) {
+    setTimeout(() => {
+      document.addEventListener('click', _invColorOutside, { once: true });
+    }, 60);
+  }
+}
+
+/* ── اختيار لون ── */
+function selectInvColor(itemIdx, colorVal, isCustom) {
+  if (isCustom) {
+    /* إظهار حقل الكتابة اليدوية */
+    const row = document.getElementById(`invColorCustomRow_${itemIdx}`);
+    const inp = document.getElementById(`invColorCustomInp_${itemIdx}`);
+    if (row) row.classList.add('show');
+    if (inp) { inp.focus(); inp.select(); }
+    return;
+  }
+
+  /* تطبيق اللون مباشرة */
+  applyInvColor(itemIdx, colorVal);
+}
+
+/* ── تأكيد اللون المخصص ── */
+function confirmInvCustomColor(itemIdx) {
+  const inp = document.getElementById(`invColorCustomInp_${itemIdx}`);
+  const val = inp?.value?.trim();
+  if (!val) return;
+  applyInvColor(itemIdx, val);
+}
+
+/* ── تطبيق اللون على العنصر ── */
+function applyInvColor(itemIdx, colorVal) {
+  const item = S.invItems[itemIdx];
+  if (!item) return;
+
+  /* تحديث المصفوفة فقط — لا يمس بيانات المنتج */
+  item.color = colorVal;
+
+  closeInvColorDD();
+
+  /* تحديث خلية اللون في الجدول بدون إعادة رسم كامل */
+  const cell = document.getElementById(`invColorCell_${itemIdx}`);
+  if (cell) {
+    const lang   = S.lang || 'ar';
+    const colors = FURNITURE_COLORS[lang] || FURNITURE_COLORS.en;
+    const found  = colors.find(c => c.val === colorVal);
+    const label  = found ? found.label : colorVal;
+
+    cell.innerHTML = buildInvColorCellHTML(itemIdx, label, colorVal);
+  }
+}
+
+/* ── بناء HTML خلية اللون ── */
+function buildInvColorCellHTML(itemIdx, label, colorVal) {
+  /* اختصار النص إذا كان طويلاً */
+  const shortLabel = label.length > 14 ? label.slice(0, 13) + '…' : label;
+
+  return `
+    <div class="inv-color-display"
+      id="invColorTrigger_${itemIdx}"
+      onclick="event.stopPropagation(); openInvColorDD(${itemIdx}, this)">
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">
+        ${shortLabel}
+      </span>
+      <span class="icd-arrow">▼</span>
+    </div>`;
+}
+
+/* ── إغلاق عند التمرير أو تغيير الحجم ── */
+window.addEventListener('scroll', closeInvColorDD, { passive: true, capture: true });
+window.addEventListener('resize', closeInvColorDD);
+
    
    
 
