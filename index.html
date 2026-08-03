@@ -4147,15 +4147,21 @@ body {
   overflow-x: auto !important;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
-  
-  /* عزل التمرير الأفقي داخل الجدول فقط */
   contain: inline-size;
-  
-  /* منع تمدد الـ wrapper خارج حاويته */
   max-width: 100%;
   width: 100%;
   display: block;
+  
+  /* ✅ الإضافة الجديدة */
+  touch-action: pan-x pan-y;        /* يسمح بالتمرير فقط، يمنع الـ zoom */
+  -ms-touch-action: pan-x pan-y;
 }
+
+/* ✅ منع الـ zoom على كل عناصر الجدول */
+.inv-tbl-wrap * {
+  touch-action: pan-x pan-y;
+}
+
 
 /* منع الجدول من تمديد الصفحة */
 .inv-step-body {
@@ -6844,10 +6850,21 @@ document.addEventListener('touchstart', function(e) {
 }, { passive: false });
 
 document.addEventListener('touchmove', function(e) {
+  // ✅ إذا كان التمرير داخل الجدول → اسمح بالتمرير الأفقي فقط، امنع الـ zoom
+  const tblWrap = e.target.closest('.inv-tbl-wrap');
+  if (tblWrap) {
+    if (e.touches.length > 1) {
+      e.preventDefault(); // منع الـ zoom داخل الجدول
+    }
+    return; // اسمح بالتمرير الأفقي الطبيعي
+  }
+  
+  // باقي الصفحة → منع أي zoom
   if (e.touches.length > 1 || (e.scale !== 1 && e.scale !== undefined)) {
     e.preventDefault();
   }
 }, { passive: false });
+
 
 // منع التكبير بالنقر المزدوج (Double Tap to Zoom)
 let lastTouchEnd = 0;
