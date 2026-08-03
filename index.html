@@ -4245,14 +4245,24 @@ html, body {
 
 
 /* ============================================================
-   SETTINGS PAGE — FULL PAGE (بديل النافذة المنبثقة)
+   SETTINGS PAGE — FULL PAGE — FIXED ALL SCREENS
 ============================================================ */
+
+/* ── الصفحة الرئيسية ── */
+#page-settings {
+  padding-bottom: 90px;
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── شريط التنقل العلوي ── */
 .settings-page-nav {
   display: flex;
   gap: 6px;
-  background: var(--input);
+  background: var(--card);
   border-radius: var(--r);
-  padding: 6px;
+  padding: 8px;
   margin-bottom: 20px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -4261,17 +4271,20 @@ html, body {
   top: calc(var(--nav-h) + 8px);
   z-index: 400;
   box-shadow: var(--shadow);
+  border: 1px solid var(--border);
 }
 .settings-page-nav::-webkit-scrollbar { display: none; }
 
+/* ── أزرار التنقل ── */
 .settings-nav-btn {
   flex: 1;
-  min-width: 70px;
+  min-width: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
-  padding: 12px 8px;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 10px;
   border-radius: var(--rs);
   border: none;
   cursor: pointer;
@@ -4282,7 +4295,7 @@ html, body {
   white-space: nowrap;
 }
 .settings-nav-btn:hover {
-  background: var(--card);
+  background: var(--gold-light);
   color: var(--gold2);
 }
 .settings-nav-btn.active {
@@ -4291,148 +4304,80 @@ html, body {
   box-shadow: 0 4px 14px rgba(200,169,110,.35);
 }
 .settings-nav-icon {
-  font-size: 24px;
+  font-size: 26px;
   line-height: 1;
 }
 .settings-nav-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: .3px;
 }
 
-/* بطاقة قسم الإعدادات */
+/* ── بطاقة القسم ── */
 .settings-section-card {
   background: var(--card);
   border-radius: var(--r);
   border: 1px solid var(--border);
-  padding: 20px;
+  padding: 22px;
   box-shadow: var(--shadow);
   margin-bottom: 16px;
   animation: fadeUp .3s ease;
 }
+
+/* ── رأس القسم ── */
 .settings-section-hdr {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
-  padding-bottom: 14px;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--border);
 }
 .settings-section-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 11px;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
   background: var(--gold-light);
   border: 1px solid rgba(200,169,110,.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 22px;
   flex-shrink: 0;
 }
 .settings-section-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--text);
+  margin-bottom: 3px;
 }
 .settings-section-sub {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-/* شريط الحفظ الثابت */
-.settings-save-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 600;
-  background: var(--card);
-  border-top: 1.5px solid var(--border);
-  padding: 10px 16px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 -4px 20px rgba(0,0,0,.08);
-  margin-right: var(--side-w);
-}
-[dir="ltr"] .settings-save-bar { margin-right: 0; margin-left: var(--side-w); }
-@media (max-width: 1024px) {
-  .settings-save-bar { margin-right: 0; margin-left: 0; }
-}
-[data-theme="dark"] .settings-save-bar {
-  background: rgba(22,25,39,.96);
-}
-.settings-save-bar .btn {
-  flex: 1;
-  max-width: 200px;
-  justify-content: center;
-}
-
-/* مساحة أسفل الصفحة */
-#page-settings { padding-bottom: 80px; }
-
-/* شارة الصرف في صفحة العملات */
-.curr-rate-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--gold-light);
-  border: 1px solid rgba(200,169,110,.3);
-  border-radius: var(--rs);
-  padding: 8px 14px;
   font-size: 12px;
-  font-weight: 700;
-  color: var(--gold2);
-  margin-bottom: 14px;
-  width: 100%;
-  justify-content: center;
+  color: var(--muted);
 }
 
-/* شبكة أسعار الصرف */
-.curr-rates-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.curr-rate-item {
-  background: var(--input);
-  border: 1px solid var(--border);
-  border-radius: var(--rs);
-  padding: 12px;
-  text-align: center;
-  transition: all var(--tr);
-}
-.curr-rate-item:hover { border-color: var(--gold); }
-.curr-rate-item-flag { font-size: 22px; margin-bottom: 4px; }
-.curr-rate-item-pair { font-size: 10px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
-.curr-rate-item-val { font-size: 15px; font-weight: 900; color: var(--gold2); }
-
-/* لوجو الإعدادات */
+/* ── لوجو الإعدادات ── */
 .settings-logo-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 14px;
+  padding: 10px 0;
 }
 .settings-logo-circle {
-  width: 100px;
-  height: 100px;
-  border-radius: 20px;
+  width: 110px;
+  height: 110px;
+  border-radius: 22px;
   background: var(--gold-light);
   border: 2px solid rgba(200,169,110,.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 900;
   color: var(--gold2);
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(200,169,110,.2);
+  box-shadow: 0 6px 24px rgba(200,169,110,.2);
 }
 .settings-logo-circle img {
   width: 100%;
@@ -4441,10 +4386,125 @@ html, body {
 }
 .settings-logo-btns {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
 }
+
+/* ── شبكة أسعار الصرف ── */
+.curr-rate-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--gold-light);
+  border: 1px solid rgba(200,169,110,.3);
+  border-radius: var(--rs);
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold2);
+  margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.curr-rates-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.curr-rate-item {
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: var(--rs);
+  padding: 14px 10px;
+  text-align: center;
+  transition: all var(--tr);
+}
+.curr-rate-item:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(200,169,110,.15);
+}
+.curr-rate-item-flag { font-size: 24px; margin-bottom: 6px; }
+.curr-rate-item-pair {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 5px;
+  letter-spacing: .5px;
+}
+.curr-rate-item-val {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--gold2);
+}
+
+/* ── شريط الحفظ الثابت ── */
+.settings-save-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 600;
+  background: var(--card);
+  border-top: 1.5px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+
+  /* مراعاة السايدبار على الديسكتوب */
+  margin-right: var(--side-w);
+}
+[dir="ltr"] .settings-save-bar {
+  margin-right: 0;
+  margin-left: var(--side-w);
+}
+[data-theme="dark"] .settings-save-bar {
+  background: rgba(22,25,39,.97);
+  box-shadow: 0 -4px 20px rgba(0,0,0,.3);
+}
+.settings-save-bar .btn {
+  min-width: 140px;
+  justify-content: center;
+  padding: 11px 24px;
+  font-size: 14px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .settings-save-bar {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+  .curr-rates-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  #page-settings {
+    padding-bottom: 160px;
+  }
+}
+
+@media (max-width: 600px) {
+  .curr-rates-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .settings-nav-btn {
+    min-width: 60px;
+    padding: 10px 6px;
+  }
+  .settings-nav-icon { font-size: 22px; }
+  .settings-nav-label { font-size: 10px; }
+  .settings-section-card { padding: 16px; }
+  .settings-save-bar .btn { min-width: 100px; font-size: 13px; }
+}
+
 
 
 
@@ -9553,6 +9613,8 @@ const map = {
   'select-invoice-type': 7,
   'create-invoice':      7,
   'payment-management':  3,
+     'settings':            0,   // ← أضف هذا السطر فقط
+
 };
   const items=document.querySelectorAll('.nav-item');
   if(map[id]!==undefined&&items[map[id]])items[map[id]].classList.add('active');
@@ -9630,6 +9692,8 @@ const PARENT_MAP = {
   'invoices':      'dashboard',
   'add-product':   'dashboard',
   'quick-barcode': 'dashboard',
+     'settings':      'dashboard',   // ← أضف هذا السطر فقط
+
 };
 
 function goBack() {
@@ -15946,6 +16010,8 @@ const BNAV_CONFIG = {
     'invoices':            3,
     'payment-management':  3,
     'quick-barcode':       4,
+         'settings':            2,   // ← أضف هذا السطر فقط
+
   },
   icons:  ['🏢','📦','🏠','✏️','📷'],
   count:  5,
@@ -18210,10 +18276,19 @@ let _settingsCurrentTab = 'company';
 
 /* ── فتح صفحة الإعدادات ── */
 function openSettingsModal() {
-  loadSettingsToPageForm();
-  updateSettingsPageTexts();
-  showPage('settings');
+  // إذا كانت الصفحة موجودة → افتحها كصفحة كاملة
+  const settingsPage = document.getElementById('page-settings');
+  if (settingsPage) {
+    loadSettingsToPageForm();
+    updateSettingsPageTexts();
+    showPage('settings');
+  } else {
+    // fallback للنافذة القديمة إذا لم تُضف الصفحة بعد
+    loadSettingsToForm();
+    openModal('settingsModal');
+  }
 }
+
 
 /* ── تبديل التبويبات ── */
 function switchSettingsTab(tab) {
