@@ -4241,38 +4241,6 @@ html, body {
 
 
 
-/* ============================================================
-   زر الكاميرا المحسن (الباركود السريع) - أبيض ومتناسق دائماً
-============================================================ */
-.btn-scanner-large {
-  width: 48px; /* عرض ثابت لا يتغير */
-  border-radius: 12px;
-  background: var(--card); /* لون أبيض يتناسب مع الوضع الليلي */
-  color: var(--text);
-  font-size: 22px; 
-  border: 2px solid var(--border); 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0; /* 👈 هذا السطر يمنع الزر من الانكماش في الكمبيوتر */
-  cursor: pointer;
-  padding: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  transition: all 0.2s ease;
-}
-
-/* تأثير عند مرور الماوس */
-.btn-scanner-large:hover {
-  border-color: var(--gold);
-  background: var(--gold-light);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(200, 169, 110, 0.15);
-}
-
-/* تأثير عند الضغط */
-.btn-scanner-large:active {
-  transform: scale(0.95);
-}
 
 
    
@@ -5623,12 +5591,38 @@ html, body {
           <span id="step5Arrow" style="font-size:16px;color:var(--muted);transition:transform .3s;">▼</span>
         </div>
         <div class="inv-step-body" id="step5Body">
-         <div style="display:flex; align-items:stretch; gap:8px; margin-bottom:12px;">
-  <input type="text" class="fc" id="invPrSearch" placeholder="🔍 ابحث عن منتج..." oninput="renderPrSelector()" style="flex:1; font-size:14px; padding:10px 14px;">
+           
+     <style>
+  .btn-scanner-large {
+    width: 48px !important;
+    min-width: 48px !important;
+    height: 48px !important;
+    border-radius: 12px !important;
+    background: var(--card) !important;
+    border: 2px solid var(--border) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important; /* يمنع انكماش الزر في الكمبيوتر */
+    cursor: pointer !important;
+    padding: 0 !important;
+    font-size: 24px !important;
+    transition: all 0.2s ease !important;
+  }
+  .btn-scanner-large:hover {
+    border-color: var(--gold) !important;
+    background: var(--gold-light) !important;
+    transform: translateY(-2px) !important;
+  }
+</style>
+
+<div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+  <input type="text" class="fc" id="invPrSearch" placeholder="🔍 ابحث عن منتج..." oninput="renderPrSelector()" style="flex:1; height: 48px; padding: 0 14px; font-size: 14px; border-radius: 12px; border: 1.5px solid var(--border);">
   <button class="btn-scanner-large" onclick="openBarcodeScanner('invoice')" title="مسح الباركود">
     📷
   </button>
 </div>
+
 
           <div class="ps-list" id="prSelectorList"></div>
         </div>
