@@ -13123,7 +13123,7 @@ function buildInvoiceHTML(inv, lang, opts) {
         </div>
       </div>
 
-                      <!-- ── بلوك الوسط: العنوان + باركود + الحقول ── -->
+                           <!-- ── بلوك الوسط: العنوان + باركود + الحقول ── -->
       <div style="
         width:220px;flex-shrink:0;padding:12px 14px;
         background:#ffffff;
@@ -13135,10 +13135,16 @@ function buildInvoiceHTML(inv, lang, opts) {
           ${L.proforma}
         </div>
         
-        <!-- الباركود -->
+        <!-- الباركود والنص أسفله -->
         ${opts.showBarcode ? `
         <div style="margin-bottom:12px; display:flex; flex-direction:column; align-items:center;">
-          ${barcodeSVG}
+          <div style="max-width:100%; overflow:hidden; display:flex; justify-content:center;">
+            ${generateBarcodeSVG(`WOW-${inv.invNo || 'A5001'}`, 180, 30)}
+          </div>
+          <div style="font-family:'Courier New',monospace;font-size:9px;font-weight:800;
+            color:#1a1a2e;letter-spacing:0.5px;text-align:center;margin-top:4px;direction:ltr;">
+            WOW FURNITURE - ${inv.invNo||'—'}
+          </div>
         </div>` : ''}
 
         <!-- الحقول الديناميكية المطلوبة -->
@@ -13165,6 +13171,7 @@ function buildInvoiceHTML(inv, lang, opts) {
               text-align:${isRtl?'left':'right'};">${val}</span>
           </div>`).join('')}
       </div>
+
 
 
 
