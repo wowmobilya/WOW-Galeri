@@ -12432,6 +12432,18 @@ function loadSettingsToForm(){
     else lp.textContent='W';
   }
   updateRateUI();
+
+  // 👇 تحديث اللوجو في قسم "عن البرنامج" 👇
+  const aboutLogo = document.getElementById('about-app-logo');
+  if (aboutLogo) {
+    if (S.settings.logo) {
+      aboutLogo.src = S.settings.logo;
+      aboutLogo.style.display = 'inline-block';
+    } else {
+      aboutLogo.style.display = 'none';
+    }
+  }
+  // 👆 نهاية الإضافة 👆
 }
 
 async function saveSettings(){
@@ -12486,11 +12498,26 @@ async function saveSettings(){
     if(nl) nl.innerHTML=`<img src="${S.settings.logo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
   }
   
-  updateRateUI();
+   updateRateUI();
   updateKdvDisplay();
+
+  // 👇 تحديث اللوجو في قسم "عن البرنامج" فور الحفظ 👇
+  const aboutLogo = document.getElementById('about-app-logo');
+  if (aboutLogo) {
+    if (S.settings.logo) {
+      aboutLogo.src = S.settings.logo;
+      aboutLogo.style.display = 'inline-block';
+    } else {
+      aboutLogo.style.display = 'none';
+    }
+  }
+  // 👆 نهاية الإضافة 👆
+
 goBack(); // للرجوع للصفحة السابقة بعد الحفظ
   showToast(t('settings_saved'),'ok');
+
 }
+
 
 function handleSettingsLogo(e){
   const f=e.target.files[0];if(!f)return;
@@ -13116,11 +13143,19 @@ applyTr();updateRateUI();updateDash();updateInvNumDisplay();
 updateQblTexts();
 startGreetingRotation();
 updateQblTexts(); // ✅ أضف هذا السطر
-  // apply logo to navbar
+   // apply logo to navbar
   if(S.settings.logo){
     const nl=document.getElementById('navLogo');
     if(nl)nl.innerHTML=`<img src="${S.settings.logo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
+    
+    // 👇 إظهار اللوجو في قسم "عن البرنامج" عند تحميل التطبيق 👇
+    const aboutLogo = document.getElementById('about-app-logo');
+    if (aboutLogo) {
+      aboutLogo.src = S.settings.logo;
+      aboutLogo.style.display = 'inline-block';
+    }
   }
+
   const navTxt=document.getElementById('navTitle');
   if(navTxt&&S.settings.companyName){
     const parts=S.settings.companyName.split(' ');
