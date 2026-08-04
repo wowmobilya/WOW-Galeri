@@ -12638,35 +12638,35 @@ function buildInvoiceHTML(inv, lang, opts) {
   const invPayments = inv.payments || [];
 
   /* ════════════════════════════════════════════════════
-     رؤوس الأعمدة × 3 لغات — مع إضافة SET/PCS
+     رؤوس الأعمدة × 3 لغات
   ════════════════════════════════════════════════════ */
   const colHeaders = {
     en: {
       pic:'PICTURE', name:'ITEM NAME', hs:'HS CODE',
       dims:'DIMENSIONS\n(cm)', color:'COLOUR',
-      setpcs:'SET /\nPCS',
+      setpcs:'SET / PCS',
       qty:'QTY',
-      unitPrice:'UNIT\nPRICE', totalPrice:'TOTAL\nPRICE',
+      unitPrice:'UNIT PRICE', totalPrice:'TOTAL PRICE',
       pktCount:'PKT\nCOUNT', totalPkt:'TOTAL\nPKT',
-      unitCbm:'UNIT\nCBM\n(m³)', totalCbm:'TOTAL\nCBM\n(m³)',
-      unitWeight:'UNIT\nWT\n(Kg)', totalWeight:'TOTAL\nWT\n(Kg)',
+      unitCbm:'UNIT\nCBM (m³)', totalCbm:'TOTAL\nCBM (m³)',
+      unitWeight:'UNIT\nWT (Kg)', totalWeight:'TOTAL\nWT (Kg)',
     },
     tr: {
       pic:'FOTOĞRAF', name:'ÜRÜN ADI', hs:'HS KODU',
       dims:'BOYUTLAR\n(cm)', color:'RENK',
-      setpcs:'SET /\nADET',
+      setpcs:'SET / ADET',
       qty:'MİKTAR',
-      unitPrice:'BİRİM\nFİYAT', totalPrice:'TOPLAM\nFİYAT',
+      unitPrice:'BİRİM FİYAT', totalPrice:'TOPLAM',
       pktCount:'PAKET\nSAYISI', totalPkt:'TOPLAM\nPAKET',
-      unitCbm:'BİRİM\nCBM\n(m³)', totalCbm:'TOPLAM\nCBM\n(m³)',
+      unitCbm:'BİRİM\nCBM (m³)', totalCbm:'TOPLAM\nCBM (m³)',
       unitWeight:'BİRİM\nAĞIRLIK', totalWeight:'TOPLAM\nAĞIRLIK',
     },
     ar: {
       pic:'الصورة', name:'اسم المنتج', hs:'كود HS',
       dims:'الأبعاد\n(سم)', color:'اللون',
-      setpcs:'طقم /\nقطعة',
+      setpcs:'طقم / قطعة',
       qty:'الكمية',
-      unitPrice:'سعر\nالوحدة', totalPrice:'الإجمالي',
+      unitPrice:'سعر الوحدة', totalPrice:'الإجمالي',
       pktCount:'عدد\nالباكيت', totalPkt:'إجمالي\nالباكيت',
       unitCbm:'CBM\nللوحدة', totalCbm:'CBM\nالإجمالي',
       unitWeight:'وزن\nالوحدة', totalWeight:'الوزن\nالإجمالي',
@@ -12674,33 +12674,31 @@ function buildInvoiceHTML(inv, lang, opts) {
   };
   const CH = colHeaders[lang] || colHeaders.en;
 
-  /* ════════════════════════════════════════════════════
-     نصوص صف TOTAL PER × 3 لغات
-  ════════════════════════════════════════════════════ */
+  /* ── نصوص صف الإجمالي السفلي × 3 لغات ── */
   const totalRowLabels = {
-    en: { label:'TOTAL PER :', qty:'QTY', price:'PRICE', pkt:'PACKET', cbm:'CBM', kg:'KG' },
-    tr: { label:'TOPLAM :', qty:'ADET', price:'FİYAT', pkt:'PAKET', cbm:'CBM', kg:'KG' },
-    ar: { label:': الإجمالي', qty:'الكمية', price:'السعر', pkt:'الباكيت', cbm:'CBM', kg:'كجم' },
+    en: { label:'TOTAL PER', qty:'QTY', price:'PRICE', pkt:'PACKET', cbm:'CBM', kg:'KG' },
+    tr: { label:'TOPLAM',    qty:'ADET', price:'FİYAT', pkt:'PAKET', cbm:'CBM', kg:'KG' },
+    ar: { label:'الإجمالي', qty:'الكمية', price:'السعر', pkt:'الباكيت', cbm:'CBM', kg:'كجم' },
   };
   const TRL = totalRowLabels[lang] || totalRowLabels.en;
 
   /* ── حساب إجماليات الجدول ── */
-  let grandTotalPkts  = 0;
-  let grandTotalCBM   = 0;
-  let grandTotalWt    = 0;
-  let grandTotalQty   = 0;
+  let grandTotalPkts = 0;
+  let grandTotalCBM  = 0;
+  let grandTotalWt   = 0;
+  let grandTotalQty  = 0;
   let grandTotalPrice = 0;
 
   (inv.items || []).forEach(item => {
     grandTotalPkts  += (item.packets || 1) * item.qty;
-    grandTotalCBM   += (item.cbm    || 0)  * item.qty;
+    grandTotalCBM   += (item.cbm || 0)     * item.qty;
     grandTotalWt    += (item.weight || 0)  * item.qty;
     grandTotalQty   += item.qty;
     grandTotalPrice += item.totalUSD || 0;
   });
 
   /* ════════════════════════════════════════════════════
-     دالة: بناء خلية الأبعاد — متتالية تحت بعضها
+     دالة: بناء خلية الأبعاد (متتالية تحت بعضها)
   ════════════════════════════════════════════════════ */
   function buildDimsCell(item) {
     if (item.dimPieces && item.dimPieces.length > 0) {
@@ -12719,20 +12717,19 @@ function buildInvoiceHTML(inv, lang, opts) {
           font-size:7px;
           font-weight:700;
           color:#222;
-          line-height:1.7;
+          line-height:1.6;
           ${idx > 0 ? 'border-top:1px dashed #ddd;padding-top:2px;margin-top:1px;' : ''}
         ">
           ${validPieces.length > 1 ? `<span style="
             background:#1a1a2e;color:#c8a96e;
-            border-radius:50%;width:11px;height:11px;
+            border-radius:50%;
+            width:11px;height:11px;
             font-size:6.5px;font-weight:900;
             display:inline-flex;align-items:center;justify-content:center;
             margin-right:2px;flex-shrink:0;
           ">${idx+1}</span>` : ''}
-          <span>${l}</span>
-          <span style="color:#bbb;margin:0 1px;">×</span>
-          <span>${w}</span>
-          <span style="color:#bbb;margin:0 1px;">×</span>
+          <span>${l}</span><span style="color:#aaa;margin:0 1px;">×</span>
+          <span>${w}</span><span style="color:#aaa;margin:0 1px;">×</span>
           <span>${h}</span>
         </div>`;
       }).join('');
@@ -12745,7 +12742,7 @@ function buildInvoiceHTML(inv, lang, opts) {
           <div style="
             direction:ltr;white-space:nowrap;
             font-size:7px;font-weight:700;color:#222;
-            line-height:1.7;
+            line-height:1.6;
             ${idx > 0 ? 'border-top:1px dashed #ddd;padding-top:2px;margin-top:1px;' : ''}
           ">${p} cm</div>`).join('');
       }
@@ -12763,37 +12760,39 @@ function buildInvoiceHTML(inv, lang, opts) {
     const found = colorData.find(c => c.val === colorVal);
     if (found) {
       return found.label
-        .replace(/^[\u{1F300}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}⭐✏️🌰🟫🪵✨🌑🌕🌫️🥇🌿⬜🟡🟤🌱⬛🖤🩶🥂🪙🍦🏜️💎🔲🪮🏺]+\s*/u, '')
+        .replace(/^[\u{1F300}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}⭐✏️🌰🟫🪵✨🌑🌕🌫️🥇🌿⬜🟡🟤🌱⬛🖤🩶🥂🪙🍦🏜️💎🔲🪮🏺🪵]+\s*/u, '')
         .trim();
     }
     return colorVal;
   }
 
   /* ════════════════════════════════════════════════════
-     دالة: قراءة SET/PCS من وصف المنتج
-     الأولوية: product.desc → item.setpcs → افتراضي
+     دالة: قراءة SET/PCS من المنتج (الوصف)
   ════════════════════════════════════════════════════ */
   function getSetPcsDisplay(item) {
-    // 1. من المنتج في قاعدة البيانات
+    // 1. من المنتج المحفوظ في قاعدة البيانات
     const product = S.products.find(p => p.id === item.productId);
-    if (product && product.desc && product.desc !== 'CUSTOM' && product.desc.trim()) {
+    if (product && product.desc && product.desc !== 'CUSTOM') {
+      // ترجمة الوصف حسب اللغة
       const descData = DESC_DATA[lang] || DESC_DATA.en;
       const found = descData.find(d => d.val === product.desc);
       if (found && !found.custom) return found.label;
-      // نص مخصص مكتوب يدوياً
-      if (product.desc !== 'CUSTOM') return product.desc;
+      // إذا كان نصاً مخصصاً
+      if (product.desc && product.desc !== 'CUSTOM') return product.desc;
     }
-    // 2. من item.setpcs
+    // 2. من item.setpcs كاحتياط
     if (item.setpcs && item.setpcs !== 'SET') return item.setpcs;
-    // 3. القيمة الافتراضية حسب اللغة
+    if (item.setpcs === 'SET') {
+      const setLabel = { en:'SET', tr:'Takım', ar:'طقم' }[lang] || 'SET';
+      return setLabel;
+    }
+    // 3. القيمة الافتراضية
     return { en:'SET', tr:'Takım', ar:'طقم' }[lang] || 'SET';
   }
 
   /* ════════════════════════════════════════════════════
-     صفوف الجدول — 15 عمود (مع SET/PCS)
+     صفوف الجدول
   ════════════════════════════════════════════════════ */
-  const tdBase = `padding:5px 3px;text-align:center;vertical-align:middle;border-bottom:1px solid #eef0f3;border-right:1px solid #eef0f3;font-size:7.5px;`;
-
   const tableRows = (inv.items || []).map((item, i) => {
     const unitCBM   = item.cbm    || 0;
     const totalCBM  = unitCBM     * item.qty;
@@ -12801,32 +12800,37 @@ function buildInvoiceHTML(inv, lang, opts) {
     const totalWt   = unitWt      * item.qty;
     const unitPkts  = item.packets || 1;
     const totalPkts = unitPkts    * item.qty;
-    const rowBg     = i % 2 === 0 ? '#ffffff' : '#f8fafc';
 
     const imgCell = opts.showImages
       ? (item.image
-          ? `<img src="${item.image}" style="width:42px;height:34px;object-fit:cover;border-radius:4px;display:block;margin:0 auto;" alt="${item.name}">`
-          : `<div style="width:42px;height:34px;background:#f0f0f0;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px;margin:0 auto;">🛋️</div>`)
-      : `<div style="width:42px;height:34px;background:#f0f0f0;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#ccc;margin:0 auto;">—</div>`;
+          ? `<img src="${item.image}" style="width:44px;height:36px;object-fit:cover;border-radius:4px;display:block;margin:0 auto;" alt="${item.name}">`
+          : `<div style="width:44px;height:36px;background:#f0f0f0;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto;">🛋️</div>`)
+      : `<div style="width:44px;height:36px;background:#f0f0f0;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#ccc;margin:0 auto;">—</div>`;
 
     const colorDisplay = getColorDisplay(item.color);
-    const setpcsDisplay = getSetPcsDisplay(item);
 
     /* HS Code: من المنتج أولاً ثم من item */
     const product = S.products.find(p => p.id === item.productId);
     const hsCode = (product && product.hsCode) ? product.hsCode : (item.hsCode || '—');
 
+    /* SET/PCS من الوصف */
+    const setpcsDisplay = getSetPcsDisplay(item);
+
     const dimsHTML = buildDimsCell(item);
+    const rowBg = i % 2 === 0 ? '#ffffff' : '#f8fafc';
+
+    /* ── ستايل الخلية المشترك ── */
+    const tdBase = `padding:5px 4px;text-align:center;vertical-align:middle;border-bottom:1px solid #eef0f3;border-right:1px solid #eef0f3;font-size:7.5px;`;
 
     return `<tr style="background:${rowBg};">
       <td style="${tdBase}padding:3px;">${imgCell}</td>
       <td style="${tdBase}font-weight:700;font-size:8px;min-width:55px;">${item.name}</td>
       <td style="${tdBase}color:#555;direction:ltr;font-size:7px;">${hsCode}</td>
-      <td style="${tdBase}min-width:58px;">${dimsHTML}</td>
-      <td style="${tdBase}max-width:48px;word-break:break-word;font-size:7px;">${colorDisplay}</td>
+      <td style="${tdBase}min-width:60px;">${dimsHTML}</td>
+      <td style="${tdBase}max-width:50px;word-break:break-word;font-size:7px;">${colorDisplay}</td>
       <td style="${tdBase}font-size:7.5px;font-weight:700;color:#1a1a2e;">${setpcsDisplay}</td>
       <td style="${tdBase}font-weight:800;font-size:9px;">${item.qty}</td>
-      <td style="${tdBase}direction:ltr;white-space:nowrap;font-weight:700;font-size:8px;">${fmt(item.priceUSD)}</td>
+      <td style="${tdBase}direction:ltr;white-space:nowrap;font-weight:700;">${fmt(item.priceUSD)}</td>
       <td style="${tdBase}direction:ltr;white-space:nowrap;font-weight:800;color:#1a1a2e;font-size:8.5px;">${fmt(item.totalUSD)}</td>
       <td style="${tdBase}font-size:8px;">${unitPkts}</td>
       <td style="${tdBase}font-size:8px;font-weight:700;">${totalPkts}</td>
@@ -12838,52 +12842,73 @@ function buildInvoiceHTML(inv, lang, opts) {
   }).join('');
 
   /* ════════════════════════════════════════════════════
-     صف TOTAL PER — خلفية داكنة مع تسميات ذهبية
-     التوزيع: 6 خلايا أولى (label) + QTY + PRICE + PKT(×2) + CBM(×2) + KG(×2)
+     صف الإجماليات — TOTAL PER: QTY / PRICE / PACKET / CBM / KG
   ════════════════════════════════════════════════════ */
-  const tfTdStyle = `
-    padding:0;
+  const tfootTdBase = `
+    padding:7px 4px;
     text-align:center;
     vertical-align:middle;
+    font-size:7.5px;
+    font-weight:800;
+    color:#1a1a2e;
     background:#1a1a2e;
-    border-right:1px solid rgba(255,255,255,.12);
+    border-right:1px solid rgba(255,255,255,.15);
   `;
 
-  /* خلية واحدة تحتوي label + قيمة */
-  const tfCell = (label, value, colspan, noBorder) => `
-    <td colspan="${colspan||1}" style="${tfTdStyle}${noBorder?'border-right:none;':''}">
-      <div style="padding:6px 4px;">
-        <div style="font-size:6px;font-weight:800;color:#c8a96e;letter-spacing:.8px;text-transform:uppercase;margin-bottom:3px;line-height:1;">${label}</div>
-        <div style="font-size:${value.length > 8 ? '8' : '10'}px;font-weight:900;color:#ffffff;direction:ltr;white-space:nowrap;line-height:1;">${value}</div>
-      </div>
+  /* بناء خلية "TOTAL PER" مع الأرقام */
+  const totalPerCell = `
+    <td colspan="6" style="
+      ${tfootTdBase}
+      text-align:${lang==='ar'?'right':'left'};
+      padding:7px 12px;
+      border-right:1px solid rgba(255,255,255,.2);
+    ">
+      <span style="
+        font-size:7px;
+        font-weight:900;
+        color:#c8a96e;
+        letter-spacing:1.2px;
+        text-transform:uppercase;
+      ">${TRL.label}:</span>
     </td>`;
 
-  /* خلية العنوان "TOTAL PER:" */
-  const tfLabelCell = `
-    <td colspan="6" style="${tfTdStyle}text-align:${lang==='ar'?'right':'left'};padding:0;">
-      <div style="padding:6px 10px;display:flex;align-items:center;gap:6px;">
-        <span style="
-          background:rgba(200,169,110,.2);
-          border:1px solid rgba(200,169,110,.4);
-          border-radius:4px;
-          padding:2px 7px;
-          font-size:7px;
-          font-weight:900;
-          color:#c8a96e;
-          letter-spacing:1px;
-          text-transform:uppercase;
-          white-space:nowrap;
-        ">${TRL.label}</span>
-      </div>
+  const totalQtyCell = `
+    <td style="${tfootTdBase}">
+      <div style="font-size:6px;color:#c8a96e;font-weight:700;letter-spacing:.8px;margin-bottom:2px;">${TRL.qty}</div>
+      <div style="font-size:10px;font-weight:900;color:#fff;">${grandTotalQty}</div>
+    </td>`;
+
+  const totalPriceCell = `
+    <td style="${tfootTdBase}">
+      <div style="font-size:6px;color:#c8a96e;font-weight:700;letter-spacing:.8px;margin-bottom:2px;">${TRL.price}</div>
+      <div style="font-size:9px;font-weight:900;color:#fff;direction:ltr;white-space:nowrap;">${fmt(grandTotalPrice)}</div>
+    </td>`;
+
+  const totalPktCell = `
+    <td colspan="2" style="${tfootTdBase}">
+      <div style="font-size:6px;color:#c8a96e;font-weight:700;letter-spacing:.8px;margin-bottom:2px;">${TRL.pkt}</div>
+      <div style="font-size:10px;font-weight:900;color:#fff;">${grandTotalPkts}</div>
+    </td>`;
+
+  const totalCbmCell = `
+    <td colspan="2" style="${tfootTdBase}">
+      <div style="font-size:6px;color:#c8a96e;font-weight:700;letter-spacing:.8px;margin-bottom:2px;">${TRL.cbm}</div>
+      <div style="font-size:9px;font-weight:900;color:#fff;direction:ltr;">${grandTotalCBM.toFixed(4)}</div>
+    </td>`;
+
+  const totalKgCell = `
+    <td colspan="2" style="${tfootTdBase}border-right:none;">
+      <div style="font-size:6px;color:#c8a96e;font-weight:700;letter-spacing:.8px;margin-bottom:2px;">${TRL.kg}</div>
+      <div style="font-size:9px;font-weight:900;color:#fff;direction:ltr;">${grandTotalWt.toFixed(2)}</div>
     </td>`;
 
   const totalRow = `<tr>
-    ${tfLabelCell}
-    ${tfCell(TRL.qty,   String(grandTotalQty))}
-    ${tfCell(TRL.price, fmt(grandTotalPrice))}
-    ${tfCell(TRL.pkt,   String(grandTotalPkts), 2)}
-    ${tfCell(TRL.cbm,   grandTotalCBM.toFixed(4), 2)}
-    ${tfCell(TRL.kg,    grandTotalWt.toFixed(2), 2, true)}
+    ${totalPerCell}
+    ${totalQtyCell}
+    ${totalPriceCell}
+    ${totalPktCell}
+    ${totalCbmCell}
+    ${totalKgCell}
   </tr>`;
 
   /* ════════════════════════════════════════════════════
@@ -13048,21 +13073,50 @@ function buildInvoiceHTML(inv, lang, opts) {
     const cleanLine = (line) => line.replace(/^\(\d+\)\s*/, '').trim();
 
     notesHTML = `
-    <div style="padding:10px 18px 12px;background:#fafafa;border-top:2px solid #1a1a2e;page-break-inside:avoid;">
-      <div style="font-size:8px;font-weight:900;color:#1a1a2e;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:6px;">
+    <div style="
+      padding:10px 18px 12px;
+      background:#fafafa;
+      border-top:2px solid #1a1a2e;
+      page-break-inside:avoid;
+    ">
+      <div style="
+        font-size:8px;font-weight:900;color:#1a1a2e;
+        letter-spacing:1.5px;text-transform:uppercase;
+        margin-bottom:8px;padding-bottom:5px;
+        border-bottom:1px solid #e2e8f0;
+        display:flex;align-items:center;gap:6px;
+      ">
         <span style="background:#1a1a2e;color:#c8a96e;border-radius:4px;padding:2px 7px;font-size:7px;letter-spacing:1px;">📋</span>
         ${notesSectionTitle}
       </div>
       ${mainTerm ? `
-      <div style="background:linear-gradient(135deg,rgba(26,26,46,.06),rgba(200,169,110,.08));border:1.5px solid rgba(200,169,110,.35);border-radius:8px;padding:8px 12px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+      <div style="
+        background:linear-gradient(135deg,rgba(26,26,46,.06),rgba(200,169,110,.08));
+        border:1.5px solid rgba(200,169,110,.35);
+        border-radius:8px;padding:8px 12px;margin-bottom:8px;
+        display:flex;align-items:center;gap:8px;
+      ">
         <span style="font-size:14px;flex-shrink:0;">🚛</span>
-        <span style="font-size:9px;font-weight:800;color:#1a1a2e;line-height:1.5;direction:${lang==='ar'?'rtl':'ltr'};unicode-bidi:plaintext;">${mainTerm}</span>
+        <span style="font-size:9px;font-weight:800;color:#1a1a2e;line-height:1.5;
+          direction:${lang==='ar'?'rtl':'ltr'};unicode-bidi:plaintext;">
+          ${mainTerm}
+        </span>
       </div>` : ''}
       ${detailLines.length > 0 ? `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;">
         ${detailLines.map((line, idx) => `
-        <div style="display:flex;align-items:flex-start;gap:5px;padding:3px 0;border-bottom:1px solid #f0f0f0;font-size:7.5px;color:#444;line-height:1.5;direction:${lang==='ar'?'rtl':'ltr'};unicode-bidi:plaintext;">
-          <span style="background:#1a1a2e;color:#c8a96e;border-radius:50%;width:14px;height:14px;font-size:7px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">${idx+1}</span>
+        <div style="
+          display:flex;align-items:flex-start;gap:5px;
+          padding:3px 0;border-bottom:1px solid #f0f0f0;
+          font-size:7.5px;color:#444;line-height:1.5;
+          direction:${lang==='ar'?'rtl':'ltr'};unicode-bidi:plaintext;
+        ">
+          <span style="
+            background:#1a1a2e;color:#c8a96e;border-radius:50%;
+            width:14px;height:14px;font-size:7px;font-weight:900;
+            display:inline-flex;align-items:center;justify-content:center;
+            flex-shrink:0;margin-top:1px;
+          ">${idx+1}</span>
           <span>${cleanLine(line)}</span>
         </div>`).join('')}
       </div>` : ''}
@@ -13081,12 +13135,14 @@ function buildInvoiceHTML(inv, lang, opts) {
   const remaining = Math.max(0, (inv.grandTotal||0) - totalPaid);
 
   /* ════════════════════════════════════════════════════
-     ستايل رؤوس الأعمدة — توسيط طولاً وعرضاً
+     CSS الجدول — كتلة واحدة بحواف مكسورة خارجية فقط
+     الحل: wrapper div مع border-radius + overflow:hidden
+     والجدول بداخله بـ border-collapse:collapse عادي
   ════════════════════════════════════════════════════ */
   const thStyle = `
     color:#fff;
     font-weight:700;
-    padding:8px 3px;
+    padding:8px 4px;
     text-align:center;
     vertical-align:middle;
     font-size:6.5px;
@@ -13094,16 +13150,10 @@ function buildInvoiceHTML(inv, lang, opts) {
     white-space:pre-line;
     word-break:break-word;
     border-right:1px solid rgba(255,255,255,.15);
-    line-height:1.45;
+    line-height:1.5;
   `;
 
-  /* ════════════════════════════════════════════════════
-     HTML النهائي
-     الجدول ككتلة واحدة بحواف مكسورة خارجية فقط:
-     - wrapper div: border-radius:12px + overflow:hidden
-     - table: border-collapse:collapse (الخلايا عادية)
-     - overflow:hidden يقطع الزوايا الخارجية تلقائياً
-  ════════════════════════════════════════════════════ */
+  /* ── HTML النهائي ── */
   return `
   <div class="inv-paper">
 
@@ -13128,20 +13178,40 @@ function buildInvoiceHTML(inv, lang, opts) {
       <div class="ip-hdr-mid">
         <div class="ip-inv-title">${L.invoice}</div>
         ${opts.showBarcode
-          ? `<div class="ip-barcode-wrap">${barcodeSVG}<div class="ip-barcode-txt">${inv.invNo||'—'}</div></div>`
+          ? `<div class="ip-barcode-wrap">
+               ${barcodeSVG}
+               <div class="ip-barcode-txt">${inv.invNo||'—'}</div>
+             </div>`
           : ''}
-        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.no}:</span><span class="ip-meta-val">${inv.invNo||'—'}</span></div>
-        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.loadDate}:</span><span class="ip-meta-val">${inv.loadDate||'—'}</span></div>
-        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.date}:</span><span class="ip-meta-val">${inv.date||new Date().toLocaleDateString()}</span></div>
+        <div class="ip-meta-row">
+          <span class="ip-meta-lbl">${L.no}:</span>
+          <span class="ip-meta-val">${inv.invNo||'—'}</span>
+        </div>
+        <div class="ip-meta-row">
+          <span class="ip-meta-lbl">${L.loadDate}:</span>
+          <span class="ip-meta-val">${inv.loadDate||'—'}</span>
+        </div>
+        <div class="ip-meta-row">
+          <span class="ip-meta-lbl">${L.date}:</span>
+          <span class="ip-meta-val">${inv.date||new Date().toLocaleDateString()}</span>
+        </div>
         ${inv.plate ? `<div class="ip-meta-row"><span class="ip-meta-lbl">${L.plate}:</span><span class="ip-meta-val">${inv.plate}</span></div>` : ''}
         ${inv.truck ? `<div class="ip-meta-row"><span class="ip-meta-lbl">${L.truck}:</span><span class="ip-meta-val">${inv.truck}</span></div>` : ''}
-        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.tier||'Tier'}:</span><span class="ip-meta-val">🎯 ${inv.tier||'A'}</span></div>
-        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.payMethod}:</span><span class="ip-meta-val">${payMethodLabel}</span></div>
+        <div class="ip-meta-row">
+          <span class="ip-meta-lbl">${L.tier||'Tier'}:</span>
+          <span class="ip-meta-val">🎯 ${inv.tier||'A'}</span>
+        </div>
+        <div class="ip-meta-row">
+          <span class="ip-meta-lbl">${L.payMethod}:</span>
+          <span class="ip-meta-val">${payMethodLabel}</span>
+        </div>
       </div>
 
       <div class="ip-hdr-client">
         <div class="ip-client-logo-box">
-          ${inv.companyLogo ? `<img src="${inv.companyLogo}" alt="logo">` : `<span style="font-size:22px;">🏢</span>`}
+          ${inv.companyLogo
+            ? `<img src="${inv.companyLogo}" alt="logo">`
+            : `<span style="font-size:22px;">🏢</span>`}
         </div>
         <div class="ip-client-name">
           <strong>${inv.companyName||'—'}</strong><br>
@@ -13158,20 +13228,21 @@ function buildInvoiceHTML(inv, lang, opts) {
       ${inv.province||inv.country||''} ${inv.city?'· '+inv.city:''}
     </div>
 
-    <!-- ══════════════════════════════════════════════
+    <!-- ════════════════════════════════════════════════
          MAIN TABLE
-         الحل الصحيح: wrapper div بـ overflow:hidden + border-radius
-         الجدول بداخله border-collapse:collapse عادي
-         الـ overflow:hidden يقطع الزوايا الأربع الخارجية فقط
-    ═══════════════════════════════════════════════ -->
-    <div style="padding:12px 18px 0;">
-
-      <!-- الغلاف الخارجي — هو من يعطي الحواف المكسورة -->
+         الحل الصحيح للحواف المكسورة الخارجية فقط:
+         - wrapper div: border-radius + overflow:hidden + border
+         - table: border-collapse:collapse (خلايا عادية بدون radius)
+         - الـ overflow:hidden يقطع زوايا الجدول تلقائياً
+    ═══════════════════════════════════════════════════ -->
+    <div style="
+      padding:12px 18px 0;
+    ">
       <div style="
         border-radius:12px;
         overflow:hidden;
-        border:1.5px solid #c8d0dc;
-        box-shadow:0 3px 18px rgba(26,26,46,.10);
+        border:1.5px solid #d0d7e3;
+        box-shadow:0 3px 16px rgba(26,26,46,.10);
       ">
         <table style="
           width:100%;
@@ -13179,8 +13250,7 @@ function buildInvoiceHTML(inv, lang, opts) {
           font-size:7.5px;
           table-layout:auto;
         ">
-
-          <!-- رأس الجدول — النصوص في المنتصف طولاً وعرضاً -->
+          <!-- رأس الجدول -->
           <thead>
             <tr style="background:#1a1a2e;">
               <th style="${thStyle}">${CH.pic}</th>
@@ -13192,21 +13262,20 @@ function buildInvoiceHTML(inv, lang, opts) {
               <th style="${thStyle}">${CH.qty}</th>
               <th style="${thStyle}">${CH.unitPrice}</th>
               <th style="${thStyle}">${CH.totalPrice}</th>
-              <th style="${thStyle}">${CH.pktCount}</th>
-              <th style="${thStyle}">${CH.totalPkt}</th>
-              <th style="${thStyle}">${CH.unitCbm}</th>
-              <th style="${thStyle}">${CH.totalCbm}</th>
-              <th style="${thStyle}">${CH.unitWeight}</th>
-              <th style="${thStyle};border-right:none;">${CH.totalWeight}</th>
+              <th style="${thStyle};white-space:pre-line;">${CH.pktCount}</th>
+              <th style="${thStyle};white-space:pre-line;">${CH.totalPkt}</th>
+              <th style="${thStyle};white-space:pre-line;">${CH.unitCbm}</th>
+              <th style="${thStyle};white-space:pre-line;">${CH.totalCbm}</th>
+              <th style="${thStyle};white-space:pre-line;">${CH.unitWeight}</th>
+              <th style="${thStyle};white-space:pre-line;border-right:none;">${CH.totalWeight}</th>
             </tr>
           </thead>
 
           <!-- صفوف البيانات -->
           <tbody>${tableRows}</tbody>
 
-          <!-- صف TOTAL PER -->
+          <!-- صف الإجماليات -->
           <tfoot>${totalRow}</tfoot>
-
         </table>
       </div>
     </div>
