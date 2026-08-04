@@ -13032,7 +13032,7 @@ updateQblTexts(); // ✅ أضف هذا السطر
   }
   // handle hash routing
   const hash=window.location.hash.replace('#','');
-const validPages=['dashboard','companies','products','invoices','add-company','add-product','create-invoice','select-client-type','select-invoice-type','payment-management','settings'];
+const validPages=['dashboard','companies','products','invoices','add-company','add-product','create-invoice','select-client-type','select-invoice-type','payment-management'];
   if(hash&&validPages.includes(hash)){showPage(hash,false);history.replaceState({page:hash},'','#'+hash);}
   else{showPage('dashboard',false);history.replaceState({page:'dashboard'},'','#dashboard');}
   // fetch rate in background
