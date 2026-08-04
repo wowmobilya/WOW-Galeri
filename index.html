@@ -6529,22 +6529,31 @@ html, body {
 <section class="page" id="page-settings">
   
   <!-- الشريط العلوي الثابت مع التبويبات -->
-  <div class="sct-sticky-header" style="flex-direction: column; align-items: stretch; gap: 14px; padding-bottom: 0;">
-    <div style="display: flex; align-items: center; gap: 12px; padding: 0 20px;">
-      <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
-      <div class="sct-sticky-title">
-        <h1>⚙️ <span data-i18n="settings">الإعدادات</span></h1>
-      </div>
-    </div>
-    
-    <!-- أزرار التنقل العلوية بالرموز -->
-    <div class="tabs" style="margin: 0 20px; background: transparent; padding: 0; border-bottom: 2px solid var(--border); border-radius: 0;">
-      <button class="tab-btn active" onclick="switchTab('company')" style="border-radius: 10px 10px 0 0;">🏢 معلومات الشركة</button>
-      <button class="tab-btn" onclick="switchTab('bank')" style="border-radius: 10px 10px 0 0;">🏦 البنك</button>
-      <button class="tab-btn" onclick="switchTab('invoice')" style="border-radius: 10px 10px 0 0;">📄 الفواتير</button>
-      <button class="tab-btn" onclick="switchTab('currency')" style="border-radius: 10px 10px 0 0;">💱 الصرف</button>
+ <!-- الشريط العلوي الثابت مع التبويبات -->
+<div class="sct-sticky-header" style="flex-direction: column; align-items: stretch; gap: 14px; padding-bottom: 0;">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 0 20px;">
+    <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
+    <div class="sct-sticky-title">
+      <h1>⚙️ <span data-i18n="settings">الإعدادات</span></h1>
     </div>
   </div>
+  
+  <!-- أزرار التنقل العلوية (محسّنة للهواتف مع دعم الترجمة) -->
+  <div class="tabs" style="margin: 0 20px; background: transparent; padding: 0; border-bottom: 2px solid var(--border); border-radius: 0; display: flex; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;">
+    <button class="tab-btn active" onclick="switchTab('company')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
+      🏢 <span data-i18n="tab_company">معلومات الشركة</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('bank')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
+      🏦 <span data-i18n="tab_bank">البنك</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('invoice')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
+      📄 <span data-i18n="tab_invoice">إعدادات الفواتير</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('currency')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
+      💱 <span data-i18n="tab_currency">الصرف</span>
+    </button>
+  </div>
+</div>
 
   <!-- محتوى الإعدادات -->
   <div style="max-width: 700px; margin: 20px auto 80px;">
@@ -7355,6 +7364,7 @@ share_print: 'طباعة الفاتورة',
 share_wa: 'إرسال WhatsApp',
 share_email: 'إرسال Email',
 share_settings: 'إعدادات الطباعة',
+tab_company: 'معلومات الشركة', tab_bank: 'البنك', tab_invoice: 'إعدادات الفواتير', tab_currency: 'الصرف',
 
     pm_stat_paid:'المدفوع',pm_stat_remaining:'المتبقي',
     add_payment:'إضافة دفعة جديدة',pay_amount:'المبلغ',pay_date:'التاريخ',
@@ -7444,6 +7454,7 @@ share_print: 'Faturayı Yazdır',
 share_wa: 'WhatsApp Gönder',
 share_email: 'E-posta Gönder',
 share_settings: 'Yazdırma Ayarları',
+tab_company: 'Şirket Bilgileri', tab_bank: 'Banka', tab_invoice: 'Fatura Ayarları', tab_currency: 'Döviz',
 
     pr_desc:'Açıklama',pricing:'Fiyatlandırma',pricing_hint:'Temel para birimi: USD',
     active_tier:'Aktif Fiyat Kademesi',
@@ -7578,6 +7589,7 @@ share_print: 'Print Invoice',
 share_wa: 'Send WhatsApp',
 share_email: 'Send Email',
 share_settings: 'Print Settings',
+tab_company: 'Company Info', tab_bank: 'Bank', tab_invoice: 'Invoice Settings', tab_currency: 'Currency',
 
     pr_type:'Product Type',pr_info:'Product Info',pr_name:'Product Name',
     pr_desc:'Description',pricing:'Pricing',pricing_hint:'Base currency: USD',
@@ -12408,15 +12420,19 @@ function resetSettingsLogo() {
 }
 
 
-
 function switchTab(tab){
   ['company','bank','invoice','currency'].forEach(t=>{
-    const el=document.getElementById('stab-'+t);if(el)el.style.display=t===tab?'block':'none';
+    const el=document.getElementById('stab-'+t);
+    if(el) el.style.display = (t===tab) ? 'block' : 'none';
   });
-  document.querySelectorAll('#settingsModal .tab-btn').forEach((btn,i)=>{
-    const tabs=['company','bank','invoice','currency'];btn.classList.toggle('active',tabs[i]===tab);
+  
+  // 🐛 تم الإصلاح: البحث داخل page-settings بدلاً من settingsModal
+  document.querySelectorAll('#page-settings .tab-btn').forEach((btn,i)=>{
+    const tabs=['company','bank','invoice','currency'];
+    btn.classList.toggle('active', tabs[i]===tab);
   });
 }
+
 
 /* ============================================================
    BARCODE GENERATOR (SVG)
