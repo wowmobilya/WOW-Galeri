@@ -6679,45 +6679,54 @@ html, body {
 <div id="stab-about" style="display:none;">
   
   <!-- بطاقة معلومات البرنامج -->
-  <div class="card" style="text-align: center; background: linear-gradient(135deg, var(--card), var(--input)); border: 1.5px solid var(--gold); position: relative; overflow: hidden;">
+  <div class="card" style="text-align: center; background: linear-gradient(135deg, var(--card), var(--input)); border: 1.5px solid var(--gold); position: relative; overflow: hidden; padding: 30px 20px;">
     <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(200,169,110,0.1); border-radius: 50%; filter: blur(20px);"></div>
     <div style="position: absolute; bottom: -50px; left: -50px; width: 150px; height: 150px; background: rgba(200,169,110,0.1); border-radius: 50%; filter: blur(20px);"></div>
     
-    <div style="font-size: 48px; margin-bottom: 10px; filter: drop-shadow(0 4px 12px rgba(200,169,110,0.4));">✨</div>
-    <h2 style="font-size: 22px; font-weight: 900; color: var(--text); margin-bottom: 6px; letter-spacing: 0.5px;">WOW Furniture</h2>
-    <div style="font-size: 11px; font-weight: 800; color: var(--gold2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;" data-i18n="app_subtitle">نظام إدارة الفواتير الذكي</div>
-    <p style="font-size: 13px; color: var(--text2); line-height: 1.8; max-width: 90%; margin: 0 auto 16px;" data-i18n="app_desc">
-      نظام سحابي متطور لإدارة الفواتير، العملاء، والمنتجات بذكاء وسرعة. مصمم خصيصاً لتسهيل أعمال تصدير وتجارة الأثاث بأعلى معايير الدقة والاحترافية.
+    <!-- اللوجو بدلاً من النجمة (تأكد من مسار اللوجو الصحيح) -->
+    <img src="logo.png" alt="WOW Furniture" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 12px; filter: drop-shadow(0 4px 8px rgba(200,169,110,0.3));" onerror="this.style.display='none'">
+    
+    <h2 style="font-size: 24px; font-weight: 900; color: var(--text); margin-bottom: 6px; letter-spacing: 0.5px;">WOW Furniture</h2>
+    <div style="font-size: 12px; font-weight: 800; color: var(--gold2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;" data-i18n="app_subtitle">نظام إدارة الفواتير الذكي</div>
+    
+    <!-- تم إزالة كلمة سحابي من الوصف -->
+    <p style="font-size: 14px; color: var(--text2); line-height: 1.8; max-width: 90%; margin: 0 auto 20px;" data-i18n="app_desc">
+      نظام متطور لإدارة الفواتير، العملاء، والمنتجات بذكاء وسرعة. مصمم خصيصاً لتسهيل أعمال تصدير وتجارة الأثاث بأعلى معايير الدقة والاحترافية.
     </p>
-    <div style="display: inline-block; background: var(--input); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 10px; font-weight: 700; color: var(--muted);">
+    <div style="display: inline-block; background: var(--input); border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; font-size: 11px; font-weight: 700; color: var(--muted);">
       Version 2.0.0
     </div>
   </div>
 
   <!-- بطاقة فريق العمل -->
-  <div class="card">
-    <div class="card-hdr" style="margin-bottom: 16px; border-bottom: none; padding-bottom: 0;">
-      <div class="card-title">👨‍💻 <span data-i18n="team_title">فريق العمل</span></div>
+  <div class="card" style="margin-top: 20px;">
+    <div class="card-hdr" style="margin-bottom: 20px; border-bottom: none; padding-bottom: 0;">
+      <div class="card-title" style="font-size: 18px;">👨‍💻 <span data-i18n="team_title">فريق العمل</span></div>
     </div>
 
-    <!-- المبرمج: م. معتز بالله -->
-    <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--input); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 12px; transition: all var(--tr);" onmouseenter="this.style.borderColor='var(--gold)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.borderColor='var(--border)'; this.style.transform='';">
-      <img src="https://static.wixstatic.com/media/42e4ec_1a80dbe848fb4c8f96e04da6183a7b40~mv2.jpg/v1/crop/x_56,y_0,w_946,h_884/fill/w_758,h_722,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/%D8%B5%D9%88%D8%B1%D8%A9%20%D9%88%D8%A7%D8%AA%D8%B3%D8%A7%D8%A8%20%D8%A8%D8%AA%D8%A7%D8%B1%D9%8A%D8%AE%201447-06-18%20%D9%81%D9%8A%2013_51_41_b7ed5312.jpg" alt="Mutez Billah" style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); box-shadow: 0 4px 12px rgba(200,169,110,0.3); flex-shrink: 0;">
-      <div>
-        <div style="font-size: 10px; font-weight: 800; color: var(--gold2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px;" data-i18n="role_dev">برمجة وتطوير</div>
-        <div style="font-size: 15px; font-weight: 900; color: var(--text);" data-i18n="name_mutez">م. معتز بالله حاج شعبان</div>
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      
+      <!-- المبرمج: م. معتز بالله -->
+      <div style="display: flex; align-items: flex-start; gap: 16px; padding: 20px; background: var(--input); border: 1px solid var(--border); border-radius: 16px; transition: all var(--tr);" onmouseenter="this.style.borderColor='var(--gold)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.borderColor='var(--border)'; this.style.transform='';">
+        <img src="https://static.wixstatic.com/media/42e4ec_1a80dbe848fb4c8f96e04da6183a7b40~mv2.jpg/v1/crop/x_56,y_0,w_946,h_884/fill/w_758,h_722,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/%D8%B5%D9%88%D8%B1%D8%A9%20%D9%88%D8%A7%D8%AA%D8%B3%D8%A7%D8%A8%20%D8%A8%D8%AA%D8%A7%D8%B1%D9%8A%D8%AE%201447-06-18%20%D9%81%D9%8A%2013_51_41_b7ed5312.jpg" alt="Mutez Billah" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); box-shadow: 0 4px 12px rgba(200,169,110,0.3); flex-shrink: 0;">
+        <div style="flex: 1;">
+          <div style="font-size: 11px; font-weight: 800; color: var(--gold2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;" data-i18n="role_dev">برمجة وتطوير</div>
+          <div style="font-size: 16px; font-weight: 900; color: var(--text); margin-bottom: 6px;" data-i18n="name_mutez">م. معتز بالله حاج شعبان</div>
+          <p style="font-size: 12px; color: var(--text2); line-height: 1.6; margin: 0;" data-i18n="desc_mutez">تطوير الهيكلة البرمجية، تصميم واجهات المستخدم التفاعلية، وبناء قواعد البيانات لضمان أداء سريع وموثوق.</p>
+        </div>
       </div>
-    </div>
 
-    <!-- المدقق: أ. حسن الحلو -->
-    <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--input); border: 1px solid var(--border); border-radius: 16px; transition: all var(--tr);" onmouseenter="this.style.borderColor='var(--gold)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.borderColor='var(--border)'; this.style.transform='';">
-      <img src="https://static.wixstatic.com/media/42e4ec_60e1a8f6fa1a4008990ede88d61dc154~mv2.jpg/v1/crop/x_7,y_126,w_848,h_868/fill/w_772,h_758,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/%D8%B5%D9%88%D8%B1%D8%A9%20%D9%88%D8%A7%D8%AA%D8%B3%D8%A7%D8%A8%20%D8%A8%D8%AA%D8%A7%D8%B1%D9%8A%D8%AE%201447-06-18%20%D9%81%D9%8A%2010_02_13_74395aaa.jpg" alt="Hasan Al-Helou" style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); box-shadow: 0 4px 12px rgba(200,169,110,0.3); flex-shrink: 0;">
-      <div>
-        <div style="font-size: 10px; font-weight: 800; color: var(--gold2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px;" data-i18n="role_audit">تدقيق ومراجعة</div>
-        <div style="font-size: 15px; font-weight: 900; color: var(--text);" data-i18n="name_hasan">أ. حسن الحلو</div>
+      <!-- المدقق: أ. حسن الحلو -->
+      <div style="display: flex; align-items: flex-start; gap: 16px; padding: 20px; background: var(--input); border: 1px solid var(--border); border-radius: 16px; transition: all var(--tr);" onmouseenter="this.style.borderColor='var(--gold)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.borderColor='var(--border)'; this.style.transform='';">
+        <img src="https://static.wixstatic.com/media/42e4ec_60e1a8f6fa1a4008990ede88d61dc154~mv2.jpg/v1/crop/x_7,y_126,w_848,h_868/fill/w_772,h_758,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/%D8%B5%D9%88%D8%B1%D8%A9%20%D9%88%D8%A7%D8%AA%D8%B3%D8%A7%D8%A8%20%D8%A8%D8%AA%D8%A7%D8%B1%D9%8A%D8%AE%201447-06-18%20%D9%81%D9%8A%2010_02_13_74395aaa.jpg" alt="Hasan Al-Helou" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); box-shadow: 0 4px 12px rgba(200,169,110,0.3); flex-shrink: 0;">
+        <div style="flex: 1;">
+          <div style="font-size: 11px; font-weight: 800; color: var(--gold2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;" data-i18n="role_audit">تدقيق ومراجعة</div>
+          <div style="font-size: 16px; font-weight: 900; color: var(--text); margin-bottom: 6px;" data-i18n="name_hasan">أ. حسن الحلو</div>
+          <p style="font-size: 12px; color: var(--text2); line-height: 1.6; margin: 0;" data-i18n="desc_hasan">مراجعة العمليات الحسابية، تدقيق مخرجات الفواتير، وضمان التوافق التام مع المعايير المحاسبية والتجارية.</p>
+        </div>
       </div>
-    </div>
 
+    </div>
   </div>
 </div>
 
@@ -7431,7 +7440,9 @@ share_settings: 'إعدادات الطباعة',
 tab_company: 'معلومات الشركة', tab_bank: 'البنك', tab_invoice: 'إعدادات الفواتير', tab_currency: 'الصرف',
 tab_about: 'عن البرنامج',
 app_subtitle: 'نظام إدارة الفواتير الذكي',
-app_desc: 'نظام سحابي متطور لإدارة الفواتير، العملاء، والمنتجات بذكاء وسرعة. مصمم خصيصاً لتسهيل أعمال تصدير وتجارة الأثاث بأعلى معايير الدقة والاحترافية.',
+app_desc: 'نظام متطور لإدارة الفواتير، العملاء، والمنتجات بذكاء وسرعة. مصمم خصيصاً لتسهيل أعمال تصدير وتجارة الأثاث بأعلى معايير الدقة والاحترافية.',
+desc_mutez: 'تطوير الهيكلة البرمجية، تصميم واجهات المستخدم التفاعلية، وبناء قواعد البيانات لضمان أداء سريع وموثوق.',
+desc_hasan: 'مراجعة العمليات الحسابية، تدقيق مخرجات الفواتير، وضمان التوافق التام مع المعايير المحاسبية والتجارية.',
 team_title: 'فريق العمل',
 role_dev: 'برمجة وتطوير',
 role_audit: 'تدقيق ومراجعة',
@@ -7529,7 +7540,9 @@ share_settings: 'Yazdırma Ayarları',
 tab_company: 'Şirket Bilgileri', tab_bank: 'Banka', tab_invoice: 'Fatura Ayarları', tab_currency: 'Döviz',
 tab_about: 'Hakkında',
 app_subtitle: 'Akıllı Fatura Yönetim Sistemi',
-app_desc: 'Fatura, müşteri ve ürünleri akıllı ve hızlı bir şekilde yönetmek için gelişmiş bulut sistemi. Mobilya ihracatı ve ticareti için özel olarak tasarlanmıştır.',
+app_desc: 'Fatura, müşteri ve ürünleri akıllı ve hızlı bir şekilde yönetmek için gelişmiş sistem. Mobilya ihracatı ve ticareti için özel olarak tasarlanmıştır.',
+desc_mutez: 'Hızlı ve güvenilir performans sağlamak için yazılım mimarisinin geliştirilmesi, etkileşimli kullanıcı arayüzlerinin tasarımı ve veritabanlarının oluşturulması.',
+desc_hasan: 'Hesaplama işlemlerinin incelenmesi, fatura çıktılarının denetlenmesi ve muhasebe ile ticari standartlara tam uyumun sağlanması.',
 team_title: 'Ekip',
 role_dev: 'Yazılım & Geliştirme',
 role_audit: 'Denetim & İnceleme',
@@ -7672,7 +7685,9 @@ share_settings: 'Print Settings',
 tab_company: 'Company Info', tab_bank: 'Bank', tab_invoice: 'Invoice Settings', tab_currency: 'Currency',
 tab_about: 'About App',
 app_subtitle: 'Smart Invoice Management System',
-app_desc: 'An advanced cloud system for smart and fast management of invoices, clients, and products. Specially designed to streamline furniture export and trade.',
+app_desc: 'An advanced system for smart and fast management of invoices, clients, and products. Specially designed to streamline furniture export and trade.',
+desc_mutez: 'Developing software architecture, designing interactive user interfaces, and building databases to ensure fast and reliable performance.',
+desc_hasan: 'Reviewing financial operations, auditing invoice outputs, and ensuring full compliance with accounting and commercial standards.',
 team_title: 'The Team',
 role_dev: 'Programming & Development',
 role_audit: 'Auditing & Review',
