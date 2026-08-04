@@ -12606,23 +12606,33 @@ function generateQRCodeSVG(text) {
 const PDF_TR={
   en:{
     proforma:'PROFORMA INVOICE',
-    companyName:'Company Name',
+    companyName:'COMPANY NAME',
     orderDate:'ORDER DATE',
+    country:'COUNTRY',
+    province:'PROVINCE',
+    city:'CITY',
     invoice:'INVOICE',seller:'SELLER',buyer:'BUYER',no:'INVOICE NO',date:'Date',loadDate:'LOADING DATE',plate:'PLATE NUMBER',truck:'TRUCK NUMBER',item:'#',name:'Product Name',dims:'Dimensions',color:'Color',qty:'Qty',price:'Unit Price',total:'Total',cbm:'CBM',weight:'Weight',subtotal:'Subtotal',discount:'Discount',kdv:'VAT',grandTotal:'GRAND TOTAL',deposit:'Deposit',paid:'Total Paid',remaining:'Remaining',payMethod:'Payment Method',bankInfo:'BANK INFORMATION',bank:'Bank',beneficiary:'Beneficiary',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'Account No',rates:'Exchange Rates',notes:'Delivery and Sales Terms',seller_sig:'Seller Signature',buyer_sig:'Buyer Signature',stamp:'Stamp',verify:'This invoice was issued by WOW Furniture — www.wowmobilya.net',tier:'Price Tier',packets:'Packets',payHistory:'Payment History',mersis:'Mersis No',
   },
   tr:{
     proforma:'PROFORMA FATURA',
-    companyName:'Firma Adı',
-    orderDate:'Sipariş Tarihi',
+    companyName:'FİRMA ADI',
+    orderDate:'SİPARİŞ TARİHİ',
+    country:'ÜLKE',
+    province:'İL',
+    city:'ŞEHİR',
     invoice:'FATURA',seller:'SATICI',buyer:'ALICI',no:'Fatura No',date:'Tarih',loadDate:'Yükleme Tarihi',plate:'Plaka No',truck:'Kamyon No',item:'#',name:'Ürün Adı',dims:'Boyutlar',color:'Renk',qty:'Adet',price:'Birim Fiyat',total:'Toplam',cbm:'CBM',weight:'Ağırlık',subtotal:'Ara Toplam',discount:'İndirim',kdv:'KDV',grandTotal:'GENEL TOPLAM',deposit:'Depozito',paid:'Toplam Ödenen',remaining:'Kalan',payMethod:'Ödeme Yöntemi',bankInfo:'BANKA BİLGİLERİ',bank:'Banka',beneficiary:'Lehdar',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'Hesap No',rates:'Döviz Kurları',notes:'Teslimat ve Satış Şartları',seller_sig:'Satıcı İmzası',buyer_sig:'Alıcı İmzası',stamp:'Mühür',verify:'Bu fatura WOW Furniture tarafından düzenlenmiştir — www.wowmobilya.net',tier:'Fiyat Kademesi',packets:'Paket',payHistory:'Ödeme Geçmişi',mersis:'Mersis No',
   },
   ar:{
     proforma:'فاتورة مبدئية - PROFORMA',
     companyName:'اسم الشركة',
     orderDate:'تاريخ الطلب',
+    country:'الدولة',
+    province:'المحافظة',
+    city:'المدينة',
     invoice:'فاتورة',seller:'البائع',buyer:'المشتري',no:'رقم الفاتورة',date:'التاريخ',loadDate:'تاريخ التحميل',plate:'رقم اللوحة',truck:'رقم الشاحنة',item:'#',name:'اسم المنتج',dims:'الأبعاد',color:'اللون',qty:'الكمية',price:'سعر الوحدة',total:'المجموع',cbm:'CBM',weight:'الوزن',subtotal:'المجموع الفرعي',discount:'الخصم',kdv:'ضريبة KDV',grandTotal:'المجموع النهائي',deposit:'العربون',paid:'إجمالي المدفوع',remaining:'المتبقي',payMethod:'طريقة الدفع',bankInfo:'معلومات البنك',bank:'البنك',beneficiary:'المستفيد',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'رقم الحساب',rates:'أسعار الصرف',notes:'شروط التسليم والبيع',seller_sig:'توقيع البائع',buyer_sig:'توقيع المشتري',stamp:'الختم',verify:'هذه الفاتورة صادرة من WOW Furniture — www.wowmobilya.net',tier:'درجة التسعير',packets:'الباكيتات',payHistory:'سجل الدفعات',mersis:'رقم Mersis',
   },
 };
+
 
 const PAY_METHOD_LABELS={
   en:{cash:'Cash',bank_transfer:'Bank Transfer',credit_card:'Credit Card',check:'Check',installment:'Installment',western_union:'Western Union',crypto:'Crypto',paypal:'PayPal',letter_credit:'Letter of Credit',deferred:'Deferred'},
@@ -13128,7 +13138,7 @@ const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
         </div>
       </div>
 
-            <!-- ── بلوك الوسط: العنوان + الحقول ── -->
+               <!-- ── بلوك الوسط: العنوان + الحقول ── -->
       <div style="
         width:220px;flex-shrink:0;padding:12px 14px;
         background:#ffffff;
@@ -13141,28 +13151,39 @@ const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
         </div>
 
         <!-- الحقول الديناميكية المطلوبة -->
-        ${[
-          [L.no,          inv.invNo||'—'],
-          [L.companyName, inv.companyName||'—'],
-          [L.orderDate,   inv.date||new Date().toLocaleDateString()],
-          [L.loadDate,    inv.loadDate||'—'],
-          [L.plate,       inv.plate||'—'],
-          [L.truck,       inv.truck||'—'],
-        ].map(([lbl,val]) => `
-          <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:4px;
-            margin-bottom:4px;
-            font-size:8.5px;
-            line-height:1.4;
-          ">
-            <span style="color:#555;min-width:85px;font-weight:800;
-              text-align:${textAlign};">${lbl}:</span>
-            <span style="color:#1a1a2e;font-weight:700;
-              text-align:${isRtl?'left':'right'};">${val}</span>
-          </div>`).join('')}
+        ${(() => {
+          // تحديد الدولة أو المحافظة بذكاء حسب نوع العميل
+          const countryOrProvLabel = inv.companyType === 'external' ? (L.country || 'COUNTRY') : (L.province || 'PROVINCE');
+          const countryOrProvVal   = inv.companyType === 'external' ? (inv.country || '—') : (inv.province || '—');
+          
+          return [
+            [L.no,          inv.invNo || '—', true], // true تعني أن هذا الحقل هو رقم الفاتورة
+            [L.orderDate,   inv.date || new Date().toLocaleDateString()],
+            [L.companyName, (inv.companyName || '—').toUpperCase()],
+            [countryOrProvLabel, countryOrProvVal.toUpperCase()],
+            [L.city || 'CITY', (inv.city || '—').toUpperCase()],
+            [L.loadDate,    inv.loadDate || '—'],
+            [L.plate,       (inv.plate || '—').toUpperCase()],
+            [L.truck,       (inv.truck || '—').toUpperCase()],
+          ].map(([lbl, val, isInvNo]) => `
+            <div style="
+              display:flex;
+              justify-content:space-between;
+              align-items:center;
+              gap:4px;
+              margin-bottom:4px;
+              font-size:8.5px;
+              line-height:1.4;
+            ">
+              <span style="color:#555;min-width:85px;font-weight:800;
+                text-align:${textAlign};">${lbl}:</span>
+              
+              ${isInvNo 
+                ? `<span style="color:#1a1a2e; font-weight: 900; text-align:${isRtl?'left':'right'}; font-size: 15px;">${val}</span>` 
+                : `<span style="color:#1a1a2e; font-weight: 700; text-align:${isRtl?'left':'right'};">${val}</span>`
+              }
+            </div>`).join('');
+        })()}
       </div>
 
       <!-- ── بلوك العميل (الباركود بالأعلى واللوجو بالأسفل وبدون نصوص) ── -->
@@ -13192,6 +13213,7 @@ const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
 
     </div>
     <!-- نهاية الهيدر -->
+
 
 
 
