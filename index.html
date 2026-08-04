@@ -12637,113 +12637,119 @@ function buildInvoiceHTML(inv, lang, opts) {
   const barcodeSVG = opts.showBarcode ? generateBarcodeSVG(inv.invNo || 'A5001') : '';
   const invPayments = inv.payments || [];
 
-  /* ════════════════════════════════════════════════════
-     رؤوس الأعمدة × 3 لغات
-  ════════════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════════════
+     رؤوس الأعمدة × 3 لغات — مع حقل SET/PCS الجديد
+  ══════════════════════════════════════════════════════ */
   const colHeaders = {
     en: {
-      pic:'PICTURE', name:'ITEM NAME', hs:'HS CODE', setpcs:'SET/PCS',
-      dims:'DIMENSIONS\n(cm)', color:'COLOUR', qty:'QTY',
-      unitPrice:'UNIT PRICE', totalPrice:'TOTAL PRICE',
-      pktCount:'PKT\nCOUNT', totalPkt:'TOTAL\nPKT',
-      unitCbm:'UNIT CBM\n(m³)', totalCbm:'TOTAL CBM\n(m³)',
-      unitWeight:'UNIT WT\n(Kg)', totalWeight:'TOTAL WT\n(Kg)',
-      totalPer: 'TOTAL PER',
+      pic:'PICTURE',
+      name:'ITEM\nNAME',
+      hs:'HS\nCODE',
+      setpcs:'SET /\nPCS',
+      dims:'DIMENSIONS\n(cm)',
+      color:'COLOUR',
+      qty:'QTY',
+      unitPrice:'UNIT\nPRICE',
+      totalPrice:'TOTAL\nPRICE',
+      pktCount:'PKT\nCOUNT',
+      totalPkt:'TOTAL\nPKT',
+      unitCbm:'UNIT\nCBM (m³)',
+      totalCbm:'TOTAL\nCBM (m³)',
+      unitWeight:'UNIT\nWT (Kg)',
+      totalWeight:'TOTAL\nWT (Kg)',
+      totalPer:'TOTAL PER:',
     },
     tr: {
-      pic:'FOTOĞRAF', name:'ÜRÜN ADI', hs:'HS KODU', setpcs:'SET/PCS',
-      dims:'BOYUTLAR\n(cm)', color:'RENK', qty:'ADET',
-      unitPrice:'BİRİM FİYAT', totalPrice:'TOPLAM',
-      pktCount:'PAKET\nSAYISI', totalPkt:'TOPLAM\nPAKET',
-      unitCbm:'BİRİM CBM\n(m³)', totalCbm:'TOPLAM CBM\n(m³)',
-      unitWeight:'BİRİM\nAĞIRLIK', totalWeight:'TOPLAM\nAĞIRLIK',
-      totalPer: 'TOPLAM',
+      pic:'FOTOĞRAF',
+      name:'ÜRÜN\nADI',
+      hs:'HS\nKODU',
+      setpcs:'SET /\nPARÇA',
+      dims:'BOYUTLAR\n(cm)',
+      color:'RENK',
+      qty:'ADET',
+      unitPrice:'BİRİM\nFİYAT',
+      totalPrice:'TOPLAM\nFİYAT',
+      pktCount:'PAKET\nSAYISI',
+      totalPkt:'TOPLAM\nPAKET',
+      unitCbm:'BİRİM\nCBM (m³)',
+      totalCbm:'TOPLAM\nCBM (m³)',
+      unitWeight:'BİRİM\nAĞIRLIK',
+      totalWeight:'TOPLAM\nAĞIRLIK',
+      totalPer:'TOPLAM:',
     },
     ar: {
-      pic:'الصورة', name:'اسم المنتج', hs:'كود HS', setpcs:'SET/PCS',
-      dims:'الأبعاد\n(سم)', color:'اللون', qty:'الكمية',
-      unitPrice:'سعر الوحدة', totalPrice:'الإجمالي',
-      pktCount:'عدد\nالباكيت', totalPkt:'إجمالي\nالباكيت',
-      unitCbm:'CBM\nللوحدة', totalCbm:'CBM\nالإجمالي',
-      unitWeight:'وزن\nالوحدة', totalWeight:'الوزن\nالإجمالي',
-      totalPer: 'الإجمالي الكلي',
+      pic:'الصورة',
+      name:'اسم\nالمنتج',
+      hs:'كود\nHS',
+      setpcs:'SET /\nPCS',
+      dims:'الأبعاد\n(سم)',
+      color:'اللون',
+      qty:'الكمية',
+      unitPrice:'سعر\nالوحدة',
+      totalPrice:'الإجمالي',
+      pktCount:'عدد\nالباكيت',
+      totalPkt:'إجمالي\nالباكيت',
+      unitCbm:'CBM\nللوحدة',
+      totalCbm:'CBM\nالإجمالي',
+      unitWeight:'وزن\nالوحدة',
+      totalWeight:'الوزن\nالإجمالي',
+      totalPer:'الإجمالي لكل:',
     },
   };
   const CH = colHeaders[lang] || colHeaders.en;
 
-  /* ── حساب إجماليات الجدول ── */
+  /* ── إجماليات الجدول ── */
   let grandTotalPkts = 0;
   let grandTotalCBM  = 0;
   let grandTotalWt   = 0;
-  let grandTotalQty  = 0;
-  let grandTotalUSD  = 0;
-
   (inv.items || []).forEach(item => {
     grandTotalPkts += (item.packets || 1) * item.qty;
     grandTotalCBM  += (item.cbm || 0)     * item.qty;
     grandTotalWt   += (item.weight || 0)  * item.qty;
-    grandTotalQty  += item.qty;
-    grandTotalUSD  += item.totalUSD || 0;
   });
 
-  /* ════════════════════════════════════════════════════
-     دالة: خلية الأبعاد — متتالية تحت بعضها
-  ════════════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════════════
+     دالة بناء خلية الأبعاد — متتالية تحت بعضها
+  ══════════════════════════════════════════════════════ */
   function buildDimsCell(item) {
     if (item.dimPieces && item.dimPieces.length > 0) {
-      const validPieces = item.dimPieces.filter(dp => dp.l || dp.w || dp.h);
-      if (!validPieces.length) return '<span style="color:#ccc;font-size:7px;">—</span>';
-
-      return validPieces.map((dp, idx) => {
+      const rows = item.dimPieces.map((dp, idx) => {
         const l = dp.l || 0, w = dp.w || 0, h = dp.h || 0;
+        if (!l && !w && !h) return '';
         return `<div style="
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          gap:1px;
-          direction:ltr;
-          white-space:nowrap;
-          font-size:7px;
-          font-weight:700;
-          color:#333;
-          line-height:1.6;
-          ${idx > 0 ? 'border-top:1px dashed #e8e8e8;padding-top:2px;margin-top:1px;' : ''}
+          display:flex;align-items:center;justify-content:center;gap:1px;
+          direction:ltr;white-space:nowrap;font-size:7px;font-weight:700;color:#333;
+          padding:1px 0;
+          ${idx > 0 ? 'border-top:1px dashed #e0e0e0;margin-top:2px;padding-top:2px;' : ''}
         ">
-          ${validPieces.length > 1 ? `<span style="
-            background:#1a1a2e;color:#c8a96e;
-            border-radius:50%;
-            width:11px;height:11px;
-            font-size:6.5px;font-weight:900;
+          ${item.dimPieces.length > 1 ? `<span style="
+            background:#1a1a2e;color:#c8a96e;border-radius:50%;
+            width:11px;height:11px;font-size:7px;font-weight:900;
             display:inline-flex;align-items:center;justify-content:center;
-            margin-right:2px;flex-shrink:0;
-          ">${idx+1}</span>` : ''}
+            margin-right:2px;flex-shrink:0;">${idx+1}</span>` : ''}
           <span>${l}</span><span style="color:#aaa;margin:0 1px;">×</span>
           <span>${w}</span><span style="color:#aaa;margin:0 1px;">×</span>
           <span>${h}</span>
         </div>`;
-      }).join('');
+      }).filter(Boolean).join('');
+      return rows || '<span style="color:#ccc;font-size:8px;">—</span>';
     }
-
     if (item.dimensions) {
       const parts = item.dimensions.split('+').map(s => s.trim()).filter(Boolean);
       if (parts.length > 1) {
         return parts.map((p, idx) => `
-          <div style="
-            direction:ltr;white-space:nowrap;
-            font-size:7px;font-weight:700;color:#333;
-            line-height:1.6;
-            ${idx > 0 ? 'border-top:1px dashed #e8e8e8;padding-top:2px;margin-top:1px;' : ''}
+          <div style="direction:ltr;white-space:nowrap;font-size:7px;font-weight:700;color:#333;
+            ${idx > 0 ? 'border-top:1px dashed #e0e0e0;margin-top:2px;padding-top:2px;' : ''}
           ">${p} cm</div>`).join('');
       }
       return `<div style="direction:ltr;white-space:nowrap;font-size:7.5px;font-weight:700;color:#333;">${item.dimensions} cm</div>`;
     }
-
-    return '<span style="color:#ccc;font-size:7px;">—</span>';
+    return '<span style="color:#ccc;font-size:8px;">—</span>';
   }
 
-  /* ════════════════════════════════════════════════════
-     دالة: تحويل كود اللون للنص المقروء
-  ════════════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════════════
+     دالة تحويل كود اللون للنص المقروء
+  ══════════════════════════════════════════════════════ */
   function getColorDisplay(colorVal) {
     if (!colorVal || colorVal === 'STANDARD') return '—';
     const colorData = FURNITURE_COLORS[lang] || FURNITURE_COLORS.en;
@@ -12756,23 +12762,43 @@ function buildInvoiceHTML(inv, lang, opts) {
     return colorVal;
   }
 
-  /* ════════════════════════════════════════════════════
-     دالة: قراءة SET/PCS من وصف المنتج
-  ════════════════════════════════════════════════════ */
-  function getSetPcsDisplay(item) {
-    // 1. من المنتج مباشرة (desc)
+  /* ══════════════════════════════════════════════════════
+     دالة جلب SET/PCS من المنتج (الوصف)
+  ══════════════════════════════════════════════════════ */
+  function getSetPcs(item) {
+    // 1. من المنتج في قاعدة البيانات
     const product = S.products.find(p => p.id === item.productId);
-    if (product && product.desc && product.desc !== 'CUSTOM') {
-      return product.desc;
+    if (product && product.desc && product.desc.trim()) {
+      return product.desc.trim();
     }
-    // 2. من item.setpcs
+    // 2. من item مباشرة
     if (item.setpcs && item.setpcs !== 'SET') return item.setpcs;
-    if (item.setpcs === 'SET') return 'SET';
-    // 3. افتراضي
-    return 'SET';
+    if (item.desc && item.desc.trim()) return item.desc.trim();
+    // 3. القيمة الافتراضية
+    return item.setpcs || 'SET';
   }
 
-  /* ── صفوف الجدول ── */
+  /* ══════════════════════════════════════════════════════
+     صفوف الجدول
+  ══════════════════════════════════════════════════════ */
+  const tdBase = `
+    padding:5px 4px;
+    text-align:center;
+    vertical-align:middle;
+    border-bottom:1px solid #f0f0f0;
+    border-right:1px solid #ebebeb;
+    font-size:7.5px;
+    color:#333;
+  `;
+  const tdLast = `
+    padding:5px 4px;
+    text-align:center;
+    vertical-align:middle;
+    border-bottom:1px solid #f0f0f0;
+    font-size:7.5px;
+    color:#333;
+  `;
+
   const tableRows = (inv.items || []).map((item, i) => {
     const unitCBM   = item.cbm    || 0;
     const totalCBM  = unitCBM     * item.qty;
@@ -12780,179 +12806,76 @@ function buildInvoiceHTML(inv, lang, opts) {
     const totalWt   = unitWt      * item.qty;
     const unitPkts  = item.packets || 1;
     const totalPkts = unitPkts    * item.qty;
+    const rowBg     = i % 2 === 0 ? '#ffffff' : '#fafafa';
 
-    /* صورة المنتج */
     const imgCell = opts.showImages
       ? (item.image
-          ? `<img src="${item.image}"
-               style="width:44px;height:36px;object-fit:cover;border-radius:4px;display:block;margin:0 auto;"
-               alt="${item.name}">`
-          : `<div style="width:44px;height:36px;background:#f5f5f5;border-radius:4px;
-               display:flex;align-items:center;justify-content:center;
-               font-size:14px;margin:0 auto;">🛋️</div>`)
-      : `<div style="width:44px;height:36px;background:#f5f5f5;border-radius:4px;
-           display:flex;align-items:center;justify-content:center;
-           font-size:11px;color:#ccc;margin:0 auto;">—</div>`;
+          ? `<img src="${item.image}" style="width:44px;height:36px;object-fit:cover;border-radius:4px;display:block;margin:0 auto;" alt="">`
+          : `<div style="width:44px;height:36px;background:#f0f0f0;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto;">🛋️</div>`)
+      : `<div style="width:44px;height:36px;background:#f0f0f0;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#ccc;margin:0 auto;">—</div>`;
 
     /* HS Code من المنتج أولاً */
-    const product = S.products.find(p => p.id === item.productId);
-    const hsCode = (product && product.hsCode) ? product.hsCode : (item.hsCode || '—');
-
-    /* SET/PCS من وصف المنتج */
-    const setpcsVal = getSetPcsDisplay(item);
-
-    const colorDisplay = getColorDisplay(item.color);
-    const dimsHTML     = buildDimsCell(item);
-    const rowBg        = i % 2 === 0 ? '#ffffff' : '#fafafa';
-
-    /* ستايل الخلية الموحَّد — نص في المنتصف طولاً وعرضاً */
-    const tdBase = `
-      padding:5px 4px;
-      text-align:center;
-      vertical-align:middle;
-      border-bottom:1px solid #f0f0f0;
-      border-right:1px solid #ebebeb;
-      font-size:7.5px;
-      color:#333;
-    `;
+    const product  = S.products.find(p => p.id === item.productId);
+    const hsCode   = (product && product.hsCode) ? product.hsCode : (item.hsCode || '—');
+    const setPcs   = getSetPcs(item);
+    const colorTxt = getColorDisplay(item.color);
+    const dimsHTML = buildDimsCell(item);
 
     return `<tr style="background:${rowBg};">
       <td style="${tdBase}padding:3px;">${imgCell}</td>
       <td style="${tdBase}font-weight:700;font-size:8px;min-width:55px;">${item.name}</td>
-      <td style="${tdBase}font-size:7px;color:#555;direction:ltr;">${hsCode}</td>
-      <td style="${tdBase}font-size:7.5px;font-weight:700;color:#1a1a2e;">${setpcsVal}</td>
+      <td style="${tdBase}direction:ltr;font-size:7px;color:#555;">${hsCode}</td>
+      <td style="${tdBase}font-size:8px;font-weight:700;color:#1a1a2e;">${setPcs}</td>
       <td style="${tdBase}">${dimsHTML}</td>
-      <td style="${tdBase}font-size:7px;max-width:50px;word-break:break-word;">${colorDisplay}</td>
+      <td style="${tdBase}font-size:7px;max-width:50px;word-break:break-word;">${colorTxt}</td>
       <td style="${tdBase}font-weight:800;font-size:9px;">${item.qty}</td>
-      <td style="${tdBase}direction:ltr;white-space:nowrap;font-weight:700;font-size:8px;">${fmt(item.priceUSD)}</td>
+      <td style="${tdBase}direction:ltr;white-space:nowrap;font-weight:700;">${fmt(item.priceUSD)}</td>
       <td style="${tdBase}direction:ltr;white-space:nowrap;font-weight:800;color:#1a1a2e;font-size:8.5px;">${fmt(item.totalUSD)}</td>
       <td style="${tdBase}font-size:8px;">${unitPkts}</td>
       <td style="${tdBase}font-size:8px;font-weight:700;">${totalPkts}</td>
       <td style="${tdBase}direction:ltr;font-size:7.5px;">${unitCBM.toFixed(4)}</td>
       <td style="${tdBase}direction:ltr;font-size:7.5px;font-weight:700;">${totalCBM.toFixed(4)}</td>
       <td style="${tdBase}direction:ltr;font-size:7.5px;">${unitWt.toFixed(2)}</td>
-      <td style="${tdBase}direction:ltr;font-size:7.5px;font-weight:700;border-right:none;">${totalWt.toFixed(2)}</td>
+      <td style="${tdLast}direction:ltr;font-size:7.5px;font-weight:700;">${totalWt.toFixed(2)}</td>
     </tr>`;
   }).join('');
 
-  /* ════════════════════════════════════════════════════
-     صف الإجماليات — TOTAL PER بدون عناوين فوق الأرقام
-     الشكل: TOTAL PER | QTY | PRICE | PACKET | CBM | KG
-  ════════════════════════════════════════════════════ */
-
-  /* نص "TOTAL PER" × 3 لغات */
-  const totalPerLabel = {
-    en: 'TOTAL PER',
-    tr: 'TOPLAM',
-    ar: 'الإجمالي',
-  }[lang] || 'TOTAL PER';
-
-  /* فاصل بين القيم */
-  const sep = `<span style="color:rgba(200,169,110,.6);margin:0 4px;font-weight:400;">|</span>`;
+  /* ══════════════════════════════════════════════════════
+     صف tfoot — "TOTAL PER:" بدلاً من "Packets: N"
+  ══════════════════════════════════════════════════════ */
+  const totalQty = (inv.items||[]).reduce((s,i) => s + i.qty, 0);
 
   const totalRow = `<tr>
     <td colspan="6" style="
-      padding:8px 12px;
-      background:#1a1a2e;
-      border-right:1px solid rgba(255,255,255,.12);
-    ">
-      <div style="
-        display:flex;
-        align-items:center;
-        gap:6px;
-      ">
-        <span style="
-          background:linear-gradient(135deg,#c8a96e,#a07840);
-          color:#fff;
-          font-size:7.5px;
-          font-weight:900;
-          letter-spacing:1.2px;
-          padding:3px 10px;
-          border-radius:20px;
-          white-space:nowrap;
-          text-transform:uppercase;
-        ">${totalPerLabel}</span>
-      </div>
-    </td>
-    <td style="
-      padding:8px 6px;
+      padding:7px 10px;
       text-align:center;
-      vertical-align:middle;
-      background:#1a1a2e;
-      border-right:1px solid rgba(255,255,255,.12);
+      font-size:8.5px;
+      font-weight:900;
+      color:#1a1a2e;
+      letter-spacing:.5px;
+      border-right:1px solid #d0d7e3;
     ">
-      <div style="
-        font-size:11px;
-        font-weight:900;
-        color:#fff;
-        line-height:1;
-      ">${grandTotalQty}</div>
+      ${CH.totalPer} &nbsp;
+      <span style="
+        background:#1a1a2e;color:#c8a96e;
+        border-radius:20px;padding:2px 10px;
+        font-size:8px;font-weight:800;letter-spacing:.3px;
+      ">${totalQty} ${lang==='ar'?'قطعة':lang==='tr'?'Adet':'Items'}</span>
     </td>
-    <td style="
-      padding:8px 6px;
-      text-align:center;
-      vertical-align:middle;
-      background:#1a1a2e;
-      border-right:1px solid rgba(255,255,255,.12);
-    ">
-      <div style="
-        font-size:9px;
-        font-weight:900;
-        color:#c8a96e;
-        direction:ltr;
-        white-space:nowrap;
-        line-height:1;
-      ">${fmt(grandTotalUSD)}</div>
-    </td>
-    <td colspan="2" style="
-      padding:8px 6px;
-      text-align:center;
-      vertical-align:middle;
-      background:#1a1a2e;
-      border-right:1px solid rgba(255,255,255,.12);
-    ">
-      <div style="
-        font-size:11px;
-        font-weight:900;
-        color:#fff;
-        line-height:1;
-      ">${grandTotalPkts}</div>
-    </td>
-    <td colspan="2" style="
-      padding:8px 6px;
-      text-align:center;
-      vertical-align:middle;
-      background:#1a1a2e;
-      border-right:1px solid rgba(255,255,255,.12);
-    ">
-      <div style="
-        font-size:9px;
-        font-weight:900;
-        color:#48bb78;
-        direction:ltr;
-        line-height:1;
-      ">${grandTotalCBM.toFixed(4)}</div>
-    </td>
-    <td colspan="2" style="
-      padding:8px 6px;
-      text-align:center;
-      vertical-align:middle;
-      background:#1a1a2e;
-      border-right:none;
-    ">
-      <div style="
-        font-size:9px;
-        font-weight:900;
-        color:#fc8181;
-        direction:ltr;
-        line-height:1;
-      ">${grandTotalWt.toFixed(2)}</div>
-    </td>
+    <td style="text-align:center;font-weight:900;font-size:9.5px;color:#1a1a2e;border-right:1px solid #d0d7e3;">${totalQty}</td>
+    <td style="border-right:1px solid #d0d7e3;"></td>
+    <td style="text-align:center;font-weight:900;font-size:10px;color:#1a1a2e;border-right:1px solid #d0d7e3;">${fmt(inv.subtotalUSD||0)}</td>
+    <td style="text-align:center;font-size:8px;border-right:1px solid #d0d7e3;">${(inv.items||[]).reduce((s,i)=>s+(i.packets||1),0)}</td>
+    <td style="text-align:center;font-weight:800;font-size:8.5px;border-right:1px solid #d0d7e3;">${grandTotalPkts}</td>
+    <td style="border-right:1px solid #d0d7e3;"></td>
+    <td style="text-align:center;font-weight:800;font-size:8px;direction:ltr;border-right:1px solid #d0d7e3;">${grandTotalCBM.toFixed(4)}</td>
+    <td style="border-right:1px solid #d0d7e3;"></td>
+    <td style="text-align:center;font-weight:800;font-size:8px;direction:ltr;">${grandTotalWt.toFixed(2)}</td>
   </tr>`;
 
-  /* ════════════════════════════════════════════════════
+  /* ══════════════════════════════════════════════════════
      سجل الدفعات
-  ════════════════════════════════════════════════════ */
+  ══════════════════════════════════════════════════════ */
   const rtIconsPDF = {
     cash:'💵', transfer:'🏦', card:'💳', check:'📝',
     installment:'📅', western_union:'🌐', deferred:'⏳',
@@ -12987,15 +12910,15 @@ function buildInvoiceHTML(inv, lang, opts) {
         <td style="padding:4px 5px;text-align:center;font-weight:700;color:#1a1a2e;">${i+1}</td>
         <td style="padding:4px 5px;text-align:center;color:#555;">${p.date||'—'}</td>
         <td style="padding:4px 5px;text-align:center;">
-          <span style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;
-            padding:1px 5px;font-size:7.5px;font-weight:700;">${rtIcon} ${rtLabel}</span>
+          <span style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;padding:1px 5px;font-size:7.5px;font-weight:700;">
+            ${rtIcon} ${rtLabel}
+          </span>
         </td>
         <td style="padding:4px 5px;text-align:center;font-weight:800;color:#38a169;">${fmt(p.amount||0)}</td>
         <td style="padding:4px 5px;text-align:center;font-size:7.5px;color:#805ad5;">${origCell}</td>
         <td style="padding:4px 5px;text-align:center;font-size:7.5px;color:#555;">${p.note||'—'}</td>
         <td style="padding:4px 5px;text-align:center;font-weight:700;">${fmt(runningPaid)}</td>
-        <td style="padding:4px 5px;text-align:center;font-weight:700;
-          color:${remainAfter>0?'#e53e3e':'#38a169'};">${fmt(remainAfter)}</td>
+        <td style="padding:4px 5px;text-align:center;font-weight:700;color:${remainAfter>0?'#e53e3e':'#38a169'};">${fmt(remainAfter)}</td>
       </tr>`;
     });
     const finalPaid   = (inv.depositUSD||0) + invPayments.reduce((s,p)=>s+(p.amount||0),0);
@@ -13010,8 +12933,7 @@ function buildInvoiceHTML(inv, lang, opts) {
         <div style="display:flex;align-items:center;gap:8px;">
           <span style="font-size:8px;color:#555;">${fmt(finalPaid)} / ${fmt(inv.grandTotal||0)}</span>
           <div style="width:70px;height:5px;background:#eee;border-radius:3px;overflow:hidden;">
-            <div style="width:${pct.toFixed(1)}%;height:100%;
-              background:${pct>=100?'#38a169':pct>=50?'#1a1a2e':'#e53e3e'};border-radius:3px;"></div>
+            <div style="width:${pct.toFixed(1)}%;height:100%;background:${pct>=100?'#38a169':pct>=50?'#1a1a2e':'#e53e3e'};border-radius:3px;"></div>
           </div>
           <span style="font-size:8px;font-weight:800;color:${pct>=100?'#38a169':'#1a1a2e'};">${pct.toFixed(0)}%</span>
         </div>
@@ -13032,14 +12954,11 @@ function buildInvoiceHTML(inv, lang, opts) {
         <tbody>${rows.join('')}</tbody>
         <tfoot>
           <tr style="background:#1a1a2e;">
-            <td colspan="3" style="padding:4px 5px;color:#fff;font-weight:700;font-size:8px;text-align:center;">
-              ${{en:'Total',tr:'Toplam',ar:'الإجمالي'}[lang]||'Total'}
-            </td>
+            <td colspan="3" style="padding:4px 5px;color:#fff;font-weight:700;font-size:8px;text-align:center;">${{en:'Total',tr:'Toplam',ar:'الإجمالي'}[lang]||'Total'}</td>
             <td style="padding:4px 5px;color:#48bb78;font-weight:800;text-align:center;">${fmt(finalPaid)}</td>
             <td colspan="2"></td>
             <td style="padding:4px 5px;color:#48bb78;font-weight:800;text-align:center;">${fmt(finalPaid)}</td>
-            <td style="padding:4px 5px;font-weight:800;text-align:center;
-              color:${finalRemain>0?'#fc8181':'#48bb78'};">${fmt(finalRemain)}</td>
+            <td style="padding:4px 5px;font-weight:800;text-align:center;color:${finalRemain>0?'#fc8181':'#48bb78'};">${fmt(finalRemain)}</td>
           </tr>
         </tfoot>
       </table>
@@ -13101,7 +13020,7 @@ function buildInvoiceHTML(inv, lang, opts) {
       </div>
     </div>` : '';
 
-  /* ── شروط التسليم والبيع ── */
+  /* ── شروط التسليم والبيع — مرتبة ── */
   let notesHTML = '';
   if (opts.showNotes && inv.notes) {
     const rawNotes = inv.notes.trim();
@@ -13153,54 +13072,108 @@ function buildInvoiceHTML(inv, lang, opts) {
     ? `<div class="ip-pay-row kdv-line">
          <span>🏛️ ${L.kdv} (${inv.kdvRate||20}%)</span>
          <span style="font-weight:700;">${fmt(inv.kdvAmtUSD||0)}</span>
-       </div>` : '';
+       </div>`
+    : '';
 
-  const payMethodLabel = (PAY_METHOD_LABELS[lang]||PAY_METHOD_LABELS.en)[inv.payMethod||'cash'] || '—';
+  const payMethodLabel = (PAY_METHOD_LABELS[lang]||PAY_METHOD_LABELS.en)[inv.payMethod||'cash'] || inv.payMethod || '—';
   const totalPaid = (inv.depositUSD||0) + invPayments.reduce((s,p)=>s+(p.amount||0),0);
   const remaining = Math.max(0, (inv.grandTotal||0) - totalPaid);
 
-  /* ════════════════════════════════════════════════════
-     ستايل رؤوس الأعمدة — نص في المنتصف طولاً وعرضاً
-  ════════════════════════════════════════════════════ */
-  const thStyle = `
-    color: #fff;
-    font-weight: 700;
-    padding: 8px 4px;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 6.5px;
-    letter-spacing: .3px;
-    white-space: pre-line;
-    word-break: break-word;
-    border-right: 1px solid rgba(255,255,255,.12);
-    line-height: 1.4;
-  `;
+  /* ══════════════════════════════════════════════════════
+     CSS الجدول — كتلة واحدة بحواف مكسورة خارجية فقط
+  ══════════════════════════════════════════════════════ */
+  const tableCSS = `
+  <style>
+    /* ════ wrapper الجدول ════ */
+    .tbl-outer-wrap {
+      margin: 0 18px 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #c8a96e;
+      box-shadow: 0 3px 16px rgba(26,26,46,.10);
+    }
 
-  /* ════════════════════════════════════════════════════
-     CSS الجدول ككتلة واحدة — حواف مكسورة خارجية فقط
-     المبدأ: wrapper div بـ border-radius + overflow:hidden
-     والجدول بداخله بدون border-radius على الخلايا
-  ════════════════════════════════════════════════════ */
-  const tableWrapperStyle = `
-    margin: 0 18px 0;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1.5px solid #d0d7e3;
-    box-shadow: 0 3px 14px rgba(26,26,46,.10);
-  `;
+    /* ════ الجدول نفسه ════ */
+    .ip-tbl-new {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 7.5px;
+      table-layout: auto;
+    }
 
-  const tableInnerStyle = `
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 7.5px;
-    table-layout: auto;
-  `;
+    /* ════ رأس الجدول ════ */
+    .ip-tbl-new thead tr {
+      background: #1a1a2e;
+    }
+    .ip-tbl-new thead th {
+      color: #fff;
+      font-weight: 700;
+      padding: 8px 4px;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 6.8px;
+      letter-spacing: .3px;
+      white-space: pre-line;
+      line-height: 1.45;
+      border-right: 1px solid rgba(255,255,255,.12);
+    }
+    .ip-tbl-new thead th:last-child {
+      border-right: none;
+    }
 
-  /* ── HTML النهائي ── */
+    /* ════ خلايا الجسم ════ */
+    .ip-tbl-new tbody td {
+      border-bottom: 1px solid #f0f0f0;
+      border-right: 1px solid #ebebeb;
+    }
+    .ip-tbl-new tbody td:last-child {
+      border-right: none;
+    }
+    .ip-tbl-new tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .ip-tbl-new tbody tr:hover td {
+      background: #f0f4ff !important;
+    }
+
+    /* ════ tfoot ════ */
+    .ip-tbl-new tfoot tr {
+      background: #f0f4f8;
+      border-top: 2px solid #1a1a2e;
+    }
+    .ip-tbl-new tfoot td {
+      color: #1a1a2e;
+      font-weight: 800;
+      padding: 7px 4px;
+      font-size: 8px;
+      border-right: 1px solid #d0d7e3;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .ip-tbl-new tfoot td:last-child {
+      border-right: none;
+    }
+  </style>`;
+
+  /* ══════════════════════════════════════════════════════
+     ستايل رؤوس الأعمدة
+  ══════════════════════════════════════════════════════ */
+  const thS = `color:#fff;font-weight:700;padding:8px 4px;text-align:center;
+    vertical-align:middle;font-size:6.8px;letter-spacing:.3px;
+    white-space:pre-line;line-height:1.45;
+    border-right:1px solid rgba(255,255,255,.12);`;
+  const thSLast = `color:#fff;font-weight:700;padding:8px 4px;text-align:center;
+    vertical-align:middle;font-size:6.8px;letter-spacing:.3px;
+    white-space:pre-line;line-height:1.45;`;
+
+  /* ══════════════════════════════════════════════════════
+     HTML النهائي
+  ══════════════════════════════════════════════════════ */
   return `
+  ${tableCSS}
   <div class="inv-paper">
 
-    <!-- ══ HEADER ══ -->
+    <!-- ═══ HEADER ═══ -->
     <div class="ip-hdr">
       <div class="ip-hdr-seller">
         <div class="ip-seller-logo">
@@ -13221,38 +13194,16 @@ function buildInvoiceHTML(inv, lang, opts) {
       <div class="ip-hdr-mid">
         <div class="ip-inv-title">${L.invoice}</div>
         ${opts.showBarcode
-          ? `<div class="ip-barcode-wrap">
-               ${barcodeSVG}
-               <div class="ip-barcode-txt">${inv.invNo||'—'}</div>
-             </div>` : ''}
-        <div class="ip-meta-row">
-          <span class="ip-meta-lbl">${L.no}:</span>
-          <span class="ip-meta-val">${inv.invNo||'—'}</span>
-        </div>
-        <div class="ip-meta-row">
-          <span class="ip-meta-lbl">${L.loadDate}:</span>
-          <span class="ip-meta-val">${inv.loadDate||'—'}</span>
-        </div>
-        <div class="ip-meta-row">
-          <span class="ip-meta-lbl">${L.date}:</span>
-          <span class="ip-meta-val">${inv.date||new Date().toLocaleDateString()}</span>
-        </div>
-        ${inv.plate ? `<div class="ip-meta-row">
-          <span class="ip-meta-lbl">${L.plate}:</span>
-          <span class="ip-meta-val">${inv.plate}</span>
-        </div>` : ''}
-        ${inv.truck ? `<div class="ip-meta-row">
-          <span class="ip-meta-lbl">${L.truck}:</span>
-          <span class="ip-meta-val">${inv.truck}</span>
-        </div>` : ''}
-        <div class="ip-meta-row">
-          <span class="ip-meta-lbl">${L.tier||'Tier'}:</span>
-          <span class="ip-meta-val">🎯 ${inv.tier||'A'}</span>
-        </div>
-        <div class="ip-meta-row">
-          <span class="ip-meta-lbl">${L.payMethod}:</span>
-          <span class="ip-meta-val">${payMethodLabel}</span>
-        </div>
+          ? `<div class="ip-barcode-wrap">${barcodeSVG}
+               <div class="ip-barcode-txt">${inv.invNo||'—'}</div></div>`
+          : ''}
+        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.no}:</span><span class="ip-meta-val">${inv.invNo||'—'}</span></div>
+        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.loadDate}:</span><span class="ip-meta-val">${inv.loadDate||'—'}</span></div>
+        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.date}:</span><span class="ip-meta-val">${inv.date||new Date().toLocaleDateString()}</span></div>
+        ${inv.plate ? `<div class="ip-meta-row"><span class="ip-meta-lbl">${L.plate}:</span><span class="ip-meta-val">${inv.plate}</span></div>` : ''}
+        ${inv.truck ? `<div class="ip-meta-row"><span class="ip-meta-lbl">${L.truck}:</span><span class="ip-meta-val">${inv.truck}</span></div>` : ''}
+        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.tier||'Tier'}:</span><span class="ip-meta-val">🎯 ${inv.tier||'A'}</span></div>
+        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.payMethod}:</span><span class="ip-meta-val">${payMethodLabel}</span></div>
       </div>
 
       <div class="ip-hdr-client">
@@ -13269,51 +13220,41 @@ function buildInvoiceHTML(inv, lang, opts) {
       </div>
     </div>
 
-    <!-- BUYER BAR -->
+    <!-- ═══ BUYER BAR ═══ -->
     <div class="ip-pay-title">
       ${(L.buyer||'BUYER').toUpperCase()}: ${inv.companyName||'—'}
       &nbsp;|&nbsp;
       ${inv.province||inv.country||''} ${inv.city?'· '+inv.city:''}
     </div>
 
-    <!-- ══ MAIN TABLE ══
-         الجدول ككتلة واحدة بحواف مكسورة خارجية فقط
-         باستخدام wrapper div + overflow:hidden
-    ══ -->
-    <div style="${tableWrapperStyle}">
-      <table style="${tableInnerStyle}">
-
-        <!-- رأس الجدول — نصوص في المنتصف طولاً وعرضاً -->
+    <!-- ═══ MAIN TABLE — كتلة واحدة بحواف مكسورة ═══ -->
+    <div class="tbl-outer-wrap">
+      <table class="ip-tbl-new">
         <thead>
-          <tr style="background:#1a1a2e;">
-            <th style="${thStyle}">${CH.pic}</th>
-            <th style="${thStyle};min-width:55px;">${CH.name}</th>
-            <th style="${thStyle}">${CH.hs}</th>
-            <th style="${thStyle}">${CH.setpcs}</th>
-            <th style="${thStyle}">${CH.dims}</th>
-            <th style="${thStyle}">${CH.color}</th>
-            <th style="${thStyle}">${CH.qty}</th>
-            <th style="${thStyle}">${CH.unitPrice}</th>
-            <th style="${thStyle}">${CH.totalPrice}</th>
-            <th style="${thStyle}">${CH.pktCount}</th>
-            <th style="${thStyle}">${CH.totalPkt}</th>
-            <th style="${thStyle}">${CH.unitCbm}</th>
-            <th style="${thStyle}">${CH.totalCbm}</th>
-            <th style="${thStyle}">${CH.unitWeight}</th>
-            <th style="${thStyle};border-right:none;">${CH.totalWeight}</th>
+          <tr>
+            <th style="${thS}">${CH.pic}</th>
+            <th style="${thS}min-width:55px;">${CH.name}</th>
+            <th style="${thS}">${CH.hs}</th>
+            <th style="${thS}">${CH.setpcs}</th>
+            <th style="${thS}">${CH.dims}</th>
+            <th style="${thS}">${CH.color}</th>
+            <th style="${thS}">${CH.qty}</th>
+            <th style="${thS}">${CH.unitPrice}</th>
+            <th style="${thS}">${CH.totalPrice}</th>
+            <th style="${thS}">${CH.pktCount}</th>
+            <th style="${thS}">${CH.totalPkt}</th>
+            <th style="${thS}">${CH.unitCbm}</th>
+            <th style="${thS}">${CH.totalCbm}</th>
+            <th style="${thS}">${CH.unitWeight}</th>
+            <th style="${thSLast}">${CH.totalWeight}</th>
           </tr>
         </thead>
-
-        <!-- صفوف البيانات -->
         <tbody>${tableRows}</tbody>
-
-        <!-- ══ صف الإجماليات: TOTAL PER | QTY | PRICE | PACKET | CBM | KG ══ -->
         <tfoot>${totalRow}</tfoot>
-
       </table>
     </div>
 
-    <!-- ══ BOTTOM SECTION ══ -->
+    <!-- ═══ BOTTOM SECTION ═══ -->
     <div class="ip-bottom">
       <div class="ip-payment">
         <div class="ip-sec-title">${payMethodLabel.toUpperCase()}</div>
@@ -13321,11 +13262,9 @@ function buildInvoiceHTML(inv, lang, opts) {
           <span>${L.deposit}</span>
           <span style="color:#38a169;font-weight:700;">${fmt(inv.depositUSD||0)}</span>
         </div>
-        ${inv.discountUSD > 0 ? `
-        <div class="ip-pay-row">
-          <span>${L.discount}</span>
-          <span>- ${fmt(inv.discountUSD)}</span>
-        </div>` : ''}
+        ${inv.discountUSD > 0
+          ? `<div class="ip-pay-row"><span>${L.discount}</span><span>- ${fmt(inv.discountUSD)}</span></div>`
+          : ''}
         ${kdvRow}
         <div class="ip-pay-row bold">
           <span>${L.grandTotal}</span>
