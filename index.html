@@ -1,4 +1,4 @@
-<!DOCTYPE html> مع مراعات 3 لغات ويكون ابيض خلفية 
+<!DOCTYPE html> 
 <html lang="ar" dir="rtl">
 <head>
 <meta name="google" content="notranslate">
@@ -13123,11 +13123,10 @@ function buildInvoiceHTML(inv, lang, opts) {
         </div>
       </div>
 
-                  <!-- ── بلوك الوسط: العنوان + باركود + الحقول ── -->
+                      <!-- ── بلوك الوسط: العنوان + باركود + الحقول ── -->
       <div style="
         width:220px;flex-shrink:0;padding:12px 14px;
-        background:#ffffff; /* خلفية بيضاء نقية */
-        /* تم إزالة الخطين الجانبيين من هنا */
+        background:#ffffff;
         direction:${dir};text-align:${textAlign};
       ">
         <!-- كلمة PROFORMA INVOICE -->
@@ -13148,8 +13147,8 @@ function buildInvoiceHTML(inv, lang, opts) {
           [L.companyName, inv.companyName||'—'],
           [L.orderDate,   inv.date||new Date().toLocaleDateString()],
           [L.loadDate,    inv.loadDate||'—'],
-          [L.plate,       inv.plate||'—'], // 👈 تظهر دائماً الآن
-          [L.truck,       inv.truck||'—'], // 👈 تظهر دائماً الآن
+          [L.plate,       inv.plate||'—'],
+          [L.truck,       inv.truck||'—'],
         ].map(([lbl,val]) => `
           <div style="
             display:flex;
@@ -13159,7 +13158,6 @@ function buildInvoiceHTML(inv, lang, opts) {
             margin-bottom:4px;
             font-size:8.5px;
             line-height:1.4;
-            flex-direction:${isRtl?'row-reverse':'row'};
           ">
             <span style="color:#555;min-width:85px;font-weight:800;
               text-align:${textAlign};">${lbl}:</span>
