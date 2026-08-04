@@ -13128,7 +13128,7 @@ const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
         </div>
       </div>
 
-      <!-- ── بلوك الوسط: العنوان + الحقول (تم إزالة الباركود لكسب المساحة) ── -->
+            <!-- ── بلوك الوسط: العنوان + الحقول ── -->
       <div style="
         width:220px;flex-shrink:0;padding:12px 14px;
         background:#ffffff;
@@ -13165,45 +13165,34 @@ const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
           </div>`).join('')}
       </div>
 
-      <!-- ── بلوك العميل (تم دمج الباركود بجانب اللوجو) ── -->
+      <!-- ── بلوك العميل (الباركود بالأعلى واللوجو بالأسفل وبدون نصوص) ── -->
       <div style="
-        width:150px; /* تم زيادة العرض قليلاً ليستوعب العنصرين معاً */
-        flex-shrink:0;padding:12px 10px;
-        display:flex;flex-direction:column;
-        align-items:center;justify-content:center;
-        direction:${dir};
+        width:120px; flex-shrink:0; padding:12px 10px;
+        display:flex; flex-direction:column;
+        align-items:center; justify-content:center;
+        direction:${dir}; gap:10px;
       ">
-        <!-- حاوية الباركود واللوجو (جنباً إلى جنب) -->
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-direction:${isRtl ? 'row-reverse' : 'row'};">
-          
-          <!-- الباركود (QR Code) -->
-          ${opts.showBarcode ? `
-          <div style="width:55px; height:55px; display:flex; justify-content:center; align-items:center;">
-            ${barcodeSVG}
-          </div>` : ''}
+        
+        <!-- الباركود (QR Code) بالأعلى -->
+        ${opts.showBarcode ? `
+        <div style="width:65px; height:65px; display:flex; justify-content:center; align-items:center;">
+          ${barcodeSVG}
+        </div>` : ''}
 
-          <!-- لوجو المشتري -->
-          <div style="width:75px;height:55px;display:flex;align-items:center;
-            justify-content:center;border:1px solid #e2e8f0;border-radius:6px;
-            overflow:hidden;">
-            ${inv.companyLogo
-              ? `<img src="${inv.companyLogo}" alt="logo" style="width:100%;height:100%;object-fit:contain;">`
-              : `<span style="font-size:22px;">🏢</span>`}
-          </div>
-          
+        <!-- لوجو المشتري بالأسفل -->
+        <div style="width:80px; height:60px; display:flex; align-items:center;
+          justify-content:center; border:1px solid #e2e8f0; border-radius:6px;
+          overflow:hidden;">
+          ${inv.companyLogo
+            ? `<img src="${inv.companyLogo}" alt="logo" style="width:100%;height:100%;object-fit:contain;">`
+            : `<span style="font-size:22px;">🏢</span>`}
         </div>
 
-        <!-- بيانات العميل -->
-        <div style="font-size:7.5px;color:#888;text-align:center;line-height:1.4;">
-          <strong style="display:block;font-size:8.5px;color:#1a1a2e;margin-bottom:2px;">${inv.companyName||'—'}</strong>
-          ${inv.buyerName||''}
-          ${inv.province||inv.country?`<br>${inv.province||inv.country||''}`:''} 
-          ${inv.city?inv.city:''}
-        </div>
       </div>
 
     </div>
     <!-- نهاية الهيدر -->
+
 
 
     <!-- ══ BUYER BAR ══ -->
