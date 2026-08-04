@@ -6528,35 +6528,46 @@ html, body {
    <!-- ========== SETTINGS PAGE ========== -->
 <section class="page" id="page-settings">
   
-  <!-- الشريط العلوي الثابت مع التبويبات -->
- <!-- الشريط العلوي الثابت مع التبويبات -->
-<div class="sct-sticky-header" style="flex-direction: column; align-items: stretch; gap: 14px; padding-bottom: 0;">
-  <div style="display: flex; align-items: center; gap: 12px; padding: 0 20px;">
-    <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
-    <div class="sct-sticky-title">
-      <h1>⚙️ <span data-i18n="settings">الإعدادات</span></h1>
+   <!-- الشريط العلوي الثابت مع التبويبات -->
+  <div class="sct-sticky-header" style="flex-direction: column; align-items: stretch; gap: 14px; padding-bottom: 0;">
+    
+    <!-- الصف الأول: الأزرار والعنوان -->
+    <div style="display: flex; align-items: center; gap: 12px; padding: 0 20px;">
+      
+      <!-- زر الرجوع (يمين في العربية، يسار في الإنجليزية) -->
+      <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
+      
+      <!-- العنوان (يتمدد ليدفع زر الحفظ للطرف الآخر) -->
+      <div class="sct-sticky-title" style="flex: 1; min-width: 0;">
+        <h1 style="margin: 0; font-size: 18px;">⚙️ <span data-i18n="settings">الإعدادات</span></h1>
+      </div>
+
+      <!-- زر الحفظ (في الطرف المقابل) -->
+      <button class="btn btn-p btn-sm" onclick="saveSettings()" style="white-space: nowrap; padding: 8px 14px; box-shadow: 0 2px 8px rgba(200,169,110,.3);">
+        💾 <span data-i18n="save_settings">حفظ</span>
+      </button>
+
+    </div>
+    
+    <!-- أزرار التنقل العلوية (محسّنة للهواتف مع دعم الترجمة) -->
+    <div class="tabs" style="margin: 0 20px; background: transparent; padding: 0; border-bottom: 2px solid var(--border); border-radius: 0; display: flex; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;">
+      <button class="tab-btn active" onclick="switchTab('company')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
+        🏢 <span data-i18n="tab_company">معلومات الشركة</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('bank')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
+        🏦 <span data-i18n="tab_bank">البنك</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('invoice')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
+        📄 <span data-i18n="tab_invoice">إعدادات الفواتير</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('currency')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
+        💱 <span data-i18n="tab_currency">الصرف</span>
+      </button>
     </div>
   </div>
-  
-  <!-- أزرار التنقل العلوية (محسّنة للهواتف مع دعم الترجمة) -->
-  <div class="tabs" style="margin: 0 20px; background: transparent; padding: 0; border-bottom: 2px solid var(--border); border-radius: 0; display: flex; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;">
-    <button class="tab-btn active" onclick="switchTab('company')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
-      🏢 <span data-i18n="tab_company">معلومات الشركة</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('bank')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
-      🏦 <span data-i18n="tab_bank">البنك</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('invoice')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
-      📄 <span data-i18n="tab_invoice">إعدادات الفواتير</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('currency')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
-      💱 <span data-i18n="tab_currency">الصرف</span>
-    </button>
-  </div>
-</div>
 
   <!-- محتوى الإعدادات -->
-  <div style="max-width: 700px; margin: 20px auto 80px;">
+<div style="max-width: 700px; margin: 20px auto 20px;">
     
     <!-- 1. تبويب الشركة -->
     <div id="stab-company">
@@ -6654,12 +6665,7 @@ html, body {
 
   </div>
 
-  <!-- شريط الحفظ الثابت في الأسفل -->
-  <div class="co-form-sticky-bar">
-    <div class="co-form-sticky-bar-inner">
-      <button class="btn btn-p" onclick="saveSettings()">💾 <span data-i18n="save_settings">حفظ الإعدادات</span></button>
-    </div>
-  </div>
+
 
 </section>
     
