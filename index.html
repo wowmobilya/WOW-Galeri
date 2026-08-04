@@ -12677,10 +12677,31 @@ function buildInvoiceHTML(inv, lang, opts) {
     minimumFractionDigits:2, maximumFractionDigits:2
   });
 
-  const st = S.settings;
-const qrText = "WOW FURNITURE - " + (inv.invNo || 'A5001');
+ const st = S.settings;
+
+// 🌟 تجهيز بيانات الباركود بشكل مفصل ومرتب
+const qrCountryLabel = inv.companyType === 'external' ? 'COUNTRY' : 'PROVINCE';
+const qrCountryVal   = inv.companyType === 'external' ? (inv.country || '-') : (inv.province || '-');
+
+const qrText = [
+  "WOW FURNITURE",
+  "PROFORMA INVOICE",
+  "-------------------",
+  `INVOICE NO: ${inv.invNo || '-'}`,
+  `ORDER DATE: ${inv.date || new Date().toLocaleDateString()}`,
+  `COMPANY NAME: ${inv.companyName || '-'}`,
+  `${qrCountryLabel}: ${qrCountryVal}`,
+  `CITY: ${inv.city || '-'}`,
+  `LOADING DATE: ${inv.loadDate || '-'}`,
+  `PLATE NUMBER: ${inv.plate || '-'}`,
+  `TRUCK NUMBER: ${inv.truck || '-'}`,
+  "-------------------",
+  `TOTAL AMOUNT: ${inv.grandTotal || 0} ${inv.currency || ''}`
+].join('\n').toUpperCase();
+
 const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
-  const invPayments = inv.payments || [];
+const invPayments = inv.payments || [];
+
 
   /* ══════════════════════════════════════════
      رؤوس الأعمدة × 3 لغات
