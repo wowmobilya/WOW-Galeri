@@ -13107,51 +13107,84 @@ function buildInvoiceHTML(inv, lang, opts) {
         </div>
       </div>
 
-      <!-- ── بلوك الوسط: رقم الفاتورة + باركود ── -->
-      <div style="
-        width:200px;flex-shrink:0;padding:12px 14px;
-        background:#fafafa;
-        ${midBorderStart}
-        direction:${dir};text-align:${textAlign};
-      ">
-        <div style="font-size:14px;font-weight:900;color:#1a1a2e;
-          letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">
-          ${L.invoice}
-        </div>
-        ${opts.showBarcode ? `
-        <div style="margin-bottom:6px;">
-          ${barcodeSVG}
-          <div style="font-family:'Courier New',monospace;font-size:8px;
-            color:#333;letter-spacing:1.5px;text-align:center;">
-            ${inv.invNo||'—'}
-          </div>
-        </div>` : ''}
-        <!-- ✅ كل صف معلومات ينعكس -->
-        ${[
-          [L.no,          inv.invNo||'—'],
-          [L.loadDate,    inv.loadDate||'—'],
-          [L.date,        inv.date||new Date().toLocaleDateString()],
-          inv.plate ? [L.plate, inv.plate] : null,
-          inv.truck ? [L.truck, inv.truck] : null,
-          [L.tier||'Tier','🎯 '+(inv.tier||'A')],
-          [L.payMethod,   payMethodLabel],
-        ].filter(Boolean).map(([lbl,val]) => `
-          <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:4px;
-            margin-bottom:3px;
-            font-size:8.5px;
-            line-height:1.4;
-            flex-direction:${isRtl?'row-reverse':'row'};
-          ">
-            <span style="color:#999;min-width:90px;font-weight:600;
-              text-align:${textAlign};">${lbl}:</span>
-            <span style="color:#1a1a2e;font-weight:700;
-              text-align:${isRtl?'left':'right'};">${val}</span>
-          </div>`).join('')}
-      </div>
+    <!-- ── بلوك الوسط: PROFORMA INVOICE + باركود + حقول المشتري ── -->
+<div style="
+  width:220px;flex-shrink:0;padding:12px 14px;
+  background:#ffffff;
+  ${midBorderStart}
+  direction:ltr;text-align:left;
+">
+  <!-- PROFORMA INVOICE عنوان كبير -->
+  <div style="
+    font-size:13px;font-weight:900;color:#1a1a2e;
+    letter-spacing:1.5px;text-transform:uppercase;
+    margin-bottom:8px;text-align:center;
+    border-bottom:2px solid #1a1a2e;
+    padding-bottom:5px;
+  ">PROFORMA INVOICE</div>
+
+  <!-- الباركود -->
+  ${opts.showBarcode ? `
+  <div style="margin-bottom:8px;text-align:center;">
+    ${barcodeSVG}
+    <div style="font-family:'Courier New',monospace;font-size:7.5px;
+      color:#333;letter-spacing:1.5px;text-align:center;margin-top:2px;">
+      ${inv.invNo||'—'}
+    </div>
+  </div>` : ''}
+
+  <!-- INVOICE NO -->
+  <div style="display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:4px;font-size:8.5px;line-height:1.5;
+    padding:3px 0;border-bottom:1px solid #f0f0f0;">
+    <span style="color:#666;font-weight:600;min-width:95px;">INVOICE NO:</span>
+    <span style="color:#1a1a2e;font-weight:800;direction:ltr;">${inv.invNo||'—'}</span>
+  </div>
+
+  <!-- Company Name -->
+  <div style="display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:4px;font-size:8.5px;line-height:1.5;
+    padding:3px 0;border-bottom:1px solid #f0f0f0;">
+    <span style="color:#666;font-weight:600;min-width:95px;">Company Name:</span>
+    <span style="color:#1a1a2e;font-weight:800;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      max-width:100px;direction:ltr;">${inv.companyName||'—'}</span>
+  </div>
+
+  <!-- ORDER DATE -->
+  <div style="display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:4px;font-size:8.5px;line-height:1.5;
+    padding:3px 0;border-bottom:1px solid #f0f0f0;">
+    <span style="color:#666;font-weight:600;min-width:95px;">ORDER DATE:</span>
+    <span style="color:#1a1a2e;font-weight:800;direction:ltr;">
+      ${inv.regDate||inv.date||new Date().toLocaleDateString()}</span>
+  </div>
+
+  <!-- LOADING DATE -->
+  <div style="display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:4px;font-size:8.5px;line-height:1.5;
+    padding:3px 0;border-bottom:1px solid #f0f0f0;">
+    <span style="color:#666;font-weight:600;min-width:95px;">LOADING DATE:</span>
+    <span style="color:#1a1a2e;font-weight:800;direction:ltr;">${inv.loadDate||'—'}</span>
+  </div>
+
+  <!-- PLATE NUMBER -->
+  <div style="display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:4px;font-size:8.5px;line-height:1.5;
+    padding:3px 0;border-bottom:1px solid #f0f0f0;">
+    <span style="color:#666;font-weight:600;min-width:95px;">PLATE NUMBER:</span>
+    <span style="color:#1a1a2e;font-weight:800;direction:ltr;">${inv.plate||'—'}</span>
+  </div>
+
+  <!-- TRUCK NUMBER -->
+  <div style="display:flex;justify-content:space-between;align-items:center;
+    font-size:8.5px;line-height:1.5;padding:3px 0;">
+    <span style="color:#666;font-weight:600;min-width:95px;">TRUCK NUMBER:</span>
+    <span style="color:#1a1a2e;font-weight:800;direction:ltr;">${inv.truck||'—'}</span>
+  </div>
+
+</div>
+
 
       <!-- ── بلوك العميل ── -->
       <div style="
