@@ -1,5 +1,5 @@
 // ⚠️ غيّر هذا الرقم (v2, v3, v4...) في كل مرة تقوم فيها بتعديل التطبيق وتريد نشره
-const CACHE_NAME = 'wow-furniture-v2 '; 
+const CACHE_NAME = 'wow-furniture-v3 '; 
 
 const urlsToCache = [
   './',
