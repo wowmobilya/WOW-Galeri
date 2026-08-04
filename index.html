@@ -12611,10 +12611,9 @@ const PAY_METHOD_LABELS={
 };
 
 function buildInvoiceHTML(inv, lang, opts) {
-
-  /* ══════════════════════════════════════════════════════════
-     0. إعداد المتغيرات الأساسية
-  ══════════════════════════════════════════════════════════ */
+  // ══════════════════════════════════════════
+  // 1. الإعدادات الأساسية
+  // ══════════════════════════════════════════
   lang = lang || 'en';
   opts = opts || {
     showBarcode: true, showImages: true, showWeights: true,
@@ -12622,27 +12621,121 @@ function buildInvoiceHTML(inv, lang, opts) {
     showBankInfo: true, showRates: true
   };
 
-  // ── الاتجاه حسب اللغة
-  const isRTL  = (lang === 'ar');
-  const dir    = isRTL ? 'rtl' : 'ltr';
-  const align  = isRTL ? 'right' : 'left';
-  const alignR = isRTL ? 'left'  : 'right';
-
-  // ── الخط حسب اللغة
+  // اتجاه النص حسب اللغة
+  const isRTL   = (lang === 'ar');
+  const dir     = isRTL ? 'rtl' : 'ltr';
+  const textAlign = isRTL ? 'right' : 'left';
   const fontFamily = isRTL
     ? "'Tajawal','Cairo','Segoe UI',Arial,sans-serif"
-    : (lang === 'tr'
-        ? "'Segoe UI','Calibri',Arial,sans-serif"
-        : "'Segoe UI","Calibri",Arial,sans-serif");
+    : "'Segoe UI',Arial,sans-serif";
 
-  // ── ترجمات الفاتورة
-  const L = PDF_TR[lang] || PDF_TR.en;
+  // ══════════════════════════════════════════
+  // 2. الترجمات الكاملة
+  // ══════════════════════════════════════════
+  const L = {
+    en: {
+      invoice:'INVOICE', seller:'SELLER', buyer:'BUYER',
+      no:'Invoice No', regDate:'Registration Date',
+      loadDate:'Loading Date', plate:'Plate No', truck:'Truck No',
+      item:'#', name:'Product Name', hs:'HS Code',
+      dims:'Dimensions (cm)', color:'Colour', setpcs:'SET/PCS',
+      qty:'Qty', unitPrice:'Unit Price', totalPrice:'Total Price',
+      pktCount:'Pkt Count', totalPkt:'Total Pkt',
+      unitCbm:'Unit CBM', totalCbm:'Total CBM',
+      unitWeight:'Unit Wt (Kg)', totalWeight:'Total Wt (Kg)',
+      subtotal:'Subtotal', discount:'Discount',
+      kdv:'VAT', grandTotal:'GRAND TOTAL',
+      deposit:'Deposit', paid:'Total Paid', remaining:'Remaining',
+      payMethod:'Payment Method',
+      bankInfo:'BANK INFORMATION', bank:'Bank',
+      beneficiary:'Beneficiary', iban_usd:'IBAN USD',
+      iban_try:'IBAN TRY', iban_eur:'IBAN EUR',
+      swift:'SWIFT', account:'Account No',
+      rates:'Exchange Rates',
+      notes:'Delivery and Sales Terms',
+      seller_sig:'Seller Signature', buyer_sig:'Buyer Signature',
+      stamp:'Stamp',
+      verify:'This invoice was issued by WOW Furniture — www.wowmobilya.net',
+      tier:'Price Tier', packets:'Packets',
+      payHistory:'Payment History', mersis:'Mersis No',
+      totalPer:'TOTAL PER: QUANTITY / PRICE / PACKET / CBM / KG',
+      payHistDate:'Date', payHistMethod:'Method',
+      payHistAmt:'Amount', payHistOrig:'Original',
+      payHistNote:'Note', payHistTotalPaid:'Total Paid',
+      payHistRemain:'Remaining', payHistTotal:'Total',
+    },
+    tr: {
+      invoice:'FATURA', seller:'SATICI', buyer:'ALICI',
+      no:'Fatura No', regDate:'Kayıt Tarihi',
+      loadDate:'Yükleme Tarihi', plate:'Plaka No', truck:'Kamyon No',
+      item:'#', name:'Ürün Adı', hs:'HS Kodu',
+      dims:'Boyutlar (cm)', color:'Renk', setpcs:'SET/PARÇA',
+      qty:'Adet', unitPrice:'Birim Fiyat', totalPrice:'Toplam Fiyat',
+      pktCount:'Paket Sayısı', totalPkt:'Toplam Paket',
+      unitCbm:'Birim CBM', totalCbm:'Toplam CBM',
+      unitWeight:'Birim Ağırlık', totalWeight:'Toplam Ağırlık',
+      subtotal:'Ara Toplam', discount:'İndirim',
+      kdv:'KDV', grandTotal:'GENEL TOPLAM',
+      deposit:'Depozito', paid:'Toplam Ödenen', remaining:'Kalan',
+      payMethod:'Ödeme Yöntemi',
+      bankInfo:'BANKA BİLGİLERİ', bank:'Banka',
+      beneficiary:'Lehdar', iban_usd:'IBAN USD',
+      iban_try:'IBAN TRY', iban_eur:'IBAN EUR',
+      swift:'SWIFT', account:'Hesap No',
+      rates:'Döviz Kurları',
+      notes:'Teslimat ve Satış Şartları',
+      seller_sig:'Satıcı İmzası', buyer_sig:'Alıcı İmzası',
+      stamp:'Mühür',
+      verify:'Bu fatura WOW Furniture tarafından düzenlenmiştir — www.wowmobilya.net',
+      tier:'Fiyat Kademesi', packets:'Paket',
+      payHistory:'Ödeme Geçmişi', mersis:'Mersis No',
+      totalPer:'TOPLAM: MİKTAR / FİYAT / PAKET / CBM / KG',
+      payHistDate:'Tarih', payHistMethod:'Yöntem',
+      payHistAmt:'Tutar', payHistOrig:'Orijinal',
+      payHistNote:'Not', payHistTotalPaid:'Toplam Ödenen',
+      payHistRemain:'Kalan', payHistTotal:'Toplam',
+    },
+    ar: {
+      invoice:'فاتورة', seller:'البائع', buyer:'المشتري',
+      no:'رقم الفاتورة', regDate:'تاريخ التسجيل',
+      loadDate:'تاريخ التحميل', plate:'رقم اللوحة', truck:'رقم الشاحنة',
+      item:'#', name:'اسم المنتج', hs:'كود HS',
+      dims:'الأبعاد (سم)', color:'اللون', setpcs:'SET/PCS',
+      qty:'الكمية', unitPrice:'سعر الوحدة', totalPrice:'الإجمالي',
+      pktCount:'عدد الباكيت', totalPkt:'إجمالي الباكيت',
+      unitCbm:'CBM للوحدة', totalCbm:'CBM الإجمالي',
+      unitWeight:'وزن الوحدة', totalWeight:'الوزن الإجمالي',
+      subtotal:'المجموع الفرعي', discount:'الخصم',
+      kdv:'ضريبة KDV', grandTotal:'المجموع النهائي',
+      deposit:'العربون', paid:'إجمالي المدفوع', remaining:'المتبقي',
+      payMethod:'طريقة الدفع',
+      bankInfo:'معلومات البنك', bank:'البنك',
+      beneficiary:'المستفيد', iban_usd:'IBAN USD',
+      iban_try:'IBAN TRY', iban_eur:'IBAN EUR',
+      swift:'SWIFT', account:'رقم الحساب',
+      rates:'أسعار الصرف',
+      notes:'شروط التسليم والبيع',
+      seller_sig:'توقيع البائع', buyer_sig:'توقيع المشتري',
+      stamp:'الختم',
+      verify:'هذه الفاتورة صادرة من WOW Furniture — www.wowmobilya.net',
+      tier:'درجة التسعير', packets:'الباكيتات',
+      payHistory:'سجل الدفعات', mersis:'رقم Mersis',
+      totalPer:'الإجمالي: الكمية / السعر / الباكيت / متر مكعب / كيلوغرام',
+      payHistDate:'التاريخ', payHistMethod:'الطريقة',
+      payHistAmt:'المبلغ', payHistOrig:'الأصلي',
+      payHistNote:'ملاحظة', payHistTotalPaid:'المدفوع',
+      payHistRemain:'المتبقي', payHistTotal:'الإجمالي',
+    },
+  }[lang] || {};
 
-  // ── العملة والتحويل
+  // ══════════════════════════════════════════
+  // 3. متغيرات الحساب
+  // ══════════════════════════════════════════
   const cur    = inv.currency || 'USD';
   const sym    = symOf(cur);
   const usdTry = inv.usdTry || S.usdTry;
   const usdEur = inv.usdEur || S.usdEur;
+  const st     = S.settings;
 
   const toDisp = usd => {
     if (cur === 'TRY') return usd * usdTry;
@@ -12653,126 +12746,80 @@ function buildInvoiceHTML(inv, lang, opts) {
     minimumFractionDigits: 2, maximumFractionDigits: 2
   });
 
-  const st = S.settings;
-  const barcodeSVG = opts.showBarcode
-    ? generateBarcodeSVG(inv.invNo || 'A5001')
-    : '';
   const invPayments = inv.payments || [];
 
-  /* ══════════════════════════════════════════════════════════
-     1. رؤوس الأعمدة × 3 لغات
-  ══════════════════════════════════════════════════════════ */
-  const colHeaders = {
-    en: {
-      pic:'PICTURE', name:'ITEM\nNAME', hs:'HS\nCODE',
-      dims:'DIMENSIONS\n(cm)', color:'COLOUR',
-      setpcs:'SET /\nPCS', qty:'QTY',
-      unitPrice:'UNIT\nPRICE', totalPrice:'TOTAL\nPRICE',
-      pktCount:'PKT\nCOUNT', totalPkt:'TOTAL\nPKT',
-      unitCbm:'UNIT\nCBM (m³)', totalCbm:'TOTAL\nCBM (m³)',
-      unitWeight:'UNIT\nWT (Kg)', totalWeight:'TOTAL\nWT (Kg)',
-    },
-    tr: {
-      pic:'FOTOĞRAF', name:'ÜRÜN\nADI', hs:'HS\nKODU',
-      dims:'BOYUTLAR\n(cm)', color:'RENK',
-      setpcs:'SET /\nPARÇA', qty:'ADET',
-      unitPrice:'BİRİM\nFİYAT', totalPrice:'TOPLAM\nFİYAT',
-      pktCount:'PAKET\nSAYISI', totalPkt:'TOPLAM\nPAKET',
-      unitCbm:'BİRİM\nCBM (m³)', totalCbm:'TOPLAM\nCBM (m³)',
-      unitWeight:'BİRİM\nAĞIRLIK', totalWeight:'TOPLAM\nAĞIRLIK',
-    },
-    ar: {
-      pic:'الصورة', name:'اسم\nالمنتج', hs:'كود\nHS',
-      dims:'الأبعاد\n(سم)', color:'اللون',
-      setpcs:'SET /\nPCS', qty:'الكمية',
-      unitPrice:'سعر\nالوحدة', totalPrice:'الإجمالي',
-      pktCount:'عدد\nالباكيت', totalPkt:'إجمالي\nالباكيت',
-      unitCbm:'CBM\nللوحدة', totalCbm:'CBM\nالإجمالي',
-      unitWeight:'وزن\nالوحدة', totalWeight:'الوزن\nالإجمالي',
-    },
-  };
-  const CH = colHeaders[lang] || colHeaders.en;
-
-  /* ══════════════════════════════════════════════════════════
-     2. نصوص "TOTAL PER" × 3 لغات
-  ══════════════════════════════════════════════════════════ */
-  const totalPerLabel = {
-    en: 'TOTAL PER: QUANTITY / PRICE / PACKET / CBM / KG',
-    tr: 'TOPLAM: MİKTAR / FİYAT / PAKET / CBM / KG',
-    ar: 'الإجمالي: الكمية / السعر / العبوة / متر مكعب / كيلوغرام',
-  }[lang] || 'TOTAL PER:';
-
-  /* ══════════════════════════════════════════════════════════
-     3. إجماليات الجدول
-  ══════════════════════════════════════════════════════════ */
-  let grandTotalPkts = 0;
-  let grandTotalCBM  = 0;
-  let grandTotalWt   = 0;
+  // إجماليات الجدول
+  let grandTotalPkts = 0, grandTotalCBM = 0, grandTotalWt = 0;
   (inv.items || []).forEach(item => {
     grandTotalPkts += (item.packets || 1) * item.qty;
     grandTotalCBM  += (item.cbm     || 0) * item.qty;
     grandTotalWt   += (item.weight  || 0) * item.qty;
   });
 
-  /* ══════════════════════════════════════════════════════════
-     4. دالة: خلية الأبعاد (تراعي RTL/LTR)
-  ══════════════════════════════════════════════════════════ */
-  function buildDimsCell(item) {
-    // الأبعاد دائماً تُعرض LTR (أرقام)
-    const numDir = 'ltr';
+  const totalQty = (inv.items || []).reduce((s, i) => s + i.qty, 0);
 
+  // ══════════════════════════════════════════
+  // 4. دوال مساعدة
+  // ══════════════════════════════════════════
+
+  // باركود SVG
+  const barcodeSVG = opts.showBarcode ? generateBarcodeSVG(inv.invNo || 'A5001') : '';
+
+  // خلية الأبعاد (تدعم dimPieces + dimensions)
+  function buildDimsCell(item) {
     if (item.dimPieces && item.dimPieces.length > 0) {
       const rows = item.dimPieces.map((dp, idx) => {
         const l = dp.l || 0, w = dp.w || 0, h = dp.h || 0;
         if (!l && !w && !h) return '';
         return `<div style="
-          display:flex;align-items:center;justify-content:center;
-          gap:1px;direction:${numDir};white-space:nowrap;
-          font-size:7px;font-weight:700;color:#333;
+          display:flex; align-items:center; justify-content:center;
+          gap:1px; direction:ltr; white-space:nowrap;
+          font-size:7px; font-weight:700; color:#333;
           padding:2px 0;
-          ${idx > 0 ? 'border-top:1px dashed #e0e0e0;margin-top:1px;' : ''}
+          ${idx > 0 ? 'border-top:1px dashed #e0e0e0; margin-top:1px;' : ''}
         ">
           ${item.dimPieces.length > 1 ? `<span style="
-            background:#1a1a2e;color:#c8a96e;border-radius:50%;
-            width:11px;height:11px;font-size:7px;font-weight:900;
-            display:inline-flex;align-items:center;justify-content:center;
-            margin-right:2px;flex-shrink:0;
-          ">${idx+1}</span>` : ''}
-          <span>${l}</span>
-          <span style="color:#aaa;margin:0 1px;">×</span>
-          <span>${w}</span>
-          <span style="color:#aaa;margin:0 1px;">×</span>
+            background:#1a1a2e; color:#c8a96e; border-radius:50%;
+            width:11px; height:11px; font-size:7px; font-weight:900;
+            display:inline-flex; align-items:center; justify-content:center;
+            margin-right:2px; flex-shrink:0;
+          ">${idx + 1}</span>` : ''}
+          <span>${l}</span><span style="color:#aaa;margin:0 1px;">×</span>
+          <span>${w}</span><span style="color:#aaa;margin:0 1px;">×</span>
           <span>${h}</span>
         </div>`;
       }).filter(Boolean).join('');
       return rows || '<span style="color:#ccc;font-size:8px;">—</span>';
     }
-
     if (item.dimensions) {
-      return `<div style="direction:${numDir};white-space:nowrap;
-        font-size:7.5px;font-weight:700;">${item.dimensions} cm</div>`;
+      const parts = item.dimensions.split('+').map(s => s.trim()).filter(Boolean);
+      if (parts.length > 1) {
+        return parts.map((p, idx) => `
+          <div style="direction:ltr; white-space:nowrap; font-size:7px; font-weight:700;
+            ${idx > 0 ? 'border-top:1px dashed #e0e0e0; margin-top:1px; padding-top:2px;' : ''}
+          ">${p} cm</div>`).join('');
+      }
+      return `<div style="direction:ltr; white-space:nowrap; font-size:7.5px; font-weight:700;">
+        ${item.dimensions} cm
+      </div>`;
     }
     return '<span style="color:#ccc;font-size:8px;">—</span>';
   }
 
-  /* ══════════════════════════════════════════════════════════
-     5. دالة: تحويل كود اللون → نص مقروء بلغة الفاتورة
-  ══════════════════════════════════════════════════════════ */
+  // تحويل كود اللون → نص مقروء بلغة الفاتورة
   function getColorDisplay(colorVal) {
     if (!colorVal || colorVal === 'STANDARD') return '—';
     const colorData = FURNITURE_COLORS[lang] || FURNITURE_COLORS.en;
     const found = colorData.find(c => c.val === colorVal);
     if (found) {
       return found.label
-        .replace(/^[\u{1F300}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}⭐✏️🌰🟫🪵✨🌑🌕🌫️🥇🌿⬜🟡🟤🌱⬛🖤🩶🥂🪙🍦🏜️💎🔲🪮🏺🪵]+\s*/u, '')
+        .replace(/^[\u{1F300}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}⭐✏️🌰🟫🪵✨🌑🌕🌫️🥇🌿⬜🟡🟤🌱⬛🖤🩶🥂🪙🍦🏜️💎🔲🪮🏺]+\s*/u, '')
         .trim();
     }
     return colorVal;
   }
 
-  /* ══════════════════════════════════════════════════════════
-     6. دالة: قراءة SET/PCS بلغة الفاتورة
-  ══════════════════════════════════════════════════════════ */
+  // SET/PCS من وصف المنتج
   function getSetPcs(item) {
     const product = S.products.find(p => p.id === item.productId);
     const desc = (product && product.desc) ? product.desc.trim() : '';
@@ -12781,143 +12828,175 @@ function buildInvoiceHTML(inv, lang, opts) {
     return 'SET';
   }
 
-  /* ══════════════════════════════════════════════════════════
-     7. صفوف الجدول — مع دعم RTL/LTR الكامل
-  ══════════════════════════════════════════════════════════ */
-  const tableRows = (inv.items || []).map((item, i) => {
-    const unitCBM   = item.cbm    || 0;
-    const totalCBM  = unitCBM     * item.qty;
-    const unitWt    = item.weight || 0;
-    const totalWt   = unitWt      * item.qty;
-    const unitPkts  = item.packets || 1;
-    const totalPkts = unitPkts    * item.qty;
+  // ══════════════════════════════════════════
+  // 5. طريقة الدفع بلغة الفاتورة
+  // ══════════════════════════════════════════
+  const pmLabels = {
+    en: { cash:'Cash', bank_transfer:'Bank Transfer', credit_card:'Credit Card',
+          check:'Check', installment:'Installment', western_union:'Western Union',
+          letter_credit:'Letter of Credit', deferred:'Deferred' },
+    tr: { cash:'Nakit', bank_transfer:'Banka Transferi', credit_card:'Kredi Kartı',
+          check:'Çek', installment:'Taksit', western_union:'Western Union',
+          letter_credit:'Akreditif', deferred:'Vadeli' },
+    ar: { cash:'نقداً', bank_transfer:'تحويل بنكي', credit_card:'بطاقة ائتمان',
+          check:'شيك', installment:'أقساط', western_union:'Western Union',
+          letter_credit:'اعتماد مستندي', deferred:'آجل' },
+  };
+  const payMethodLabel = (pmLabels[lang] || pmLabels.en)[inv.payMethod || 'cash'] || '—';
 
-    // صورة المنتج
+  // ══════════════════════════════════════════
+  // 6. صفوف الجدول
+  // ══════════════════════════════════════════
+  const tdStyle = `
+    padding:5px 4px; text-align:center; vertical-align:middle;
+    border-bottom:1px solid #f0f0f0; border-right:1px solid #ebebeb;
+    font-size:7.5px;
+  `;
+
+  const tableRows = (inv.items || []).map((item, i) => {
+    const unitCBM  = item.cbm    || 0;
+    const unitWt   = item.weight || 0;
+    const unitPkts = item.packets || 1;
+    const totalCBM_  = unitCBM  * item.qty;
+    const totalWt_   = unitWt   * item.qty;
+    const totalPkts_ = unitPkts * item.qty;
+
     const imgCell = opts.showImages
       ? (item.image
-          ? `<img src="${item.image}"
-               style="width:44px;height:36px;object-fit:cover;
-                      border-radius:4px;display:block;margin:0 auto;"
-               alt="">`
-          : `<div style="width:44px;height:36px;background:#f5f5f5;
-               border-radius:4px;display:flex;align-items:center;
-               justify-content:center;font-size:14px;margin:0 auto;">🛋️</div>`)
-      : `<div style="width:44px;height:36px;background:#f5f5f5;
-           border-radius:4px;display:flex;align-items:center;
-           justify-content:center;font-size:11px;color:#ccc;
-           margin:0 auto;">—</div>`;
+          ? `<img src="${item.image}" style="width:44px;height:36px;object-fit:cover;
+              border-radius:4px;display:block;margin:0 auto;" alt="">`
+          : `<div style="width:44px;height:36px;background:#f5f5f5;border-radius:4px;
+              display:flex;align-items:center;justify-content:center;
+              font-size:14px;margin:0 auto;">🛋️</div>`)
+      : `<div style="width:44px;height:36px;background:#f5f5f5;border-radius:4px;
+          display:flex;align-items:center;justify-content:center;
+          font-size:11px;color:#ccc;margin:0 auto;">—</div>`;
 
-    const product = S.products.find(p => p.id === item.productId);
-    const hsCode  = (product && product.hsCode) ? product.hsCode : (item.hsCode || '—');
-    const colorDisplay = getColorDisplay(item.color);
-    const setpcsVal    = getSetPcs(item);
-    const dimsHTML     = buildDimsCell(item);
-    const rowBg        = i % 2 === 0 ? '#ffffff' : '#fafafa';
+    const product   = S.products.find(p => p.id === item.productId);
+    const hsCode    = (product && product.hsCode) ? product.hsCode : (item.hsCode || '—');
+    const colorDisp = getColorDisplay(item.color);
+    const setpcsVal = getSetPcs(item);
+    const dimsHTML  = buildDimsCell(item);
+    const rowBg     = i % 2 === 0 ? '#ffffff' : '#fafafa';
 
-    // ── اسم المنتج: اتجاه حسب اللغة
+    // اسم المنتج — يتبع اتجاه اللغة
     const nameStyle = `
-      padding:5px 4px;text-align:center;vertical-align:middle;
-      border-bottom:1px solid #f0f0f0;border-right:1px solid #ebebeb;
-      font-weight:700;font-size:8px;
-      direction:${dir};unicode-bidi:plaintext;
-    `;
-
-    // ── الأرقام دائماً LTR
-    const numStyle = `
-      padding:5px 4px;text-align:center;vertical-align:middle;
-      border-bottom:1px solid #f0f0f0;border-right:1px solid #ebebeb;
-      direction:ltr;
-    `;
-
-    const tdBase = `
-      padding:5px 4px;text-align:center;vertical-align:middle;
-      border-bottom:1px solid #f0f0f0;border-right:1px solid #ebebeb;
+      padding:5px 4px; text-align:${textAlign}; vertical-align:middle;
+      border-bottom:1px solid #f0f0f0; border-right:1px solid #ebebeb;
+      font-weight:700; font-size:8px; direction:${dir};
     `;
 
     return `<tr style="background:${rowBg};">
-      <td style="${tdBase}">${imgCell}</td>
+      <td style="${tdStyle}">${imgCell}</td>
       <td style="${nameStyle}">${item.name}</td>
-      <td style="${numStyle}font-size:7px;color:#555;">${hsCode}</td>
-      <td style="${tdBase}">${dimsHTML}</td>
-      <td style="${tdBase}font-size:7.5px;max-width:55px;
-          word-break:break-word;direction:${dir};unicode-bidi:plaintext;">
-        ${colorDisplay}
-      </td>
-      <td style="${tdBase}font-size:8px;font-weight:700;color:#1a1a2e;">
-        ${setpcsVal}
-      </td>
-      <td style="${numStyle}font-weight:800;font-size:9px;">${item.qty}</td>
-      <td style="${numStyle}white-space:nowrap;font-weight:700;font-size:8px;">
-        ${fmt(item.priceUSD)}
-      </td>
-      <td style="${numStyle}white-space:nowrap;font-weight:800;
-          color:#1a1a2e;font-size:8.5px;">
-        ${fmt(item.totalUSD)}
-      </td>
-      <td style="${numStyle}font-size:8px;">${unitPkts}</td>
-      <td style="${numStyle}font-size:8px;font-weight:700;">${totalPkts}</td>
-      <td style="${numStyle}font-size:7.5px;">${unitCBM.toFixed(4)}</td>
-      <td style="${numStyle}font-size:7.5px;font-weight:700;">
-        ${totalCBM.toFixed(4)}
-      </td>
-      <td style="${numStyle}font-size:7.5px;">${unitWt.toFixed(2)}</td>
-      <td style="padding:5px 4px;text-align:center;vertical-align:middle;
-          border-bottom:1px solid #f0f0f0;direction:ltr;
-          font-size:7.5px;font-weight:700;">
-        ${totalWt.toFixed(2)}
-      </td>
+      <td style="${tdStyle}direction:ltr; color:#555;">${hsCode}</td>
+      <td style="${tdStyle}">${dimsHTML}</td>
+      <td style="${tdStyle}max-width:55px; word-break:break-word;
+        direction:${dir}; font-size:7.5px;">${colorDisp}</td>
+      <td style="${tdStyle}font-weight:700; color:#1a1a2e;">${setpcsVal}</td>
+      <td style="${tdStyle}font-weight:800; font-size:9px;">${item.qty}</td>
+      <td style="${tdStyle}direction:ltr; white-space:nowrap;
+        font-weight:700;">${fmt(item.priceUSD)}</td>
+      <td style="${tdStyle}direction:ltr; white-space:nowrap;
+        font-weight:800; color:#1a1a2e; font-size:8.5px;">${fmt(item.totalUSD)}</td>
+      <td style="${tdStyle}">${unitPkts}</td>
+      <td style="${tdStyle}font-weight:700;">${totalPkts_}</td>
+      <td style="${tdStyle}direction:ltr;">${unitCBM.toFixed(4)}</td>
+      <td style="${tdStyle}direction:ltr; font-weight:700;">${totalCBM_.toFixed(4)}</td>
+      <td style="${tdStyle}direction:ltr;">${unitWt.toFixed(2)}</td>
+      <td style="padding:5px 4px; text-align:center; vertical-align:middle;
+        border-bottom:1px solid #f0f0f0; direction:ltr;
+        font-weight:700;">${totalWt_.toFixed(2)}</td>
     </tr>`;
   }).join('');
 
-  /* ══════════════════════════════════════════════════════════
-     8. صف الإجماليات (tfoot)
-  ══════════════════════════════════════════════════════════ */
-  const totalQty = (inv.items || []).reduce((s, i) => s + i.qty, 0);
-  const tfootTdStyle = `
-    padding:7px 4px;text-align:center;vertical-align:middle;
-    color:#1a1a2e;font-weight:800;font-size:8px;
-    border-right:1px solid #d0d7e3;
-    background:#eef2f8;border-top:2px solid #1a1a2e;
+  // ══════════════════════════════════════════
+  // 7. رأس الجدول
+  // ══════════════════════════════════════════
+  const thStyle = `
+    color:#fff; font-weight:700; padding:8px 4px;
+    text-align:center; vertical-align:middle;
+    font-size:6.5px; letter-spacing:.2px;
+    white-space:pre-line; word-break:break-word;
+    border-right:1px solid rgba(255,255,255,.15);
+    line-height:1.45;
   `;
 
-  /* ══════════════════════════════════════════════════════════
-     9. سجل الدفعات × 3 لغات
-  ══════════════════════════════════════════════════════════ */
+  // رؤوس الأعمدة بلغة الفاتورة
+  const CH = {
+    pic:         { en:'PICTURE',      tr:'FOTOĞRAF',    ar:'الصورة'       },
+    name:        { en:'ITEM\nNAME',   tr:'ÜRÜN\nADI',   ar:'اسم\nالمنتج'  },
+    hs:          { en:'HS\nCODE',     tr:'HS\nKODU',    ar:'كود\nHS'       },
+    dims:        { en:'DIMS\n(cm)',   tr:'BOYUT\n(cm)', ar:'الأبعاد\n(سم)' },
+    color:       { en:'COLOUR',       tr:'RENK',        ar:'اللون'         },
+    setpcs:      { en:'SET/\nPCS',    tr:'SET/\nPARÇA', ar:'SET/\nPCS'     },
+    qty:         { en:'QTY',          tr:'ADET',        ar:'الكمية'        },
+    unitPrice:   { en:'UNIT\nPRICE',  tr:'BİRİM\nFİYAT',ar:'سعر\nالوحدة'  },
+    totalPrice:  { en:'TOTAL\nPRICE', tr:'TOPLAM\nFİYAT',ar:'الإجمالي'    },
+    pktCount:    { en:'PKT\nCOUNT',   tr:'PAKET\nSAYISI',ar:'عدد\nالباكيت'},
+    totalPkt:    { en:'TOTAL\nPKT',   tr:'TOPLAM\nPAKET',ar:'إجمالي\nالباكيت'},
+    unitCbm:     { en:'UNIT\nCBM',    tr:'BİRİM\nCBM',  ar:'CBM\nللوحدة'  },
+    totalCbm:    { en:'TOTAL\nCBM',   tr:'TOPLAM\nCBM', ar:'CBM\nالإجمالي'},
+    unitWeight:  { en:'UNIT\nWT(Kg)', tr:'BİRİM\nAĞ.',  ar:'وزن\nالوحدة'  },
+    totalWeight: { en:'TOTAL\nWT(Kg)',tr:'TOPLAM\nAĞ.', ar:'الوزن\nالإجمالي'},
+  };
+  const ch = k => CH[k][lang] || CH[k].en;
+
+  // ══════════════════════════════════════════
+  // 8. صف الإجماليات (tfoot)
+  // ══════════════════════════════════════════
+  const tfootTdStyle = `
+    padding:7px 4px; text-align:center; vertical-align:middle;
+    color:#1a1a2e; font-weight:800; font-size:8px;
+    border-right:1px solid #d0d7e3; background:#eef2f8;
+    border-top:2px solid #1a1a2e;
+  `;
+
+  const totalRow = `<tr>
+    <td colspan="6" style="${tfootTdStyle}
+      font-size:8px; font-weight:900; letter-spacing:.4px;
+      direction:${dir}; text-align:${textAlign};">
+      ${L.totalPer}
+    </td>
+    <td style="${tfootTdStyle}font-size:9px;">${totalQty}</td>
+    <td style="${tfootTdStyle}"></td>
+    <td style="${tfootTdStyle}font-size:10px;">${fmt(inv.subtotalUSD || 0)}</td>
+    <td style="${tfootTdStyle}font-size:8px;">
+      ${(inv.items || []).reduce((s, i) => s + (i.packets || 1), 0)}
+    </td>
+    <td style="${tfootTdStyle}font-size:8.5px;">${grandTotalPkts}</td>
+    <td style="${tfootTdStyle}"></td>
+    <td style="${tfootTdStyle}font-size:8px; direction:ltr;">
+      ${grandTotalCBM.toFixed(4)}
+    </td>
+    <td style="${tfootTdStyle}"></td>
+    <td style="${tfootTdStyle}font-size:8px; direction:ltr; border-right:none;">
+      ${grandTotalWt.toFixed(2)}
+    </td>
+  </tr>`;
+
+  // ══════════════════════════════════════════
+  // 9. سجل الدفعات
+  // ══════════════════════════════════════════
   const rtIconsPDF = {
     cash:'💵', transfer:'🏦', card:'💳', check:'📝',
     installment:'📅', western_union:'🌐', deferred:'⏳',
     exchange:'💱', other:'📦'
   };
   const rtLabelsPDF = {
-    en:{ cash:'Cash', transfer:'Bank Transfer', card:'Credit Card',
-         check:'Check', installment:'Installment',
-         western_union:'Western Union', deferred:'Deferred',
-         exchange:'Exchange', other:'Other' },
-    tr:{ cash:'Nakit', transfer:'Banka Transferi', card:'Kredi Kartı',
-         check:'Çek', installment:'Taksit',
-         western_union:'Western Union', deferred:'Vadeli',
-         exchange:'Dövizci', other:'Diğer' },
-    ar:{ cash:'نقداً', transfer:'تحويل بنكي', card:'بطاقة ائتمان',
-         check:'شيك', installment:'أقساط',
-         western_union:'ويسترن يونيون', deferred:'آجل',
-         exchange:'صراف', other:'أخرى' },
+    en: { cash:'Cash', transfer:'Bank Transfer', card:'Credit Card',
+          check:'Check', installment:'Installment',
+          western_union:'Western Union', deferred:'Deferred',
+          exchange:'Exchange', other:'Other' },
+    tr: { cash:'Nakit', transfer:'Banka Transferi', card:'Kredi Kartı',
+          check:'Çek', installment:'Taksit',
+          western_union:'Western Union', deferred:'Vadeli',
+          exchange:'Dövizci', other:'Diğer' },
+    ar: { cash:'نقداً', transfer:'تحويل بنكي', card:'بطاقة ائتمان',
+          check:'شيك', installment:'أقساط',
+          western_union:'ويسترن يونيون', deferred:'آجل',
+          exchange:'صراف', other:'أخرى' },
   };
-
-  const payHistTitles = {
-    en:'Payment History', tr:'Ödeme Geçmişi', ar:'سجل الدفعات'
-  };
-  const phColHeaders = {
-    en:{ no:'#', date:'Date', method:'Method', amount:'Amount',
-         original:'Original', note:'Note', totalPaid:'Total Paid',
-         remaining:'Remaining' },
-    tr:{ no:'#', date:'Tarih', method:'Yöntem', amount:'Tutar',
-         original:'Orijinal', note:'Not', totalPaid:'Toplam',
-         remaining:'Kalan' },
-    ar:{ no:'#', date:'التاريخ', method:'الطريقة', amount:'المبلغ',
-         original:'الأصلي', note:'ملاحظة', totalPaid:'المدفوع',
-         remaining:'المتبقي' },
-  };
-  const phCols = phColHeaders[lang] || phColHeaders.en;
   const phRtLabels = rtLabelsPDF[lang] || rtLabelsPDF.en;
 
   let runningPaid = inv.depositUSD || 0;
@@ -12931,12 +13010,9 @@ function buildInvoiceHTML(inv, lang, opts) {
       const origCell = hasConv
         ? `${symOf(p.originalCurrency)}${p.originalAmount.toFixed(2)} ${p.originalCurrency}`
         : '—';
-
-      return `<tr style="background:${i%2===0?'#fff':'#fafafa'}">
-        <td style="padding:4px 5px;text-align:center;font-weight:700;
-            color:#1a1a2e;">${i+1}</td>
-        <td style="padding:4px 5px;text-align:center;color:#555;
-            direction:ltr;">${p.date||'—'}</td>
+      return `<tr style="background:${i % 2 === 0 ? '#fff' : '#fafafa'}">
+        <td style="padding:4px 5px;text-align:center;font-weight:700;color:#1a1a2e;">${i + 1}</td>
+        <td style="padding:4px 5px;text-align:center;color:#555;direction:ltr;">${p.date || '—'}</td>
         <td style="padding:4px 5px;text-align:center;">
           <span style="background:#f8f9fa;border:1px solid #e2e8f0;
             border-radius:8px;padding:1px 5px;font-size:7.5px;font-weight:700;">
@@ -12944,103 +13020,74 @@ function buildInvoiceHTML(inv, lang, opts) {
           </span>
         </td>
         <td style="padding:4px 5px;text-align:center;font-weight:800;
-            color:#38a169;direction:ltr;">${fmt(p.amount||0)}</td>
+          color:#38a169;direction:ltr;">${fmt(p.amount || 0)}</td>
         <td style="padding:4px 5px;text-align:center;font-size:7.5px;
-            color:#805ad5;direction:ltr;">${origCell}</td>
-        <td style="padding:4px 5px;text-align:center;font-size:7.5px;
-            color:#555;direction:${dir};unicode-bidi:plaintext;">
-          ${p.note||'—'}
-        </td>
+          color:#805ad5;direction:ltr;">${origCell}</td>
+        <td style="padding:4px 5px;text-align:${textAlign};font-size:7.5px;
+          color:#555;direction:${dir};">${p.note || '—'}</td>
         <td style="padding:4px 5px;text-align:center;font-weight:700;
-            direction:ltr;">${fmt(runningPaid)}</td>
+          direction:ltr;">${fmt(runningPaid)}</td>
         <td style="padding:4px 5px;text-align:center;font-weight:700;
-            direction:ltr;
-            color:${remainAfter>0?'#e53e3e':'#38a169'};">
-          ${fmt(remainAfter)}
-        </td>
+          color:${remainAfter > 0 ? '#e53e3e' : '#38a169'};
+          direction:ltr;">${fmt(remainAfter)}</td>
       </tr>`;
     });
 
-    const finalPaid   = (inv.depositUSD||0)
-      + invPayments.reduce((s,p) => s+(p.amount||0), 0);
-    const finalRemain = Math.max(0, (inv.grandTotal||0) - finalPaid);
+    const finalPaid   = (inv.depositUSD || 0) + invPayments.reduce((s, p) => s + (p.amount || 0), 0);
+    const finalRemain = Math.max(0, (inv.grandTotal || 0) - finalPaid);
     const pct = inv.grandTotal > 0
       ? Math.min(100, (finalPaid / inv.grandTotal) * 100) : 0;
 
     return `
-    <div style="margin-top:10px;padding-top:10px;
-        border-top:1.5px solid #e2e8f0;direction:${dir};">
-      <div style="display:flex;align-items:center;
-          justify-content:space-between;margin-bottom:8px;">
+    <div style="margin-top:10px;padding-top:10px;border-top:1.5px solid #e2e8f0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;
+        margin-bottom:8px;direction:${dir};">
         <div style="font-size:8.5px;font-weight:800;color:#1a1a2e;
-            letter-spacing:1px;text-transform:uppercase;">
-          📋 ${payHistTitles[lang]||payHistTitles.en}
+          letter-spacing:1px;text-transform:uppercase;">
+          📋 ${L.payHistory}
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <span style="font-size:8px;color:#555;direction:ltr;">
-            ${fmt(finalPaid)} / ${fmt(inv.grandTotal||0)}
+            ${fmt(finalPaid)} / ${fmt(inv.grandTotal || 0)}
           </span>
           <div style="width:70px;height:5px;background:#eee;
-              border-radius:3px;overflow:hidden;">
+            border-radius:3px;overflow:hidden;">
             <div style="width:${pct.toFixed(1)}%;height:100%;
-              background:${pct>=100?'#38a169':pct>=50?'#1a1a2e':'#e53e3e'};
+              background:${pct >= 100 ? '#38a169' : pct >= 50 ? '#1a1a2e' : '#e53e3e'};
               border-radius:3px;"></div>
           </div>
           <span style="font-size:8px;font-weight:800;
-              color:${pct>=100?'#38a169':'#1a1a2e'};">
+            color:${pct >= 100 ? '#38a169' : '#1a1a2e'};">
             ${pct.toFixed(0)}%
           </span>
         </div>
       </div>
-      <table style="width:100%;border-collapse:collapse;font-size:8px;
-          direction:${dir};">
+      <table style="width:100%;border-collapse:collapse;font-size:8px;direction:${dir};">
         <thead>
           <tr style="background:#1a1a2e;">
-            <th style="color:#fff;padding:4px 5px;text-align:center;">
-              ${phCols.no}
-            </th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">
-              ${phCols.date}
-            </th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">
-              ${phCols.method}
-            </th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">
-              ${phCols.amount}
-            </th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">
-              ${phCols.original}
-            </th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">
-              ${phCols.note}
-            </th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">
-              ${phCols.totalPaid}
-            </th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">
-              ${phCols.remaining}
-            </th>
+            <th style="color:#fff;padding:4px 5px;text-align:center;">#</th>
+            <th style="color:#fff;padding:4px 5px;text-align:center;">${L.payHistDate}</th>
+            <th style="color:#fff;padding:4px 5px;text-align:center;">${L.payHistMethod}</th>
+            <th style="color:#fff;padding:4px 5px;text-align:center;">${L.payHistAmt}</th>
+            <th style="color:#fff;padding:4px 5px;text-align:center;">${L.payHistOrig}</th>
+            <th style="color:#fff;padding:4px 5px;text-align:center;">${L.payHistNote}</th>
+            <th style="color:#fff;padding:4px 5px;text-align:center;">${L.payHistTotalPaid}</th>
+            <th style="color:#fff;padding:4px 5px;text-align:center;">${L.payHistRemain}</th>
           </tr>
         </thead>
         <tbody>${rows.join('')}</tbody>
         <tfoot>
           <tr style="background:#1a1a2e;">
-            <td colspan="3" style="padding:4px 5px;color:#fff;
-                font-weight:700;font-size:8px;text-align:center;">
-              ${ {en:'Total',tr:'Toplam',ar:'الإجمالي'}[lang] }
-            </td>
+            <td colspan="3" style="padding:4px 5px;color:#fff;font-weight:700;
+              font-size:8px;text-align:center;">${L.payHistTotal}</td>
             <td style="padding:4px 5px;color:#48bb78;font-weight:800;
-                text-align:center;direction:ltr;">
-              ${fmt(finalPaid)}
-            </td>
+              text-align:center;direction:ltr;">${fmt(finalPaid)}</td>
             <td colspan="2"></td>
             <td style="padding:4px 5px;color:#48bb78;font-weight:800;
-                text-align:center;direction:ltr;">
-              ${fmt(finalPaid)}
-            </td>
+              text-align:center;direction:ltr;">${fmt(finalPaid)}</td>
             <td style="padding:4px 5px;font-weight:800;text-align:center;
-                direction:ltr;
-                color:${finalRemain>0?'#fc8181':'#48bb78'};">
+              direction:ltr;
+              color:${finalRemain > 0 ? '#fc8181' : '#48bb78'};">
               ${fmt(finalRemain)}
             </td>
           </tr>
@@ -13049,478 +13096,447 @@ function buildInvoiceHTML(inv, lang, opts) {
     </div>`;
   })() : '';
 
-  /* ══════════════════════════════════════════════════════════
-     10. معلومات البنك × 3 لغات
-  ══════════════════════════════════════════════════════════ */
+  // ══════════════════════════════════════════
+  // 10. معلومات البنك
+  // ══════════════════════════════════════════
   const bankHTML = opts.showBankInfo ? `
-    <div class="ip-bank" style="direction:${dir};">
-      <div class="ip-sec-title">${L.bankInfo}</div>
-      <div class="ip-bank-grid">
+    <div style="padding:14px 18px;background:#fff;
+      border-${isRTL ? 'right' : 'left'}:1px solid #e2e8f0;
+      direction:${dir};">
+      <div style="font-size:8.5px;font-weight:800;letter-spacing:1.2px;
+        text-transform:uppercase;margin-bottom:10px;color:#1a1a2e;">
+        ${L.bankInfo}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
         <div>
-          <div class="ip-bank-row">
-            <strong>${L.bank}:</strong> ${st.bankName||'ZİRAAT BANK'}
+          <div style="font-size:8px;color:#555;margin-bottom:4px;line-height:1.6;">
+            <strong style="color:#1a1a2e;">${L.bank}:</strong>
+            ${st.bankName || 'ZİRAAT BANK'}
           </div>
-          <div class="ip-bank-row">
-            <strong>${L.beneficiary}:</strong> ${st.beneficiary||''}
+          <div style="font-size:8px;color:#555;margin-bottom:4px;line-height:1.6;">
+            <strong style="color:#1a1a2e;">${L.beneficiary}:</strong>
+            ${st.beneficiary || ''}
           </div>
-          <div class="ip-bank-row">
-            <strong>${L.swift}:</strong> ${st.swift||''}
+          <div style="font-size:8px;color:#555;margin-bottom:4px;line-height:1.6;">
+            <strong style="color:#1a1a2e;">${L.swift}:</strong>
+            ${st.swift || ''}
           </div>
-          <div class="ip-bank-row">
-            <strong>${L.account}:</strong> ${st.accountNo||''}
+          <div style="font-size:8px;color:#555;margin-bottom:4px;line-height:1.6;">
+            <strong style="color:#1a1a2e;">${L.account}:</strong>
+            ${st.accountNo || ''}
           </div>
         </div>
         <div>
-          <div class="ip-bank-row">
-            <strong>${L.iban_usd}:</strong>
-            <span style="direction:ltr;unicode-bidi:plaintext;">
-              ${st.ibanUSD||''}
-            </span>
+          <div style="font-size:8px;color:#555;margin-bottom:4px;line-height:1.6;direction:ltr;">
+            <strong style="color:#1a1a2e;">${L.iban_usd}:</strong>
+            ${st.ibanUSD || ''}
           </div>
-          <div class="ip-bank-row">
-            <strong>${L.iban_try}:</strong>
-            <span style="direction:ltr;unicode-bidi:plaintext;">
-              ${st.ibanTRY||''}
-            </span>
+          <div style="font-size:8px;color:#555;margin-bottom:4px;line-height:1.6;direction:ltr;">
+            <strong style="color:#1a1a2e;">${L.iban_try}:</strong>
+            ${st.ibanTRY || ''}
           </div>
-          <div class="ip-bank-row">
-            <strong>${L.iban_eur}:</strong>
-            <span style="direction:ltr;unicode-bidi:plaintext;">
-              ${st.ibanEUR||''}
-            </span>
+          <div style="font-size:8px;color:#555;margin-bottom:4px;line-height:1.6;direction:ltr;">
+            <strong style="color:#1a1a2e;">${L.iban_eur}:</strong>
+            ${st.ibanEUR || ''}
           </div>
         </div>
       </div>
       ${opts.showRates ? `
-      <div class="ip-rate-box" style="direction:ltr;unicode-bidi:plaintext;">
-        <strong>${L.rates}:</strong>
+      <div style="margin-top:8px;padding:6px 10px;background:#f8f9fa;
+        border-radius:5px;border:1px solid #e2e8f0;font-size:8px;
+        color:#555;direction:ltr;">
+        <strong style="color:#1a1a2e;">${L.rates}:</strong>
         1 USD = ₺${usdTry.toFixed(2)} &nbsp;|&nbsp;
         1 USD = €${usdEur.toFixed(4)} &nbsp;|&nbsp;
-        1 EUR = ₺${(usdTry/usdEur).toFixed(2)}
+        1 EUR = ₺${(usdTry / usdEur).toFixed(2)}
       </div>` : ''}
-    </div>` : `<div class="ip-bank"></div>`;
+    </div>` : `<div></div>`;
 
-  /* ══════════════════════════════════════════════════════════
-     11. التوقيعات × 3 لغات
-  ══════════════════════════════════════════════════════════ */
+  // ══════════════════════════════════════════
+  // 11. التوقيعات
+  // ══════════════════════════════════════════
   const sigHTML = opts.showSignatures ? `
-    <div class="ip-sigs" style="direction:${dir};">
-
-      <!-- ✅ البائع: يمين في العربية، يسار في EN/TR -->
-      <div class="ip-sig" style="
-        ${isRTL ? 'border-left:1px solid #e2e8f0;border-right:none;'
-                : 'border-right:1px solid #e2e8f0;border-left:none;'}
-      ">
-        <div class="ip-sig-title">${L.seller_sig}</div>
-        <div class="ip-sig-logo">
+    <div style="display:grid;grid-template-columns:1fr 1fr;
+      border-top:1px solid #e2e8f0;direction:${dir};">
+      
+      <!-- توقيع البائع -->
+      <div style="padding:12px 18px;
+        border-${isRTL ? 'left' : 'right'}:1px solid #e2e8f0;">
+        <div style="font-size:8px;color:#999;text-transform:uppercase;
+          letter-spacing:1px;margin-bottom:6px;">
+          ${L.seller_sig}
+        </div>
+        <div style="margin-bottom:6px;min-height:32px;
+          display:flex;align-items:center;">
           ${st.logo
-            ? `<img src="${st.logo}" alt="logo">`
+            ? `<img src="${st.logo}" alt="logo"
+                style="max-height:32px;max-width:80px;object-fit:contain;">`
             : `<span style="font-size:16px;font-weight:900;color:#1a1a2e;">WOW</span>`}
         </div>
-        <div class="ip-sig-stamp">${L.stamp}</div>
-        <div class="ip-sig-line"></div>
-        <div class="ip-sig-name">${st.authPerson||'MUTEZ BILLAH'}</div>
-        <div class="ip-sig-role">${st.companyName||'WOW Furniture'}</div>
+        <div style="width:120px;height:48px;border:1px dashed #ddd;
+          border-radius:4px;display:flex;align-items:center;
+          justify-content:center;font-size:8px;color:#ccc;margin:6px 0;">
+          ${L.stamp}
+        </div>
+        <div style="height:1px;background:#ddd;margin:24px 0 5px;"></div>
+        <div style="font-size:9px;font-weight:700;color:#1a1a2e;">
+          ${st.authPerson || 'MUTEZ BILLAH'}
+        </div>
+        <div style="font-size:8px;color:#888;">
+          ${st.companyName || 'WOW Furniture'}
+        </div>
       </div>
 
-      <!-- ✅ المشتري -->
-      <div class="ip-sig">
-        <div class="ip-sig-title">${L.buyer_sig}</div>
-        <div class="ip-sig-logo">
+      <!-- توقيع المشتري -->
+      <div style="padding:12px 18px;">
+        <div style="font-size:8px;color:#999;text-transform:uppercase;
+          letter-spacing:1px;margin-bottom:6px;">
+          ${L.buyer_sig}
+        </div>
+        <div style="margin-bottom:6px;min-height:32px;
+          display:flex;align-items:center;">
           ${inv.companyLogo
-            ? `<img src="${inv.companyLogo}" alt="logo">`
+            ? `<img src="${inv.companyLogo}" alt="logo"
+                style="max-height:32px;max-width:80px;object-fit:contain;">`
             : `<span style="font-size:13px;color:#aaa;">—</span>`}
         </div>
-        <div class="ip-sig-stamp">${L.stamp}</div>
-        <div class="ip-sig-line"></div>
-        <div class="ip-sig-name">
-          ${inv.buyerName||inv.companyName||'—'}
+        <div style="width:120px;height:48px;border:1px dashed #ddd;
+          border-radius:4px;display:flex;align-items:center;
+          justify-content:center;font-size:8px;color:#ccc;margin:6px 0;">
+          ${L.stamp}
         </div>
-        <div class="ip-sig-role">${inv.companyName||'—'}</div>
+        <div style="height:1px;background:#ddd;margin:24px 0 5px;"></div>
+        <div style="font-size:9px;font-weight:700;color:#1a1a2e;">
+          ${inv.buyerName || inv.companyName || '—'}
+        </div>
+        <div style="font-size:8px;color:#888;">
+          ${inv.companyName || '—'}
+        </div>
       </div>
-
     </div>` : '';
 
-  /* ══════════════════════════════════════════════════════════
-     12. شروط التسليم والبيع × 3 لغات
-  ══════════════════════════════════════════════════════════ */
+  // ══════════════════════════════════════════
+  // 12. شروط التسليم والبيع
+  // ══════════════════════════════════════════
   let notesHTML = '';
   if (opts.showNotes && inv.notes) {
     const rawNotes = inv.notes.trim();
-
     const notesSectionTitle = {
-      en:'DELIVERY AND SALES TERMS',
-      tr:'TESLİMAT VE SATIŞ ŞARTLARI',
-      ar:'شروط التسليم والبيع',
+      en: 'DELIVERY AND SALES TERMS',
+      tr: 'TESLİMAT VE SATIŞ ŞARTLARI',
+      ar: 'شروط التسليم والبيع',
     }[lang] || 'DELIVERY AND SALES TERMS';
 
-    const lines = rawNotes.split('\n')
-      .map(l => l.trim()).filter(Boolean);
-    const mainTerm   = lines[0] || '';
+    const lines = rawNotes.split('\n').map(l => l.trim()).filter(Boolean);
+    const mainTerm = lines[0] || '';
     const detailLines = lines.slice(1).filter(l => l.length > 2);
-    const cleanLine  = line => line.replace(/^\(\d+\)\s*/, '').trim();
+    const cleanLine = line => line.replace(/^\(\d+\)\s*/, '').trim();
 
     notesHTML = `
     <div style="padding:10px 18px;background:#fafafa;
-        border-top:2px solid #1a1a2e;page-break-inside:avoid;
-        direction:${dir};">
+      border-top:2px solid #1a1a2e;page-break-inside:avoid;
+      direction:${dir};">
       <div style="font-size:8px;font-weight:900;color:#1a1a2e;
-          letter-spacing:1.5px;text-transform:uppercase;
-          margin-bottom:8px;padding-bottom:5px;
-          border-bottom:1px solid #e2e8f0;
-          display:flex;align-items:center;gap:6px;">
+        letter-spacing:1.5px;text-transform:uppercase;
+        margin-bottom:8px;padding-bottom:5px;
+        border-bottom:1px solid #e2e8f0;
+        display:flex;align-items:center;gap:6px;">
         <span style="background:#1a1a2e;color:#c8a96e;border-radius:4px;
-            padding:2px 7px;font-size:7px;letter-spacing:1px;">📋</span>
+          padding:2px 7px;font-size:7px;letter-spacing:1px;">📋</span>
         ${notesSectionTitle}
       </div>
-
       ${mainTerm ? `
-      <div style="background:linear-gradient(135deg,
-            rgba(26,26,46,.06),rgba(200,169,110,.08));
-          border:1.5px solid rgba(200,169,110,.35);border-radius:8px;
-          padding:8px 12px;margin-bottom:8px;
-          display:flex;align-items:center;gap:8px;">
+      <div style="background:linear-gradient(135deg,rgba(26,26,46,.06),rgba(200,169,110,.08));
+        border:1.5px solid rgba(200,169,110,.35);border-radius:8px;
+        padding:8px 12px;margin-bottom:8px;
+        display:flex;align-items:center;gap:8px;">
         <span style="font-size:14px;flex-shrink:0;">🚛</span>
         <span style="font-size:9px;font-weight:800;color:#1a1a2e;
-            line-height:1.5;direction:${dir};unicode-bidi:plaintext;">
+          line-height:1.5;direction:${dir};unicode-bidi:plaintext;">
           ${mainTerm}
         </span>
       </div>` : ''}
-
       ${detailLines.length > 0 ? `
-      <div style="display:grid;grid-template-columns:1fr 1fr;
-          gap:4px 12px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;">
         ${detailLines.map((line, idx) => `
         <div style="display:flex;align-items:flex-start;gap:5px;
-            padding:3px 0;border-bottom:1px solid #f0f0f0;
-            font-size:7.5px;color:#444;line-height:1.5;
-            direction:${dir};unicode-bidi:plaintext;">
-          <span style="background:#1a1a2e;color:#c8a96e;
-              border-radius:50%;width:14px;height:14px;
-              font-size:7px;font-weight:900;
-              display:inline-flex;align-items:center;
-              justify-content:center;flex-shrink:0;margin-top:1px;">
-            ${idx+1}
-          </span>
+          padding:3px 0;border-bottom:1px solid #f0f0f0;
+          font-size:7.5px;color:#444;line-height:1.5;
+          direction:${dir};unicode-bidi:plaintext;">
+          <span style="background:#1a1a2e;color:#c8a96e;border-radius:50%;
+            width:14px;height:14px;font-size:7px;font-weight:900;
+            display:inline-flex;align-items:center;justify-content:center;
+            flex-shrink:0;margin-top:1px;">${idx + 1}</span>
           <span>${cleanLine(line)}</span>
         </div>`).join('')}
       </div>` : ''}
     </div>`;
   }
 
-  /* ══════════════════════════════════════════════════════════
-     13. طريقة الدفع × 3 لغات
-  ══════════════════════════════════════════════════════════ */
-  const payMethodLabel =
-    (PAY_METHOD_LABELS[lang]||PAY_METHOD_LABELS.en)[inv.payMethod||'cash']
-    || inv.payMethod || '—';
-
+  // ══════════════════════════════════════════
+  // 13. حسابات الإجماليات
+  // ══════════════════════════════════════════
   const kdvRow = inv.kdvEnabled
-    ? `<div class="ip-pay-row kdv-line">
-         <span>🏛️ ${L.kdv} (${inv.kdvRate||20}%)</span>
-         <span style="font-weight:700;direction:ltr;">${fmt(inv.kdvAmtUSD||0)}</span>
-       </div>`
-    : '';
+    ? `<div style="display:flex;justify-content:space-between;
+        align-items:center;padding:4px 6px;border-bottom:1px solid #f0f0f0;
+        font-size:9.5px;background:#fafafa;border-radius:4px;margin:2px 0;">
+        <span>🏛️ ${L.kdv} (${inv.kdvRate || 20}%)</span>
+        <span style="font-weight:700;">${fmt(inv.kdvAmtUSD || 0)}</span>
+      </div>` : '';
 
-  const totalPaid = (inv.depositUSD||0)
-    + invPayments.reduce((s,p) => s+(p.amount||0), 0);
-  const remaining = Math.max(0, (inv.grandTotal||0) - totalPaid);
+  const totalPaid = (inv.depositUSD || 0) +
+    invPayments.reduce((s, p) => s + (p.amount || 0), 0);
+  const remaining = Math.max(0, (inv.grandTotal || 0) - totalPaid);
 
-  /* ══════════════════════════════════════════════════════════
-     14. ستايل رأس الجدول
-  ══════════════════════════════════════════════════════════ */
-  const thStyle = `
-    color:#fff;font-weight:700;padding:8px 4px;
-    text-align:center;vertical-align:middle;
-    font-size:6.5px;letter-spacing:.2px;
-    white-space:pre-line;word-break:break-word;
-    border-right:1px solid rgba(255,255,255,.15);
-    line-height:1.45;direction:${dir};
-  `;
+  // ══════════════════════════════════════════
+  // 14. معلومات الشركة في الهيدر
+  // ══════════════════════════════════════════
+  // عنوان الشركة — يتبع اتجاه اللغة
+  const sellerInfoDir = isRTL ? 'rtl' : 'ltr';
 
-  /* ══════════════════════════════════════════════════════════
-     15. الهيدر — يتغير ترتيبه حسب RTL/LTR
-         العربية: البائع يمين | الوسط | المشتري يسار
-         EN/TR:   البائع يسار | الوسط | المشتري يمين
-  ══════════════════════════════════════════════════════════ */
-
-  // ── بيانات البائع
-  const sellerSection = `
-    <div class="ip-hdr-seller" style="direction:${dir};">
-      <div class="ip-seller-logo">
-        ${st.logo
-          ? `<img src="${st.logo}" alt="logo">`
-          : `<div class="ip-seller-logo-txt">WOW
-               <div class="ip-seller-logo-sub">FURNITURE</div>
-             </div>`}
-      </div>
-      <div class="ip-seller-info" style="direction:${dir};text-align:${align};">
-        <strong>${st.companyName||'WOW Furniture'}</strong>
-        ${st.address||''}<br>
-        📞 ${st.phone||''}<br>
-        📧 ${st.email||''}<br>
-        🌐 ${st.website||''}
-        ${st.mersis
-          ? `<br>${L.mersis||'Mersis'}: ${st.mersis}`
-          : ''}
-      </div>
-    </div>`;
-
-  // ── بيانات الوسط (رقم الفاتورة، الباركود، التواريخ)
-  const midSection = `
-    <div class="ip-hdr-mid" style="direction:${dir};">
-      <div class="ip-inv-title" style="text-align:center;">
-        ${L.invoice}
-      </div>
-      ${opts.showBarcode ? `
-      <div class="ip-barcode-wrap" style="direction:ltr;text-align:center;">
-        ${barcodeSVG}
-        <div class="ip-barcode-txt">${inv.invNo||'—'}</div>
-      </div>` : ''}
-      <div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.no}:</span>
-        <span class="ip-meta-val" style="direction:ltr;unicode-bidi:plaintext;">
-          ${inv.invNo||'—'}
-        </span>
-      </div>
-      <div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.loadDate}:</span>
-        <span class="ip-meta-val" style="direction:ltr;unicode-bidi:plaintext;">
-          ${inv.loadDate||'—'}
-        </span>
-      </div>
-      <div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.date}:</span>
-        <span class="ip-meta-val" style="direction:ltr;unicode-bidi:plaintext;">
-          ${inv.date||new Date().toLocaleDateString()}
-        </span>
-      </div>
-      ${inv.plate ? `
-      <div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.plate}:</span>
-        <span class="ip-meta-val" style="direction:ltr;unicode-bidi:plaintext;">
-          ${inv.plate}
-        </span>
-      </div>` : ''}
-      ${inv.truck ? `
-      <div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.truck}:</span>
-        <span class="ip-meta-val" style="direction:ltr;unicode-bidi:plaintext;">
-          ${inv.truck}
-        </span>
-      </div>` : ''}
-      <div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.tier||'Tier'}:</span>
-        <span class="ip-meta-val">🎯 ${inv.tier||'A'}</span>
-      </div>
-      <div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.payMethod}:</span>
-        <span class="ip-meta-val">${payMethodLabel}</span>
-      </div>
-    </div>`;
-
-  // ── بيانات المشتري (شعار + اسم)
-  const clientSection = `
-    <div class="ip-hdr-client" style="direction:${dir};">
-      <div class="ip-client-logo-box">
-        ${inv.companyLogo
-          ? `<img src="${inv.companyLogo}" alt="logo">`
-          : `<span style="font-size:22px;">🏢</span>`}
-      </div>
-      <div class="ip-client-name" style="direction:${dir};text-align:center;">
-        <strong>${inv.companyName||'—'}</strong><br>
-        ${inv.buyerName||''}<br>
-        ${inv.province||inv.country||''}
-        ${inv.city ? '· '+inv.city : ''}
-      </div>
-    </div>`;
-
-  // ── ترتيب الهيدر: في العربية يُعكس الترتيب
-  const headerContent = isRTL
-    ? clientSection + midSection + sellerSection   // عربي: مشتري | وسط | بائع
-    : sellerSection + midSection + clientSection;  // EN/TR: بائع | وسط | مشتري
-
-  /* ══════════════════════════════════════════════════════════
-     16. شريط اسم المشتري × 3 لغات
-  ══════════════════════════════════════════════════════════ */
-  const buyerBarLabel = {
-    en: 'BUYER',
-    tr: 'ALICI',
-    ar: 'المشتري',
-  }[lang] || 'BUYER';
-
-  /* ══════════════════════════════════════════════════════════
-     17. القسم السفلي (الدفع + البنك) — يتغير ترتيبه حسب RTL
-  ══════════════════════════════════════════════════════════ */
-  const paymentSection = `
-    <div class="ip-payment" style="direction:${dir};
-        ${isRTL
-          ? 'border-left:1px solid #e2e8f0;border-right:none;'
-          : 'border-right:1px solid #e2e8f0;border-left:none;'}
-    ">
-      <div class="ip-sec-title">${payMethodLabel.toUpperCase()}</div>
-      <div class="ip-pay-row" style="direction:${dir};">
-        <span>${L.deposit}</span>
-        <span style="color:#38a169;font-weight:700;direction:ltr;">
-          ${fmt(inv.depositUSD||0)}
-        </span>
-      </div>
-      ${inv.discountUSD > 0 ? `
-      <div class="ip-pay-row" style="direction:${dir};">
-        <span>${L.discount}</span>
-        <span style="direction:ltr;">- ${fmt(inv.discountUSD)}</span>
-      </div>` : ''}
-      ${kdvRow}
-      <div class="ip-pay-row bold" style="direction:${dir};">
-        <span>${L.grandTotal}</span>
-        <span style="font-size:13px;direction:ltr;">${fmt(inv.grandTotal||0)}</span>
-      </div>
-      <div class="ip-pay-row" style="direction:${dir};">
-        <span>${L.paid}</span>
-        <span style="color:#38a169;font-weight:700;direction:ltr;">
-          ${fmt(totalPaid)}
-        </span>
-      </div>
-      <div class="ip-pay-row" style="background:#fafafa;padding:5px 6px;
-          border-radius:4px;direction:${dir};">
-        <span style="font-weight:700;">${L.remaining}</span>
-        <span style="color:#e53e3e;font-weight:800;direction:ltr;">
-          ${fmt(remaining)}
-        </span>
-      </div>
-      ${payHistoryHTML}
-    </div>`;
-
-  // ── ترتيب القسم السفلي حسب RTL/LTR
-  const bottomContent = isRTL
-    ? bankHTML + paymentSection   // عربي: بنك يمين | دفع يسار
-    : paymentSection + bankHTML;  // EN/TR: دفع يسار | بنك يمين
-
-  /* ══════════════════════════════════════════════════════════
-     18. التحقق من الفاتورة (شريط أسفل الصفحة)
-  ══════════════════════════════════════════════════════════ */
-  const verifyText = {
-    en: `This invoice was issued by WOW Furniture — ${st.website||'www.wowmobilya.net'}`,
-    tr: `Bu fatura WOW Furniture tarafından düzenlenmiştir — ${st.website||'www.wowmobilya.net'}`,
-    ar: `هذه الفاتورة صادرة من WOW Furniture — ${st.website||'www.wowmobilya.net'}`,
-  }[lang] || L.verify;
-
-  /* ══════════════════════════════════════════════════════════
-     19. HTML النهائي الكامل
-  ══════════════════════════════════════════════════════════ */
+  // ══════════════════════════════════════════
+  // 15. HTML النهائي الكامل
+  // ══════════════════════════════════════════
   return `
-  <div class="inv-paper" dir="${dir}" style="
+  <div class="inv-paper" style="
+    background:#fff; color:#1a1a1a;
     font-family:${fontFamily};
+    width:100%; max-width:794px; margin:0 auto;
+    box-shadow:0 4px 40px rgba(0,0,0,.15);
     direction:${dir};
-    text-align:${align};
   ">
 
-    <!-- ══ HEADER ══ -->
-    <div class="ip-hdr" style="direction:${dir};">
-      ${headerContent}
+    <!-- ══════════ HEADER ══════════ -->
+    <div style="display:flex;align-items:stretch;
+      border-bottom:2px solid #e2e8f0;min-height:100px;
+      flex-direction:${isRTL ? 'row-reverse' : 'row'};">
+
+      <!-- معلومات البائع -->
+      <div style="flex:1;padding:14px 18px;
+        display:flex;align-items:center;gap:12px;
+        flex-direction:${isRTL ? 'row-reverse' : 'row'};">
+        <div style="width:64px;height:64px;flex-shrink:0;
+          display:flex;align-items:center;justify-content:center;">
+          ${st.logo
+            ? `<img src="${st.logo}" alt="logo"
+                style="width:100%;height:100%;object-fit:contain;">`
+            : `<div style="font-size:18px;font-weight:900;color:#1a1a2e;
+                line-height:1;text-align:center;">
+                WOW
+                <div style="font-size:7px;color:#999;letter-spacing:2px;
+                  text-align:center;margin-top:2px;">FURNITURE</div>
+               </div>`}
+        </div>
+        <div style="font-size:8px;color:#555;line-height:1.8;
+          direction:${sellerInfoDir};text-align:${textAlign};">
+          <strong style="font-size:11px;color:#1a1a2e;display:block;
+            margin-bottom:3px;font-weight:800;">
+            ${st.companyName || 'WOW Furniture'}
+          </strong>
+          ${st.address || ''}<br>
+          📞 ${st.phone || ''}<br>
+          📧 ${st.email || ''}<br>
+          🌐 ${st.website || ''}
+          ${st.mersis ? `<br>${L.mersis}: ${st.mersis}` : ''}
+        </div>
+      </div>
+
+      <!-- وسط: رقم الفاتورة + باركود -->
+      <div style="width:200px;flex-shrink:0;padding:12px 14px;
+        background:#fafafa;
+        border-${isRTL ? 'right' : 'left'}:1px solid #e2e8f0;
+        border-${isRTL ? 'left' : 'right'}:1px solid #e2e8f0;">
+        <div style="font-size:14px;font-weight:900;color:#1a1a2e;
+          letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;
+          text-align:center;">
+          ${L.invoice}
+        </div>
+        ${opts.showBarcode ? `
+        <div style="margin-bottom:6px;">
+          ${barcodeSVG}
+          <div style="font-family:'Courier New',monospace;font-size:8px;
+            color:#333;letter-spacing:1.5px;text-align:center;">
+            ${inv.invNo || '—'}
+          </div>
+        </div>` : ''}
+        <!-- بيانات الفاتورة -->
+        ${[
+          [L.no,         inv.invNo || '—'],
+          [L.regDate,    inv.regDate || inv.date || '—'],
+          [L.loadDate,   inv.loadDate || '—'],
+          inv.plate ? [L.plate, inv.plate] : null,
+          inv.truck ? [L.truck, inv.truck] : null,
+          [L.tier,       '🎯 ' + (inv.tier || 'A')],
+          [L.payMethod,  payMethodLabel],
+        ].filter(Boolean).map(([lbl, val]) => `
+          <div style="display:flex;gap:4px;margin-bottom:3px;
+            font-size:8.5px;line-height:1.4;
+            flex-direction:${isRTL ? 'row-reverse' : 'row'};">
+            <span style="color:#999;min-width:90px;font-weight:600;
+              text-align:${isRTL ? 'right' : 'left'};">${lbl}:</span>
+            <span style="color:#1a1a2e;font-weight:700;direction:ltr;">
+              ${val}
+            </span>
+          </div>`).join('')}
+      </div>
+
+      <!-- يمين/يسار: لوجو العميل -->
+      <div style="width:110px;flex-shrink:0;padding:12px 10px;
+        display:flex;flex-direction:column;
+        align-items:center;justify-content:center;">
+        <div style="width:80px;height:60px;
+          display:flex;align-items:center;justify-content:center;
+          border:1px solid #e2e8f0;border-radius:6px;
+          overflow:hidden;margin-bottom:5px;">
+          ${inv.companyLogo
+            ? `<img src="${inv.companyLogo}" alt="logo"
+                style="width:100%;height:100%;object-fit:contain;">`
+            : `<span style="font-size:22px;">🏢</span>`}
+        </div>
+        <div style="font-size:7.5px;color:#888;text-align:center;
+          line-height:1.4;direction:${dir};">
+          <strong>${inv.companyName || '—'}</strong><br>
+          ${inv.buyerName || ''}<br>
+          ${inv.province || inv.country || ''}
+          ${inv.city ? ' · ' + inv.city : ''}
+        </div>
+      </div>
     </div>
 
-    <!-- ══ BUYER BAR ══ -->
-    <div class="ip-pay-title" style="direction:${dir};">
-      ${buyerBarLabel}: ${inv.companyName||'—'}
+    <!-- شريط المشتري -->
+    <div style="background:#f8f9fa;padding:5px 18px;
+      text-align:center;font-size:8.5px;font-weight:700;
+      letter-spacing:1.5px;color:#1a1a2e;
+      border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;
+      direction:${dir};">
+      ${L.buyer.toUpperCase()}: ${inv.companyName || '—'}
       &nbsp;|&nbsp;
-      ${inv.province||inv.country||''}
-      ${inv.city ? '· '+inv.city : ''}
+      ${inv.province || inv.country || ''}
+      ${inv.city ? ' · ' + inv.city : ''}
     </div>
 
-    <!-- ══ MAIN TABLE ══ -->
-    <div style="
-      margin:10px 18px 0;
-      border-radius:12px;
-      overflow:hidden;
-      border:1.5px solid #d0d7e3;
-      box-shadow:0 3px 16px rgba(26,26,46,.10);
-    ">
-      <table style="
-        width:100%;border-collapse:collapse;
-        font-size:7.5px;table-layout:auto;
-        direction:${dir};
-      ">
+    <!-- ══════════ MAIN TABLE ══════════ -->
+    <div style="margin:10px 18px 0;border-radius:12px;
+      overflow:hidden;border:1.5px solid #d0d7e3;
+      box-shadow:0 3px 16px rgba(26,26,46,.10);">
+      <table style="width:100%;border-collapse:collapse;
+        font-size:7.5px;table-layout:auto;direction:ltr;">
         <thead>
           <tr style="background:#1a1a2e;">
-            <th style="${thStyle}">${CH.pic}</th>
-            <th style="${thStyle}">${CH.name}</th>
-            <th style="${thStyle}">${CH.hs}</th>
-            <th style="${thStyle}">${CH.dims}</th>
-            <th style="${thStyle}">${CH.color}</th>
-            <th style="${thStyle}">${CH.setpcs}</th>
-            <th style="${thStyle}">${CH.qty}</th>
-            <th style="${thStyle}">${CH.unitPrice}</th>
-            <th style="${thStyle}">${CH.totalPrice}</th>
-            <th style="${thStyle}">${CH.pktCount}</th>
-            <th style="${thStyle}">${CH.totalPkt}</th>
-            <th style="${thStyle}">${CH.unitCbm}</th>
-            <th style="${thStyle}">${CH.totalCbm}</th>
-            <th style="${thStyle}">${CH.unitWeight}</th>
-            <th style="${thStyle};border-right:none;">${CH.totalWeight}</th>
+            <th style="${thStyle}">${ch('pic')}</th>
+            <th style="${thStyle}">${ch('name')}</th>
+            <th style="${thStyle}">${ch('hs')}</th>
+            <th style="${thStyle}">${ch('dims')}</th>
+            <th style="${thStyle}">${ch('color')}</th>
+            <th style="${thStyle}">${ch('setpcs')}</th>
+            <th style="${thStyle}">${ch('qty')}</th>
+            <th style="${thStyle}">${ch('unitPrice')}</th>
+            <th style="${thStyle}">${ch('totalPrice')}</th>
+            <th style="${thStyle}">${ch('pktCount')}</th>
+            <th style="${thStyle}">${ch('totalPkt')}</th>
+            <th style="${thStyle}">${ch('unitCbm')}</th>
+            <th style="${thStyle}">${ch('totalCbm')}</th>
+            <th style="${thStyle}">${ch('unitWeight')}</th>
+            <th style="${thStyle}border-right:none;">
+              ${ch('totalWeight')}
+            </th>
           </tr>
         </thead>
-
         <tbody>${tableRows}</tbody>
-
-        <tfoot>
-          <tr>
-            <td colspan="6" style="${tfootTdStyle}
-                font-size:8.5px;font-weight:900;letter-spacing:.5px;
-                direction:${dir};">
-              ${totalPerLabel}
-            </td>
-            <td style="${tfootTdStyle}font-size:9px;">${totalQty}</td>
-            <td style="${tfootTdStyle}"></td>
-            <td style="${tfootTdStyle}font-size:10px;direction:ltr;">
-              ${fmt(inv.subtotalUSD||0)}
-            </td>
-            <td style="${tfootTdStyle}font-size:8px;">
-              ${(inv.items||[]).reduce((s,i)=>s+(i.packets||1),0)}
-            </td>
-            <td style="${tfootTdStyle}font-size:8.5px;">${grandTotalPkts}</td>
-            <td style="${tfootTdStyle}"></td>
-            <td style="${tfootTdStyle}font-size:8px;direction:ltr;">
-              ${grandTotalCBM.toFixed(4)}
-            </td>
-            <td style="${tfootTdStyle}"></td>
-            <td style="${tfootTdStyle}font-size:8px;direction:ltr;
-                border-right:none;">
-              ${grandTotalWt.toFixed(2)}
-            </td>
-          </tr>
-        </tfoot>
+        <tfoot><tr>${totalRow}</tr></tfoot>
       </table>
     </div>
-    <!-- نهاية الجدول -->
 
-    <!-- ══ BOTTOM SECTION ══ -->
-    <div class="ip-bottom" style="direction:${dir};">
-      ${bottomContent}
+    <!-- ══════════ BOTTOM SECTION ══════════ -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;
+      border-top:2px solid #e2e8f0;direction:${dir};">
+
+      <!-- الدفعات والإجماليات -->
+      <div style="padding:14px 18px;
+        border-${isRTL ? 'left' : 'right'}:1px solid #e2e8f0;">
+        <div style="font-size:8.5px;font-weight:800;letter-spacing:1.2px;
+          text-transform:uppercase;margin-bottom:10px;color:#1a1a2e;">
+          ${payMethodLabel.toUpperCase()}
+        </div>
+
+        <!-- العربون -->
+        <div style="display:flex;justify-content:space-between;
+          align-items:center;padding:4px 0;
+          border-bottom:1px solid #f0f0f0;font-size:9.5px;">
+          <span>${L.deposit}</span>
+          <span style="color:#38a169;font-weight:700;direction:ltr;">
+            ${fmt(inv.depositUSD || 0)}
+          </span>
+        </div>
+
+        <!-- الخصم -->
+        ${(inv.discountUSD || 0) > 0 ? `
+        <div style="display:flex;justify-content:space-between;
+          align-items:center;padding:4px 0;
+          border-bottom:1px solid #f0f0f0;font-size:9.5px;">
+          <span>${L.discount}</span>
+          <span style="direction:ltr;">- ${fmt(inv.discountUSD)}</span>
+        </div>` : ''}
+
+        <!-- KDV -->
+        ${kdvRow}
+
+        <!-- المجموع النهائي -->
+        <div style="display:flex;justify-content:space-between;
+          align-items:center;padding:6px 0;
+          border-bottom:1px solid #f0f0f0;
+          font-weight:800;font-size:11px;color:#1a1a2e;">
+          <span>${L.grandTotal}</span>
+          <span style="font-size:13px;direction:ltr;">
+            ${fmt(inv.grandTotal || 0)}
+          </span>
+        </div>
+
+        <!-- إجمالي المدفوع -->
+        <div style="display:flex;justify-content:space-between;
+          align-items:center;padding:4px 0;
+          border-bottom:1px solid #f0f0f0;font-size:9.5px;">
+          <span>${L.paid}</span>
+          <span style="color:#38a169;font-weight:700;direction:ltr;">
+            ${fmt(totalPaid)}
+          </span>
+        </div>
+
+        <!-- المتبقي -->
+        <div style="display:flex;justify-content:space-between;
+          align-items:center;padding:4px 6px;
+          background:#fafafa;border-radius:4px;font-size:9.5px;">
+          <span style="font-weight:700;">${L.remaining}</span>
+          <span style="color:#e53e3e;font-weight:800;direction:ltr;">
+            ${fmt(remaining)}
+          </span>
+        </div>
+
+        <!-- سجل الدفعات -->
+        ${payHistoryHTML}
+      </div>
+
+      <!-- معلومات البنك -->
+      ${bankHTML}
     </div>
 
-    <!-- ══ NOTES ══ -->
+    <!-- ══════════ NOTES ══════════ -->
     ${notesHTML}
 
-    <!-- ══ SIGNATURES ══ -->
+    <!-- ══════════ SIGNATURES ══════════ -->
     ${sigHTML}
 
-    <!-- ══ VERIFY BAR ══ -->
-    <div class="ip-verify" style="direction:${dir};">
-      ${verifyText}
-      &nbsp;|&nbsp;
-      <span style="direction:ltr;unicode-bidi:plaintext;">
-        ${st.phone||''}
-      </span>
-      &nbsp;|&nbsp;
-      <span style="direction:ltr;unicode-bidi:plaintext;">
-        ${inv.invNo||'—'}
-      </span>
+    <!-- ══════════ VERIFY BAR ══════════ -->
+    <div style="background:#1a1a2e;padding:6px 18px;
+      text-align:center;font-size:8px;font-weight:700;
+      color:#fff;letter-spacing:.8px;direction:ltr;">
+      ${L.verify} &nbsp;|&nbsp;
+      ${st.phone || ''} &nbsp;|&nbsp;
+      ${inv.invNo || '—'}
     </div>
 
   </div>`;
-
-} // ← نهاية buildInvoiceHTML
+}
 
 
 
