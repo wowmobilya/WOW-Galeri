@@ -1471,85 +1471,149 @@ textarea.fc{resize:vertical;min-height:72px}
 .dm-warning{display:flex;align-items:center;gap:8px;background:rgba(229,62,62,.06);border:1px solid rgba(229,62,62,.15);border-radius:8px;padding:10px 12px;margin-bottom:18px;font-size:11px;color:#e53e3e;}
 
 /* ============================================================
-   A4 INVOICE PAPER — ALL WHITE CLEAN
+   A4 INVOICE PAPER — PREMIUM REDESIGN 2026
 ============================================================ */
-.inv-paper{
-  background:#fff;color:#1a1a1a;
-  font-family:'Segoe UI',Arial,sans-serif;
-  width:100%;max-width:794px;margin:0 auto;
-  box-shadow:0 4px 40px rgba(0,0,0,.15);
-  direction:ltr;text-align:left;
+.inv-paper {
+  background: #ffffff;
+  color: #1a202c;
+  font-family: 'Segoe UI', 'Cairo', system-ui, sans-serif;
+  width: 100%;
+  max-width: 794px; /* مقاس A4 المثالي للشاشات */
+  margin: 0 auto;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.12);
+  direction: ltr;
+  text-align: left;
+  overflow: hidden;
+  border-radius: 4px; /* زوايا ناعمة للعرض فقط، تختفي عند الطباعة */
 }
-/* Header */
-.ip-hdr{display:flex;align-items:stretch;border-bottom:3px solid #c8a96e;min-height:110px;}
-.ip-hdr-seller{flex:1;padding:14px 18px;display:flex;align-items:center;gap:12px;}
-.ip-seller-logo{width:72px;height:72px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-.ip-seller-logo img{width:100%;height:100%;object-fit:contain}
-.ip-seller-logo-txt{font-size:20px;font-weight:900;color:#1a1a2e;line-height:1;text-align:center}
-.ip-seller-logo-sub{font-size:7px;color:#999;letter-spacing:2px;text-align:center;margin-top:2px}
-.ip-seller-info{font-size:8.5px;color:#444;line-height:1.75}
-.ip-seller-info strong{font-size:11px;color:#1a1a2e;display:block;margin-bottom:3px;font-weight:800}
-.ip-hdr-mid{width:220px;flex-shrink:0;padding:12px 14px;background:#f8f9fa;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;}
-.ip-inv-title{font-size:13px;font-weight:800;color:#c8a96e;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
-.ip-barcode-wrap{margin-bottom:6px}
-.ip-barcode-bars{display:flex;align-items:flex-end;height:32px;gap:0;margin-bottom:2px}
-.ip-barcode-txt{font-family:'Courier New',monospace;font-size:8px;color:#333;letter-spacing:1.5px;text-align:center}
-.ip-meta-row{display:flex;gap:4px;margin-bottom:3px;font-size:9px;line-height:1.4}
-.ip-meta-lbl{color:#888;min-width:95px;font-weight:600}
-.ip-meta-val{color:#1a1a2e;font-weight:700}
-.ip-hdr-client{width:110px;flex-shrink:0;padding:12px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.ip-client-logo-box{width:90px;height:70px;display:flex;align-items:center;justify-content:center;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden;margin-bottom:5px;}
-.ip-client-logo-box img{width:100%;height:100%;object-fit:contain}
-.ip-client-name{font-size:8px;color:#888;text-align:center;line-height:1.3}
-/* Table */
-.ip-tbl-wrap{overflow-x:auto}
-.ip-tbl{width:100%;border-collapse:collapse;font-size:8.5px}
-.ip-tbl thead tr{background:#1a1a2e}
-.ip-tbl th{color:#c8a96e;font-weight:700;padding:7px 5px;text-align:center;font-size:8px;letter-spacing:.3px;white-space:nowrap;}
-.ip-tbl td{padding:6px 5px;text-align:center;border-bottom:1px solid #eee;color:#333}
-.ip-tbl .pic-cell{width:56px;padding:3px}
-.ip-tbl .pic-cell img{width:50px;height:40px;object-fit:cover;border-radius:3px}
-.ip-tbl .pic-ph{width:50px;height:40px;background:#f0f0f0;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto}
-.ip-tbl tr:nth-child(even) td{background:#fafafa}
-.ip-tbl tfoot tr{background:#1a1a2e}
-.ip-tbl tfoot td{color:#c8a96e;font-weight:700;padding:8px 5px;font-size:10px}
-/* Pay title */
-.ip-pay-title{background:#f0f0f0;padding:5px 18px;text-align:center;font-size:9px;font-weight:700;letter-spacing:2px;color:#1a1a2e;border-top:1px solid #ddd;border-bottom:1px solid #ddd;}
-/* Bottom */
-.ip-bottom{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid #c8a96e}
-.ip-payment{padding:14px 18px;border-right:1px solid #e2e8f0}
-.ip-bank{padding:14px 18px;background:#fff;border-left:1px solid #e2e8f0}
-.ip-sec-title{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;color:#c8a96e;}
-.ip-pay-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #eee;font-size:10.5px}
-.ip-pay-row:last-child{border-bottom:none}
-.ip-pay-row.bold{font-weight:700;font-size:12px;color:#1a1a2e}
-.ip-pay-row.bold span:last-child{color:#c8a96e;font-size:13px}
-.ip-pay-row.kdv-line{background:rgba(200,169,110,.08);padding:5px 6px;border-radius:4px;margin:2px 0;}
-.ip-bank-row{font-size:8.5px;color:#444;margin-bottom:5px;line-height:1.5}
-.ip-bank-row strong{color:#c8a96e}
-.ip-bank-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.ip-rate-box{margin-top:10px;padding:7px 10px;background:#f8f9fa;border-radius:5px;border:1px solid #e2e8f0;font-size:8.5px;color:#555;}
-.ip-rate-box strong{color:#c8a96e}
-/* Payments history in PDF */
-.ip-pay-history{margin-top:8px;padding-top:8px;border-top:1px dashed #ddd;}
-.ip-pay-history-title{font-size:8px;font-weight:700;color:#c8a96e;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
-.ip-pay-history-item{display:flex;justify-content:space-between;font-size:9px;color:#555;padding:3px 0;border-bottom:1px solid #f0f0f0;}
-/* Verify bar */
-.ip-verify{background:#c8a96e;padding:6px 18px;text-align:center;font-size:8.5px;font-weight:700;color:#fff;letter-spacing:1px;}
-/* Signatures */
-.ip-sigs{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #e2e8f0}
-.ip-sig{padding:12px 18px;border-right:1px solid #e2e8f0}
-.ip-sig:last-child{border-right:none}
-.ip-sig-title{font-size:8px;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.ip-sig-logo{margin-bottom:6px;min-height:36px;display:flex;align-items:center}
-.ip-sig-logo img{max-height:36px;max-width:90px;object-fit:contain}
-.ip-sig-stamp{width:130px;height:55px;border:1px dashed #ccc;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#ccc;margin:6px 0;}
-.ip-sig-line{height:1px;background:#ccc;margin:28px 0 5px}
-.ip-sig-name{font-size:9.5px;font-weight:700;color:#1a1a2e}
-.ip-sig-role{font-size:8.5px;color:#888}
-/* Notes */
-.ip-notes{padding:8px 18px;background:#fffbf0;border-top:1px solid #eee;font-size:8.5px;color:#555}
-.ip-notes strong{color:#c8a96e}
+
+/* ── رأس الفاتورة (Header) ── */
+.ip-hdr {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 3px solid var(--gold, #c8a96e);
+  background: #fdfbf7;
+  min-height: 120px;
+}
+.ip-hdr-seller {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ip-seller-logo {
+  width: 85px;
+  height: 85px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ip-seller-logo img { width: 100%; height: 100%; object-fit: contain; }
+.ip-seller-logo-txt { font-size: 24px; font-weight: 900; color: #1a202c; line-height: 1; text-align: center; }
+.ip-seller-logo-sub { font-size: 8px; color: #718096; letter-spacing: 2px; text-align: center; margin-top: 4px; }
+.ip-seller-info { font-size: 9.5px; color: #4a5568; line-height: 1.6; }
+.ip-seller-info strong { font-size: 13px; color: #1a202c; display: block; margin-bottom: 4px; font-weight: 800; }
+
+.ip-hdr-mid {
+  width: 240px;
+  flex-shrink: 0;
+  padding: 20px;
+  background: #ffffff;
+  border-left: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+}
+.ip-inv-title {
+  font-size: 16px;
+  font-weight: 900;
+  color: #c8a96e;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.ip-barcode-wrap { margin-bottom: 10px; text-align: center; }
+.ip-barcode-bars { display: flex; align-items: flex-end; justify-content: center; height: 32px; gap: 0; margin-bottom: 2px; }
+.ip-barcode-txt { font-family: 'Courier New', monospace; font-size: 9px; color: #2d3748; letter-spacing: 1.5px; text-align: center; }
+.ip-meta-row { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 9.5px; }
+.ip-meta-lbl { color: #718096; font-weight: 600; }
+.ip-meta-val { color: #1a202c; font-weight: 800; }
+
+.ip-hdr-client {
+  width: 180px;
+  flex-shrink: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+.ip-client-logo-box {
+  width: 60px; height: 60px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid #e2e8f0; border-radius: 8px;
+  overflow: hidden; margin-bottom: 8px; background: #ffffff;
+}
+.ip-client-logo-box img { width: 100%; height: 100%; object-fit: contain; }
+.ip-client-name { font-size: 12px; color: #1a202c; font-weight: 800; line-height: 1.4; margin-bottom: 4px; }
+.ip-client-sub { font-size: 10px; color: #718096; line-height: 1.4; }
+
+/* ── جدول المنتجات (Table) ── */
+.ip-tbl-wrap { padding: 0 20px; margin-top: 20px; overflow-x: auto; }
+.ip-tbl { width: 100%; border-collapse: collapse; font-size: 9.5px; }
+.ip-tbl thead tr { background: #1a202c; }
+.ip-tbl th { color: #c8a96e; font-weight: 700; padding: 10px 8px; text-align: center; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+.ip-tbl td { padding: 8px; text-align: center; border-bottom: 1px solid #edf2f7; color: #2d3748; vertical-align: middle; }
+.ip-tbl tr:nth-child(even) td { background: #f8fafc; }
+.ip-tbl .pic-cell { width: 56px; padding: 4px; }
+.ip-tbl .pic-cell img { width: 48px; height: 38px; object-fit: cover; border-radius: 4px; border: 1px solid #e2e8f0; }
+.ip-tbl .pic-ph { width: 48px; height: 38px; background: #edf2f7; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin: 0 auto; color: #a0aec0; }
+.ip-tbl tfoot tr { background: #1a202c; }
+.ip-tbl tfoot td { color: #c8a96e; font-weight: 700; padding: 10px 8px; font-size: 10.5px; }
+
+/* ── القسم السفلي (Bottom Section) ── */
+.ip-bottom { display: grid; grid-template-columns: 1fr 1fr; border-top: 2px solid #c8a96e; margin-top: 20px; }
+.ip-payment { padding: 20px; border-right: 1px solid #e2e8f0; background: #fdfbf7; }
+.ip-bank { padding: 20px; background: #ffffff; }
+.ip-sec-title { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px; color: #c8a96e; }
+
+.ip-pay-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid #edf2f7; font-size: 11px; }
+.ip-pay-row:last-child { border-bottom: none; }
+.ip-pay-row.bold { font-weight: 800; font-size: 13px; color: #1a202c; background: rgba(200,169,110,0.1); padding: 8px 10px; border-radius: 6px; margin-top: 6px; }
+.ip-pay-row.bold span:last-child { color: #c8a96e; font-size: 14px; }
+.ip-pay-row.kdv-line { color: #805ad5; font-weight: 700; background: rgba(128,90,213,0.08); padding: 6px 10px; border-radius: 4px; margin: 4px 0; }
+
+/* ── معلومات البنك (Bank Info) ── */
+.ip-bank-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.ip-bank-row { font-size: 9.5px; color: #4a5568; margin-bottom: 6px; line-height: 1.6; }
+.ip-bank-row strong { color: #1a202c; display: inline-block; width: 75px; }
+.ip-rate-box { margin-top: 14px; padding: 10px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 9px; color: #4a5568; text-align: center; }
+.ip-rate-box strong { color: #c8a96e; }
+
+/* ── الملاحظات والتوقيعات (Notes & Signatures) ── */
+.ip-notes { padding: 16px 20px; background: #ffffff; border-top: 1px solid #e2e8f0; font-size: 10px; color: #4a5568; line-height: 1.6; }
+.ip-sigs { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #e2e8f0; background: #fafafa; }
+.ip-sig { padding: 20px; text-align: center; }
+.ip-sig:first-child { border-right: 1px solid #e2e8f0; }
+.ip-sig-title { font-size: 9px; color: #718096; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: 700; }
+.ip-sig-logo { margin-bottom: 10px; min-height: 40px; display: flex; align-items: center; justify-content: center; }
+.ip-sig-logo img { max-height: 40px; max-width: 100px; object-fit: contain; }
+.ip-sig-stamp { width: 140px; height: 60px; border: 1.5px dashed #cbd5e0; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #a0aec0; margin: 10px auto; letter-spacing: 1px; }
+.ip-sig-line { height: 1px; background: #cbd5e0; margin: 30px auto 8px; width: 70%; }
+.ip-sig-name { font-size: 11px; font-weight: 800; color: #1a202c; }
+.ip-sig-role { font-size: 9px; color: #718096; margin-top: 2px; }
+
+/* ── شريط التوثيق السفلي (Footer Verify Bar) ── */
+.ip-verify { background: #1a202c; padding: 12px 20px; text-align: center; font-size: 9.5px; font-weight: 700; color: #c8a96e; letter-spacing: 1px; }
+
+/* ── تحسينات الطباعة ── */
+@media print {
+  .inv-paper {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    max-width: 100% !important;
+  }
+}
 
 /* ============================================================
    RESPONSIVE
@@ -12586,303 +12650,351 @@ const PAY_METHOD_LABELS={
   ar:{cash:'نقداً',bank_transfer:'تحويل بنكي',credit_card:'بطاقة ائتمان',check:'شيك',installment:'أقساط',western_union:'Western Union',crypto:'كريبتو',paypal:'PayPal',letter_credit:'اعتماد مستندي',deferred:'آجل'},
 };
 
-function buildInvoiceHTML(inv,lang,opts){
-  lang=lang||'en';opts=opts||{showBarcode:true,showImages:true,showWeights:true,showCBM:true,showSignatures:true,showNotes:true,showBankInfo:true,showRates:true};
-  const L=PDF_TR[lang]||PDF_TR.en;
-  const cur=inv.currency||'USD';const sym=symOf(cur);
-  const usdTry=inv.usdTry||S.usdTry;const usdEur=inv.usdEur||S.usdEur;
-  const toDisp=usd=>{if(cur==='TRY')return usd*usdTry;if(cur==='EUR')return usd*usdEur;return usd;};
-  const fmt=usd=>sym+(toDisp(usd)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const st=S.settings;
-  const barcodeSVG=opts.showBarcode?generateBarcodeSVG(inv.invNo||'A5001'):'';
-  const invPayments=inv.payments||[];
- const rtIconsPDF = { cash:'💵', transfer:'🏦', card:'💳', check:'📝', installment:'📅', western_union:'🌐', deferred:'⏳', exchange:'💱', other:'📦' };
-const rtLabelsPDF = {
-  en:{ cash:'Cash', transfer:'Bank Transfer', card:'Credit Card', check:'Check', installment:'Installment', western_union:'Western Union', deferred:'Deferred', exchange:'Exchange', other:'Other' },
-  tr:{ cash:'Nakit', transfer:'Banka Transferi', card:'Kredi Kartı', check:'Çek', installment:'Taksit', western_union:'Western Union', deferred:'Vadeli', exchange:'Dövizci', other:'Diğer' },
-  ar:{ cash:'نقداً', transfer:'تحويل بنكي', card:'بطاقة ائتمان', check:'شيك', installment:'أقساط', western_union:'ويسترن يونيون', deferred:'آجل', exchange:'صراف', other:'أخرى' },
-};
+function buildInvoiceHTML(inv, lang, opts) {
+  lang = lang || 'en';
+  opts = opts || { showBarcode:true, showImages:true, showWeights:true, showCBM:true, showSignatures:true, showNotes:true, showBankInfo:true, showRates:true };
+  
+  const L = PDF_TR[lang] || PDF_TR.en;
+  const cur = inv.currency || 'USD'; 
+  const sym = symOf(cur);
+  const usdTry = inv.usdTry || S.usdTry; 
+  const usdEur = inv.usdEur || S.usdEur;
+  
+  const toDisp = usd => { 
+    if(cur === 'TRY') return usd * usdTry; 
+    if(cur === 'EUR') return usd * usdEur; 
+    return usd; 
+  };
+  const fmt = usd => sym + (toDisp(usd)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  
+  const st = S.settings;
+  const barcodeSVG = opts.showBarcode ? generateBarcodeSVG(inv.invNo || 'A5001') : '';
+  const invPayments = inv.payments || [];
 
+  // ==========================================
+  // 1. إعدادات نصوص وأيقونات سجل الدفعات
+  // ==========================================
+  const rtIconsPDF = { cash:'💵', transfer:'🏦', card:'💳', check:'📝', installment:'📅', western_union:'🌐', deferred:'⏳', exchange:'💱', other:'📦' };
+  const rtLabelsPDF = {
+    en:{ cash:'Cash', transfer:'Bank Transfer', card:'Credit Card', check:'Check', installment:'Installment', western_union:'Western Union', deferred:'Deferred', exchange:'Exchange', other:'Other' },
+    tr:{ cash:'Nakit', transfer:'Banka Transferi', card:'Kredi Kartı', check:'Çek', installment:'Taksit', western_union:'Western Union', deferred:'Vadeli', exchange:'Dövizci', other:'Diğer' },
+    ar:{ cash:'نقداً', transfer:'تحويل بنكي', card:'بطاقة ائتمان', check:'شيك', installment:'أقساط', western_union:'ويسترن يونيون', deferred:'آجل', exchange:'صراف', other:'أخرى' },
+  };
 
-const payHistTitles = { en:'Payment History', tr:'Ödeme Geçmişi', ar:'سجل الدفعات' };
-const payHistCols = {
-  en:{ no:'#', date:'Date', method:'Method', amount:'Amount', original:'Original', note:'Note', total:'Total Paid', remaining:'Remaining' },
-  tr:{ no:'#', date:'Tarih', method:'Yöntem', amount:'Tutar', original:'Orijinal', note:'Not', total:'Toplam Ödenen', remaining:'Kalan' },
-  ar:{ no:'#', date:'التاريخ', method:'الطريقة', amount:'المبلغ', original:'الأصلي', note:'ملاحظة', total:'إجمالي المدفوع', remaining:'المتبقي' },
-};
-const phLang = lang || 'en';
-const phCols = payHistCols[phLang] || payHistCols.en;
-const phRtLabels = rtLabelsPDF[phLang] || rtLabelsPDF.en;
+  const payHistTitles = { en:'Payment History', tr:'Ödeme Geçmişi', ar:'سجل الدفعات' };
+  const payHistCols = {
+    en:{ no:'#', date:'Date', method:'Method', amount:'Amount', original:'Original', note:'Note', total:'Total Paid', remaining:'Remaining' },
+    tr:{ no:'#', date:'Tarih', method:'Yöntem', amount:'Tutar', original:'Orijinal', note:'Not', total:'Toplam Ödenen', remaining:'Kalan' },
+    ar:{ no:'#', date:'التاريخ', method:'الطريقة', amount:'المبلغ', original:'الأصلي', note:'ملاحظة', total:'إجمالي المدفوع', remaining:'المتبقي' },
+  };
+  
+  const phLang = lang || 'en';
+  const phCols = payHistCols[phLang] || payHistCols.en;
+  const phRtLabels = rtLabelsPDF[phLang] || rtLabelsPDF.en;
 
-let runningPaid = inv.depositUSD || 0;
-const payHistoryHTML = invPayments.length && opts.showNotes ? (() => {
-  const rows = invPayments.map((p, i) => {
-    runningPaid += (p.amount || 0);
-    const remainAfter = Math.max(0, (inv.grandTotal || 0) - runningPaid);
-    const rtIcon = rtIconsPDF[p.receiptType] || '💳';
-    const rtLabel = phRtLabels[p.receiptType] || p.receiptType || '—';
-    const hasConv = p.originalCurrency && p.originalAmount;
-    let origCell = '—';
-if (hasConv) {
-  const rate = p.amount / p.originalAmount;
-  const rateStr = (() => {
-    if (p.originalCurrency === 'USD' && cur === 'TRY')
-      return `1 USD = ₺${rate.toFixed(2)}`;
-    if (p.originalCurrency === 'TRY' && cur === 'USD')
-      return `1 TRY = $${rate.toFixed(5)}`;
-    if (p.originalCurrency === 'EUR' && cur === 'USD')
-      return `1 EUR = $${rate.toFixed(4)}`;
-    if (p.originalCurrency === 'USD' && cur === 'EUR')
-      return `1 USD = €${rate.toFixed(4)}`;
-    if (p.originalCurrency === 'EUR' && cur === 'TRY')
-      return `1 EUR = ₺${rate.toFixed(2)}`;
-    if (p.originalCurrency === 'TRY' && cur === 'EUR')
-      return `1 TRY = €${rate.toFixed(6)}`;
-    return `rate: ${rate.toFixed(4)}`;
-  })();
-  origCell = `
-    <div style="font-weight:700;color:#805ad5;">${symOf(p.originalCurrency)}${p.originalAmount.toFixed(2)} ${p.originalCurrency}</div>
-    <div style="font-size:7.5px;color:#a07840;margin-top:1px;background:#fdf6e8;border-radius:4px;padding:1px 4px;">⚡ ${rateStr}</div>
-  `;
-}
+  // ==========================================
+  // 2. بناء جدول سجل الدفعات (Payment History)
+  // ==========================================
+  let runningPaid = inv.depositUSD || 0;
+  const payHistoryHTML = invPayments.length && opts.showNotes ? (() => {
+    const rows = invPayments.map((p, i) => {
+      runningPaid += (p.amount || 0);
+      const remainAfter = Math.max(0, (inv.grandTotal || 0) - runningPaid);
+      const rtIcon = rtIconsPDF[p.receiptType] || '💳';
+      const rtLabel = phRtLabels[p.receiptType] || p.receiptType || '—';
+      const hasConv = p.originalCurrency && p.originalAmount;
+      let origCell = '—';
+      
+      if (hasConv) {
+        const rate = p.amount / p.originalAmount;
+        const rateStr = (() => {
+          if (p.originalCurrency === 'USD' && cur === 'TRY') return `1 USD = ₺${rate.toFixed(2)}`;
+          if (p.originalCurrency === 'TRY' && cur === 'USD') return `1 TRY = $${rate.toFixed(5)}`;
+          if (p.originalCurrency === 'EUR' && cur === 'USD') return `1 EUR = $${rate.toFixed(4)}`;
+          if (p.originalCurrency === 'USD' && cur === 'EUR') return `1 USD = €${rate.toFixed(4)}`;
+          if (p.originalCurrency === 'EUR' && cur === 'TRY') return `1 EUR = ₺${rate.toFixed(2)}`;
+          if (p.originalCurrency === 'TRY' && cur === 'EUR') return `1 TRY = €${rate.toFixed(6)}`;
+          return `rate: ${rate.toFixed(4)}`;
+        })();
+        origCell = `
+          <div style="font-weight:700;color:#805ad5;">${symOf(p.originalCurrency)}${p.originalAmount.toFixed(2)} ${p.originalCurrency}</div>
+          <div style="font-size:7.5px;color:#a07840;margin-top:1px;background:#fdf6e8;border-radius:4px;padding:1px 4px;">⚡ ${rateStr}</div>
+        `;
+      }
 
-    const rowBg = i % 2 === 0 ? '#fff' : '#fafafa';
-    return `
-      <tr style="background:${rowBg};">
-        <td style="padding:4px 6px;text-align:center;font-weight:700;color:#c8a96e;">${i+1}</td>
-        <td style="padding:4px 6px;text-align:center;color:#555;">${p.date||'—'}</td>
+      const rowBg = i % 2 === 0 ? '#fff' : '#fafafa';
+      return `
+        <tr style="background:${rowBg};">
+          <td style="padding:4px 6px;text-align:center;font-weight:700;color:#c8a96e;">${i+1}</td>
+          <td style="padding:4px 6px;text-align:center;color:#555;">${p.date||'—'}</td>
+          <td style="padding:4px 6px;text-align:center;">
+            <span style="display:inline-flex;align-items:center;gap:3px;background:#fdf6e8;border:1px solid rgba(200,169,110,.3);border-radius:10px;padding:1px 6px;font-size:8px;font-weight:700;color:#a07840;">
+              ${rtIcon} ${rtLabel}
+            </span>
+          </td>
+          <td style="padding:4px 6px;text-align:center;font-weight:800;color:#38a169;">${fmt(p.amount||0)}</td>
+          <td style="padding:4px 6px;text-align:center;font-size:8px;color:#805ad5;">${origCell}</td>
+          <td style="padding:4px 6px;text-align:center;font-size:8px;color:#555;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.note||'—'}</td>
+          <td style="padding:4px 6px;text-align:center;font-weight:700;color:#1a1a2e;">${fmt(runningPaid)}</td>
+          <td style="padding:4px 6px;text-align:center;font-weight:700;color:${remainAfter>0?'#e53e3e':'#38a169'};">${fmt(remainAfter)}</td>
+        </tr>`;
+    });
+
+    const depositRow = (inv.depositUSD > 0) ? `
+      <tr style="background:#fffbf0;">
+        <td style="padding:4px 6px;text-align:center;font-weight:700;color:#c8a96e;">0</td>
+        <td style="padding:4px 6px;text-align:center;color:#555;">${inv.loadDate||inv.date||'—'}</td>
         <td style="padding:4px 6px;text-align:center;">
           <span style="display:inline-flex;align-items:center;gap:3px;background:#fdf6e8;border:1px solid rgba(200,169,110,.3);border-radius:10px;padding:1px 6px;font-size:8px;font-weight:700;color:#a07840;">
-            ${rtIcon} ${rtLabel}
+            💰 ${ {en:'Deposit',tr:'Depozito',ar:'عربون'}[phLang]||'Deposit' }
           </span>
         </td>
-        <td style="padding:4px 6px;text-align:center;font-weight:800;color:#38a169;">${fmt(p.amount||0)}</td>
-        <td style="padding:4px 6px;text-align:center;font-size:8px;color:#805ad5;">${origCell}</td>
-        <td style="padding:4px 6px;text-align:center;font-size:8px;color:#555;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.note||'—'}</td>
-        <td style="padding:4px 6px;text-align:center;font-weight:700;color:#1a1a2e;">${fmt(runningPaid)}</td>
-        <td style="padding:4px 6px;text-align:center;font-weight:700;color:${remainAfter>0?'#e53e3e':'#38a169'};">${fmt(remainAfter)}</td>
-      </tr>`;
-  });
+        <td style="padding:4px 6px;text-align:center;font-weight:800;color:#38a169;">${fmt(inv.depositUSD)}</td>
+        <td style="padding:4px 6px;text-align:center;font-size:8px;color:#805ad5;">—</td>
+        <td style="padding:4px 6px;text-align:center;font-size:8px;color:#555;">—</td>
+        <td style="padding:4px 6px;text-align:center;font-weight:700;color:#1a1a2e;">${fmt(inv.depositUSD)}</td>
+        <td style="padding:4px 6px;text-align:center;font-weight:700;color:#e53e3e;">${fmt(Math.max(0,(inv.grandTotal||0)-( inv.depositUSD)))}</td>
+      </tr>` : '';
 
-  // deposit row if exists
-  const depositRow = (inv.depositUSD > 0) ? `
-    <tr style="background:#fffbf0;">
-      <td style="padding:4px 6px;text-align:center;font-weight:700;color:#c8a96e;">0</td>
-      <td style="padding:4px 6px;text-align:center;color:#555;">${inv.loadDate||inv.date||'—'}</td>
-      <td style="padding:4px 6px;text-align:center;">
-        <span style="display:inline-flex;align-items:center;gap:3px;background:#fdf6e8;border:1px solid rgba(200,169,110,.3);border-radius:10px;padding:1px 6px;font-size:8px;font-weight:700;color:#a07840;">
-          💰 ${ {en:'Deposit',tr:'Depozito',ar:'عربون'}[phLang]||'Deposit' }
-        </span>
-      </td>
-      <td style="padding:4px 6px;text-align:center;font-weight:800;color:#38a169;">${fmt(inv.depositUSD)}</td>
-      <td style="padding:4px 6px;text-align:center;font-size:8px;color:#805ad5;">—</td>
-      <td style="padding:4px 6px;text-align:center;font-size:8px;color:#555;">—</td>
-      <td style="padding:4px 6px;text-align:center;font-weight:700;color:#1a1a2e;">${fmt(inv.depositUSD)}</td>
-      <td style="padding:4px 6px;text-align:center;font-weight:700;color:#e53e3e;">${fmt(Math.max(0,(inv.grandTotal||0)-( inv.depositUSD)))}</td>
-    </tr>` : '';
+    const finalPaid = (inv.depositUSD||0) + invPayments.reduce((s,p)=>s+(p.amount||0),0);
+    const finalRemain = Math.max(0,(inv.grandTotal||0)-finalPaid);
+    const pct = inv.grandTotal > 0 ? Math.min(100,(finalPaid/inv.grandTotal)*100) : 0;
 
-  const finalPaid = (inv.depositUSD||0) + invPayments.reduce((s,p)=>s+(p.amount||0),0);
-  const finalRemain = Math.max(0,(inv.grandTotal||0)-finalPaid);
-  const pct = inv.grandTotal > 0 ? Math.min(100,(finalPaid/inv.grandTotal)*100) : 0;
-
-  return `
-  <div class="ip-pay-history" style="margin-top:10px;padding-top:10px;border-top:2px solid #c8a96e;">
-    <!-- Title row -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-      <div style="font-size:9px;font-weight:800;color:#c8a96e;letter-spacing:1.5px;text-transform:uppercase;">
-        📋 ${payHistTitles[phLang]||payHistTitles.en}
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div style="font-size:8px;color:#555;">
-          ${fmt(finalPaid)} / ${fmt(inv.grandTotal||0)}
+    return `
+    <div class="ip-pay-history" style="margin-top:10px;padding-top:10px;border-top:2px solid #c8a96e;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="font-size:9px;font-weight:800;color:#c8a96e;letter-spacing:1.5px;text-transform:uppercase;">
+          📋 ${payHistTitles[phLang]||payHistTitles.en}
         </div>
-        <!-- Progress bar -->
-        <div style="width:80px;height:6px;background:#eee;border-radius:3px;overflow:hidden;">
-          <div style="width:${pct.toFixed(1)}%;height:100%;background:${pct>=100?'#38a169':pct>=50?'#c8a96e':'#e53e3e'};border-radius:3px;"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="font-size:8px;color:#555;">${fmt(finalPaid)} / ${fmt(inv.grandTotal||0)}</div>
+          <div style="width:80px;height:6px;background:#eee;border-radius:3px;overflow:hidden;">
+            <div style="width:${pct.toFixed(1)}%;height:100%;background:${pct>=100?'#38a169':pct>=50?'#c8a96e':'#e53e3e'};border-radius:3px;"></div>
+          </div>
+          <div style="font-size:8px;font-weight:800;color:${pct>=100?'#38a169':pct>=50?'#c8a96e':'#e53e3e'};">${pct.toFixed(0)}%</div>
         </div>
-        <div style="font-size:8px;font-weight:800;color:${pct>=100?'#38a169':pct>=50?'#c8a96e':'#e53e3e'};">${pct.toFixed(0)}%</div>
       </div>
-    </div>
-    <!-- Table -->
-    <table style="width:100%;border-collapse:collapse;font-size:8.5px;">
-      <thead>
-        <tr style="background:#1a1a2e;">
-          <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.no}</th>
-          <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.date}</th>
-          <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.method}</th>
-          <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.amount}</th>
-          <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.original}</th>
-          <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.note}</th>
-          <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.total}</th>
-          <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.remaining}</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${depositRow}
-        ${rows.join('')}
-      </tbody>
-      <tfoot>
-        <tr style="background:#1a1a2e;">
-          <td colspan="3" style="padding:5px 6px;color:#c8a96e;font-weight:700;font-size:9px;text-align:${phLang==='ar'?'right':'left'};">
-            ${phCols.total}
-          </td>
-          <td style="padding:5px 6px;color:#48bb78;font-weight:800;font-size:10px;text-align:center;">${fmt(finalPaid)}</td>
-          <td colspan="2"></td>
-          <td style="padding:5px 6px;color:#48bb78;font-weight:800;font-size:10px;text-align:center;">${fmt(finalPaid)}</td>
-          <td style="padding:5px 6px;font-weight:800;font-size:10px;text-align:center;color:${finalRemain>0?'#fc8181':'#48bb78'};">${fmt(finalRemain)}</td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>`;
-})() : '';
+      <table style="width:100%;border-collapse:collapse;font-size:8.5px;">
+        <thead>
+          <tr style="background:#1a1a2e;">
+            <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.no}</th>
+            <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.date}</th>
+            <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.method}</th>
+            <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.amount}</th>
+            <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.original}</th>
+            <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.note}</th>
+            <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.total}</th>
+            <th style="color:#c8a96e;padding:5px 6px;text-align:center;font-size:8px;">${phCols.remaining}</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${depositRow}
+          ${rows.join('')}
+        </tbody>
+        <tfoot>
+          <tr style="background:#1a1a2e;">
+            <td colspan="3" style="padding:5px 6px;color:#c8a96e;font-weight:700;font-size:9px;text-align:${phLang==='ar'?'right':'left'};">${phCols.total}</td>
+            <td style="padding:5px 6px;color:#48bb78;font-weight:800;font-size:10px;text-align:center;">${fmt(finalPaid)}</td>
+            <td colspan="2"></td>
+            <td style="padding:5px 6px;color:#48bb78;font-weight:800;font-size:10px;text-align:center;">${fmt(finalPaid)}</td>
+            <td style="padding:5px 6px;font-weight:800;font-size:10px;text-align:center;color:${finalRemain>0?'#fc8181':'#48bb78'};">${fmt(finalRemain)}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>`;
+  })() : '';
 
-  const tableRows=(inv.items||[]).map((item,i)=>{
-    const imgCell=opts.showImages?`<td class="pic-cell">${item.image?`<img src="${item.image}" alt="${item.name}">`:`<div class="pic-ph">🛋️</div>`}</td>`:'';
-    const weightCell=opts.showWeights?`<td>${item.weight||0} kg</td>`:'';
-    const cbmCell=opts.showCBM?`<td>${((item.cbm||0)*item.qty).toFixed(4)}</td>`:'';
+  // ==========================================
+  // 3. بناء جدول المنتجات (يدعم الأبعاد المتعددة)
+  // ==========================================
+  const tableRows = (inv.items || []).map((item, i) => {
+    const imgCell = opts.showImages ? `<td class="pic-cell">${item.image ? `<img src="${item.image}">` : `<div class="pic-ph">🛋️</div>`}</td>` : '';
+    
+    let dimsDisplay = item.dimensions || '—';
+    if (item.dimPieces && item.dimPieces.length > 0) {
+      dimsDisplay = item.dimPieces.map((dp, idx) => 
+        `<div style="font-size:8.5px; margin-bottom:2px;">
+          <span style="color:#c8a96e; font-weight:bold;">P${idx+1}:</span> ${dp.l}×${dp.w}×${dp.h}
+         </div>`
+      ).join('');
+    }
+
     return `<tr>
-      <td>${i+1}</td>
+      <td style="font-weight:bold; color:#c8a96e;">${i + 1}</td>
       ${imgCell}
-      <td style="text-align:left;font-weight:600;">${item.name}${item.hsCode?`<br><span style="font-size:7px;color:#888;">${item.hsCode}</span>`:''}</td>
-      <td>${item.dimensions||'—'}</td>
-      <td>${item.color||'—'}</td>
-      <td>${item.qty}</td>
+      <td style="text-align:left; font-weight:800;">
+        ${item.name}
+        ${item.hsCode ? `<div style="font-size:7.5px; color:#718096; margin-top:2px;">HS: ${item.hsCode}</div>` : ''}
+      </td>
+      <td>${dimsDisplay}</td>
+      <td>${item.color || '—'}</td>
+      <td style="font-weight:800;">${item.qty}</td>
       <td>${fmt(item.priceUSD)}</td>
-      <td style="font-weight:700;">${fmt(item.totalUSD)}</td>
-      ${weightCell}
-      ${cbmCell}
+      <td style="font-weight:800; color:#1a1a2e;">${fmt(item.totalUSD)}</td>
+      ${opts.showWeights ? `<td>${item.weight || 0} kg</td>` : ''}
+      ${opts.showCBM ? `<td>${((item.cbm || 0) * item.qty).toFixed(4)}</td>` : ''}
     </tr>`;
   }).join('');
-  const thImg=opts.showImages?`<th>${L.item}</th>`:'';
-  const thWeight=opts.showWeights?`<th>${L.weight}</th>`:'';
-  const thCBM=opts.showCBM?`<th>${L.cbm}</th>`:'';
-  const bankHTML=opts.showBankInfo?`
+
+  // ==========================================
+  // 4. بناء الأقسام السفلية (البنك، الملاحظات، التوقيعات)
+  // ==========================================
+  const bankHTML = opts.showBankInfo ? `
     <div class="ip-bank">
-      <div class="ip-sec-title">${L.bankInfo}</div>
-      <div class="ip-bank-grid">
-        <div>
-          <div class="ip-bank-row"><strong>${L.bank}:</strong> ${st.bankName||'ZİRAAT BANK'}</div>
-          <div class="ip-bank-row"><strong>${L.beneficiary}:</strong> ${st.beneficiary||''}</div>
-          <div class="ip-bank-row"><strong>${L.swift}:</strong> ${st.swift||''}</div>
-          <div class="ip-bank-row"><strong>${L.account}:</strong> ${st.accountNo||''}</div>
-        </div>
-        <div>
-          <div class="ip-bank-row"><strong>${L.iban_usd}:</strong> ${st.ibanUSD||''}</div>
-          <div class="ip-bank-row"><strong>${L.iban_try}:</strong> ${st.ibanTRY||''}</div>
-          <div class="ip-bank-row"><strong>${L.iban_eur}:</strong> ${st.ibanEUR||''}</div>
-        </div>
+      <div class="ip-sec-title">🏦 ${L.bankInfo}</div>
+      <div style="font-size:10px; line-height:1.8; color:#4a5568;">
+        <div><strong>${L.bank}:</strong> ${st.bankName || 'ZİRAAT BANK'}</div>
+        <div><strong>${L.beneficiary}:</strong> ${st.beneficiary || ''}</div>
+        <div><strong>${L.iban_usd}:</strong> <span style="color:#1a1a2e; font-weight:bold;">${st.ibanUSD || ''}</span></div>
+        <div><strong>${L.iban_try}:</strong> ${st.ibanTRY || ''}</div>
+        <div><strong>${L.iban_eur}:</strong> ${st.ibanEUR || ''}</div>
+        <div><strong>${L.swift}:</strong> ${st.swift || ''}</div>
+        <div><strong>${L.account}:</strong> ${st.accountNo || ''}</div>
       </div>
-      ${opts.showRates?`<div class="ip-rate-box">
-        <strong>${L.rates}:</strong> 1 USD = ₺${usdTry.toFixed(2)} &nbsp;|&nbsp; 1 USD = €${usdEur.toFixed(4)} &nbsp;|&nbsp; 1 EUR = ₺${(usdTry/usdEur).toFixed(2)}
-      </div>`:''}
-    </div>`:`<div class="ip-bank"></div>`;
-  const sigHTML=opts.showSignatures?`
+      ${opts.showRates ? `
+      <div class="ip-rate-box" style="margin-top:10px;padding:7px 10px;background:#f8f9fa;border-radius:5px;border:1px solid #e2e8f0;font-size:8.5px;color:#555;">
+        <strong style="color:#c8a96e;">${L.rates}:</strong> 1 USD = ₺${usdTry.toFixed(2)} &nbsp;|&nbsp; 1 USD = €${usdEur.toFixed(4)} &nbsp;|&nbsp; 1 EUR = ₺${(usdTry/usdEur).toFixed(2)}
+      </div>` : ''}
+    </div>` : `<div class="ip-bank"></div>`;
+
+  const notesHTML = opts.showNotes && inv.notes ? `
+    <div class="ip-notes">
+      <strong style="color:#c8a96e; font-size:11px; display:block; margin-bottom:6px;">📝 ${L.notes}:</strong>
+      ${inv.notes.replace(/\n/g, '<br>')}
+    </div>` : '';
+
+  const sigHTML = opts.showSignatures ? `
     <div class="ip-sigs">
       <div class="ip-sig">
-        <div class="ip-sig-title">${L.seller_sig}</div>
-        <div class="ip-sig-logo">${st.logo?`<img src="${st.logo}" alt="logo">`:'<span style="font-size:18px;font-weight:900;color:#1a1a2e;">WOW</span>'}</div>
-        <div class="ip-sig-stamp">${L.stamp}</div>
+        <div style="font-size:10px; font-weight:bold; color:#718096; margin-bottom:6px;">${L.seller_sig}</div>
+        <div class="ip-sig-logo" style="margin-bottom:6px;min-height:36px;display:flex;align-items:center;justify-content:center;">
+          ${st.logo ? `<img src="${st.logo}" alt="logo" style="max-height:36px;max-width:90px;object-fit:contain;">` : `<span style="font-size:18px;font-weight:900;color:#1a1a2e;">WOW</span>`}
+        </div>
+        <div class="ip-sig-stamp" style="width:130px;height:55px;border:1px dashed #ccc;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#ccc;margin:6px auto;">${L.stamp}</div>
         <div class="ip-sig-line"></div>
-        <div class="ip-sig-name">${st.authPerson||'MUTEZ BILLAH'}</div>
-        <div class="ip-sig-role">${st.companyName||'WOW Furniture'}</div>
+        <div style="font-weight:800; font-size:11px;">${st.authPerson || 'MUTEZ BILLAH'}</div>
+        <div style="font-size:8.5px;color:#888;">${st.companyName || 'WOW Furniture'}</div>
       </div>
       <div class="ip-sig">
-        <div class="ip-sig-title">${L.buyer_sig}</div>
-        <div class="ip-sig-logo">${inv.companyLogo?`<img src="${inv.companyLogo}" alt="logo">`:'<span style="font-size:13px;color:#888;">—</span>'}</div>
-        <div class="ip-sig-stamp">${L.stamp}</div>
+        <div style="font-size:10px; font-weight:bold; color:#718096; margin-bottom:6px;">${L.buyer_sig}</div>
+        <div class="ip-sig-logo" style="margin-bottom:6px;min-height:36px;display:flex;align-items:center;justify-content:center;">
+          ${inv.companyLogo ? `<img src="${inv.companyLogo}" alt="logo" style="max-height:36px;max-width:90px;object-fit:contain;">` : `<span style="font-size:13px;color:#888;">—</span>`}
+        </div>
+        <div class="ip-sig-stamp" style="width:130px;height:55px;border:1px dashed #ccc;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#ccc;margin:6px auto;">${L.stamp}</div>
         <div class="ip-sig-line"></div>
-        <div class="ip-sig-name">${inv.buyerName||inv.companyName||'—'}</div>
-        <div class="ip-sig-role">${inv.companyName||'—'}</div>
+        <div style="font-weight:800; font-size:11px;">${inv.buyerName || inv.companyName || '—'}</div>
+        <div style="font-size:8.5px;color:#888;">${inv.companyName || '—'}</div>
       </div>
-    </div>`:'';
-  const notesHTML=opts.showNotes&&inv.notes?`<div class="ip-notes"><strong>📝 ${L.notes}:</strong> ${inv.notes}</div>`:'';
-  const kdvRow=inv.kdvEnabled?`<div class="ip-pay-row kdv-line"><span>🏛️ ${L.kdv} (${inv.kdvRate||20}%)</span><span style="color:#c8a96e;font-weight:700;">${fmt(inv.kdvAmtUSD||0)}</span></div>`:'';
-  const payMethodLabel=(PAY_METHOD_LABELS[lang]||PAY_METHOD_LABELS.en)[inv.payMethod||'cash']||inv.payMethod||'—';
-  const totalPaid=(inv.depositUSD||0)+(inv.payments||[]).reduce((s,p)=>s+(p.amount||0),0);
-  const remaining=Math.max(0,(inv.grandTotal||0)-totalPaid);
+    </div>` : '';
+
+  const kdvRow = inv.kdvEnabled ? `
+    <div class="ip-pay-row kdv-line">
+      <span>🏛️ ${L.kdv} (${inv.kdvRate || 20}%)</span>
+      <span>${fmt(inv.kdvAmtUSD || 0)}</span>
+    </div>` : '';
+
+  const totalPaid = (inv.depositUSD || 0) + (inv.payments || []).reduce((s, p) => s + (p.amount || 0), 0);
+  const remaining = Math.max(0, (inv.grandTotal || 0) - totalPaid);
+  const payMethodLabel = (PAY_METHOD_LABELS[lang] || PAY_METHOD_LABELS.en)[inv.payMethod || 'cash'] || inv.payMethod || '—';
+
+  // ==========================================
+  // 5. تجميع الهيكل النهائي للفاتورة
+  // ==========================================
   return `
-  <div class="inv-paper" style="font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:#1a1a1a;width:100%;max-width:794px;margin:0 auto;direction:ltr;text-align:left;">
+  <div class="inv-paper">
+    
     <!-- HEADER -->
     <div class="ip-hdr">
       <div class="ip-hdr-seller">
         <div class="ip-seller-logo">
-          ${st.logo?`<img src="${st.logo}" alt="logo">`:`<div class="ip-seller-logo-txt">WOW<div class="ip-seller-logo-sub">FURNITURE</div></div>`}
+          ${st.logo ? `<img src="${st.logo}" alt="logo">` : `<div class="ip-seller-logo-txt">WOW<div class="ip-seller-logo-sub">FURNITURE</div></div>`}
         </div>
         <div class="ip-seller-info">
-          <strong>${st.companyName||'WOW Furniture'}</strong>
-          ${st.address||''}<br>
-          📞 ${st.phone||''}<br>
-          📧 ${st.email||''}<br>
-          🌐 ${st.website||''}<br>
-          ${st.mersis?`${L.mersis}: ${st.mersis}`:''}
+          <strong>${st.companyName || 'WOW Furniture'}</strong>
+          ${st.address || ''}<br>
+          📞 ${st.phone || ''} | 📧 ${st.email || ''}<br>
+          🌐 ${st.website || ''}<br>
+          ${st.mersis ? `${L.mersis}: ${st.mersis}` : ''}
         </div>
       </div>
+      
       <div class="ip-hdr-mid">
         <div class="ip-inv-title">${L.invoice}</div>
-        ${opts.showBarcode?`<div class="ip-barcode-wrap">${barcodeSVG}<div class="ip-barcode-txt">${inv.invNo||'—'}</div></div>`:''}
-        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.no}:</span><span class="ip-meta-val">${inv.invNo||'—'}</span></div>
-        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.loadDate}:</span><span class="ip-meta-val">${inv.loadDate||'—'}</span></div>
-        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.date}:</span><span class="ip-meta-val">${inv.date||new Date().toLocaleDateString()}</span></div>
-        ${inv.plate?`<div class="ip-meta-row"><span class="ip-meta-lbl">${L.plate}:</span><span class="ip-meta-val">${inv.plate}</span></div>`:''}
-        ${inv.truck?`<div class="ip-meta-row"><span class="ip-meta-lbl">${L.truck}:</span><span class="ip-meta-val">${inv.truck}</span></div>`:''}
-        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.tier}:</span><span class="ip-meta-val" style="color:#c8a96e;">🎯 ${inv.tier||'A'}</span></div>
-        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.payMethod}:</span><span class="ip-meta-val">${payMethodLabel}</span></div>
+        ${opts.showBarcode ? `<div style="margin-bottom:10px; text-align:center;">${barcodeSVG}</div>` : ''}
+        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.no}:</span> <span class="ip-meta-val">${inv.invNo || '—'}</span></div>
+        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.date}:</span> <span class="ip-meta-val">${inv.date || new Date().toLocaleDateString()}</span></div>
+        ${inv.loadDate ? `<div class="ip-meta-row"><span class="ip-meta-lbl">${L.loadDate}:</span> <span class="ip-meta-val">${inv.loadDate}</span></div>` : ''}
+        ${inv.plate ? `<div class="ip-meta-row"><span class="ip-meta-lbl">${L.plate}:</span> <span class="ip-meta-val">${inv.plate}</span></div>` : ''}
+        ${inv.truck ? `<div class="ip-meta-row"><span class="ip-meta-lbl">${L.truck}:</span> <span class="ip-meta-val">${inv.truck}</span></div>` : ''}
+        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.tier}:</span> <span class="ip-meta-val" style="color:#c8a96e;">🎯 ${inv.tier || 'A'}</span></div>
+        <div class="ip-meta-row"><span class="ip-meta-lbl">${L.payMethod}:</span> <span class="ip-meta-val">${payMethodLabel}</span></div>
       </div>
+
       <div class="ip-hdr-client">
-        <div class="ip-client-logo-box">
-          ${inv.companyLogo?`<img src="${inv.companyLogo}" alt="logo">`:'<span style="font-size:24px;">🏢</span>'}
-        </div>
-        <div class="ip-client-name"><strong>${inv.companyName||'—'}</strong><br>${inv.buyerName||''}<br>${inv.province||inv.country||''} ${inv.city?'· '+inv.city:''}</div>
+        <div style="font-size:10px; color:#c8a96e; font-weight:bold; margin-bottom:4px;">${L.buyer.toUpperCase()}</div>
+        <div class="ip-client-name">${inv.companyName || '—'}</div>
+        <div class="ip-client-sub">${inv.buyerName || ''}</div>
+        <div class="ip-client-sub">${inv.province || inv.country || ''} ${inv.city ? '· ' + inv.city : ''}</div>
       </div>
     </div>
+
     <!-- TABLE -->
-    <div class="ip-pay-title">${L.buyer.toUpperCase()}: ${inv.companyName||'—'} &nbsp;|&nbsp; ${inv.province||inv.country||''} ${inv.city?'· '+inv.city:''}</div>
     <div class="ip-tbl-wrap">
       <table class="ip-tbl">
         <thead>
           <tr>
             <th>${L.item}</th>
-            ${opts.showImages?`<th>IMG</th>`:''}
-            <th>${L.name}</th>
+            ${opts.showImages ? `<th>IMG</th>` : ''}
+            <th style="text-align:left;">${L.name}</th>
             <th>${L.dims}</th>
             <th>${L.color}</th>
             <th>${L.qty}</th>
             <th>${L.price}</th>
             <th>${L.total}</th>
-            ${opts.showWeights?`<th>${L.weight}</th>`:''}
-            ${opts.showCBM?`<th>${L.cbm}</th>`:''}
+            ${opts.showWeights ? `<th>${L.weight}</th>` : ''}
+            ${opts.showCBM ? `<th>${L.cbm}</th>` : ''}
           </tr>
         </thead>
         <tbody>${tableRows}</tbody>
         <tfoot>
           <tr>
-            <td colspan="${3+(opts.showImages?1:0)+(opts.showWeights?1:0)+(opts.showCBM?1:0)}" style="text-align:left;padding-right:8px;">${L.packets}: <strong>${inv.totalPackets||0}</strong></td>
+            <td colspan="${3 + (opts.showImages ? 1 : 0) + (opts.showWeights ? 1 : 0) + (opts.showCBM ? 1 : 0)}" style="text-align:left;padding-right:8px;">
+              ${L.packets}: <strong>${inv.totalPackets || 0}</strong>
+            </td>
             <td colspan="3" style="text-align:right;">${L.subtotal}</td>
-            <td>${fmt(inv.subtotalUSD||0)}</td>
-            ${opts.showWeights?`<td></td>`:''}
-            ${opts.showCBM?`<td>${(inv.totalCBM||0).toFixed(4)}</td>`:''}
+            <td style="font-weight:bold; color:#1a1a2e;">${fmt(inv.subtotalUSD || 0)}</td>
+            ${opts.showWeights ? `<td></td>` : ''}
+            ${opts.showCBM ? `<td>${(inv.totalCBM || 0).toFixed(4)}</td>` : ''}
           </tr>
         </tfoot>
       </table>
     </div>
-    <!-- BOTTOM -->
+
+    <!-- BOTTOM SUMMARY -->
     <div class="ip-bottom">
       <div class="ip-payment">
-        <div class="ip-sec-title">${L.payMethod.toUpperCase()}: ${payMethodLabel}</div>
-        <div class="ip-pay-row"><span>${L.deposit}</span><span style="color:#38a169;">${fmt(inv.depositUSD||0)}</span></div>
-        ${inv.discountUSD>0?`<div class="ip-pay-row"><span>${L.discount}</span><span>- ${fmt(inv.discountUSD)}</span></div>`:''}
+        <div class="ip-sec-title">💰 ${L.payMethod.toUpperCase()}: ${payMethodLabel}</div>
+        <div class="ip-pay-row"><span>${L.subtotal}</span> <strong>${fmt(inv.subtotalUSD || 0)}</strong></div>
+        ${inv.discountUSD > 0 ? `<div class="ip-pay-row" style="color:#e53e3e;"><span>${L.discount}</span> <strong>- ${fmt(inv.discountUSD)}</strong></div>` : ''}
         ${kdvRow}
-        <div class="ip-pay-row bold"><span>${L.grandTotal}</span><span>${fmt(inv.grandTotal||0)}</span></div>
-        <div class="ip-pay-row"><span>${L.paid}</span><span style="color:#38a169;font-weight:700;">${fmt(totalPaid)}</span></div>
-        <div class="ip-pay-row" style="background:rgba(229,62,62,.06);padding:5px 6px;border-radius:4px;"><span style="font-weight:700;">${L.remaining}</span><span style="color:#e53e3e;font-weight:800;">${fmt(remaining)}</span></div>
+        <div class="ip-pay-row bold"><span>${L.grandTotal}</span> <span>${fmt(inv.grandTotal || 0)}</span></div>
+        <div class="ip-pay-row" style="margin-top:10px;"><span>${L.paid}</span> <strong style="color:#38a169;">${fmt(totalPaid)}</strong></div>
+        <div class="ip-pay-row" style="background:rgba(229,62,62,.06);padding:5px 6px;border-radius:4px;">
+          <span style="font-weight:700;">${L.remaining}</span>
+          <span style="color:#e53e3e;font-weight:800;">${fmt(remaining)}</span>
+        </div>
+        
+        <!-- إدراج جدول سجل الدفعات هنا -->
         ${payHistoryHTML}
       </div>
+      
       ${bankHTML}
     </div>
 
     ${notesHTML}
     ${sigHTML}
-    <div class="ip-verify">${L.verify} &nbsp;|&nbsp; ${st.phone||''} &nbsp;|&nbsp; ${inv.invNo||'—'}</div>
+    
+    <div class="ip-verify">${L.verify} &nbsp;|&nbsp; ${st.phone || ''} &nbsp;|&nbsp; ${inv.invNo || '—'}</div>
   </div>`;
 }
 
