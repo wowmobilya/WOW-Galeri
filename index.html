@@ -6683,8 +6683,8 @@ html, body {
     <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(200,169,110,0.1); border-radius: 50%; filter: blur(20px);"></div>
     <div style="position: absolute; bottom: -50px; left: -50px; width: 150px; height: 150px; background: rgba(200,169,110,0.1); border-radius: 50%; filter: blur(20px);"></div>
     
-    <!-- اللوجو بدلاً من النجمة (تأكد من مسار اللوجو الصحيح) -->
-    <img src="logo.png" alt="WOW Furniture" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 12px; filter: drop-shadow(0 4px 8px rgba(200,169,110,0.3));" onerror="this.style.display='none'">
+    <!-- اللوجو الديناميكي المربوط بإعدادات الشركة -->
+<img id="about-app-logo" src="https://h.top4top.io/p_3861refg81.png" alt="Company Logo" style="width: 90px; height: 90px; object-fit: contain; margin-bottom: 12px; filter: drop-shadow(0 4px 8px rgba(200,169,110,0.3)); display: inline-block; border-radius: 12px;">
     
     <h2 style="font-size: 24px; font-weight: 900; color: var(--text); margin-bottom: 6px; letter-spacing: 0.5px;">WOW FURNITURE</h2>
     <div style="font-size: 12px; font-weight: 800; color: var(--gold2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;" data-i18n="app_subtitle">نظام إدارة الفواتير الذكي</div>
@@ -12432,18 +12432,6 @@ function loadSettingsToForm(){
     else lp.textContent='W';
   }
   updateRateUI();
-
-  // 👇 تحديث اللوجو في قسم "عن البرنامج" 👇
-  const aboutLogo = document.getElementById('about-app-logo');
-  if (aboutLogo) {
-    if (S.settings.logo) {
-      aboutLogo.src = S.settings.logo;
-      aboutLogo.style.display = 'inline-block';
-    } else {
-      aboutLogo.style.display = 'none';
-    }
-  }
-  // 👆 نهاية الإضافة 👆
 }
 
 async function saveSettings(){
@@ -12497,27 +12485,19 @@ async function saveSettings(){
     const nl=document.getElementById('navLogo');
     if(nl) nl.innerHTML=`<img src="${S.settings.logo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
   }
-  
-   updateRateUI();
-  updateKdvDisplay();
 
-  // 👇 تحديث اللوجو في قسم "عن البرنامج" فور الحفظ 👇
   const aboutLogo = document.getElementById('about-app-logo');
-  if (aboutLogo) {
-    if (S.settings.logo) {
-      aboutLogo.src = S.settings.logo;
-      aboutLogo.style.display = 'inline-block';
-    } else {
-      aboutLogo.style.display = 'none';
-    }
+  if(aboutLogo) {
+    aboutLogo.src = S.settings.logo || 'https://h.top4top.io/p_3861refg81.png';
   }
-  // 👆 نهاية الإضافة 👆
 
+   
+  updateRateUI();
+  updateKdvDisplay();
 goBack(); // للرجوع للصفحة السابقة بعد الحفظ
   showToast(t('settings_saved'),'ok');
 
 }
-
 
 function handleSettingsLogo(e){
   const f=e.target.files[0];if(!f)return;
@@ -12528,6 +12508,11 @@ function handleSettingsLogo(e){
     if(lp)lp.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
     const nl=document.getElementById('navLogo');
     if(nl)nl.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
+    const aboutLogo = document.getElementById('about-app-logo');
+    if(aboutLogo) aboutLogo.src = ev.target.result;
+
+
+     
   };
   r.readAsDataURL(f);
 }
@@ -12544,7 +12529,10 @@ function resetSettingsLogo() {
   // تحديث اللوجو في الشريط العلوي (Navbar)
   const nl = document.getElementById('navLogo');
   if(nl) nl.innerHTML = `<img src="${defaultLogo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
-  
+    // تحديث اللوجو في قسم عن البرنامج
+  const aboutLogo = document.getElementById('about-app-logo');
+  if(aboutLogo) aboutLogo.src = defaultLogo;
+
   // استخدام دالة الترجمة للإشعار
   showToast(t('logo_restored'), 'ok');
 }
@@ -13143,19 +13131,11 @@ applyTr();updateRateUI();updateDash();updateInvNumDisplay();
 updateQblTexts();
 startGreetingRotation();
 updateQblTexts(); // ✅ أضف هذا السطر
-   // apply logo to navbar
+  // apply logo to navbar
   if(S.settings.logo){
     const nl=document.getElementById('navLogo');
     if(nl)nl.innerHTML=`<img src="${S.settings.logo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
-    
-    // 👇 إظهار اللوجو في قسم "عن البرنامج" عند تحميل التطبيق 👇
-    const aboutLogo = document.getElementById('about-app-logo');
-    if (aboutLogo) {
-      aboutLogo.src = S.settings.logo;
-      aboutLogo.style.display = 'inline-block';
-    }
   }
-
   const navTxt=document.getElementById('navTitle');
   if(navTxt&&S.settings.companyName){
     const parts=S.settings.companyName.split(' ');
