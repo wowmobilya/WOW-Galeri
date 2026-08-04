@@ -13131,7 +13131,7 @@ const invPayments = inv.payments || [];
       direction:${dir};
     ">
 
-                <!-- ── بلوك البائع: لوجو + معلومات ── -->
+                   <!-- ── بلوك البائع: لوجو + معلومات ── -->
       <div style="
         flex:1;padding:14px 18px;
         display:flex;flex-direction:column;align-items:flex-start;gap:0px;
@@ -13158,8 +13158,13 @@ const invPayments = inv.payments || [];
                </div>`}
         </div>
 
-        <!-- ✅ معلومات البائع -->
-        <div style="font-size:8px;color:#555;line-height:1.8;text-align:${textAlign};">
+        <!-- ✅ معلومات البائع (مقيّدة بعرض اللوجو لضمان التفاف النص) -->
+        <div style="
+          font-size:8px;color:#555;line-height:1.8;text-align:${textAlign};
+          max-width: 270px; /* 👈 يجب أن يكون نفس عرض اللوجو تماماً */
+          word-wrap: break-word; /* 👈 يجبر النص الطويل على النزول لسطر جديد */
+          white-space: normal;
+        ">
           <strong style="font-size:11px;color:#1a1a2e;display:block;margin-bottom:3px;font-weight:800;">
             ${st.companyName||'WOW Furniture'}
           </strong>
@@ -13170,6 +13175,7 @@ const invPayments = inv.payments || [];
           ${st.mersis?`<br>${L.mersis||'Mersis'}: ${st.mersis}`:''}
         </div>
       </div>
+
 
                         <!-- ── بلوك الوسط: العنوان + الحقول ── -->
       <div style="
