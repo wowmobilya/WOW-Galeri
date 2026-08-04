@@ -16,7 +16,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 
-   
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script> 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 /* ============================================================
@@ -12579,22 +12579,26 @@ function switchTab(tab){
 
 
 /* ============================================================
-   BARCODE GENERATOR (SVG)
+   QR CODE GENERATOR (OFFLINE SVG)
 ============================================================ */
-function generateBarcodeSVG(text,width=180,height=30){
-  const chars=text.toUpperCase().split('');
-  const bars=[];let x=6;const bw=1.6;
-  for(let i=0;i<chars.length;i++){
-    const code=chars[i].charCodeAt(0);
-    for(let b=0;b<5;b++){
-      const w=(code>>b)&1?bw*2:bw;
-      if((code>>b)&1)bars.push(`<rect x="${x}" y="2" width="${w}" height="${height-6}" fill="#1a1a2e"/>`);
-      x+=w+bw*0.5;
-    }
-    x+=bw;
+function generateQRCodeSVG(text) {
+  try {
+    // إنشاء كائن QR Code بمستوى تصحيح M
+    var qr = qrcode(0, 'M');
+    qr.addData(text);
+    qr.make();
+    
+    // توليد كود SVG وتعديل أبعاده ليتناسب مع أي حاوية
+    let svg = qr.createSvgTag(3, 0);
+    svg = svg.replace(/width="\d+px"/, 'width="100%"').replace(/height="\d+px"/, 'height="100%"');
+    
+    return svg;
+  } catch(e) {
+    console.error("QR Error", e);
+    return '';
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${bars.join('')}</svg>`;
 }
+
 
 /* ============================================================
    BUILD INVOICE HTML — A4 CLEAN WHITE
@@ -12664,7 +12668,8 @@ function buildInvoiceHTML(inv, lang, opts) {
   });
 
   const st = S.settings;
-  const barcodeSVG  = opts.showBarcode ? generateBarcodeSVG(inv.invNo || 'A5001') : '';
+const qrText = "WOW FURNITURE - " + (inv.invNo || 'A5001');
+const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
   const invPayments = inv.payments || [];
 
   /* ══════════════════════════════════════════
@@ -13123,7 +13128,7 @@ function buildInvoiceHTML(inv, lang, opts) {
         </div>
       </div>
 
-                           <!-- ── بلوك الوسط: العنوان + باركود + الحقول ── -->
+                               <!-- ── بلوك الوسط: العنوان + باركود + الحقول ── -->
       <div style="
         width:220px;flex-shrink:0;padding:12px 14px;
         background:#ffffff;
@@ -13135,15 +13140,11 @@ function buildInvoiceHTML(inv, lang, opts) {
           ${L.proforma}
         </div>
         
-        <!-- الباركود والنص أسفله -->
+        <!-- الباركود (QR Code) -->
         ${opts.showBarcode ? `
         <div style="margin-bottom:12px; display:flex; flex-direction:column; align-items:center;">
-          <div style="max-width:100%; overflow:hidden; display:flex; justify-content:center;">
-            ${generateBarcodeSVG(`WOW-${inv.invNo || 'A5001'}`, 180, 30)}
-          </div>
-          <div style="font-family:'Courier New',monospace;font-size:9px;font-weight:800;
-            color:#1a1a2e;letter-spacing:0.5px;text-align:center;margin-top:4px;direction:ltr;">
-            WOW FURNITURE - ${inv.invNo||'—'}
+          <div style="width:65px; height:65px; display:flex; justify-content:center; align-items:center;">
+            ${barcodeSVG}
           </div>
         </div>` : ''}
 
@@ -13171,6 +13172,7 @@ function buildInvoiceHTML(inv, lang, opts) {
               text-align:${isRtl?'left':'right'};">${val}</span>
           </div>`).join('')}
       </div>
+
 
 
 
