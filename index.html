@@ -6678,30 +6678,24 @@ html, body {
 <!-- 5. تبويب عن البرنامج -->
 <div id="stab-about" style="display:none;">
   
-   <!-- بطاقة معلومات البرنامج -->
-  <div class="card" style="padding: 0; overflow: hidden; border: none; background: transparent; box-shadow: none;">
-    <div style="display: flex; align-items: flex-start; gap: 16px; padding: 20px; background: var(--input); border: 1px solid var(--border); border-radius: 16px; transition: all var(--tr);" onmouseenter="this.style.borderColor='var(--gold)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.borderColor='var(--border)'; this.style.transform='';">
-      
-      <!-- اللوجو الديناميكي المربوط بإعدادات الشركة -->
-      <img id="about-app-logo" src="https://h.top4top.io/p_3861refg81.png" alt="Company Logo" style="width: 70px; height: 70px; border-radius: 14px; object-fit: contain; background: var(--card); border: 2px solid var(--gold); box-shadow: 0 4px 12px rgba(200,169,110,0.3); flex-shrink: 0; padding: 4px;">
-      
-      <div style="flex: 1;">
-        <!-- التصنيف / الوصف القصير -->
-        <div style="font-size: 11px; font-weight: 800; color: var(--gold2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;" data-i18n="app_subtitle">نظام إدارة الفواتير الذكي</div>
-        
-        <!-- العنوان ورقم الإصدار -->
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 6px;">
-          <div style="font-size: 18px; font-weight: 900; color: var(--text); letter-spacing: 0.5px;">WOW FURNITURE</div>
-          <div style="background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 10px; font-weight: 700; color: var(--muted);">Version 2.0.0</div>
-        </div>
-        
-        <!-- النص الوصفي -->
-        <p style="font-size: 12px; color: var(--text2); line-height: 1.6; margin: 0;" data-i18n="app_desc">
-          نظام متطور لإدارة الفواتير، العملاء، والمنتجات بذكاء وسرعة. مصمم خصيصاً لتسهيل أعمال تصدير وتجارة الأثاث بأعلى معايير الدقة والاحترافية.
-        </p>
-      </div>
+  <!-- بطاقة معلومات البرنامج -->
+  <div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 30px 20px; background: var(--input); border: 1px solid var(--border); border-radius: 16px; transition: all var(--tr); margin-bottom: 20px;" onmouseenter="this.style.borderColor='var(--gold)'; this.style.transform='translateY(-2px)';" onmouseleave="this.style.borderColor='var(--border)'; this.style.transform='';">
+    
+    <!-- اللوجو الديناميكي المربوط بإعدادات الشركة -->
+    <img id="about-app-logo" src="https://h.top4top.io/p_3861refg81.png" alt="Company Logo" style="width: 90px; height: 90px; object-fit: contain; margin-bottom: 12px; filter: drop-shadow(0 4px 8px rgba(200,169,110,0.3)); display: inline-block; border-radius: 12px;">
+    
+    <h2 style="font-size: 24px; font-weight: 900; color: var(--text); margin-bottom: 6px; letter-spacing: 0.5px;">WOW FURNITURE</h2>
+    <div style="font-size: 12px; font-weight: 800; color: var(--gold2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;" data-i18n="app_subtitle">نظام إدارة الفواتير الذكي</div>
+    
+    <p style="font-size: 14px; color: var(--text2); line-height: 1.8; max-width: 90%; margin: 0 auto 20px;" data-i18n="app_desc">
+      نظام متطور لإدارة الفواتير، العملاء، والمنتجات بذكاء وسرعة. مصمم خصيصاً لتسهيل أعمال تصدير وتجارة الأثاث بأعلى معايير الدقة والاحترافية.
+    </p>
+    
+    <div style="display: inline-block; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; font-size: 11px; font-weight: 700; color: var(--muted);">
+      Version 2.0.0
     </div>
   </div>
+
 
 
   <!-- بطاقة فريق العمل -->
