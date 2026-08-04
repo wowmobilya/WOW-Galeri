@@ -13128,7 +13128,7 @@ const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
         </div>
       </div>
 
-                               <!-- ── بلوك الوسط: العنوان + باركود + الحقول ── -->
+      <!-- ── بلوك الوسط: العنوان + الحقول (تم إزالة الباركود لكسب المساحة) ── -->
       <div style="
         width:220px;flex-shrink:0;padding:12px 14px;
         background:#ffffff;
@@ -13136,17 +13136,9 @@ const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
       ">
         <!-- كلمة PROFORMA INVOICE -->
         <div style="font-size:13px;font-weight:900;color:#1a1a2e;
-          letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;text-align:center;">
+          letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;text-align:center;">
           ${L.proforma}
         </div>
-        
-        <!-- الباركود (QR Code) -->
-        ${opts.showBarcode ? `
-        <div style="margin-bottom:12px; display:flex; flex-direction:column; align-items:center;">
-          <div style="width:65px; height:65px; display:flex; justify-content:center; align-items:center;">
-            ${barcodeSVG}
-          </div>
-        </div>` : ''}
 
         <!-- الحقول الديناميكية المطلوبة -->
         ${[
@@ -13173,26 +13165,37 @@ const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
           </div>`).join('')}
       </div>
 
-
-
-
-
-      <!-- ── بلوك العميل ── -->
+      <!-- ── بلوك العميل (تم دمج الباركود بجانب اللوجو) ── -->
       <div style="
-        width:110px;flex-shrink:0;padding:12px 10px;
+        width:150px; /* تم زيادة العرض قليلاً ليستوعب العنصرين معاً */
+        flex-shrink:0;padding:12px 10px;
         display:flex;flex-direction:column;
         align-items:center;justify-content:center;
         direction:${dir};
       ">
-        <div style="width:80px;height:60px;display:flex;align-items:center;
-          justify-content:center;border:1px solid #e2e8f0;border-radius:6px;
-          overflow:hidden;margin-bottom:5px;">
-          ${inv.companyLogo
-            ? `<img src="${inv.companyLogo}" alt="logo" style="width:100%;height:100%;object-fit:contain;">`
-            : `<span style="font-size:22px;">🏢</span>`}
+        <!-- حاوية الباركود واللوجو (جنباً إلى جنب) -->
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-direction:${isRtl ? 'row-reverse' : 'row'};">
+          
+          <!-- الباركود (QR Code) -->
+          ${opts.showBarcode ? `
+          <div style="width:55px; height:55px; display:flex; justify-content:center; align-items:center;">
+            ${barcodeSVG}
+          </div>` : ''}
+
+          <!-- لوجو المشتري -->
+          <div style="width:75px;height:55px;display:flex;align-items:center;
+            justify-content:center;border:1px solid #e2e8f0;border-radius:6px;
+            overflow:hidden;">
+            ${inv.companyLogo
+              ? `<img src="${inv.companyLogo}" alt="logo" style="width:100%;height:100%;object-fit:contain;">`
+              : `<span style="font-size:22px;">🏢</span>`}
+          </div>
+          
         </div>
+
+        <!-- بيانات العميل -->
         <div style="font-size:7.5px;color:#888;text-align:center;line-height:1.4;">
-          <strong style="display:block;">${inv.companyName||'—'}</strong>
+          <strong style="display:block;font-size:8.5px;color:#1a1a2e;margin-bottom:2px;">${inv.companyName||'—'}</strong>
           ${inv.buyerName||''}
           ${inv.province||inv.country?`<br>${inv.province||inv.country||''}`:''} 
           ${inv.city?inv.city:''}
@@ -13201,6 +13204,7 @@ const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
 
     </div>
     <!-- نهاية الهيدر -->
+
 
     <!-- ══ BUYER BAR ══ -->
     <div style="background:#f8f9fa;padding:5px 18px;text-align:center;
