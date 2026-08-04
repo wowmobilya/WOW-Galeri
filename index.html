@@ -13138,7 +13138,7 @@ const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
         </div>
       </div>
 
-                   <!-- ── بلوك الوسط: العنوان + الحقول ── -->
+                        <!-- ── بلوك الوسط: العنوان + الحقول ── -->
       <div style="
         width:220px;flex-shrink:0;padding:12px 14px;
         background:#ffffff;
@@ -13159,30 +13159,47 @@ const barcodeSVG = opts.showBarcode ? generateQRCodeSVG(qrText) : '';
           return [
             [L.no,          inv.invNo || '—', true], // true تعني أن هذا الحقل هو رقم الفاتورة
             [L.orderDate,   inv.date || new Date().toLocaleDateString()],
-            [L.companyName, (inv.companyName || '—').toUpperCase()],
-            [countryOrProvLabel, countryOrProvVal.toUpperCase()],
-            [L.city || 'CITY', (inv.city || '—').toUpperCase()],
+            [L.companyName, inv.companyName || '—'],
+            [countryOrProvLabel, countryOrProvVal],
+            [L.city || 'CITY', inv.city || '—'],
             [L.loadDate,    inv.loadDate || '—'],
-            [L.plate,       (inv.plate || '—').toUpperCase()],
-            [L.truck,       (inv.truck || '—').toUpperCase()],
-          ].map(([lbl, val, isInvNo]) => `
+            [L.plate,       inv.plate || '—'],
+            [L.truck,       inv.truck || '—'],
+          ].map(([lbl, val, isInvNo]) => {
+            
+            // 🌟 تحويل العنوان والقيمة إلى نصوص بأحرف كبيرة قسرياً لجميع الحقول
+            let upperLbl = String(lbl).toUpperCase();
+            let upperVal = String(val).toUpperCase();
+
+            // 🌟 فصل الحرف عن الرقم لتلوينه وتكبيره (للفاتورة فقط)
+            let formattedVal = upperVal;
+            if (isInvNo && upperVal !== '—') {
+              const match = upperVal.match(/^([A-Z]+)(.*)$/);
+              if (match) {
+                // match[1] هو الحرف (مثل A) | match[2] هو الرقم (مثل 5001)
+                formattedVal = `<span style="color: #e53e3e; font-size: 18px;">${match[1]}</span>${match[2]}`;
+              }
+            }
+
+            return `
             <div style="
               display:flex;
               justify-content:space-between;
               align-items:center;
               gap:4px;
               margin-bottom:4px;
-              font-size:9px; /* 👈 تم التعديل هنا إلى 9px */
+              font-size:9px;
               line-height:1.4;
             ">
               <span style="color:#555;min-width:85px;font-weight:800;
-                text-align:${textAlign};">${lbl}:</span>
+                text-align:${textAlign};">${upperLbl}:</span>
               
               ${isInvNo 
-                ? `<span style="color:#1a1a2e; font-weight: 900; text-align:${isRtl?'left':'right'}; font-size: 15px;">${val}</span>` 
-                : `<span style="color:#1a1a2e; font-weight: 700; text-align:${isRtl?'left':'right'};">${val}</span>`
+                ? `<span style="color:#1a1a2e; font-weight: 900; text-align:${isRtl?'left':'right'}; font-size: 15px;">${formattedVal}</span>` 
+                : `<span style="color:#1a1a2e; font-weight: 700; text-align:${isRtl?'left':'right'};">${upperVal}</span>`
               }
-            </div>`).join('');
+            </div>`;
+          }).join('');
         })()}
       </div>
 
