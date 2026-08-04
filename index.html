@@ -13123,11 +13123,11 @@ function buildInvoiceHTML(inv, lang, opts) {
         </div>
       </div>
 
-            <!-- ── بلوك الوسط: العنوان + باركود + الحقول ── -->
+                  <!-- ── بلوك الوسط: العنوان + باركود + الحقول ── -->
       <div style="
         width:220px;flex-shrink:0;padding:12px 14px;
         background:#ffffff; /* خلفية بيضاء نقية */
-        ${midBorderStart}
+        /* تم إزالة الخطين الجانبيين من هنا */
         direction:${dir};text-align:${textAlign};
       ">
         <!-- كلمة PROFORMA INVOICE -->
@@ -13148,9 +13148,9 @@ function buildInvoiceHTML(inv, lang, opts) {
           [L.companyName, inv.companyName||'—'],
           [L.orderDate,   inv.date||new Date().toLocaleDateString()],
           [L.loadDate,    inv.loadDate||'—'],
-          inv.plate ? [L.plate, inv.plate] : null,
-          inv.truck ? [L.truck, inv.truck] : null,
-        ].filter(Boolean).map(([lbl,val]) => `
+          [L.plate,       inv.plate||'—'], // 👈 تظهر دائماً الآن
+          [L.truck,       inv.truck||'—'], // 👈 تظهر دائماً الآن
+        ].map(([lbl,val]) => `
           <div style="
             display:flex;
             justify-content:space-between;
@@ -13167,6 +13167,7 @@ function buildInvoiceHTML(inv, lang, opts) {
               text-align:${isRtl?'left':'right'};">${val}</span>
           </div>`).join('')}
       </div>
+
 
 
       <!-- ── بلوك العميل ── -->
