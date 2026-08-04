@@ -4243,275 +4243,6 @@ html, body {
 
 
 
-
-/* ============================================================
-   SETTINGS PAGE — FULL PAGE — FIXED ALL SCREENS
-============================================================ */
-
-/* ── الصفحة الرئيسية ── */
-#page-settings {
-  padding-bottom: 90px;
-  max-width: 860px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* ── شريط التنقل العلوي ── */
-.settings-page-nav {
-  display: flex;
-  gap: 6px;
-  background: var(--card);
-  border-radius: var(--r);
-  padding: 8px;
-  margin-bottom: 20px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  position: sticky;
-  top: calc(var(--nav-h) + 8px);
-  z-index: 400;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-}
-.settings-page-nav::-webkit-scrollbar { display: none; }
-
-/* ── أزرار التنقل ── */
-.settings-nav-btn {
-  flex: 1;
-  min-width: 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 14px 10px;
-  border-radius: var(--rs);
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  background: transparent;
-  color: var(--muted);
-  transition: all var(--tr);
-  white-space: nowrap;
-}
-.settings-nav-btn:hover {
-  background: var(--gold-light);
-  color: var(--gold2);
-}
-.settings-nav-btn.active {
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(200,169,110,.35);
-}
-.settings-nav-icon {
-  font-size: 26px;
-  line-height: 1;
-}
-.settings-nav-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .3px;
-}
-
-/* ── بطاقة القسم ── */
-.settings-section-card {
-  background: var(--card);
-  border-radius: var(--r);
-  border: 1px solid var(--border);
-  padding: 22px;
-  box-shadow: var(--shadow);
-  margin-bottom: 16px;
-  animation: fadeUp .3s ease;
-}
-
-/* ── رأس القسم ── */
-.settings-section-hdr {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
-}
-.settings-section-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
-  background: var(--gold-light);
-  border: 1px solid rgba(200,169,110,.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  flex-shrink: 0;
-}
-.settings-section-title {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 3px;
-}
-.settings-section-sub {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-/* ── لوجو الإعدادات ── */
-.settings-logo-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  padding: 10px 0;
-}
-.settings-logo-circle {
-  width: 110px;
-  height: 110px;
-  border-radius: 22px;
-  background: var(--gold-light);
-  border: 2px solid rgba(200,169,110,.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 36px;
-  font-weight: 900;
-  color: var(--gold2);
-  overflow: hidden;
-  box-shadow: 0 6px 24px rgba(200,169,110,.2);
-}
-.settings-logo-circle img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-.settings-logo-btns {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-/* ── شبكة أسعار الصرف ── */
-.curr-rate-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: var(--gold-light);
-  border: 1px solid rgba(200,169,110,.3);
-  border-radius: var(--rs);
-  padding: 10px 16px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--gold2);
-  margin-bottom: 16px;
-  width: 100%;
-  box-sizing: border-box;
-}
-.curr-rates-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 18px;
-}
-.curr-rate-item {
-  background: var(--input);
-  border: 1px solid var(--border);
-  border-radius: var(--rs);
-  padding: 14px 10px;
-  text-align: center;
-  transition: all var(--tr);
-}
-.curr-rate-item:hover {
-  border-color: var(--gold);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(200,169,110,.15);
-}
-.curr-rate-item-flag { font-size: 24px; margin-bottom: 6px; }
-.curr-rate-item-pair {
-  font-size: 10px;
-  color: var(--muted);
-  font-weight: 600;
-  margin-bottom: 5px;
-  letter-spacing: .5px;
-}
-.curr-rate-item-val {
-  font-size: 16px;
-  font-weight: 900;
-  color: var(--gold2);
-}
-
-/* ── شريط الحفظ الثابت ── */
-.settings-save-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 600;
-  background: var(--card);
-  border-top: 1.5px solid var(--border);
-  padding: 12px 20px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 -4px 20px rgba(0,0,0,.08);
-
-  /* مراعاة السايدبار على الديسكتوب */
-  margin-right: var(--side-w);
-}
-[dir="ltr"] .settings-save-bar {
-  margin-right: 0;
-  margin-left: var(--side-w);
-}
-[data-theme="dark"] .settings-save-bar {
-  background: rgba(22,25,39,.97);
-  box-shadow: 0 -4px 20px rgba(0,0,0,.3);
-}
-.settings-save-bar .btn {
-  min-width: 140px;
-  justify-content: center;
-  padding: 11px 24px;
-  font-size: 14px;
-}
-
-/* ── Responsive ── */
-@media (max-width: 1024px) {
-  .settings-save-bar {
-    margin-right: 0 !important;
-    margin-left: 0 !important;
-    bottom: calc(72px + env(safe-area-inset-bottom));
-  }
-  .curr-rates-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  #page-settings {
-    padding-bottom: 160px;
-  }
-}
-
-@media (max-width: 600px) {
-  .curr-rates-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-  .settings-nav-btn {
-    min-width: 60px;
-    padding: 10px 6px;
-  }
-  .settings-nav-icon { font-size: 22px; }
-  .settings-nav-label { font-size: 10px; }
-  .settings-section-card { padding: 16px; }
-  .settings-save-bar .btn { min-width: 100px; font-size: 13px; }
-}
-
-
-
-
-   
-
-
-
    
 
 
@@ -4637,7 +4368,7 @@ html, body {
       <button class="lang-btn" onclick="setLang('en')">EN</button>
     </div>
     <button class="icon-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
-<button class="icon-btn" onclick="openSettingsModal()">⚙️</button>
+<button class="icon-btn" onclick="openSettingsPage()">⚙️</button>
   </div>
 </nav>
 
@@ -6794,323 +6525,139 @@ html, body {
 
 
 
-
-
-
-
-
-
-<!-- ========== SETTINGS PAGE — FULL PAGE ========== -->
+   <!-- ========== SETTINGS PAGE ========== -->
 <section class="page" id="page-settings">
-
-  <!-- رأس الصفحة -->
-  <div class="sct-sticky-header">
-    <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
-    <div class="sct-sticky-title">
-      <h1 id="settingsPageTitle">⚙️ الإعدادات</h1>
-      <p id="settingsPageSub">إدارة إعدادات التطبيق</p>
+  
+  <!-- الشريط العلوي الثابت مع التبويبات -->
+  <div class="sct-sticky-header" style="flex-direction: column; align-items: stretch; gap: 14px; padding-bottom: 0;">
+    <div style="display: flex; align-items: center; gap: 12px; padding: 0 20px;">
+      <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
+      <div class="sct-sticky-title">
+        <h1>⚙️ <span data-i18n="settings">الإعدادات</span></h1>
+      </div>
+    </div>
+    
+    <!-- أزرار التنقل العلوية بالرموز -->
+    <div class="tabs" style="margin: 0 20px; background: transparent; padding: 0; border-bottom: 2px solid var(--border); border-radius: 0;">
+      <button class="tab-btn active" onclick="switchTab('company')" style="border-radius: 10px 10px 0 0;">🏢 معلومات الشركة</button>
+      <button class="tab-btn" onclick="switchTab('bank')" style="border-radius: 10px 10px 0 0;">🏦 البنك</button>
+      <button class="tab-btn" onclick="switchTab('invoice')" style="border-radius: 10px 10px 0 0;">📄 الفواتير</button>
+      <button class="tab-btn" onclick="switchTab('currency')" style="border-radius: 10px 10px 0 0;">💱 الصرف</button>
     </div>
   </div>
 
-  <!-- شريط التنقل العلوي بالرموز -->
-  <div class="settings-page-nav" id="settingsPageNav">
-
-    <button class="settings-nav-btn active" id="snav-company"
-      onclick="switchSettingsTab('company')">
-      <span class="settings-nav-icon">🏢</span>
-      <span class="settings-nav-label" id="snav-company-lbl">الشركة</span>
-    </button>
-
-    <button class="settings-nav-btn" id="snav-bank"
-      onclick="switchSettingsTab('bank')">
-      <span class="settings-nav-icon">🏦</span>
-      <span class="settings-nav-label" id="snav-bank-lbl">البنك</span>
-    </button>
-
-    <button class="settings-nav-btn" id="snav-invoice"
-      onclick="switchSettingsTab('invoice')">
-      <span class="settings-nav-icon">📄</span>
-      <span class="settings-nav-label" id="snav-invoice-lbl">الفاتورة</span>
-    </button>
-
-    <button class="settings-nav-btn" id="snav-currency"
-      onclick="switchSettingsTab('currency')">
-      <span class="settings-nav-icon">💱</span>
-      <span class="settings-nav-label" id="snav-currency-lbl">الصرف</span>
-    </button>
-
-  </div>
-
-  <!-- ══ قسم: الشركة ══ -->
-  <div id="stab-page-company">
-
-    <!-- اللوجو -->
-    <div class="settings-section-card">
-      <div class="settings-section-hdr">
-        <div class="settings-section-icon">🖼️</div>
-        <div>
-          <div class="settings-section-title" id="st-logo-title">لوجو الشركة</div>
-          <div class="settings-section-sub" id="st-logo-sub">صورة تظهر في الفواتير والتطبيق</div>
-        </div>
-      </div>
-      <div class="settings-logo-wrap">
-        <div class="settings-logo-circle" id="settingsLogoCircle">W</div>
-        <div class="settings-logo-btns">
+  <!-- محتوى الإعدادات -->
+  <div style="max-width: 700px; margin: 20px auto 80px;">
+    
+    <!-- 1. تبويب الشركة -->
+    <div id="stab-company">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div class="settings-logo-prev" id="settingsLogoPrev">W</div>
+        <div style="display:flex;gap:8px;justify-content:center;align-items:center;">
           <div style="position:relative;display:inline-block;">
-            <button class="btn btn-p btn-sm">🖼️ <span id="st-change-logo-btn">تغيير اللوجو</span></button>
-            <input type="file" accept="image/*" onchange="handleSettingsLogoPage(event)"
-              style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+            <button class="btn btn-s btn-sm">🖼️ <span data-i18n="change_logo">تغيير اللوجو</span></button>
+            <input type="file" accept="image/*" onchange="handleSettingsLogo(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
           </div>
-          <button class="btn btn-s btn-sm" onclick="resetSettingsLogoPage()">
-            🔄 <span id="st-reset-logo-btn">استعادة الافتراضي</span>
-          </button>
+          <button class="btn btn-s btn-sm" onclick="resetSettingsLogo()">🔄 <span data-i18n="reset_logo">استعادة الافتراضي</span></button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="fgrid">
+          <div class="fg"><label class="fl">🏢 <span data-i18n="company_name_setting">اسم الشركة</span></label><input type="text" class="fc" id="stCompanyName" placeholder="WOW Furniture"></div>
+          <div class="fg"><label class="fl">📍 <span data-i18n="address">العنوان</span></label><input type="text" class="fc" id="stAddress"></div>
+          <div class="fg"><label class="fl">📞 <span data-i18n="phone">الهاتف</span></label><input type="text" class="fc" id="stPhone"></div>
+          <div class="fg"><label class="fl">📧 <span data-i18n="email">البريد</span></label><input type="text" class="fc" id="stEmail"></div>
+          <div class="fg"><label class="fl">🌐 <span data-i18n="website">الموقع</span></label><input type="text" class="fc" id="stWebsite"></div>
+          <div class="fg"><label class="fl">🆔 Mersis</label><input type="text" class="fc" id="stMersis"></div>
         </div>
       </div>
     </div>
 
-    <!-- معلومات الشركة -->
-    <div class="settings-section-card">
-      <div class="settings-section-hdr">
-        <div class="settings-section-icon">🏢</div>
-        <div>
-          <div class="settings-section-title" id="st-company-title">معلومات الشركة</div>
-          <div class="settings-section-sub" id="st-company-sub">البيانات الأساسية للشركة</div>
+    <!-- 2. تبويب البنك -->
+    <div id="stab-bank" style="display:none;">
+      <div class="card">
+        <div class="fgrid">
+          <div class="fg"><label class="fl">🏦 <span data-i18n="bank_name">البنك</span></label><input type="text" class="fc" id="stBankName"></div>
+          <div class="fg"><label class="fl">👤 <span data-i18n="beneficiary">المستفيد</span></label><input type="text" class="fc" id="stBeneficiary"></div>
+          <div class="fg"><label class="fl">💵 IBAN USD</label><input type="text" class="fc" id="stIbanUSD"></div>
+          <div class="fg"><label class="fl">🇹🇷 IBAN TRY</label><input type="text" class="fc" id="stIbanTRY"></div>
+          <div class="fg"><label class="fl">💶 IBAN EUR</label><input type="text" class="fc" id="stIbanEUR"></div>
+          <div class="fg"><label class="fl">🔑 SWIFT</label><input type="text" class="fc" id="stSwift"></div>
+          <div class="fg"><label class="fl">🔢 <span data-i18n="account_no">رقم الحساب</span></label><input type="text" class="fc" id="stAccountNo"></div>
         </div>
       </div>
-      <div class="fgrid">
-        <div class="fg">
-          <label class="fl">🏢 <span data-i18n="company_name_setting">اسم الشركة</span></label>
-          <input type="text" class="fc" id="stCompanyNameP" placeholder="WOW Furniture">
+    </div>
+
+    <!-- 3. تبويب الفواتير -->
+    <div id="stab-invoice" style="display:none;">
+      <div class="card">
+        <div class="fgrid">
+          <div class="fg full">
+            <label class="fl">🌍 <span data-i18n="st_seq_ext">تسلسل الخارجي (A)</span></label>
+            <div style="display:flex;gap:5px;">
+              <input type="text" class="fc" id="stPrefixExt" placeholder="a" style="width:30%; text-align:center; font-weight:bold;">
+              <input type="number" class="fc" id="stNextNoExt" placeholder="5000" style="width:70%; font-weight:bold;">
+            </div>
+          </div>
+          <div class="fg full">
+            <label class="fl">🏠 <span data-i18n="st_seq_ret">تسلسل المفرق (B)</span></label>
+            <div style="display:flex;gap:5px;">
+              <input type="text" class="fc" id="stPrefixRet" placeholder="b" style="width:30%; text-align:center; font-weight:bold;">
+              <input type="number" class="fc" id="stNextNoRet" placeholder="3000" style="width:70%; font-weight:bold;">
+            </div>
+          </div>
+          <div class="fg full">
+            <label class="fl">📦 <span data-i18n="st_seq_whl">تسلسل الجملة (C)</span></label>
+            <div style="display:flex;gap:5px;">
+              <input type="text" class="fc" id="stPrefixWhl" placeholder="c" style="width:30%; text-align:center; font-weight:bold;">
+              <input type="number" class="fc" id="stNextNoWhl" placeholder="1000" style="width:70%; font-weight:bold;">
+            </div>
+          </div>
+          <div class="fg"><label class="fl">👤 <span data-i18n="auth_person">الشخص المخوّل</span></label><input type="text" class="fc" id="stAuthPerson"></div>
+          <div class="fg"><label class="fl">🏛️ <span data-i18n="kdv_rate_setting">نسبة KDV (%)</span></label><input type="number" class="fc" id="stKdvRate" placeholder="20" min="0" max="100" step="0.1" value="20"></div>
+          <div class="fg full"><label class="fl">📝 <span data-i18n="default_notes">ملاحظات افتراضية</span></label><textarea class="fc" id="stDefaultNotes" rows="2"></textarea></div>
         </div>
-        <div class="fg">
-          <label class="fl">📍 <span data-i18n="address">العنوان</span></label>
-          <input type="text" class="fc" id="stAddressP">
+      </div>
+    </div>
+
+    <!-- 4. تبويب الصرف -->
+    <div id="stab-currency" style="display:none;">
+      <div class="card" style="margin-bottom:12px; border: 2px solid var(--gold);">
+        <div style="font-size:14px;font-weight:800;color:var(--gold2);margin-bottom:12px;">💱 <span data-i18n="curr_rates_title">أسعار الصرف الحالية</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px; font-weight: 600;">
+          <div>💵 USD → TRY: <strong id="st-usdTry" style="color:var(--text);">—</strong></div>
+          <div>💶 USD → EUR: <strong id="st-usdEur" style="color:var(--text);">—</strong></div>
+          <div>🇹🇷 TRY → USD: <strong id="st-tryUsd" style="color:var(--text);">—</strong></div>
+          <div>🇹🇷 TRY → EUR: <strong id="st-tryEur" style="color:var(--text);">—</strong></div>
+          <div>💶 EUR → USD: <strong id="st-eurUsd" style="color:var(--text);">—</strong></div>
+          <div>💶 EUR → TRY: <strong id="st-eurTry" style="color:var(--text);">—</strong></div>
         </div>
-        <div class="fg">
-          <label class="fl">📞 <span data-i18n="phone">الهاتف</span></label>
-          <input type="text" class="fc" id="stPhoneP">
+        <button class="btn btn-p w100" style="margin-top:16px;" onclick="fetchRate()">🔄 <span data-i18n="update_rates">تحديث الأسعار</span></button>
+      </div>
+      <div class="card">
+        <div class="fgrid">
+          <div class="fg"><label class="fl">💵 <span data-i18n="manual_usd_try">USD/TRY يدوي</span></label><input type="number" class="fc" id="stManualUsdTry" placeholder="46.98" step="0.01" min="0"></div>
+          <div class="fg"><label class="fl">💶 <span data-i18n="manual_usd_eur">USD/EUR يدوي</span></label><input type="number" class="fc" id="stManualUsdEur" placeholder="0.92" step="0.001" min="0"></div>
         </div>
-        <div class="fg">
-          <label class="fl">📧 <span data-i18n="email">البريد</span></label>
-          <input type="text" class="fc" id="stEmailP">
-        </div>
-        <div class="fg">
-          <label class="fl">🌐 <span data-i18n="website">الموقع</span></label>
-          <input type="text" class="fc" id="stWebsiteP">
-        </div>
-        <div class="fg">
-          <label class="fl">🆔 Mersis</label>
-          <input type="text" class="fc" id="stMersisP">
-        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:10px;" data-i18n="manual_rate_hint">اتركها فارغة لاستخدام الأسعار التلقائية</div>
       </div>
     </div>
 
   </div>
 
-  <!-- ══ قسم: البنك ══ -->
-  <div id="stab-page-bank" style="display:none;">
-    <div class="settings-section-card">
-      <div class="settings-section-hdr">
-        <div class="settings-section-icon">🏦</div>
-        <div>
-          <div class="settings-section-title" id="st-bank-title">معلومات البنك</div>
-          <div class="settings-section-sub" id="st-bank-sub">بيانات التحويل البنكي للفواتير</div>
-        </div>
-      </div>
-      <div class="fgrid">
-        <div class="fg">
-          <label class="fl">🏦 <span data-i18n="bank_name">البنك</span></label>
-          <input type="text" class="fc" id="stBankNameP">
-        </div>
-        <div class="fg">
-          <label class="fl">👤 <span data-i18n="beneficiary">المستفيد</span></label>
-          <input type="text" class="fc" id="stBeneficiaryP">
-        </div>
-        <div class="fg">
-          <label class="fl">💵 IBAN USD</label>
-          <input type="text" class="fc" id="stIbanUSDp">
-        </div>
-        <div class="fg">
-          <label class="fl">🇹🇷 IBAN TRY</label>
-          <input type="text" class="fc" id="stIbanTRYp">
-        </div>
-        <div class="fg">
-          <label class="fl">💶 IBAN EUR</label>
-          <input type="text" class="fc" id="stIbanEURp">
-        </div>
-        <div class="fg">
-          <label class="fl">🔑 SWIFT</label>
-          <input type="text" class="fc" id="stSwiftP">
-        </div>
-        <div class="fg">
-          <label class="fl">🔢 <span data-i18n="account_no">رقم الحساب</span></label>
-          <input type="text" class="fc" id="stAccountNoP">
-        </div>
-      </div>
+  <!-- شريط الحفظ الثابت في الأسفل -->
+  <div class="co-form-sticky-bar">
+    <div class="co-form-sticky-bar-inner">
+      <button class="btn btn-p" onclick="saveSettings()">💾 <span data-i18n="save_settings">حفظ الإعدادات</span></button>
     </div>
-  </div>
-
-  <!-- ══ قسم: الفاتورة ══ -->
-  <div id="stab-page-invoice" style="display:none;">
-    <div class="settings-section-card">
-      <div class="settings-section-hdr">
-        <div class="settings-section-icon">📄</div>
-        <div>
-          <div class="settings-section-title" id="st-invoice-title">إعدادات الفاتورة</div>
-          <div class="settings-section-sub" id="st-invoice-sub">تسلسل الأرقام والضريبة والملاحظات</div>
-        </div>
-      </div>
-      <div class="fgrid">
-        <!-- تسلسل الخارجي -->
-        <div class="fg full">
-          <label class="fl">🌍 <span data-i18n="st_seq_ext">تسلسل الخارجي (A)</span></label>
-          <div style="display:flex;gap:5px;">
-            <input type="text" class="fc" id="stPrefixExtP" placeholder="a"
-              style="width:30%;text-align:center;font-weight:bold;">
-            <input type="number" class="fc" id="stNextNoExtP" placeholder="5000"
-              style="width:70%;font-weight:bold;">
-          </div>
-        </div>
-        <!-- تسلسل المفرق -->
-        <div class="fg full">
-          <label class="fl">🏠 <span data-i18n="st_seq_ret">تسلسل المفرق (B)</span></label>
-          <div style="display:flex;gap:5px;">
-            <input type="text" class="fc" id="stPrefixRetP" placeholder="b"
-              style="width:30%;text-align:center;font-weight:bold;">
-            <input type="number" class="fc" id="stNextNoRetP" placeholder="3000"
-              style="width:70%;font-weight:bold;">
-          </div>
-        </div>
-        <!-- تسلسل الجملة -->
-        <div class="fg full">
-          <label class="fl">📦 <span data-i18n="st_seq_whl">تسلسل الجملة (C)</span></label>
-          <div style="display:flex;gap:5px;">
-            <input type="text" class="fc" id="stPrefixWhlP" placeholder="c"
-              style="width:30%;text-align:center;font-weight:bold;">
-            <input type="number" class="fc" id="stNextNoWhlP" placeholder="1000"
-              style="width:70%;font-weight:bold;">
-          </div>
-        </div>
-        <div class="fg">
-          <label class="fl">👤 <span data-i18n="auth_person">الشخص المخوّل</span></label>
-          <input type="text" class="fc" id="stAuthPersonP">
-        </div>
-        <div class="fg">
-          <label class="fl">🏛️ <span data-i18n="kdv_rate_setting">نسبة KDV (%)</span></label>
-          <input type="number" class="fc" id="stKdvRateP" placeholder="20"
-            min="0" max="100" step="0.1" value="20">
-        </div>
-        <div class="fg full">
-          <label class="fl">📝 <span data-i18n="default_notes">ملاحظات افتراضية</span></label>
-          <textarea class="fc" id="stDefaultNotesP" rows="3"></textarea>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ قسم: الصرف ══ -->
-  <div id="stab-page-currency" style="display:none;">
-
-    <!-- شبكة الأسعار الحية -->
-    <div class="settings-section-card">
-      <div class="settings-section-hdr">
-        <div class="settings-section-icon">📊</div>
-        <div>
-          <div class="settings-section-title" id="st-rates-title">أسعار الصرف الحالية</div>
-          <div class="settings-section-sub" id="st-rates-sub">محدّثة تلقائياً من الإنترنت</div>
-        </div>
-      </div>
-
-      <div class="curr-rate-badge">
-        ⏱ <span id="stRateTimePage">—</span>
-      </div>
-
-      <div class="curr-rates-grid">
-        <div class="curr-rate-item">
-          <div class="curr-rate-item-flag">💵</div>
-          <div class="curr-rate-item-pair">USD → TRY</div>
-          <div class="curr-rate-item-val" id="st-usdTryP">—</div>
-        </div>
-        <div class="curr-rate-item">
-          <div class="curr-rate-item-flag">💵</div>
-          <div class="curr-rate-item-pair">USD → EUR</div>
-          <div class="curr-rate-item-val" id="st-usdEurP">—</div>
-        </div>
-        <div class="curr-rate-item">
-          <div class="curr-rate-item-flag">🇹🇷</div>
-          <div class="curr-rate-item-pair">TRY → USD</div>
-          <div class="curr-rate-item-val" id="st-tryUsdP">—</div>
-        </div>
-        <div class="curr-rate-item">
-          <div class="curr-rate-item-flag">🇹🇷</div>
-          <div class="curr-rate-item-pair">TRY → EUR</div>
-          <div class="curr-rate-item-val" id="st-tryEurP">—</div>
-        </div>
-        <div class="curr-rate-item">
-          <div class="curr-rate-item-flag">💶</div>
-          <div class="curr-rate-item-pair">EUR → USD</div>
-          <div class="curr-rate-item-val" id="st-eurUsdP">—</div>
-        </div>
-        <div class="curr-rate-item">
-          <div class="curr-rate-item-flag">💶</div>
-          <div class="curr-rate-item-pair">EUR → TRY</div>
-          <div class="curr-rate-item-val" id="st-eurTryP">—</div>
-        </div>
-      </div>
-
-      <button class="btn btn-p w100" onclick="fetchRateAndUpdatePage()">
-        🔄 <span id="st-update-rates-btn">تحديث الأسعار</span>
-      </button>
-    </div>
-
-    <!-- أسعار يدوية -->
-    <div class="settings-section-card">
-      <div class="settings-section-hdr">
-        <div class="settings-section-icon">✏️</div>
-        <div>
-          <div class="settings-section-title" id="st-manual-title">أسعار يدوية</div>
-          <div class="settings-section-sub" id="st-manual-sub">اتركها فارغة للأسعار التلقائية</div>
-        </div>
-      </div>
-      <div class="fgrid">
-        <div class="fg">
-          <label class="fl">💵 <span data-i18n="manual_usd_try">USD/TRY يدوي</span></label>
-          <input type="number" class="fc" id="stManualUsdTryP"
-            placeholder="46.98" step="0.01" min="0">
-        </div>
-        <div class="fg">
-          <label class="fl">💶 <span data-i18n="manual_usd_eur">USD/EUR يدوي</span></label>
-          <input type="number" class="fc" id="stManualUsdEurP"
-            placeholder="0.92" step="0.001" min="0">
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- شريط الحفظ الثابت -->
-  <div class="settings-save-bar">
-    <button class="btn btn-p" onclick="saveSettingsPage()">
-      💾 <span id="st-save-btn">حفظ الإعدادات</span>
-    </button>
-    <button class="btn btn-s" onclick="goBack()">
-      ✕ <span id="st-cancel-btn">إلغاء</span>
-    </button>
   </div>
 
 </section>
-
-
-
+    
 
 
 
        
-
-
-       
-
-
 
 </main>
 
@@ -7183,111 +6730,7 @@ html, body {
 
 
    
-<!-- ========== MODAL: SETTINGS ========== -->
-<div class="modal-ov" id="settingsModal">
-  <div class="modal" style="max-width:580px;">
-    <div class="modal-hdr">
-      <span class="modal-title">⚙️ <span data-i18n="settings">الإعدادات</span></span>
-      <button class="modal-close" onclick="closeModal('settingsModal')">✕</button>
-    </div>
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('company')">🏢</button>
-      <button class="tab-btn" onclick="switchTab('bank')">🏦</button>
-      <button class="tab-btn" onclick="switchTab('invoice')">📄</button>
-      <button class="tab-btn" onclick="switchTab('currency')">💱</button>
-    </div>
-    <div id="stab-company">
-            <div style="text-align:center;margin-bottom:14px;">
-        <div class="settings-logo-prev" id="settingsLogoPrev">W</div>
-        <div style="display:flex;gap:8px;justify-content:center;align-items:center;">
-          <div style="position:relative;display:inline-block;">
-            <button class="btn btn-s btn-sm">🖼️ <span data-i18n="change_logo">تغيير اللوجو</span></button>
-            <input type="file" accept="image/*" onchange="handleSettingsLogo(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
-          </div>
-                   <!-- زر استعادة اللوجو الافتراضي -->
-          <button class="btn btn-s btn-sm" onclick="resetSettingsLogo()">
-            🔄 <span data-i18n="reset_logo">استعادة الافتراضي</span>
-          </button>
-        </div>
-      </div>
 
-      <div class="fgrid">
-        <div class="fg"><label class="fl">🏢 <span data-i18n="company_name_setting">اسم الشركة</span></label><input type="text" class="fc" id="stCompanyName" placeholder="WOW Furniture"></div>
-        <div class="fg"><label class="fl">📍 <span data-i18n="address">العنوان</span></label><input type="text" class="fc" id="stAddress"></div>
-        <div class="fg"><label class="fl">📞 <span data-i18n="phone">الهاتف</span></label><input type="text" class="fc" id="stPhone"></div>
-        <div class="fg"><label class="fl">📧 <span data-i18n="email">البريد</span></label><input type="text" class="fc" id="stEmail"></div>
-        <div class="fg"><label class="fl">🌐 <span data-i18n="website">الموقع</span></label><input type="text" class="fc" id="stWebsite"></div>
-        <div class="fg"><label class="fl">🆔 Mersis</label><input type="text" class="fc" id="stMersis"></div>
-      </div>
-    </div>
-    <div id="stab-bank" style="display:none;">
-      <div class="fgrid">
-        <div class="fg"><label class="fl">🏦 <span data-i18n="bank_name">البنك</span></label><input type="text" class="fc" id="stBankName"></div>
-        <div class="fg"><label class="fl">👤 <span data-i18n="beneficiary">المستفيد</span></label><input type="text" class="fc" id="stBeneficiary"></div>
-        <div class="fg"><label class="fl">💵 IBAN USD</label><input type="text" class="fc" id="stIbanUSD"></div>
-        <div class="fg"><label class="fl">🇹🇷 IBAN TRY</label><input type="text" class="fc" id="stIbanTRY"></div>
-        <div class="fg"><label class="fl">💶 IBAN EUR</label><input type="text" class="fc" id="stIbanEUR"></div>
-        <div class="fg"><label class="fl">🔑 SWIFT</label><input type="text" class="fc" id="stSwift"></div>
-        <div class="fg"><label class="fl">🔢 <span data-i18n="account_no">رقم الحساب</span></label><input type="text" class="fc" id="stAccountNo"></div>
-      </div>
-    </div>
-       <div id="stab-invoice" style="display:none;">
-      <div class="fgrid">
-        <!-- السلاسل الثلاثة الأوتوماتيكية -->
-        <div class="fg full">
-          <label class="fl">🌍 <span data-i18n="st_seq_ext">تسلسل الخارجي (A)</span></label>
-          <div style="display:flex;gap:5px;">
-            <input type="text" class="fc" id="stPrefixExt" placeholder="a" style="width:30%; text-align:center; font-weight:bold;">
-            <input type="number" class="fc" id="stNextNoExt" placeholder="5000" style="width:70%; font-weight:bold;">
-          </div>
-        </div>
-        <div class="fg full">
-          <label class="fl">🏠 <span data-i18n="st_seq_ret">تسلسل المفرق (B)</span></label>
-          <div style="display:flex;gap:5px;">
-            <input type="text" class="fc" id="stPrefixRet" placeholder="b" style="width:30%; text-align:center; font-weight:bold;">
-            <input type="number" class="fc" id="stNextNoRet" placeholder="3000" style="width:70%; font-weight:bold;">
-          </div>
-        </div>
-        <div class="fg full">
-          <label class="fl">📦 <span data-i18n="st_seq_whl">تسلسل الجملة (C)</span></label>
-          <div style="display:flex;gap:5px;">
-            <input type="text" class="fc" id="stPrefixWhl" placeholder="c" style="width:30%; text-align:center; font-weight:bold;">
-            <input type="number" class="fc" id="stNextNoWhl" placeholder="1000" style="width:70%; font-weight:bold;">
-          </div>
-        </div>
-        
-        <div class="fg"><label class="fl">👤 <span data-i18n="auth_person">الشخص المخوّل</span></label><input type="text" class="fc" id="stAuthPerson"></div>
-        <div class="fg"><label class="fl">🏛️ <span data-i18n="kdv_rate_setting">نسبة KDV (%)</span></label><input type="number" class="fc" id="stKdvRate" placeholder="20" min="0" max="100" step="0.1" value="20"></div>
-        <div class="fg full"><label class="fl">📝 <span data-i18n="default_notes">ملاحظات افتراضية</span></label><textarea class="fc" id="stDefaultNotes" rows="2"></textarea></div>
-      </div>
-    </div>
-
-    <div id="stab-currency" style="display:none;">
-      <div style="background:var(--input);border-radius:var(--rs);padding:14px;margin-bottom:12px;border:1px solid var(--border);">
-        <div style="font-size:12px;font-weight:700;color:var(--gold2);margin-bottom:10px;">💱 <span data-i18n="curr_rates_title">أسعار الصرف الحالية</span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
-          <div>💵 USD → TRY: <strong id="st-usdTry">—</strong></div>
-          <div>💶 USD → EUR: <strong id="st-usdEur">—</strong></div>
-          <div>🇹🇷 TRY → USD: <strong id="st-tryUsd">—</strong></div>
-          <div>🇹🇷 TRY → EUR: <strong id="st-tryEur">—</strong></div>
-          <div>💶 EUR → USD: <strong id="st-eurUsd">—</strong></div>
-          <div>💶 EUR → TRY: <strong id="st-eurTry">—</strong></div>
-        </div>
-        <button class="btn btn-p btn-sm w100" style="margin-top:10px;" onclick="fetchRate()">🔄 <span data-i18n="update_rates">تحديث الأسعار</span></button>
-      </div>
-      <div class="fgrid">
-        <div class="fg"><label class="fl">💵 <span data-i18n="manual_usd_try">USD/TRY يدوي</span></label><input type="number" class="fc" id="stManualUsdTry" placeholder="46.98" step="0.01" min="0"></div>
-        <div class="fg"><label class="fl">💶 <span data-i18n="manual_usd_eur">USD/EUR يدوي</span></label><input type="number" class="fc" id="stManualUsdEur" placeholder="0.92" step="0.001" min="0"></div>
-      </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:6px;" data-i18n="manual_rate_hint">اتركها فارغة لاستخدام الأسعار التلقائية</div>
-    </div>
-    <div class="divider"></div>
-    <div style="display:flex;gap:9px;justify-content:flex-end;">
-      <button class="btn btn-s" onclick="closeModal('settingsModal')" data-i18n="cancel">إلغاء</button>
-      <button class="btn btn-p" onclick="saveSettings()">💾 <span data-i18n="save_settings">حفظ</span></button>
-    </div>
-  </div>
-</div>
 
 <div id="print-area" style="display:none;"></div>
 
@@ -9613,8 +9056,6 @@ const map = {
   'select-invoice-type': 7,
   'create-invoice':      7,
   'payment-management':  3,
-     'settings':            0,   // ← أضف هذا السطر فقط
-
 };
   const items=document.querySelectorAll('.nav-item');
   if(map[id]!==undefined&&items[map[id]])items[map[id]].classList.add('active');
@@ -9692,7 +9133,7 @@ const PARENT_MAP = {
   'invoices':      'dashboard',
   'add-product':   'dashboard',
   'quick-barcode': 'dashboard',
-     'settings':      'dashboard',   // ← أضف هذا السطر فقط
+     'settings':      'dashboard', // 👈 تمت إضافتها هنا
 
 };
 
@@ -12832,9 +12273,13 @@ function shareEmail(){
 /* ============================================================
    SETTINGS
 ============================================================ */
-function openSettingsModal(){
-  loadSettingsToForm();openModal('settingsModal');
+// دالة لفتح صفحة الإعدادات
+function openSettingsPage() {
+  loadSettingsToForm();
+  showPage('settings');
+  switchTab('company'); // فتح تبويب الشركة افتراضياً
 }
+
 function loadSettingsToForm(){
   const sv=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
   
@@ -12928,7 +12373,7 @@ async function saveSettings(){
   
   updateRateUI();
   updateKdvDisplay();
-  closeModal('settingsModal');
+goBack(); // للرجوع للصفحة السابقة بعد الحفظ
   showToast(t('settings_saved'),'ok');
 }
 
@@ -13563,7 +13008,7 @@ updateQblTexts(); // ✅ أضف هذا السطر
   }
   // handle hash routing
   const hash=window.location.hash.replace('#','');
-  const validPages=['dashboard','companies','products','invoices','add-company','add-product','create-invoice','select-client-type','select-invoice-type','payment-management'];
+const validPages=['dashboard','companies','products','invoices','add-company','add-product','create-invoice','select-client-type','select-invoice-type','payment-management','settings'];
   if(hash&&validPages.includes(hash)){showPage(hash,false);history.replaceState({page:hash},'','#'+hash);}
   else{showPage('dashboard',false);history.replaceState({page:'dashboard'},'','#dashboard');}
   // fetch rate in background
@@ -16010,8 +15455,6 @@ const BNAV_CONFIG = {
     'invoices':            3,
     'payment-management':  3,
     'quick-barcode':       4,
-         'settings':            2,   // ← أضف هذا السطر فقط
-
   },
   icons:  ['🏢','📦','🏠','✏️','📷'],
   count:  5,
@@ -18256,357 +17699,6 @@ function imgViewerEscHandler(e) {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-/* ============================================================
-   SETTINGS PAGE — FULL PAGE CONTROLLER
-============================================================ */
-
-let _settingsCurrentTab = 'company';
-
-/* ── فتح صفحة الإعدادات ── */
-function openSettingsModal() {
-  // إذا كانت الصفحة موجودة → افتحها كصفحة كاملة
-  const settingsPage = document.getElementById('page-settings');
-  if (settingsPage) {
-    loadSettingsToPageForm();
-    updateSettingsPageTexts();
-    showPage('settings');
-  } else {
-    // fallback للنافذة القديمة إذا لم تُضف الصفحة بعد
-    loadSettingsToForm();
-    openModal('settingsModal');
-  }
-}
-
-
-/* ── تبديل التبويبات ── */
-function switchSettingsTab(tab) {
-  _settingsCurrentTab = tab;
-  const tabs = ['company','bank','invoice','currency'];
-
-  tabs.forEach(t => {
-    const btn  = document.getElementById('snav-' + t);
-    const body = document.getElementById('stab-page-' + t);
-    if (btn)  btn.classList.toggle('active', t === tab);
-    if (body) body.style.display = t === tab ? 'block' : 'none';
-  });
-
-  // تحديث أسعار الصرف عند فتح تبويب العملات
-  if (tab === 'currency') updateSettingsRatesPage();
-}
-
-/* ── تحميل البيانات إلى الحقول ── */
-function loadSettingsToPageForm() {
-  const sv = (id, val) => {
-    const el = document.getElementById(id);
-    if (el) el.value = val || '';
-  };
-
-  sv('stCompanyNameP',  S.settings.companyName);
-  sv('stAddressP',      S.settings.address);
-  sv('stPhoneP',        S.settings.phone);
-  sv('stEmailP',        S.settings.email);
-  sv('stWebsiteP',      S.settings.website);
-  sv('stMersisP',       S.settings.mersis);
-  sv('stBankNameP',     S.settings.bankName);
-  sv('stBeneficiaryP',  S.settings.beneficiary);
-  sv('stIbanUSDp',      S.settings.ibanUSD);
-  sv('stIbanTRYp',      S.settings.ibanTRY);
-  sv('stIbanEURp',      S.settings.ibanEUR);
-  sv('stSwiftP',        S.settings.swift);
-  sv('stAccountNoP',    S.settings.accountNo);
-  sv('stPrefixExtP',    S.settings.prefixExt || 'a');
-  sv('stNextNoExtP',    S.settings.nextNoExt || 5000);
-  sv('stPrefixRetP',    S.settings.prefixRet || 'b');
-  sv('stNextNoRetP',    S.settings.nextNoRet || 3000);
-  sv('stPrefixWhlP',    S.settings.prefixWhl || 'c');
-  sv('stNextNoWhlP',    S.settings.nextNoWhl || 1000);
-  sv('stAuthPersonP',   S.settings.authPerson);
-  sv('stKdvRateP',      S.settings.kdvRate || 20);
-  sv('stDefaultNotesP', S.settings.defaultNotes);
-  sv('stManualUsdTryP', S.settings.manualUsdTry || '');
-  sv('stManualUsdEurP', S.settings.manualUsdEur || '');
-
-  // اللوجو
-  const logoEl = document.getElementById('settingsLogoCircle');
-  if (logoEl) {
-    if (S.settings.logo) {
-      logoEl.innerHTML = `<img src="${S.settings.logo}" alt="logo">`;
-    } else {
-      logoEl.textContent = (S.settings.companyName || 'W')[0].toUpperCase();
-    }
-  }
-
-  // تحديث الأسعار
-  updateSettingsRatesPage();
-
-  // العودة للتبويب الأول
-  switchSettingsTab('company');
-}
-
-/* ── تحديث عرض أسعار الصرف ── */
-function updateSettingsRatesPage() {
-  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  set('st-usdTryP',  S.usdTry.toFixed(2));
-  set('st-usdEurP',  S.usdEur.toFixed(4));
-  set('st-tryUsdP',  (1/S.usdTry).toFixed(6));
-  set('st-tryEurP',  ((1/S.usdTry)*S.usdEur).toFixed(6));
-  set('st-eurUsdP',  (1/S.usdEur).toFixed(4));
-  set('st-eurTryP',  ((1/S.usdEur)*S.usdTry).toFixed(2));
-  set('stRateTimePage', S.rateTime ? `⏱ ${S.rateTime}` : '—');
-}
-
-/* ── تحديث الأسعار من الإنترنت ── */
-async function fetchRateAndUpdatePage() {
-  await fetchRate();
-  updateSettingsRatesPage();
-}
-
-/* ── حفظ الإعدادات من الصفحة ── */
-async function saveSettingsPage() {
-  const gv = id => {
-    const el = document.getElementById(id);
-    return el ? el.value.trim() : '';
-  };
-
-  S.settings.companyName   = gv('stCompanyNameP');
-  S.settings.address       = gv('stAddressP');
-  S.settings.phone         = gv('stPhoneP');
-  S.settings.email         = gv('stEmailP');
-  S.settings.website       = gv('stWebsiteP');
-  S.settings.mersis        = gv('stMersisP');
-  S.settings.bankName      = gv('stBankNameP');
-  S.settings.beneficiary   = gv('stBeneficiaryP');
-  S.settings.ibanUSD       = gv('stIbanUSDp');
-  S.settings.ibanTRY       = gv('stIbanTRYp');
-  S.settings.ibanEUR       = gv('stIbanEURp');
-  S.settings.swift         = gv('stSwiftP');
-  S.settings.accountNo     = gv('stAccountNoP');
-  S.settings.prefixExt     = gv('stPrefixExtP') || 'a';
-  S.settings.nextNoExt     = parseInt(gv('stNextNoExtP')) || 5000;
-  S.settings.prefixRet     = gv('stPrefixRetP') || 'b';
-  S.settings.nextNoRet     = parseInt(gv('stNextNoRetP')) || 3000;
-  S.settings.prefixWhl     = gv('stPrefixWhlP') || 'c';
-  S.settings.nextNoWhl     = parseInt(gv('stNextNoWhlP')) || 1000;
-  S.settings.authPerson    = gv('stAuthPersonP');
-  S.settings.kdvRate       = parseFloat(gv('stKdvRateP')) || 20;
-  S.settings.defaultNotes  = gv('stDefaultNotesP');
-
-  const manTry = parseFloat(gv('stManualUsdTryP'));
-  const manEur = parseFloat(gv('stManualUsdEurP'));
-  S.settings.manualUsdTry  = manTry || null;
-  S.settings.manualUsdEur  = manEur || null;
-  if (manTry) S.usdTry = manTry;
-  if (manEur) S.usdEur = manEur;
-
-  await dbPut('settings', { id:'main', ...S.settings });
-
-  // تحديث الـ Navbar
-  const navTxt = document.getElementById('navTitle');
-  if (navTxt && S.settings.companyName) {
-    const parts = S.settings.companyName.split(' ');
-    navTxt.innerHTML = `<span>${parts[0]}</span> ${parts.slice(1).join(' ')}`;
-  }
-  const navLogoTxt = document.getElementById('navLogoTxt');
-  if (navLogoTxt) navLogoTxt.textContent = (S.settings.companyName || 'W')[0].toUpperCase();
-  if (S.settings.logo) {
-    const nl = document.getElementById('navLogo');
-    if (nl) nl.innerHTML = `<img src="${S.settings.logo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
-  }
-
-  updateRateUI();
-  updateKdvDisplay();
-  showToast(t('settings_saved'), 'ok');
-  goBack();
-}
-
-/* ── معالج اللوجو في صفحة الإعدادات ── */
-function handleSettingsLogoPage(e) {
-  const f = e.target.files[0];
-  if (!f) return;
-  const r = new FileReader();
-  r.onload = ev => {
-    S.settings.logo = ev.target.result;
-    const logoEl = document.getElementById('settingsLogoCircle');
-    if (logoEl) logoEl.innerHTML = `<img src="${ev.target.result}" alt="logo">`;
-    const nl = document.getElementById('navLogo');
-    if (nl) nl.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
-  };
-  r.readAsDataURL(f);
-}
-
-/* ── استعادة اللوجو الافتراضي ── */
-function resetSettingsLogoPage() {
-  const defaultLogo = 'https://h.top4top.io/p_3861refg81.png';
-  S.settings.logo = defaultLogo;
-  const logoEl = document.getElementById('settingsLogoCircle');
-  if (logoEl) logoEl.innerHTML = `<img src="${defaultLogo}" alt="logo">`;
-  const nl = document.getElementById('navLogo');
-  if (nl) nl.innerHTML = `<img src="${defaultLogo}" style="width:100%;height:100%;object-fit:contain;" alt="logo">`;
-  showToast(t('logo_restored'), 'ok');
-}
-
-/* ── تحديث نصوص الصفحة حسب اللغة ── */
-function updateSettingsPageTexts() {
-  const lang = S.lang || 'ar';
-  const set  = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-
-  // عناوين التبويبات
-  const navLabels = {
-    ar: { company:'الشركة', bank:'البنك', invoice:'الفاتورة', currency:'الصرف' },
-    tr: { company:'Şirket', bank:'Banka', invoice:'Fatura', currency:'Döviz' },
-    en: { company:'Company', bank:'Bank', invoice:'Invoice', currency:'Currency' },
-  };
-  const nl = navLabels[lang] || navLabels.ar;
-  set('snav-company-lbl', nl.company);
-  set('snav-bank-lbl',    nl.bank);
-  set('snav-invoice-lbl', nl.invoice);
-  set('snav-currency-lbl',nl.currency);
-
-  // عنوان الصفحة
-  const pageTitles = {
-    ar: '⚙️ الإعدادات',
-    tr: '⚙️ Ayarlar',
-    en: '⚙️ Settings',
-  };
-  const pageSubs = {
-    ar: 'إدارة إعدادات التطبيق',
-    tr: 'Uygulama ayarlarını yönetin',
-    en: 'Manage application settings',
-  };
-  set('settingsPageTitle', pageTitles[lang] || pageTitles.ar);
-  set('settingsPageSub',   pageSubs[lang]   || pageSubs.ar);
-
-  // أزرار اللوجو
-  const logoLabels = {
-    ar: { change:'تغيير اللوجو', reset:'استعادة الافتراضي' },
-    tr: { change:'Logo Değiştir', reset:'Varsayılana Dön' },
-    en: { change:'Change Logo', reset:'Restore Default' },
-  };
-  const ll = logoLabels[lang] || logoLabels.ar;
-  set('st-change-logo-btn', ll.change);
-  set('st-reset-logo-btn',  ll.reset);
-
-  // أزرار الحفظ
-  const saveLabels = {
-    ar: { save:'حفظ الإعدادات', cancel:'إلغاء' },
-    tr: { save:'Ayarları Kaydet', cancel:'İptal' },
-    en: { save:'Save Settings', cancel:'Cancel' },
-  };
-  const sl = saveLabels[lang] || saveLabels.ar;
-  set('st-save-btn',   sl.save);
-  set('st-cancel-btn', sl.cancel);
-
-  // عناوين الأقسام
-  const sectionTitles = {
-    ar: {
-      logo:      'لوجو الشركة',
-      logoSub:   'صورة تظهر في الفواتير والتطبيق',
-      company:   'معلومات الشركة',
-      companySub:'البيانات الأساسية للشركة',
-      bank:      'معلومات البنك',
-      bankSub:   'بيانات التحويل البنكي للفواتير',
-      invoice:   'إعدادات الفاتورة',
-      invoiceSub:'تسلسل الأرقام والضريبة والملاحظات',
-      rates:     'أسعار الصرف الحالية',
-      ratesSub:  'محدّثة تلقائياً من الإنترنت',
-      manual:    'أسعار يدوية',
-      manualSub: 'اتركها فارغة للأسعار التلقائية',
-      updateBtn: 'تحديث الأسعار',
-    },
-    tr: {
-      logo:      'Şirket Logosu',
-      logoSub:   'Faturalarda ve uygulamada görünen resim',
-      company:   'Şirket Bilgileri',
-      companySub:'Temel şirket verileri',
-      bank:      'Banka Bilgileri',
-      bankSub:   'Faturalar için banka transfer bilgileri',
-      invoice:   'Fatura Ayarları',
-      invoiceSub:'Seri numaraları, vergi ve notlar',
-      rates:     'Güncel Döviz Kurları',
-      ratesSub:  'İnternetten otomatik güncellenir',
-      manual:    'Manuel Kurlar',
-      manualSub: 'Otomatik kur için boş bırakın',
-      updateBtn: 'Kurları Güncelle',
-    },
-    en: {
-      logo:      'Company Logo',
-      logoSub:   'Image shown in invoices and the app',
-      company:   'Company Information',
-      companySub:'Basic company data',
-      bank:      'Bank Information',
-      bankSub:   'Bank transfer details for invoices',
-      invoice:   'Invoice Settings',
-      invoiceSub:'Number sequences, tax and notes',
-      rates:     'Current Exchange Rates',
-      ratesSub:  'Auto-updated from the internet',
-      manual:    'Manual Rates',
-      manualSub: 'Leave empty for automatic rates',
-      updateBtn: 'Update Rates',
-    },
-  };
-  const st = sectionTitles[lang] || sectionTitles.ar;
-  set('st-logo-title',    st.logo);
-  set('st-logo-sub',      st.logoSub);
-  set('st-company-title', st.company);
-  set('st-company-sub',   st.companySub);
-  set('st-bank-title',    st.bank);
-  set('st-bank-sub',      st.bankSub);
-  set('st-invoice-title', st.invoice);
-  set('st-invoice-sub',   st.invoiceSub);
-  set('st-rates-title',   st.rates);
-  set('st-rates-sub',     st.ratesSub);
-  set('st-manual-title',  st.manual);
-  set('st-manual-sub',    st.manualSub);
-  set('st-update-rates-btn', st.updateBtn);
-}
-
-/* ── ربط مع showPage لتحديث النصوص تلقائياً ── */
-const _origShowPageSettings = window.showPage;
-window.showPage = function(id, pushHistory = true) {
-  _origShowPageSettings.call(this, id, pushHistory);
-  if (id === 'settings') {
-    setTimeout(() => updateSettingsPageTexts(), 50);
-  }
-};
-
-/* ── تحديث النصوص عند تغيير اللغة ── */
-const _origApplyTrSettings = window.applyTr;
-window.applyTr = function() {
-  _origApplyTrSettings.call(this);
-  const currentPage = getCurrentPage();
-  if (currentPage === 'settings') {
-    updateSettingsPageTexts();
-  }
-};
-
-/* ── إضافة صفحة settings لخريطة PARENT_MAP ── */
-if (typeof PARENT_MAP !== 'undefined') {
-  PARENT_MAP['settings'] = 'dashboard';
-}
-
-/* ── إضافة settings لخريطة التنقل ── */
-if (typeof BNAV_CONFIG !== 'undefined' && BNAV_CONFIG.pages) {
-  BNAV_CONFIG.pages['settings'] = 2;
-}
-
-
-
-
-
-
-   
 
    
    
