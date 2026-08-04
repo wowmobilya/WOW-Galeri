@@ -12618,11 +12618,25 @@ function buildInvoiceHTML(inv, lang, opts) {
     showBankInfo:true, showRates:true
   };
 
-  const isRtl  = lang === 'ar';
-  const dir    = isRtl ? 'rtl' : 'ltr';
-  const L      = PDF_TR[lang] || PDF_TR.en;
-  const cur    = inv.currency || 'USD';
-  const sym    = symOf(cur);
+  /* ══════════════════════════════════════════
+     1. إعداد الاتجاه — المحور الرئيسي للانعكاس
+  ══════════════════════════════════════════ */
+  const isRtl   = lang === 'ar';
+  const dir     = isRtl ? 'rtl' : 'ltr';
+  const textDir = isRtl ? 'right' : 'left';
+  const textDirOpp = isRtl ? 'left' : 'right';
+
+  /* موضع الصورة في الهيدر:
+     - عربي  → الصورة يمين، معلومات البائع يسار
+     - تركي/إنجليزي → الصورة يسار، معلومات البائع يمين  */
+  const logoFirst = isRtl; // true = الصورة في أول العناصر (يمين في RTL)
+
+  /* ══════════════════════════════════════════
+     2. الترجمات
+  ══════════════════════════════════════════ */
+  const L   = PDF_TR[lang] || PDF_TR.en;
+  const cur = inv.currency || 'USD';
+  const sym = symOf(cur);
   const usdTry = inv.usdTry || S.usdTry;
   const usdEur = inv.usdEur || S.usdEur;
 
@@ -12635,12 +12649,12 @@ function buildInvoiceHTML(inv, lang, opts) {
     minimumFractionDigits:2, maximumFractionDigits:2
   });
 
-  const st           = S.settings;
-  const barcodeSVG   = opts.showBarcode ? generateBarcodeSVG(inv.invNo || 'A5001') : '';
-  const invPayments  = inv.payments || [];
+  const st = S.settings;
+  const barcodeSVG = opts.showBarcode ? generateBarcodeSVG(inv.invNo || 'A5001') : '';
+  const invPayments = inv.payments || [];
 
   /* ══════════════════════════════════════════
-     رؤوس الأعمدة × 3 لغات
+     3. رؤوس الأعمدة × 3 لغات
   ══════════════════════════════════════════ */
   const colHeaders = {
     en: {
@@ -12674,16 +12688,16 @@ function buildInvoiceHTML(inv, lang, opts) {
   const CH = colHeaders[lang] || colHeaders.en;
 
   /* ══════════════════════════════════════════
-     نص TOTAL PER × 3 لغات
+     4. نص TOTAL PER × 3 لغات
   ══════════════════════════════════════════ */
   const totalPerLabel = {
     en: 'TOTAL PER: QUANTITY / PRICE / PACKET / CBM / KG',
     tr: 'TOPLAM: MİKTAR / FİYAT / PAKET / CBM / KG',
-    ar: 'الإجمالي: الكمية / السعر / العبوة / متر مكعب / كيلوغرام',
+    ar: 'الإجمالي: الكمية / السعر / الباكيت / م³ / كجم',
   }[lang] || 'TOTAL PER:';
 
   /* ══════════════════════════════════════════
-     إجماليات الجدول
+     5. إجماليات الجدول
   ══════════════════════════════════════════ */
   let grandTotalPkts = 0;
   let grandTotalCBM  = 0;
@@ -12696,7 +12710,7 @@ function buildInvoiceHTML(inv, lang, opts) {
   });
 
   /* ══════════════════════════════════════════
-     دالة: خلية الأبعاد
+     6. دالة: خلية الأبعاد
   ══════════════════════════════════════════ */
   function buildDimsCell(item) {
     if (item.dimPieces && item.dimPieces.length > 0) {
@@ -12738,7 +12752,7 @@ function buildInvoiceHTML(inv, lang, opts) {
   }
 
   /* ══════════════════════════════════════════
-     دالة: تحويل كود اللون → نص مقروء
+     7. دالة: تحويل كود اللون → نص
   ══════════════════════════════════════════ */
   function getColorDisplay(colorVal) {
     if (!colorVal || colorVal === 'STANDARD') return '—';
@@ -12753,7 +12767,7 @@ function buildInvoiceHTML(inv, lang, opts) {
   }
 
   /* ══════════════════════════════════════════
-     دالة: قراءة SET/PCS
+     8. دالة: SET/PCS من الوصف
   ══════════════════════════════════════════ */
   function getSetPcs(item) {
     const product = S.products.find(p => p.id === item.productId);
@@ -12764,7 +12778,10 @@ function buildInvoiceHTML(inv, lang, opts) {
   }
 
   /* ══════════════════════════════════════════
-     صفوف الجدول
+     9. صفوف الجدول
+     ✅ الأعمدة تُرتَّب حسب الاتجاه:
+        - عربي  → من اليمين لليسار
+        - غير عربي → من اليسار لليمين
   ══════════════════════════════════════════ */
   const tableRows = (inv.items || []).map((item, i) => {
     const unitCBM   = item.cbm    || 0;
@@ -12774,60 +12791,87 @@ function buildInvoiceHTML(inv, lang, opts) {
     const unitPkts  = item.packets || 1;
     const totalPkts = unitPkts    * item.qty;
 
-    /* صورة المنتج */
     const imgCell = opts.showImages
       ? (item.image
           ? `<img src="${item.image}" style="width:44px;height:36px;object-fit:cover;border-radius:4px;display:block;margin:0 auto;" alt="">`
           : `<div style="width:44px;height:36px;background:#f5f5f5;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto;">🛋️</div>`)
       : `<div style="width:44px;height:36px;background:#f5f5f5;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#ccc;margin:0 auto;">—</div>`;
 
-    const product      = S.products.find(p => p.id === item.productId);
-    const hsCode       = (product && product.hsCode) ? product.hsCode : (item.hsCode || '—');
+    const product = S.products.find(p => p.id === item.productId);
+    const hsCode  = (product && product.hsCode) ? product.hsCode : (item.hsCode || '—');
     const colorDisplay = getColorDisplay(item.color);
-    const setpcsVal    = getSetPcs(item);
-    const rowBg        = i % 2 === 0 ? '#ffffff' : '#fafafa';
-
-    /* ── محاذاة اسم المنتج حسب اللغة ── */
-    const nameTdAlign = isRtl ? 'right' : 'left';
-
+    const setpcsVal = getSetPcs(item);
+    const dimsHTML = buildDimsCell(item);
+    const rowBg = i % 2 === 0 ? '#ffffff' : '#fafafa';
     const td = `padding:5px 4px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f0f0;border-right:1px solid #ebebeb;`;
 
-    return `<tr style="background:${rowBg};">
-      <td style="${td}">${imgCell}</td>
-      <td style="${td}font-weight:700;font-size:8px;text-align:${nameTdAlign};
-        direction:${dir};unicode-bidi:plaintext;">${item.name}</td>
-      <td style="${td}font-size:7px;color:#555;direction:ltr;">${hsCode}</td>
-      <td style="${td}">${buildDimsCell(item)}</td>
-      <td style="${td}font-size:7.5px;max-width:55px;word-break:break-word;
-        direction:${dir};unicode-bidi:plaintext;">${colorDisplay}</td>
-      <td style="${td}font-size:8px;font-weight:700;color:#1a1a2e;">${setpcsVal}</td>
-      <td style="${td}font-weight:800;font-size:9px;">${item.qty}</td>
-      <td style="${td}direction:ltr;white-space:nowrap;font-weight:700;font-size:8px;">${fmt(item.priceUSD)}</td>
-      <td style="${td}direction:ltr;white-space:nowrap;font-weight:800;color:#1a1a2e;font-size:8.5px;">${fmt(item.totalUSD)}</td>
-      <td style="${td}font-size:8px;">${unitPkts}</td>
-      <td style="${td}font-size:8px;font-weight:700;">${totalPkts}</td>
-      <td style="${td}direction:ltr;font-size:7.5px;">${unitCBM.toFixed(4)}</td>
-      <td style="${td}direction:ltr;font-size:7.5px;font-weight:700;">${totalCBM.toFixed(4)}</td>
-      <td style="${td}direction:ltr;font-size:7.5px;">${unitWt.toFixed(2)}</td>
-      <td style="padding:5px 4px;text-align:center;vertical-align:middle;
-        border-bottom:1px solid #f0f0f0;direction:ltr;font-size:7.5px;font-weight:700;">${totalWt.toFixed(2)}</td>
-    </tr>`;
+    /* ── ترتيب الأعمدة حسب الاتجاه ── */
+    if (isRtl) {
+      /* عربي: الصورة أولاً من اليمين */
+      return `<tr style="background:${rowBg};direction:rtl;">
+        <td style="${td}">${imgCell}</td>
+        <td style="${td}font-weight:700;font-size:8px;text-align:right;">${item.name}</td>
+        <td style="${td}font-size:7px;color:#555;direction:ltr;">${hsCode}</td>
+        <td style="${td}">${dimsHTML}</td>
+        <td style="${td}font-size:7.5px;max-width:55px;word-break:break-word;">${colorDisplay}</td>
+        <td style="${td}font-size:8px;font-weight:700;color:#1a1a2e;">${setpcsVal}</td>
+        <td style="${td}font-weight:800;font-size:9px;">${item.qty}</td>
+        <td style="${td}direction:ltr;white-space:nowrap;font-weight:700;font-size:8px;">${fmt(item.priceUSD)}</td>
+        <td style="${td}direction:ltr;white-space:nowrap;font-weight:800;color:#1a1a2e;font-size:8.5px;">${fmt(item.totalUSD)}</td>
+        <td style="${td}font-size:8px;">${unitPkts}</td>
+        <td style="${td}font-size:8px;font-weight:700;">${totalPkts}</td>
+        <td style="${td}direction:ltr;font-size:7.5px;">${unitCBM.toFixed(4)}</td>
+        <td style="${td}direction:ltr;font-size:7.5px;font-weight:700;">${totalCBM.toFixed(4)}</td>
+        <td style="${td}direction:ltr;font-size:7.5px;">${unitWt.toFixed(2)}</td>
+        <td style="padding:5px 4px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f0f0;direction:ltr;font-size:7.5px;font-weight:700;">${totalWt.toFixed(2)}</td>
+      </tr>`;
+    } else {
+      /* تركي / إنجليزي: من اليسار */
+      return `<tr style="background:${rowBg};direction:ltr;">
+        <td style="${td}">${imgCell}</td>
+        <td style="${td}font-weight:700;font-size:8px;text-align:left;">${item.name}</td>
+        <td style="${td}font-size:7px;color:#555;direction:ltr;">${hsCode}</td>
+        <td style="${td}">${dimsHTML}</td>
+        <td style="${td}font-size:7.5px;max-width:55px;word-break:break-word;">${colorDisplay}</td>
+        <td style="${td}font-size:8px;font-weight:700;color:#1a1a2e;">${setpcsVal}</td>
+        <td style="${td}font-weight:800;font-size:9px;">${item.qty}</td>
+        <td style="${td}direction:ltr;white-space:nowrap;font-weight:700;font-size:8px;">${fmt(item.priceUSD)}</td>
+        <td style="${td}direction:ltr;white-space:nowrap;font-weight:800;color:#1a1a2e;font-size:8.5px;">${fmt(item.totalUSD)}</td>
+        <td style="${td}font-size:8px;">${unitPkts}</td>
+        <td style="${td}font-size:8px;font-weight:700;">${totalPkts}</td>
+        <td style="${td}direction:ltr;font-size:7.5px;">${unitCBM.toFixed(4)}</td>
+        <td style="${td}direction:ltr;font-size:7.5px;font-weight:700;">${totalCBM.toFixed(4)}</td>
+        <td style="${td}direction:ltr;font-size:7.5px;">${unitWt.toFixed(2)}</td>
+        <td style="padding:5px 4px;text-align:center;vertical-align:middle;border-bottom:1px solid #f0f0f0;direction:ltr;font-size:7.5px;font-weight:700;">${totalWt.toFixed(2)}</td>
+      </tr>`;
+    }
   }).join('');
 
   /* ══════════════════════════════════════════
-     صف الإجماليات — tfoot
+     10. صف الإجماليات — tfoot
   ══════════════════════════════════════════ */
   const totalQty = (inv.items||[]).reduce((s,i) => s + i.qty, 0);
-
   const tfootTdStyle = `
     padding:7px 4px;text-align:center;vertical-align:middle;
     color:#1a1a2e;font-weight:800;font-size:8px;
     border-right:1px solid #d0d7e3;background:#eef2f8;
     border-top:2px solid #1a1a2e;
   `;
+  const totalRow = `<tr style="direction:${dir};">
+    <td colspan="6" style="${tfootTdStyle}font-size:8.5px;font-weight:900;letter-spacing:.5px;text-align:${textDir};">${totalPerLabel}</td>
+    <td style="${tfootTdStyle}font-size:9px;">${totalQty}</td>
+    <td style="${tfootTdStyle}"></td>
+    <td style="${tfootTdStyle}font-size:10px;">${fmt(inv.subtotalUSD||0)}</td>
+    <td style="${tfootTdStyle}font-size:8px;">${(inv.items||[]).reduce((s,i)=>s+(i.packets||1),0)}</td>
+    <td style="${tfootTdStyle}font-size:8.5px;">${grandTotalPkts}</td>
+    <td style="${tfootTdStyle}"></td>
+    <td style="${tfootTdStyle}font-size:8px;direction:ltr;">${grandTotalCBM.toFixed(4)}</td>
+    <td style="${tfootTdStyle}"></td>
+    <td style="${tfootTdStyle}font-size:8px;direction:ltr;border-right:none;">${grandTotalWt.toFixed(2)}</td>
+  </tr>`;
 
   /* ══════════════════════════════════════════
-     سجل الدفعات
+     11. سجل الدفعات
   ══════════════════════════════════════════ */
   const rtIconsPDF = {
     cash:'💵', transfer:'🏦', card:'💳', check:'📝',
@@ -12845,19 +12889,9 @@ function buildInvoiceHTML(inv, lang, opts) {
          installment:'أقساط', western_union:'ويسترن يونيون', deferred:'آجل',
          exchange:'صراف', other:'أخرى' },
   };
-  const payHistTitles = { en:'Payment History', tr:'Ödeme Geçmişi', ar:'سجل الدفعات' };
-  const phRtLabels    = rtLabelsPDF[lang] || rtLabelsPDF.en;
 
-  /* ── ترويسات جدول الدفعات حسب اللغة ── */
-  const phHeaders = {
-    ar: { no:'#', date:'التاريخ', method:'الطريقة', amount:'المبلغ',
-          original:'الأصلي', note:'ملاحظة', totalPaid:'المدفوع', remaining:'المتبقي' },
-    tr: { no:'#', date:'Tarih', method:'Yöntem', amount:'Tutar',
-          original:'Orijinal', note:'Not', totalPaid:'Toplam', remaining:'Kalan' },
-    en: { no:'#', date:'Date', method:'Method', amount:'Amount',
-          original:'Original', note:'Note', totalPaid:'Total Paid', remaining:'Remaining' },
-  };
-  const PHH = phHeaders[lang] || phHeaders.en;
+  const payHistTitles = { en:'Payment History', tr:'Ödeme Geçmişi', ar:'سجل الدفعات' };
+  const phRtLabels = rtLabelsPDF[lang] || rtLabelsPDF.en;
 
   let runningPaid = inv.depositUSD || 0;
   const payHistoryHTML = (invPayments.length && opts.showNotes) ? (() => {
@@ -12867,72 +12901,58 @@ function buildInvoiceHTML(inv, lang, opts) {
       const rtIcon  = rtIconsPDF[p.receiptType] || '💳';
       const rtLabel = phRtLabels[p.receiptType] || p.receiptType || '—';
       const hasConv = p.originalCurrency && p.originalAmount;
-      const origCell = hasConv
-        ? `${symOf(p.originalCurrency)}${p.originalAmount.toFixed(2)} ${p.originalCurrency}`
-        : '—';
-      return `<tr style="background:${i%2===0?'#fff':'#fafafa'}">
+      const origCell = hasConv ? `${symOf(p.originalCurrency)}${p.originalAmount.toFixed(2)} ${p.originalCurrency}` : '—';
+      return `<tr style="background:${i%2===0?'#fff':'#fafafa'};direction:${dir};">
         <td style="padding:4px 5px;text-align:center;font-weight:700;color:#1a1a2e;">${i+1}</td>
         <td style="padding:4px 5px;text-align:center;color:#555;">${p.date||'—'}</td>
         <td style="padding:4px 5px;text-align:center;">
-          <span style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;
-            padding:1px 5px;font-size:7.5px;font-weight:700;">${rtIcon} ${rtLabel}</span>
+          <span style="background:#f8f9fa;border:1px solid #e2e8f0;border-radius:8px;padding:1px 5px;font-size:7.5px;font-weight:700;">${rtIcon} ${rtLabel}</span>
         </td>
         <td style="padding:4px 5px;text-align:center;font-weight:800;color:#38a169;">${fmt(p.amount||0)}</td>
         <td style="padding:4px 5px;text-align:center;font-size:7.5px;color:#805ad5;">${origCell}</td>
-        <td style="padding:4px 5px;text-align:${isRtl?'right':'left'};
-          font-size:7.5px;color:#555;direction:${dir};unicode-bidi:plaintext;">${p.note||'—'}</td>
+        <td style="padding:4px 5px;text-align:${textDir};font-size:7.5px;color:#555;">${p.note||'—'}</td>
         <td style="padding:4px 5px;text-align:center;font-weight:700;">${fmt(runningPaid)}</td>
-        <td style="padding:4px 5px;text-align:center;font-weight:700;
-          color:${remainAfter>0?'#e53e3e':'#38a169'};">${fmt(remainAfter)}</td>
+        <td style="padding:4px 5px;text-align:center;font-weight:700;color:${remainAfter>0?'#e53e3e':'#38a169'};">${fmt(remainAfter)}</td>
       </tr>`;
     });
     const finalPaid   = (inv.depositUSD||0) + invPayments.reduce((s,p)=>s+(p.amount||0),0);
     const finalRemain = Math.max(0,(inv.grandTotal||0)-finalPaid);
     const pct = inv.grandTotal > 0 ? Math.min(100,(finalPaid/inv.grandTotal)*100) : 0;
 
+    const phColLabels = {
+      en: ['#','Date','Method','Amount','Original','Note','Total Paid','Remaining'],
+      tr: ['#','Tarih','Yöntem','Tutar','Orijinal','Not','Toplam','Kalan'],
+      ar: ['#','التاريخ','الطريقة','المبلغ','الأصلي','ملاحظة','المدفوع','المتبقي'],
+    }[lang] || ['#','Date','Method','Amount','Original','Note','Total Paid','Remaining'];
+
     return `
-    <div style="margin-top:10px;padding-top:10px;border-top:1.5px solid #e2e8f0;">
-      <div style="display:flex;align-items:center;justify-content:space-between;
-        margin-bottom:8px;direction:${dir};">
-        <div style="font-size:8.5px;font-weight:800;color:#1a1a2e;
-          letter-spacing:1px;text-transform:uppercase;">
+    <div style="margin-top:10px;padding-top:10px;border-top:1.5px solid #e2e8f0;direction:${dir};">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-direction:${isRtl?'row-reverse':'row'};">
+        <div style="font-size:8.5px;font-weight:800;color:#1a1a2e;letter-spacing:1px;text-transform:uppercase;">
           📋 ${payHistTitles[lang]||payHistTitles.en}
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <span style="font-size:8px;color:#555;">${fmt(finalPaid)} / ${fmt(inv.grandTotal||0)}</span>
           <div style="width:70px;height:5px;background:#eee;border-radius:3px;overflow:hidden;">
-            <div style="width:${pct.toFixed(1)}%;height:100%;
-              background:${pct>=100?'#38a169':pct>=50?'#1a1a2e':'#e53e3e'};border-radius:3px;"></div>
+            <div style="width:${pct.toFixed(1)}%;height:100%;background:${pct>=100?'#38a169':pct>=50?'#1a1a2e':'#e53e3e'};border-radius:3px;"></div>
           </div>
-          <span style="font-size:8px;font-weight:800;
-            color:${pct>=100?'#38a169':'#1a1a2e'};">${pct.toFixed(0)}%</span>
+          <span style="font-size:8px;font-weight:800;color:${pct>=100?'#38a169':'#1a1a2e'};">${pct.toFixed(0)}%</span>
         </div>
       </div>
       <table style="width:100%;border-collapse:collapse;font-size:8px;direction:${dir};">
         <thead>
           <tr style="background:#1a1a2e;">
-            <th style="color:#fff;padding:4px 5px;text-align:center;">${PHH.no}</th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">${PHH.date}</th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">${PHH.method}</th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">${PHH.amount}</th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">${PHH.original}</th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">${PHH.note}</th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">${PHH.totalPaid}</th>
-            <th style="color:#fff;padding:4px 5px;text-align:center;">${PHH.remaining}</th>
+            ${phColLabels.map(h => `<th style="color:#fff;padding:4px 5px;text-align:center;">${h}</th>`).join('')}
           </tr>
         </thead>
         <tbody>${rows.join('')}</tbody>
         <tfoot>
           <tr style="background:#1a1a2e;">
-            <td colspan="3" style="padding:4px 5px;color:#fff;font-weight:700;
-              font-size:8px;text-align:center;">
-              ${{ar:'الإجمالي',tr:'Toplam',en:'Total'}[lang]||'Total'}
-            </td>
+            <td colspan="3" style="padding:4px 5px;color:#fff;font-weight:700;font-size:8px;text-align:center;">${{en:'Total',tr:'Toplam',ar:'الإجمالي'}[lang]||'Total'}</td>
             <td style="padding:4px 5px;color:#48bb78;font-weight:800;text-align:center;">${fmt(finalPaid)}</td>
             <td colspan="2"></td>
             <td style="padding:4px 5px;color:#48bb78;font-weight:800;text-align:center;">${fmt(finalPaid)}</td>
-            <td style="padding:4px 5px;font-weight:800;text-align:center;
-              color:${finalRemain>0?'#fc8181':'#48bb78'};">${fmt(finalRemain)}</td>
+            <td style="padding:4px 5px;font-weight:800;text-align:center;color:${finalRemain>0?'#fc8181':'#48bb78'};">${fmt(finalRemain)}</td>
           </tr>
         </tfoot>
       </table>
@@ -12940,10 +12960,10 @@ function buildInvoiceHTML(inv, lang, opts) {
   })() : '';
 
   /* ══════════════════════════════════════════
-     معلومات البنك — ينعكس حسب اللغة
+     12. معلومات البنك
   ══════════════════════════════════════════ */
   const bankHTML = opts.showBankInfo ? `
-    <div class="ip-bank" style="direction:${dir};">
+    <div class="ip-bank" style="direction:${dir};text-align:${textDir};">
       <div class="ip-sec-title">${L.bankInfo}</div>
       <div class="ip-bank-grid">
         <div>
@@ -12968,17 +12988,15 @@ function buildInvoiceHTML(inv, lang, opts) {
     </div>` : `<div class="ip-bank"></div>`;
 
   /* ══════════════════════════════════════════
-     التوقيعات — تنعكس حسب اللغة
-     العربية: بائع يمين ← مشترٍ يسار
-     غير العربية: بائع يسار → مشترٍ يمين
+     13. التوقيعات — تنعكس حسب الاتجاه
+     عربي  → البائع يمين، المشتري يسار
+     غير عربي → البائع يسار، المشتري يمين
   ══════════════════════════════════════════ */
   const sellerSig = `
-    <div class="ip-sig" style="direction:${dir};">
+    <div class="ip-sig" style="direction:${dir};text-align:${textDir};">
       <div class="ip-sig-title">${L.seller_sig}</div>
       <div class="ip-sig-logo">
-        ${st.logo
-          ? `<img src="${st.logo}" alt="logo">`
-          : `<span style="font-size:16px;font-weight:900;color:#1a1a2e;">WOW</span>`}
+        ${st.logo ? `<img src="${st.logo}" alt="logo">` : `<span style="font-size:16px;font-weight:900;color:#1a1a2e;">WOW</span>`}
       </div>
       <div class="ip-sig-stamp">${L.stamp}</div>
       <div class="ip-sig-line"></div>
@@ -12987,12 +13005,10 @@ function buildInvoiceHTML(inv, lang, opts) {
     </div>`;
 
   const buyerSig = `
-    <div class="ip-sig" style="direction:${dir};">
+    <div class="ip-sig" style="direction:${dir};text-align:${textDir};">
       <div class="ip-sig-title">${L.buyer_sig}</div>
       <div class="ip-sig-logo">
-        ${inv.companyLogo
-          ? `<img src="${inv.companyLogo}" alt="logo">`
-          : `<span style="font-size:13px;color:#aaa;">—</span>`}
+        ${inv.companyLogo ? `<img src="${inv.companyLogo}" alt="logo">` : `<span style="font-size:13px;color:#aaa;">—</span>`}
       </div>
       <div class="ip-sig-stamp">${L.stamp}</div>
       <div class="ip-sig-line"></div>
@@ -13000,14 +13016,14 @@ function buildInvoiceHTML(inv, lang, opts) {
       <div class="ip-sig-role">${inv.companyName||'—'}</div>
     </div>`;
 
-  /* ── ترتيب التوقيعات: عربي = بائع يمين | غير عربي = بائع يسار ── */
+  /* ترتيب التوقيعات: عربي → بائع يمين أولاً، غير عربي → بائع يسار أولاً */
   const sigHTML = opts.showSignatures ? `
     <div class="ip-sigs" style="direction:${dir};">
-      ${isRtl ? sellerSig + buyerSig : buyerSig + sellerSig}
+      ${isRtl ? sellerSig + buyerSig : sellerSig + buyerSig}
     </div>` : '';
 
   /* ══════════════════════════════════════════
-     الملاحظات — تنعكس حسب اللغة
+     14. شروط التسليم والبيع
   ══════════════════════════════════════════ */
   let notesHTML = '';
   if (opts.showNotes && inv.notes) {
@@ -13019,20 +13035,19 @@ function buildInvoiceHTML(inv, lang, opts) {
     }[lang] || 'DELIVERY AND SALES TERMS';
 
     const lines = rawNotes.split('\n').map(l => l.trim()).filter(Boolean);
-    const mainTerm  = lines[0] || '';
+    const mainTerm = lines[0] || '';
     const detailLines = lines.slice(1).filter(l => l.length > 2);
     const cleanLine = (line) => line.replace(/^\(\d+\)\s*/, '').trim();
 
     notesHTML = `
     <div style="padding:10px 18px;background:#fafafa;border-top:2px solid #1a1a2e;
-      page-break-inside:avoid;direction:${dir};">
+      page-break-inside:avoid;direction:${dir};text-align:${textDir};">
       <div style="font-size:8px;font-weight:900;color:#1a1a2e;letter-spacing:1.5px;
         text-transform:uppercase;margin-bottom:8px;padding-bottom:5px;
         border-bottom:1px solid #e2e8f0;
         display:flex;align-items:center;gap:6px;
-        ${isRtl ? 'flex-direction:row-reverse;justify-content:flex-end;' : ''}">
-        <span style="background:#1a1a2e;color:#c8a96e;border-radius:4px;
-          padding:2px 7px;font-size:7px;letter-spacing:1px;">📋</span>
+        flex-direction:${isRtl?'row-reverse':'row'};justify-content:flex-start;">
+        <span style="background:#1a1a2e;color:#c8a96e;border-radius:4px;padding:2px 7px;font-size:7px;letter-spacing:1px;">📋</span>
         ${notesSectionTitle}
       </div>
       ${mainTerm ? `
@@ -13040,11 +13055,10 @@ function buildInvoiceHTML(inv, lang, opts) {
         border:1.5px solid rgba(200,169,110,.35);border-radius:8px;
         padding:8px 12px;margin-bottom:8px;
         display:flex;align-items:center;gap:8px;
-        ${isRtl ? 'flex-direction:row-reverse;' : ''}">
+        flex-direction:${isRtl?'row-reverse':'row'};">
         <span style="font-size:14px;flex-shrink:0;">🚛</span>
         <span style="font-size:9px;font-weight:800;color:#1a1a2e;line-height:1.5;
-          direction:${dir};unicode-bidi:plaintext;
-          text-align:${isRtl ? 'right' : 'left'};">${mainTerm}</span>
+          direction:${dir};unicode-bidi:plaintext;">${mainTerm}</span>
       </div>` : ''}
       ${detailLines.length > 0 ? `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;">
@@ -13052,7 +13066,7 @@ function buildInvoiceHTML(inv, lang, opts) {
         <div style="display:flex;align-items:flex-start;gap:5px;padding:3px 0;
           border-bottom:1px solid #f0f0f0;font-size:7.5px;color:#444;line-height:1.5;
           direction:${dir};unicode-bidi:plaintext;
-          ${isRtl ? 'flex-direction:row-reverse;text-align:right;' : ''}">
+          flex-direction:${isRtl?'row-reverse':'row'};">
           <span style="background:#1a1a2e;color:#c8a96e;border-radius:50%;
             width:14px;height:14px;font-size:7px;font-weight:900;
             display:inline-flex;align-items:center;justify-content:center;
@@ -13064,11 +13078,10 @@ function buildInvoiceHTML(inv, lang, opts) {
   }
 
   /* ══════════════════════════════════════════
-     صفوف الدفع
+     15. بيانات الدفع والإجماليات
   ══════════════════════════════════════════ */
   const kdvRow = inv.kdvEnabled
-    ? `<div class="ip-pay-row kdv-line"><span>🏛️ ${L.kdv} (${inv.kdvRate||20}%)</span>
-       <span style="font-weight:700;">${fmt(inv.kdvAmtUSD||0)}</span></div>`
+    ? `<div class="ip-pay-row kdv-line"><span>🏛️ ${L.kdv} (${inv.kdvRate||20}%)</span><span style="font-weight:700;">${fmt(inv.kdvAmtUSD||0)}</span></div>`
     : '';
 
   const payMethodLabel = (PAY_METHOD_LABELS[lang]||PAY_METHOD_LABELS.en)[inv.payMethod||'cash'] || inv.payMethod || '—';
@@ -13076,7 +13089,7 @@ function buildInvoiceHTML(inv, lang, opts) {
   const remaining = Math.max(0, (inv.grandTotal||0) - totalPaid);
 
   /* ══════════════════════════════════════════
-     ستايل رأس الجدول
+     16. ستايل رأس الجدول
   ══════════════════════════════════════════ */
   const thStyle = `
     color:#fff;font-weight:700;padding:8px 4px;
@@ -13087,6 +13100,9 @@ function buildInvoiceHTML(inv, lang, opts) {
     line-height:1.45;
   `;
 
+  /* ══════════════════════════════════════════
+     17. CSS الجدول
+  ══════════════════════════════════════════ */
   const tableWrapperStyle = `
     margin: 10px 18px 0;
     border-radius: 12px;
@@ -13094,176 +13110,177 @@ function buildInvoiceHTML(inv, lang, opts) {
     border: 1.5px solid #d0d7e3;
     box-shadow: 0 3px 16px rgba(26,26,46,.10);
   `;
-
   const tableInnerStyle = `
     width: 100%;
     border-collapse: collapse;
     font-size: 7.5px;
     table-layout: auto;
-    direction: ltr; /* الجدول دائماً LTR لأن الأرقام والأعمدة تقرأ من اليسار */
+    direction: ${dir};
   `;
 
   /* ══════════════════════════════════════════
-     ══ الهيدر — الانعكاس الكامل حسب اللغة ══
+     18. الهيدر — الانعكاس الكامل
      
-     العربية  (RTL): [شعار+بيانات البائع] يمين | [وسط] | [شعار+اسم المشتري] يسار
-     الإنجليزية/التركية (LTR): [شعار+بيانات البائع] يسار | [وسط] | [شعار+اسم المشتري] يمين
+     ┌─────────────────────────────────────────┐
+     │ عربي (RTL):                             │
+     │ [صورة الشركة] [بيانات البائع] [وسط] [عميل] │
+     │                                         │
+     │ تركي/إنجليزي (LTR):                    │
+     │ [صورة الشركة] [بيانات البائع] [وسط] [عميل] │
+     └─────────────────────────────────────────┘
+     
+     في RTL: flex-direction:row-reverse يعكس الترتيب
+     الصورة تبقى في أول العنصر (يمين في RTL)
   ══════════════════════════════════════════ */
 
-  /* ── بلوك البائع ── */
-  const sellerBlock = `
-    <div class="ip-hdr-seller" style="direction:${dir};">
-      <div class="ip-seller-logo">
-        ${st.logo
-          ? `<img src="${st.logo}" alt="logo">`
-          : `<div class="ip-seller-logo-txt">WOW
-               <div class="ip-seller-logo-sub">FURNITURE</div>
-             </div>`}
-      </div>
-      <div class="ip-seller-info" style="text-align:${isRtl?'right':'left'};">
-        <strong>${st.companyName||'WOW Furniture'}</strong>
-        ${st.address||''}<br>
-        📞 ${st.phone||''}<br>
-        📧 ${st.email||''}<br>
-        🌐 ${st.website||''}
-        ${st.mersis ? `<br>${L.mersis||'Mersis'}: ${st.mersis}` : ''}
-      </div>
+  /* ── بلوك صورة الشركة (البائع) ── */
+  const sellerLogoBlock = `
+    <div class="ip-seller-logo">
+      ${st.logo
+        ? `<img src="${st.logo}" alt="logo">`
+        : `<div class="ip-seller-logo-txt">WOW<div class="ip-seller-logo-sub">FURNITURE</div></div>`}
     </div>`;
 
-  /* ── بلوك الوسط (الباركود والمعلومات) ── */
-  const midBlock = `
-    <div class="ip-hdr-mid" style="direction:${dir};">
-      <div class="ip-inv-title" style="text-align:center;">${L.invoice}</div>
-      ${opts.showBarcode
-        ? `<div class="ip-barcode-wrap" style="direction:ltr;">
-             ${barcodeSVG}
-             <div class="ip-barcode-txt">${inv.invNo||'—'}</div>
-           </div>`
-        : ''}
-      <div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.no}:</span>
-        <span class="ip-meta-val">${inv.invNo||'—'}</span>
-      </div>
-      <div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.loadDate}:</span>
-        <span class="ip-meta-val">${inv.loadDate||'—'}</span>
-      </div>
-      <div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.date}:</span>
-        <span class="ip-meta-val">${inv.date||new Date().toLocaleDateString()}</span>
-      </div>
-      ${inv.plate ? `<div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.plate}:</span>
-        <span class="ip-meta-val">${inv.plate}</span>
-      </div>` : ''}
-      ${inv.truck ? `<div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.truck}:</span>
-        <span class="ip-meta-val">${inv.truck}</span>
-      </div>` : ''}
-      <div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.tier||'Tier'}:</span>
-        <span class="ip-meta-val">🎯 ${inv.tier||'A'}</span>
-      </div>
-      <div class="ip-meta-row" style="direction:${dir};">
-        <span class="ip-meta-lbl">${L.payMethod}:</span>
-        <span class="ip-meta-val">${payMethodLabel}</span>
-      </div>
+  /* ── بيانات البائع ── */
+  const sellerInfoBlock = `
+    <div class="ip-seller-info" style="text-align:${textDir};">
+      <strong>${st.companyName||'WOW Furniture'}</strong>
+      ${st.address||''}<br>
+      📞 ${st.phone||''}<br>
+      📧 ${st.email||''}<br>
+      🌐 ${st.website||''}
+      ${st.mersis ? `<br>${L.mersis||'Mersis'}: ${st.mersis}` : ''}
     </div>`;
 
-  /* ── بلوك المشتري (الشعار + الاسم) ── */
+  /* ── بلوك العميل ── */
   const clientBlock = `
-    <div class="ip-hdr-client" style="direction:${dir};">
+    <div class="ip-hdr-client" style="direction:${dir};text-align:${textDir};">
       <div class="ip-client-logo-box">
-        ${inv.companyLogo
-          ? `<img src="${inv.companyLogo}" alt="logo">`
-          : `<span style="font-size:22px;">🏢</span>`}
+        ${inv.companyLogo ? `<img src="${inv.companyLogo}" alt="logo">` : `<span style="font-size:22px;">🏢</span>`}
       </div>
-      <div class="ip-client-name" style="text-align:${isRtl?'right':'left'};">
+      <div class="ip-client-name" style="text-align:${textDir};">
         <strong>${inv.companyName||'—'}</strong><br>
         ${inv.buyerName||''}<br>
         ${inv.province||inv.country||''} ${inv.city?'· '+inv.city:''}
       </div>
     </div>`;
 
-  /*
-   * ── ترتيب الهيدر حسب اللغة ──
-   * العربية  (RTL): البائع يمين | وسط | مشترٍ يسار
-   * الإنجليزية/التركية (LTR): البائع يسار | وسط | مشترٍ يمين
-   * ملاحظة: في CSS flex مع direction:rtl تنعكس الأعمدة تلقائياً
-   * لذا نضع البائع أولاً دائماً والـ flex-direction يتكفل بالباقي
-   */
-  const headerHTML = `
-    <div class="ip-hdr" style="direction:${dir};">
-      ${sellerBlock}
-      ${midBlock}
-      ${clientBlock}
+  /* ── بلوك المعلومات الوسطى ── */
+  const midBlock = `
+    <div class="ip-hdr-mid" style="direction:${dir};text-align:${textDir};">
+      <div class="ip-inv-title">${L.invoice}</div>
+      ${opts.showBarcode
+        ? `<div class="ip-barcode-wrap">${barcodeSVG}<div class="ip-barcode-txt">${inv.invNo||'—'}</div></div>`
+        : ''}
+      <div class="ip-meta-row" style="flex-direction:${isRtl?'row-reverse':'row'};justify-content:space-between;">
+        <span class="ip-meta-lbl">${L.no}:</span>
+        <span class="ip-meta-val">${inv.invNo||'—'}</span>
+      </div>
+      <div class="ip-meta-row" style="flex-direction:${isRtl?'row-reverse':'row'};justify-content:space-between;">
+        <span class="ip-meta-lbl">${L.loadDate}:</span>
+        <span class="ip-meta-val">${inv.loadDate||'—'}</span>
+      </div>
+      <div class="ip-meta-row" style="flex-direction:${isRtl?'row-reverse':'row'};justify-content:space-between;">
+        <span class="ip-meta-lbl">${L.date}:</span>
+        <span class="ip-meta-val">${inv.date||new Date().toLocaleDateString()}</span>
+      </div>
+      ${inv.plate ? `<div class="ip-meta-row" style="flex-direction:${isRtl?'row-reverse':'row'};justify-content:space-between;">
+        <span class="ip-meta-lbl">${L.plate}:</span>
+        <span class="ip-meta-val">${inv.plate}</span>
+      </div>` : ''}
+      ${inv.truck ? `<div class="ip-meta-row" style="flex-direction:${isRtl?'row-reverse':'row'};justify-content:space-between;">
+        <span class="ip-meta-lbl">${L.truck}:</span>
+        <span class="ip-meta-val">${inv.truck}</span>
+      </div>` : ''}
+      <div class="ip-meta-row" style="flex-direction:${isRtl?'row-reverse':'row'};justify-content:space-between;">
+        <span class="ip-meta-lbl">${L.tier||'Tier'}:</span>
+        <span class="ip-meta-val">🎯 ${inv.tier||'A'}</span>
+      </div>
+      <div class="ip-meta-row" style="flex-direction:${isRtl?'row-reverse':'row'};justify-content:space-between;">
+        <span class="ip-meta-lbl">${L.payMethod}:</span>
+        <span class="ip-meta-val">${payMethodLabel}</span>
+      </div>
     </div>`;
 
   /* ══════════════════════════════════════════
-     القسم السفلي — ينعكس حسب اللغة
-     العربية: دفعات يمين | بنك يسار
-     غير العربية: دفعات يسار | بنك يمين
+     19. القسم السفلي — الدفع والبنك
+     عربي  → الدفع يمين، البنك يسار
+     غير عربي → الدفع يسار، البنك يمين
   ══════════════════════════════════════════ */
-  const paymentSection = `
-    <div class="ip-payment" style="direction:${dir};">
+  const paymentBlock = `
+    <div class="ip-payment" style="direction:${dir};text-align:${textDir};">
       <div class="ip-sec-title">${payMethodLabel.toUpperCase()}</div>
-      <div class="ip-pay-row" style="direction:${dir};">
+      <div class="ip-pay-row" style="flex-direction:${isRtl?'row-reverse':'row'};">
         <span>${L.deposit}</span>
         <span style="color:#38a169;font-weight:700;">${fmt(inv.depositUSD||0)}</span>
       </div>
       ${inv.discountUSD > 0
-        ? `<div class="ip-pay-row" style="direction:${dir};">
-             <span>${L.discount}</span>
-             <span>- ${fmt(inv.discountUSD)}</span>
-           </div>`
+        ? `<div class="ip-pay-row" style="flex-direction:${isRtl?'row-reverse':'row'};"><span>${L.discount}</span><span>- ${fmt(inv.discountUSD)}</span></div>`
         : ''}
       ${kdvRow}
-      <div class="ip-pay-row bold" style="direction:${dir};">
+      <div class="ip-pay-row bold" style="flex-direction:${isRtl?'row-reverse':'row'};">
         <span>${L.grandTotal}</span>
         <span style="font-size:13px;">${fmt(inv.grandTotal||0)}</span>
       </div>
-      <div class="ip-pay-row" style="direction:${dir};">
+      <div class="ip-pay-row" style="flex-direction:${isRtl?'row-reverse':'row'};">
         <span>${L.paid}</span>
         <span style="color:#38a169;font-weight:700;">${fmt(totalPaid)}</span>
       </div>
-      <div class="ip-pay-row" style="background:#fafafa;padding:5px 6px;
-        border-radius:4px;direction:${dir};">
+      <div class="ip-pay-row" style="background:#fafafa;padding:5px 6px;border-radius:4px;flex-direction:${isRtl?'row-reverse':'row'};">
         <span style="font-weight:700;">${L.remaining}</span>
         <span style="color:#e53e3e;font-weight:800;">${fmt(remaining)}</span>
       </div>
       ${payHistoryHTML}
     </div>`;
 
-  /* ── ترتيب القسم السفلي حسب اللغة ── */
-  const bottomHTML = `
-    <div class="ip-bottom" style="direction:${dir};">
-      ${isRtl ? paymentSection + bankHTML : bankHTML + paymentSection}
-    </div>`;
-
   /* ══════════════════════════════════════════
-     شريط BUYER
+     20. HTML النهائي الكامل
   ══════════════════════════════════════════ */
-  const buyerBarHTML = `
-    <div class="ip-pay-title" style="direction:${dir};">
+  return `
+  <div class="inv-paper" style="direction:${dir};text-align:${textDir};">
+
+    <!-- ══ HEADER ══ -->
+    <div class="ip-hdr" style="
+      display:flex;
+      align-items:stretch;
+      border-bottom:2px solid #e2e8f0;
+      min-height:100px;
+      /* ✅ الانعكاس الكامل للهيدر حسب الاتجاه */
+      flex-direction:${isRtl ? 'row-reverse' : 'row'};
+    ">
+
+      <!-- صورة الشركة + بيانات البائع -->
+      <div class="ip-hdr-seller" style="
+        flex:1;padding:14px 18px;
+        display:flex;align-items:center;gap:12px;
+        /* ✅ الصورة تبقى في الطرف الصحيح */
+        flex-direction:${isRtl ? 'row-reverse' : 'row'};
+      ">
+        ${sellerLogoBlock}
+        ${sellerInfoBlock}
+      </div>
+
+      <!-- المعلومات الوسطى -->
+      ${midBlock}
+
+      <!-- بلوك العميل -->
+      ${clientBlock}
+
+    </div>
+
+    <!-- ══ BUYER BAR ══ -->
+    <div class="ip-pay-title" style="direction:${dir};text-align:center;">
       ${(L.buyer||'BUYER').toUpperCase()}: ${inv.companyName||'—'}
       &nbsp;|&nbsp;
       ${inv.province||inv.country||''} ${inv.city?'· '+inv.city:''}
-    </div>`;
+    </div>
 
-  /* ══════════════════════════════════════════
-     HTML النهائي الكامل
-  ══════════════════════════════════════════ */
-  return `
-  <div class="inv-paper" style="direction:${dir};">
-
-    ${headerHTML}
-    ${buyerBarHTML}
-
-    <!-- ══ الجدول الرئيسي ══ -->
+    <!-- ══ MAIN TABLE ══ -->
     <div style="${tableWrapperStyle}">
       <table style="${tableInnerStyle}">
+
         <thead>
-          <tr style="background:#1a1a2e;">
+          <tr style="background:#1a1a2e;direction:${dir};">
             <th style="${thStyle}">${CH.pic}</th>
             <th style="${thStyle}">${CH.name}</th>
             <th style="${thStyle}">${CH.hs}</th>
@@ -13281,41 +13298,42 @@ function buildInvoiceHTML(inv, lang, opts) {
             <th style="${thStyle};border-right:none;">${CH.totalWeight}</th>
           </tr>
         </thead>
+
         <tbody>${tableRows}</tbody>
-        <tfoot>
-          <tr>
-            <td colspan="6" style="${tfootTdStyle}font-size:8.5px;font-weight:900;
-              letter-spacing:.5px;direction:${dir};unicode-bidi:plaintext;">
-              ${totalPerLabel}
-            </td>
-            <td style="${tfootTdStyle}font-size:9px;">${totalQty}</td>
-            <td style="${tfootTdStyle}"></td>
-            <td style="${tfootTdStyle}font-size:10px;">${fmt(inv.subtotalUSD||0)}</td>
-            <td style="${tfootTdStyle}font-size:8px;">
-              ${(inv.items||[]).reduce((s,i)=>s+(i.packets||1),0)}
-            </td>
-            <td style="${tfootTdStyle}font-size:8.5px;">${grandTotalPkts}</td>
-            <td style="${tfootTdStyle}"></td>
-            <td style="${tfootTdStyle}font-size:8px;direction:ltr;">${grandTotalCBM.toFixed(4)}</td>
-            <td style="${tfootTdStyle}"></td>
-            <td style="${tfootTdStyle}font-size:8px;direction:ltr;border-right:none;">
-              ${grandTotalWt.toFixed(2)}
-            </td>
-          </tr>
-        </tfoot>
+
+        <tfoot>${totalRow}</tfoot>
+
       </table>
     </div>
 
-    ${bottomHTML}
+    <!-- ══ BOTTOM SECTION ══ -->
+    <div class="ip-bottom" style="
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      border-top:2px solid #e2e8f0;
+      /* ✅ الانعكاس: عربي → دفع يمين، بنك يسار */
+      direction:${dir};
+    ">
+      ${isRtl
+        ? paymentBlock + bankHTML   /* عربي: دفع يمين أولاً */
+        : paymentBlock + bankHTML   /* LTR: دفع يسار أولاً */
+      }
+    </div>
+
+    <!-- ══ NOTES ══ -->
     ${notesHTML}
+
+    <!-- ══ SIGNATURES ══ -->
     ${sigHTML}
 
-    <div class="ip-verify" style="direction:${dir};">
+    <!-- ══ VERIFY BAR ══ -->
+    <div class="ip-verify" style="direction:${dir};text-align:center;">
       ${L.verify} &nbsp;|&nbsp; ${st.phone||''} &nbsp;|&nbsp; ${inv.invNo||'—'}
     </div>
 
   </div>`;
 }
+
 
 
 
