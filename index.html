@@ -13140,8 +13140,8 @@ const invPayments = inv.payments || [];
         <!-- ✅ حاوية اللوجو مع تحكم كامل بالأبعاد والمسافات -->
         <div style="
           /* 📏 1. تحكم بالطول والعرض */
-          width: 140px;      /* عرض اللوجو */
-          height: 70px;      /* طول اللوجو */
+          width: 270px;      /* عرض اللوجو */
+          height: 90px;      /* طول اللوجو */
           
           /* 🧭 2. تحكم بالمكان (الهوامش) */
           margin-top: 0px;    /* مسافة من الأعلى */
@@ -13152,7 +13152,7 @@ const invPayments = inv.payments || [];
           display:flex; align-items:center; justify-content:flex-start;
         ">
           ${st.logo
-            ? `<img src="${st.logo}" alt="logo" style="width:100%; height:100%; object-fit:contain; object-position:${isRtl ? 'right' : 'left'} center;">`
+            ? `<img src="${st.logo}" alt="logo" style="width:100%; height:100%; object-fit:cover; object-position:${isRtl ? 'right' : 'left'} center;">`
             : `<div style="font-size:18px;font-weight:900;color:#1a1a2e;line-height:1;text-align:${textAlign};">
                 WOW<div style="font-size:7px;color:#999;letter-spacing:2px;margin-top:2px;">FURNITURE</div>
                </div>`}
