@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> مع مراعات 3 لغات ويكون ابيض خلفية 
 <html lang="ar" dir="rtl">
 <head>
 <meta name="google" content="notranslate">
@@ -12600,10 +12600,26 @@ function generateBarcodeSVG(text,width=180,height=30){
    BUILD INVOICE HTML — A4 CLEAN WHITE
 ============================================================ */
 const PDF_TR={
-  en:{invoice:'INVOICE',seller:'SELLER',buyer:'BUYER',no:'Invoice No',date:'Date',loadDate:'Loading Date',plate:'Plate No',truck:'Truck No',item:'#',name:'Product Name',dims:'Dimensions',color:'Color',qty:'Qty',price:'Unit Price',total:'Total',cbm:'CBM',weight:'Weight',subtotal:'Subtotal',discount:'Discount',kdv:'VAT',grandTotal:'GRAND TOTAL',deposit:'Deposit',paid:'Total Paid',remaining:'Remaining',payMethod:'Payment Method',bankInfo:'BANK INFORMATION',bank:'Bank',beneficiary:'Beneficiary',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'Account No',rates:'Exchange Rates',notes:'Delivery and Sales Terms',seller_sig:'Seller Signature',buyer_sig:'Buyer Signature',stamp:'Stamp',verify:'This invoice was issued by WOW Furniture — www.wowmobilya.net',tier:'Price Tier',packets:'Packets',payHistory:'Payment History',mersis:'Mersis No',},
-  tr:{invoice:'FATURA',seller:'SATICI',buyer:'ALICI',no:'Fatura No',date:'Tarih',loadDate:'Yükleme Tarihi',plate:'Plaka No',truck:'Kamyon No',item:'#',name:'Ürün Adı',dims:'Boyutlar',color:'Renk',qty:'Adet',price:'Birim Fiyat',total:'Toplam',cbm:'CBM',weight:'Ağırlık',subtotal:'Ara Toplam',discount:'İndirim',kdv:'KDV',grandTotal:'GENEL TOPLAM',deposit:'Depozito',paid:'Toplam Ödenen',remaining:'Kalan',payMethod:'Ödeme Yöntemi',bankInfo:'BANKA BİLGİLERİ',bank:'Banka',beneficiary:'Lehdar',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'Hesap No',rates:'Döviz Kurları',notes:'Teslimat ve Satış Şartları',seller_sig:'Satıcı İmzası',buyer_sig:'Alıcı İmzası',stamp:'Mühür',verify:'Bu fatura WOW Furniture tarafından düzenlenmiştir — www.wowmobilya.net',tier:'Fiyat Kademesi',packets:'Paket',payHistory:'Ödeme Geçmişi',mersis:'Mersis No',},
-  ar:{invoice:'فاتورة',seller:'البائع',buyer:'المشتري',no:'رقم الفاتورة',date:'التاريخ',loadDate:'تاريخ التحميل',plate:'رقم اللوحة',truck:'رقم الشاحنة',item:'#',name:'اسم المنتج',dims:'الأبعاد',color:'اللون',qty:'الكمية',price:'سعر الوحدة',total:'المجموع',cbm:'CBM',weight:'الوزن',subtotal:'المجموع الفرعي',discount:'الخصم',kdv:'ضريبة KDV',grandTotal:'المجموع النهائي',deposit:'العربون',paid:'إجمالي المدفوع',remaining:'المتبقي',payMethod:'طريقة الدفع',bankInfo:'معلومات البنك',bank:'البنك',beneficiary:'المستفيد',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'رقم الحساب',rates:'أسعار الصرف',notes:'شروط التسليم والبيع',seller_sig:'توقيع البائع',buyer_sig:'توقيع المشتري',stamp:'الختم',verify:'هذه الفاتورة صادرة من WOW Furniture — www.wowmobilya.net',tier:'درجة التسعير',packets:'الباكيتات',payHistory:'سجل الدفعات',mersis:'رقم Mersis',},
+  en:{
+    proforma:'PROFORMA INVOICE',
+    companyName:'Company Name',
+    orderDate:'ORDER DATE',
+    invoice:'INVOICE',seller:'SELLER',buyer:'BUYER',no:'INVOICE NO',date:'Date',loadDate:'LOADING DATE',plate:'PLATE NUMBER',truck:'TRUCK NUMBER',item:'#',name:'Product Name',dims:'Dimensions',color:'Color',qty:'Qty',price:'Unit Price',total:'Total',cbm:'CBM',weight:'Weight',subtotal:'Subtotal',discount:'Discount',kdv:'VAT',grandTotal:'GRAND TOTAL',deposit:'Deposit',paid:'Total Paid',remaining:'Remaining',payMethod:'Payment Method',bankInfo:'BANK INFORMATION',bank:'Bank',beneficiary:'Beneficiary',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'Account No',rates:'Exchange Rates',notes:'Delivery and Sales Terms',seller_sig:'Seller Signature',buyer_sig:'Buyer Signature',stamp:'Stamp',verify:'This invoice was issued by WOW Furniture — www.wowmobilya.net',tier:'Price Tier',packets:'Packets',payHistory:'Payment History',mersis:'Mersis No',
+  },
+  tr:{
+    proforma:'PROFORMA FATURA',
+    companyName:'Firma Adı',
+    orderDate:'Sipariş Tarihi',
+    invoice:'FATURA',seller:'SATICI',buyer:'ALICI',no:'Fatura No',date:'Tarih',loadDate:'Yükleme Tarihi',plate:'Plaka No',truck:'Kamyon No',item:'#',name:'Ürün Adı',dims:'Boyutlar',color:'Renk',qty:'Adet',price:'Birim Fiyat',total:'Toplam',cbm:'CBM',weight:'Ağırlık',subtotal:'Ara Toplam',discount:'İndirim',kdv:'KDV',grandTotal:'GENEL TOPLAM',deposit:'Depozito',paid:'Toplam Ödenen',remaining:'Kalan',payMethod:'Ödeme Yöntemi',bankInfo:'BANKA BİLGİLERİ',bank:'Banka',beneficiary:'Lehdar',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'Hesap No',rates:'Döviz Kurları',notes:'Teslimat ve Satış Şartları',seller_sig:'Satıcı İmzası',buyer_sig:'Alıcı İmzası',stamp:'Mühür',verify:'Bu fatura WOW Furniture tarafından düzenlenmiştir — www.wowmobilya.net',tier:'Fiyat Kademesi',packets:'Paket',payHistory:'Ödeme Geçmişi',mersis:'Mersis No',
+  },
+  ar:{
+    proforma:'فاتورة مبدئية - PROFORMA',
+    companyName:'اسم الشركة',
+    orderDate:'تاريخ الطلب',
+    invoice:'فاتورة',seller:'البائع',buyer:'المشتري',no:'رقم الفاتورة',date:'التاريخ',loadDate:'تاريخ التحميل',plate:'رقم اللوحة',truck:'رقم الشاحنة',item:'#',name:'اسم المنتج',dims:'الأبعاد',color:'اللون',qty:'الكمية',price:'سعر الوحدة',total:'المجموع',cbm:'CBM',weight:'الوزن',subtotal:'المجموع الفرعي',discount:'الخصم',kdv:'ضريبة KDV',grandTotal:'المجموع النهائي',deposit:'العربون',paid:'إجمالي المدفوع',remaining:'المتبقي',payMethod:'طريقة الدفع',bankInfo:'معلومات البنك',bank:'البنك',beneficiary:'المستفيد',iban_usd:'IBAN USD',iban_try:'IBAN TRY',iban_eur:'IBAN EUR',swift:'SWIFT',account:'رقم الحساب',rates:'أسعار الصرف',notes:'شروط التسليم والبيع',seller_sig:'توقيع البائع',buyer_sig:'توقيع المشتري',stamp:'الختم',verify:'هذه الفاتورة صادرة من WOW Furniture — www.wowmobilya.net',tier:'درجة التسعير',packets:'الباكيتات',payHistory:'سجل الدفعات',mersis:'رقم Mersis',
+  },
 };
+
 const PAY_METHOD_LABELS={
   en:{cash:'Cash',bank_transfer:'Bank Transfer',credit_card:'Credit Card',check:'Check',installment:'Installment',western_union:'Western Union',crypto:'Crypto',paypal:'PayPal',letter_credit:'Letter of Credit',deferred:'Deferred'},
   tr:{cash:'Nakit',bank_transfer:'Banka Transferi',credit_card:'Kredi Kartı',check:'Çek',installment:'Taksit',western_union:'Western Union',crypto:'Kripto',paypal:'PayPal',letter_credit:'Akreditif',deferred:'Vadeli'},
@@ -13107,83 +13123,50 @@ function buildInvoiceHTML(inv, lang, opts) {
         </div>
       </div>
 
-    <!-- ── بلوك الوسط: PROFORMA INVOICE + باركود + حقول المشتري ── -->
-<div style="
-  width:220px;flex-shrink:0;padding:12px 14px;
-  background:#ffffff;
-  ${midBorderStart}
-  direction:ltr;text-align:left;
-">
-  <!-- PROFORMA INVOICE عنوان كبير -->
-  <div style="
-    font-size:13px;font-weight:900;color:#1a1a2e;
-    letter-spacing:1.5px;text-transform:uppercase;
-    margin-bottom:8px;text-align:center;
-    border-bottom:2px solid #1a1a2e;
-    padding-bottom:5px;
-  ">PROFORMA INVOICE</div>
+            <!-- ── بلوك الوسط: العنوان + باركود + الحقول ── -->
+      <div style="
+        width:220px;flex-shrink:0;padding:12px 14px;
+        background:#ffffff; /* خلفية بيضاء نقية */
+        ${midBorderStart}
+        direction:${dir};text-align:${textAlign};
+      ">
+        <!-- كلمة PROFORMA INVOICE -->
+        <div style="font-size:13px;font-weight:900;color:#1a1a2e;
+          letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;text-align:center;">
+          ${L.proforma}
+        </div>
+        
+        <!-- الباركود -->
+        ${opts.showBarcode ? `
+        <div style="margin-bottom:12px; display:flex; flex-direction:column; align-items:center;">
+          ${barcodeSVG}
+        </div>` : ''}
 
-  <!-- الباركود -->
-  ${opts.showBarcode ? `
-  <div style="margin-bottom:8px;text-align:center;">
-    ${barcodeSVG}
-    <div style="font-family:'Courier New',monospace;font-size:7.5px;
-      color:#333;letter-spacing:1.5px;text-align:center;margin-top:2px;">
-      ${inv.invNo||'—'}
-    </div>
-  </div>` : ''}
-
-  <!-- INVOICE NO -->
-  <div style="display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:4px;font-size:8.5px;line-height:1.5;
-    padding:3px 0;border-bottom:1px solid #f0f0f0;">
-    <span style="color:#666;font-weight:600;min-width:95px;">INVOICE NO:</span>
-    <span style="color:#1a1a2e;font-weight:800;direction:ltr;">${inv.invNo||'—'}</span>
-  </div>
-
-  <!-- Company Name -->
-  <div style="display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:4px;font-size:8.5px;line-height:1.5;
-    padding:3px 0;border-bottom:1px solid #f0f0f0;">
-    <span style="color:#666;font-weight:600;min-width:95px;">Company Name:</span>
-    <span style="color:#1a1a2e;font-weight:800;
-      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-      max-width:100px;direction:ltr;">${inv.companyName||'—'}</span>
-  </div>
-
-  <!-- ORDER DATE -->
-  <div style="display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:4px;font-size:8.5px;line-height:1.5;
-    padding:3px 0;border-bottom:1px solid #f0f0f0;">
-    <span style="color:#666;font-weight:600;min-width:95px;">ORDER DATE:</span>
-    <span style="color:#1a1a2e;font-weight:800;direction:ltr;">
-      ${inv.regDate||inv.date||new Date().toLocaleDateString()}</span>
-  </div>
-
-  <!-- LOADING DATE -->
-  <div style="display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:4px;font-size:8.5px;line-height:1.5;
-    padding:3px 0;border-bottom:1px solid #f0f0f0;">
-    <span style="color:#666;font-weight:600;min-width:95px;">LOADING DATE:</span>
-    <span style="color:#1a1a2e;font-weight:800;direction:ltr;">${inv.loadDate||'—'}</span>
-  </div>
-
-  <!-- PLATE NUMBER -->
-  <div style="display:flex;justify-content:space-between;align-items:center;
-    margin-bottom:4px;font-size:8.5px;line-height:1.5;
-    padding:3px 0;border-bottom:1px solid #f0f0f0;">
-    <span style="color:#666;font-weight:600;min-width:95px;">PLATE NUMBER:</span>
-    <span style="color:#1a1a2e;font-weight:800;direction:ltr;">${inv.plate||'—'}</span>
-  </div>
-
-  <!-- TRUCK NUMBER -->
-  <div style="display:flex;justify-content:space-between;align-items:center;
-    font-size:8.5px;line-height:1.5;padding:3px 0;">
-    <span style="color:#666;font-weight:600;min-width:95px;">TRUCK NUMBER:</span>
-    <span style="color:#1a1a2e;font-weight:800;direction:ltr;">${inv.truck||'—'}</span>
-  </div>
-
-</div>
+        <!-- الحقول الديناميكية المطلوبة -->
+        ${[
+          [L.no,          inv.invNo||'—'],
+          [L.companyName, inv.companyName||'—'],
+          [L.orderDate,   inv.date||new Date().toLocaleDateString()],
+          [L.loadDate,    inv.loadDate||'—'],
+          inv.plate ? [L.plate, inv.plate] : null,
+          inv.truck ? [L.truck, inv.truck] : null,
+        ].filter(Boolean).map(([lbl,val]) => `
+          <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:4px;
+            margin-bottom:4px;
+            font-size:8.5px;
+            line-height:1.4;
+            flex-direction:${isRtl?'row-reverse':'row'};
+          ">
+            <span style="color:#555;min-width:85px;font-weight:800;
+              text-align:${textAlign};">${lbl}:</span>
+            <span style="color:#1a1a2e;font-weight:700;
+              text-align:${isRtl?'left':'right'};">${val}</span>
+          </div>`).join('')}
+      </div>
 
 
       <!-- ── بلوك العميل ── -->
