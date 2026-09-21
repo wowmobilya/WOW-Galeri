@@ -7164,7 +7164,7 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
     
     <div class="fg">
       <label class="fl">📝 <span id="lbl_regDate">تاريخ التسجيل</span></label>
-      <input type="date" class="fc" id="invRegDate">
+      <input type="date" class="fc" id="invRegDate" onchange="onLoadDateChange()">
     </div>
 
     <div class="fg">
@@ -13513,6 +13513,7 @@ function initCreateInv(){
     sv('sumDiscount', '0');
     sv('sumDeposit', '0');
     sv('invNotes', '');
+    wfSyncNoteTemplateState();
     
     // إعادة التواريخ لليوم الحالي
     const today = new Date().toISOString().split('T')[0];
@@ -14772,6 +14773,7 @@ function editInv(id){
     sv('invDeliveryDate',inv.deliveryDate||'');
 
     sv('invPlate',inv.plate);sv('invTruck',inv.truck);sv('invNotes',inv.notes);
+    wfSyncNoteTemplateState();updateShippingUI();renderNoteTemplates();
     sv('sumDiscount',inv.discountUSD||0);sv('sumDeposit',inv.depositUSD||0);
     sv('invCurrency',inv.currency||'USD');
     onCoSelect();onCurrencyChange();
@@ -15060,10 +15062,10 @@ async function wfBuildPageSet(html,invNo,lang) {
     const direction=source.style.direction||'ltr';
     let page,body,table,tbody;
     function addPage(first=false){
-      page=doc.createElement('div');page.className='wf-pdf-page';page.style.direction=direction;page.style.fontFamily=source.style.fontFamily||"'Segoe UI',Arial,sans-serif";
+      page=doc.createElement('div');page.className='wf-pdf-page';page.lang=lang;page.style.direction=direction;page.style.fontFamily=source.style.fontFamily||"'Segoe UI',Arial,sans-serif";
       body=doc.createElement('div');body.className='wf-page-body';page.append(body);doc.body.append(page);pages.push(page);
       if(first)body.append(header.cloneNode(true));
-      else{const continuation=doc.createElement('div');continuation.style.cssText='padding:8px 18px 2px;font-size:10px;font-weight:700;direction:ltr;';continuation.textContent=String(invNo||'')+' — '+({ar:'متابعة الفاتورة',tr:'Fatura devamı',en:'INVOICE CONTINUED'}[lang]||'INVOICE CONTINUED');body.append(continuation);}
+      else{const continuation=doc.createElement('div');continuation.style.cssText='padding:8px 18px 2px;font-size:10px;font-weight:700;direction:ltr;';continuation.textContent=wfPdfUpperText(String(invNo||'')+' — '+({ar:'متابعة الفاتورة',tr:'Fatura devamı',en:'INVOICE CONTINUED'}[lang]||'INVOICE CONTINUED'),lang);body.append(continuation);}
     }
     function fits(){return body.getBoundingClientRect().height<=WF_PDF_PAGE.bodyHeight+0.1;}
     function addTable(){
@@ -15101,7 +15103,7 @@ async function wfBuildPageSet(html,invNo,lang) {
     pages.forEach((p,i)=>{
       const number=doc.createElement('div');number.className='wf-page-number';
       const t={ar:`صفحة ${i+1} من ${pages.length}`,tr:`Sayfa ${i+1} / ${pages.length}`,en:`Page ${i+1} of ${pages.length}`}[lang]||`Page ${i+1} of ${pages.length}`;
-      number.textContent=`${invNo||''}   |   ${t}`;p.append(number);
+      number.textContent=wfPdfUpperText(`${invNo||''}   |   ${t}`,lang);p.append(number);
     });
     const rowCount=pages.reduce((s,p)=>s+p.querySelectorAll('[data-wf-item]').length,0);
     if(rowCount!==items.length)throw new Error('ITEM_COUNT_MISMATCH');
@@ -15684,6 +15686,33 @@ function wfInvoiceOrderDate(inv, lang='en') {
   return formatISO(inv.createdAt) || '—';
 }
 
+// PDF presentation only: leave stored numbers and original text untouched.
+function wfPdfMeasure(value, total = false, precision = 4) {
+  const n = Number(value);
+  const fixed = (Number.isFinite(n) ? n : 0).toFixed(total ? 2 : precision);
+  return total ? fixed : String(Number(fixed));
+}
+
+function wfPdfUpperText(value, lang) {
+  const text = String(value == null ? '' : value);
+  const locale = lang === 'tr' ? 'tr-TR' : 'en-US';
+  // Addresses keep ASCII I, even on a Turkish invoice.
+  return text.split(/((?:https?:\/\/|www\.)[^\s<>]+|[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+)/gi)
+    .map((part, index) => part.toLocaleUpperCase(index % 2 ? 'en-US' : locale)).join('');
+}
+
+function wfPdfUpperHTML(html, lang) {
+  const template = document.createElement('template');
+  template.innerHTML = html;
+  const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_TEXT);
+  let node;
+  while ((node = walker.nextNode())) {
+    if (node.parentElement && node.parentElement.closest('script,style')) continue;
+    node.nodeValue = wfPdfUpperText(node.nodeValue, lang);
+  }
+  return template.innerHTML;
+}
+
 function buildInvoiceHTML(inv, lang, opts) {
   lang = lang || 'en';
   opts = opts || {
@@ -15861,18 +15890,8 @@ function buildInvoiceHTML(inv, lang, opts) {
   const productLines = (inv.items || []).map(item => {
 
     /* اسم اللون نظيف بدون إيموجي وباللغة الحالية */
-    const colorRaw = (() => {
-      if (!item.color || item.color === 'STANDARD') return '-';
-      const found = (FURNITURE_COLORS[lang] || FURNITURE_COLORS.en).find(c => c.val === item.color);
-      if (found) {
-        return found.label.replace(/^[\u{1F300}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}⭐✏️🌰🟫🪵✨🌑🌕🌫️🥇🌿⬜🟡🟤🌱⬛🖤🩶🥂🪙🍦🏜️💎🔲🪮🏺]+\s*/u, '').trim();
-      }
-      return item.color;
-    })();
-
     const modelName = item.name || '-';
-    // ✅ إضافة toUpperCase() لتحويل اللون إلى أحرف كبيرة
-    const colorName = colorRaw.toUpperCase(); 
+    const colorName = wfPdfUpperText(getColorDisplay(item.color), lang);
     const unitUSD   = item.priceUSD  || 0;
     const totalUSD  = item.totalUSD  || (unitUSD * item.qty);
     const unitDisp  = sym2 + toDisp(unitUSD).toFixed(2);
@@ -16008,7 +16027,9 @@ function buildInvoiceHTML(inv, lang, opts) {
      دالة: اللون
   ══════════════════════════════════════════ */
   function getColorDisplay(colorVal) {
-    if (!colorVal || colorVal === 'STANDARD') return '—';
+    if (!colorVal || String(colorVal).trim().toUpperCase() === 'STANDARD') {
+      return { ar:'ستاندر', tr:'Standart', en:'Standard' }[lang] || 'Standard';
+    }
     const found = (FURNITURE_COLORS[lang]||FURNITURE_COLORS.en).find(c=>c.val===colorVal);
     if (found) return found.label.replace(/^[\u{1F300}-\u{1FFFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}⭐✏️🌰🟫🪵✨🌑🌕🌫️🥇🌿⬜🟡🟤🌱⬛🖤🩶🥂🪙🍦🏜️💎🔲🪮🏺]+\s*/u,'').trim();
     return colorVal;
@@ -16072,19 +16093,19 @@ function buildInvoiceHTML(inv, lang, opts) {
       <td style="${td}font-weight:700;font-size:8px;text-align:center;text-transform:uppercase;">${item.name}</td>
       <td style="${td}font-size:7px;color:#555;direction:ltr;">${hsCode}</td>
       <td style="${td}">${buildDimsCell(item)}</td>
-      <td style="${td}font-size:7.5px;max-width:55px;word-break:break-word;">${getColorDisplay(item.color)}</td>
+      <td style="${td}font-size:7.5px;max-width:55px;word-break:break-word;">${!item.color || String(item.color).trim().toUpperCase() === 'STANDARD' ? `<span style="white-space:nowrap;">${wfEsc(getColorDisplay(item.color))}</span>` : wfEsc(getColorDisplay(item.color))}</td>
       <td style="${td}font-size:8px;font-weight:700;color:#1a1a2e;">${getSetPcs(item)}</td>
       <td style="${td}font-weight:800;font-size:9px;">${item.qty}</td>
       <td style="${td}direction:ltr;white-space:nowrap;font-weight:700;font-size:8px;">${fmt(item.priceUSD)}</td>
       <td style="${td}direction:ltr;white-space:nowrap;font-weight:800;color:#1a1a2e;font-size:8.5px;">${fmt(item.totalUSD)}</td>
       <td style="${td}font-size:8px;">${unitPkts}</td>
       <td style="${td}font-size:8px;font-weight:700;">${totPkts}</td>
-      <td style="${td}direction:ltr;font-size:7.5px;">${unitCBM.toFixed(4)}</td>
-      <td style="${td}direction:ltr;font-size:7.5px;font-weight:700;">${totalCBM.toFixed(4)}</td>
-      <td style="${td}direction:ltr;font-size:7.5px;">${unitWt.toFixed(2)}</td>
+      <td style="${td}direction:ltr;font-size:7.5px;">${wfPdfMeasure(unitCBM)}</td>
+      <td style="${td}direction:ltr;font-size:7.5px;font-weight:700;">${wfPdfMeasure(totalCBM, true)}</td>
+      <td style="${td}direction:ltr;font-size:7.5px;">${wfPdfMeasure(unitWt, false, 2)}</td>
       <td style="padding:5px 4px;text-align:center;vertical-align:middle;
         border-bottom:1px solid #f0f0f0;direction:ltr;font-size:7.5px;font-weight:700;">
-        ${totalWt.toFixed(2)}
+        ${wfPdfMeasure(totalWt, true)}
       </td>
     </tr>`;
   });
@@ -16131,9 +16152,9 @@ function buildInvoiceHTML(inv, lang, opts) {
       <td style="${tft}"></td>
       <td style="${tft}font-size:8.5px;text-align:center;">${grandTotalPkts}</td>
       <td style="${tft}"></td>
-      <td style="${tft}font-size:8px;direction:ltr;text-align:center;">${grandTotalCBM.toFixed(4)}</td>
+      <td style="${tft}font-size:8px;direction:ltr;text-align:center;">${wfPdfMeasure(grandTotalCBM, true)}</td>
       <td style="${tft}"></td>
-      <td style="${tft}font-size:8px;direction:ltr;border-right:none;text-align:center;">${grandTotalWt.toFixed(2)}</td>
+      <td style="${tft}font-size:8px;direction:ltr;border-right:none;text-align:center;">${wfPdfMeasure(grandTotalWt, true)}</td>
     </tr>
   `;
 
@@ -16350,7 +16371,8 @@ function buildInvoiceHTML(inv, lang, opts) {
      الملاحظات مع الـ QR Code
   ══════════════════════════════════════════ */
   let notesHTML = '';
-  if (opts.showNotes && inv.notes) {
+  const localizedNotes = wfLocalizeInvoiceNotes(inv, lang);
+  if (opts.showNotes && localizedNotes) {
     const notesSectionTitle = {
       en:'DELIVERY AND SALES TERMS',
       tr:'TESLİMAT VE SATIŞ ŞARTLARI',
@@ -16358,7 +16380,7 @@ function buildInvoiceHTML(inv, lang, opts) {
     }[lang];
 
     // ✅ استخراج سطر التسليم الأول (يحتوي على الأيام وخيار الشحن)
-    const allLines = inv.notes.trim().split('\n').map(l=>l.trim()).filter(Boolean);
+    const allLines = localizedNotes.trim().split('\n').map(l=>l.trim()).filter(Boolean);
     const firstLineRaw = allLines[0] || '';
 
     const mainTerm = wfEsc(firstLineRaw);
@@ -16800,8 +16822,8 @@ const sellerSig = `
   /* ══════════════════════════════════════════
      HTML النهائي — كل شيء inline styles
   ══════════════════════════════════════════ */
-  return `
-  <div class="wf-invoice-paper" style="
+  return wfPdfUpperHTML(`
+  <div class="wf-invoice-paper" lang="${lang}" style="
     background:#fff;color:#1a1a1a;
     font-family:'Segoe UI',Arial,sans-serif;
     width:100%;max-width:794px;margin:0 auto;
@@ -16846,7 +16868,7 @@ const sellerSig = `
           ${st.address||''}<br>
           📞 <bdi dir="ltr" style="display:inline-block">${wfEsc(st.phone||'')}</bdi><br>
           📧 <bdi dir="ltr" style="display:inline-block">${wfEsc(st.email||'')}</bdi><br>
-          🌐 <bdi dir="ltr" style="display:inline-block">${wfEsc(st.website||'')}</bdi>
+          🌐 <bdi dir="ltr" style="display:inline-block">${wfEsc(String(st.website||'').toUpperCase())}</bdi>
           ${st.mersis?`<br>${L.mersis||'Mersis'}: <bdi dir="ltr">${wfEsc(st.mersis)}</bdi>`:''}
         </div>
       </div>
@@ -16882,8 +16904,8 @@ const sellerSig = `
           ].map(([lbl, val, isInvNo]) => {
             
             // 🌟 تحويل العنوان والقيمة إلى نصوص بأحرف كبيرة قسرياً لجميع الحقول
-            let upperLbl = String(lbl).toUpperCase();
-            let upperVal = String(val).toUpperCase();
+            let upperLbl = wfPdfUpperText(lbl, lang);
+            let upperVal = wfPdfUpperText(val, lang);
 
             // 🌟 فصل الحرف عن الرقم لتلوينه وتكبيره (للفاتورة فقط)
             let formattedVal = upperVal;
@@ -17080,13 +17102,13 @@ const sellerSig = `
 
     </div> <!-- ✅ نهاية التغليف (ip-footer-wrapper) -->
 
-  </div>`;
+  </div>`, lang);
 
   /* ── دالة مساعدة لستايل رأس الجدول ── */
   function thStyle(last=false) {
     return `color:#fff;font-weight:700;padding:8px 4px;text-align:center;
       vertical-align:middle;font-size:6.5px;letter-spacing:.2px;
-      white-space:pre-line;word-break:break-word;
+      white-space:pre-line;word-break:normal;
       ${last?'border-right:none;':'border-right:1px solid rgba(255,255,255,.15);'}
       line-height:1.45;`;
   }
@@ -20141,25 +20163,11 @@ function updateCurrencySelect() {
 ============================================================ */
 
 // 1. خيارات التسليم الأساسية (تظهر فقط في القائمة المنسدلة)
+const NOTE_TEMPLATE_DAYS = [0, 15, 30, 45, 50];
 const NOTE_BASE_TEMPLATES = {
-  ar: [
-    'تسليم فوري',
-    'التسليم بعد 15 يوماً من استلام الدفعة المقدمة🚛',
-    'التسليم بعد 30 يوماً من استلام الدفعة المقدمة🚛',
-    'التسليم بعد 45 يوماً من استلام الدفعة المقدمة🚛'
-  ],
-  tr: [
-    'Hemen Teslim',
-    '🚛Depozito alındıktan 15 gün sonra teslimat',
-    '🚛Depozito alındıktan 30 gün sonra teslimat',
-    '🚛Depozito alındıktan 45 gün sonra teslimat'
-  ],
-  en: [
-    'Immediate Delivery',
-    '🚛Delivery 15 days after receiving the deposit',
-    '🚛Delivery 30 days after receiving the deposit',
-    '🚛Delivery 45 days after receiving the deposit'
-  ]
+  ar: ['تسليم فوري', 'التسليم بعد 15 يوماً', 'التسليم بعد 30 يوماً', 'التسليم بعد 45 يوماً', 'التسليم بعد 50 يوماً'],
+  tr: ['Hemen Teslim', '15 gün sonra teslimat', '30 gün sonra teslimat', '45 gün sonra teslimat', '50 gün sonra teslimat'],
+  en: ['Immediate Delivery', 'Delivery after 15 days', 'Delivery after 30 days', 'Delivery after 45 days', 'Delivery after 50 days']
 };
 
 // 2. نصوص الشحن الديناميكية (تُضاف بجانب خيار التسليم بناءً على زر اختيار الشحن)
@@ -20194,7 +20202,7 @@ const NOTE_TERMS = {
   ]
 };
 
-const NOTE_TEMPLATE_ICONS = ['⚡', '📦', '📦', '📦'];
+const NOTE_TEMPLATE_ICONS = ['⚡', '📦', '📦', '📦', '📦'];
 
 /* ── رسم القائمة المنسدلة للصيغ الجاهزة ── */
 function renderNoteTemplates() {
@@ -20209,7 +20217,7 @@ function renderNoteTemplates() {
   const hasCustomDays = notesEl && notesEl.dataset.customDays !== undefined;
   
   // 2. تحديد هل هو قالب قياسي أم تاريخ مخصص
-  const standardDays = [0, 15, 30, 45];
+  const standardDays = NOTE_TEMPLATE_DAYS;
   let isCustomDate = false;
   if (hasCustomDays) {
      const d = parseInt(notesEl.dataset.customDays);
@@ -20244,118 +20252,121 @@ function renderNoteTemplates() {
 
 
 /* ── دالة مساعدة لتوليد نص التسليم الديناميكي بأي عدد من الأيام ── */
-function getDynamicDeliveryText(days, lang) {
-  if (days <= 0) {
-    return {
-      ar: 'تسليم فوري',
-      tr: 'Hemen Teslim',
-      en: 'Immediate Delivery'
-    }[lang];
-  }
-  return {
-    ar: `التسليم بعد ${days} يوماً من استلام الدفعة المقدمة`,
-    tr: `Depozito alındıktan ${days} gün sonra teslimat`,
-    en: `Delivery ${days} days after receiving the deposit`
+function wfCalendarDate(value) {
+  const m=String(value||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!m)return null;
+  const d=new Date(0);d.setUTCHours(0,0,0,0);d.setUTCFullYear(Number(m[1]),Number(m[2])-1,Number(m[3]));
+  return d.getUTCFullYear()===Number(m[1])&&d.getUTCMonth()===Number(m[2])-1&&d.getUTCDate()===Number(m[3])?d:null;
+}
+function wfAddCalendarDays(value,days) {
+  const date=wfCalendarDate(value);if(!date)return '';
+  date.setUTCDate(date.getUTCDate()+Number(days));
+  return date.toISOString().slice(0,10);
+}
+function wfNumericDeliveryDate(value) {
+  return wfCalendarDate(value)?String(value).split('-').reverse().join('/'):'';
+}
+function getDynamicDeliveryText(days,lang,deliveryDate='') {
+  lang=NOTE_TERMS[lang]?lang:'en';days=Math.max(0,Number(days)||0);
+  const text=days===0?{ar:'تسليم فوري',tr:'Hemen Teslim',en:'Immediate Delivery'}[lang]:{
+    ar:`التسليم بعد ${days} يوماً`,tr:`${days} gün sonra teslimat`,en:`Delivery after ${days} days`
   }[lang];
+  const date=wfNumericDeliveryDate(deliveryDate);
+  return text+(date?` (${date})`:'');
 }
-
-/* ── تطبيق الصيغة على حقل الشروط وتحديث التاريخ ── */
-function applyNoteTemplate(idx, silent = false) {
-  const lang  = S.lang || 'ar';
-  const sOpt  = S.shippingOpt || 'client';
-  
-  const templateDays = [0, 15, 30, 45];
-  const days = templateDays[idx] || 0;
-
-  const regDateVal = document.getElementById('invRegDate').value;
-  let baseDate = regDateVal ? new Date(regDateVal) : new Date();
-  baseDate.setDate(baseDate.getDate() + days);
-  document.getElementById('invLoadDate').value = baseDate.toISOString().split('T')[0];
-
-  const baseNote = getDynamicDeliveryText(days, lang);
-  const shipText = (NOTE_SHIPPING_TEXT[lang] || NOTE_SHIPPING_TEXT.ar)[sOpt];
-  const termsArray = NOTE_TERMS[lang] || NOTE_TERMS.ar;
-
-  const numberedTerms = termsArray.map((term, i) => `(${i + 1}) ${term}`).join('\n');
-  const finalText = `${baseNote} — ${shipText}\n\n${numberedTerms}`;
-
-  const el = document.getElementById('invNotes');
-  if (el) {
-    el.value = finalText;
-    
-    // ✅ حفظ الأيام ونوع الشحن للترجمة
-    el.dataset.customDays = days;
-    el.dataset.templateOpt = sOpt;
-    
-    el.style.height = 'auto';
-    el.style.height = (el.scrollHeight + 2) + 'px';
-    
-    el.style.transition  = 'border-color .2s, box-shadow .2s';
-    el.style.borderColor = 'var(--gold)';
-    el.style.boxShadow   = '0 0 0 3px rgba(200,169,110,.2)';
-    setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 900);
+// Recognize only built-in clauses. User-written text is retained verbatim.
+function wfParseDeliveryLine(line) {
+  const parts=String(line||'').trim().split(/\s+—\s+/);
+  let base=parts.shift().replace(/🚛/g,'').trim();
+  const dateMatch=base.match(/\s*\((\d{2})\/(\d{2})\/(\d{4})\)$/);
+  const date=dateMatch?`${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}`:'';
+  if(dateMatch)base=base.slice(0,dateMatch.index).trim();
+  let days=null;
+  if(['تسليم فوري','Hemen Teslim','Immediate Delivery'].includes(base))days=0;
+  else {
+    const match=base.match(/^التسليم بعد (\d+) يوماً(?: من استلام الدفعة المقدمة)?$/)||
+      base.match(/^(?:Depozito alındıktan )?(\d+) gün sonra teslimat$/)||
+      base.match(/^Delivery (\d+) days after receiving the deposit$/)||
+      base.match(/^Delivery after (\d+) days$/);
+    if(match)days=Number(match[1]);
   }
-
-  const selectEl = document.getElementById('noteTemplateSelect');
-  const defaultOpt = document.getElementById('noteSelectDefault');
-  if (selectEl && defaultOpt) {
-    const successMsgs = { ar: '✅ تم اختيار الشروط', tr: '✅ Şartlar seçildi', en: '✅ Terms selected' };
-    defaultOpt.textContent = successMsgs[lang] || successMsgs.en;
-    selectEl.value = '';
+  if(days===null)return null;
+  const suffix=parts.join(' — ');let shipping='',shippingExtra='';
+  for(const texts of Object.values(NOTE_SHIPPING_TEXT))for(const opt of ['client','company']){
+    if(suffix===texts[opt]||suffix.startsWith(texts[opt]+' ')||suffix.startsWith(texts[opt]+';')||suffix.startsWith(texts[opt]+',')){
+      shipping=opt;shippingExtra=suffix.slice(texts[opt].length);
+    }
   }
-
-  if (!silent) {
-    const toastMsgs = { ar: `📝 تم تحديث الشروط والتاريخ`, tr: `📝 Şartlar ve tarih güncellendi`, en: `📝 Terms & date updated` };
-    showToast(toastMsgs[lang] || toastMsgs.en, 'ok');
+  return {days,date,shipping,suffix,shippingExtra};
+}
+function wfLocalizeInvoiceNotes(inv,lang,overrides={}) {
+  lang=NOTE_TERMS[lang]?lang:'en';
+  return String(inv.notes||'').split('\n').map(line=>{
+    const delivery=wfParseDeliveryLine(line);
+    if(delivery){
+      const days=overrides.days===undefined?delivery.days:overrides.days;
+      const date=inv.loadDate||delivery.date||wfAddCalendarDays(inv.regDate,days);
+      const shipping=overrides.shipping||delivery.shipping;
+      const extra=delivery.shipping?delivery.shippingExtra:(delivery.suffix?' — '+delivery.suffix:'');
+      const suffix=shipping?NOTE_SHIPPING_TEXT[lang][shipping]+extra:delivery.suffix;
+      return getDynamicDeliveryText(days,lang,date)+(suffix?` — ${suffix}`:'');
+    }
+    const prefix=line.trim().match(/^(\(\d+\)|\d+\.)\s*/);
+    const content=line.trim().replace(/^(\(\d+\)|\d+\.)\s*/,'');
+    for(const terms of Object.values(NOTE_TERMS)){
+      const index=terms.indexOf(content);
+      if(index>=0)return (prefix?prefix[0]:'')+NOTE_TERMS[lang][index];
+    }
+    return line;
+  }).join('\n');
+}
+function wfSyncNoteTemplateState() {
+  const el=document.getElementById('invNotes');if(!el)return;
+  const delivery=el.value.split('\n').map(wfParseDeliveryLine).find(Boolean);
+  delete el.dataset.customDays;delete el.dataset.templateOpt;
+  if(delivery){
+    el.dataset.customDays=String(delivery.days);
+    if(delivery.shipping){el.dataset.templateOpt=delivery.shipping;S.shippingOpt=delivery.shipping;}
   }
 }
-
-/* ── تحديث النص تلقائياً عند تغيير المستخدم للتاريخ يدوياً ── */
+function wfRefreshFormNotes(lang=S.lang||'ar',overrides={}) {
+  const el=document.getElementById('invNotes');if(!el)return;
+  el.value=wfLocalizeInvoiceNotes({notes:el.value,regDate:document.getElementById('invRegDate')?.value,
+    loadDate:document.getElementById('invLoadDate')?.value},lang,overrides);
+  wfSyncNoteTemplateState();
+  el.style.height='auto';el.style.height=(el.scrollHeight+2)+'px';
+}
+function applyNoteTemplate(idx,silent=false) {
+  const days=NOTE_TEMPLATE_DAYS[Number(idx)];if(days===undefined)return;
+  const lang=NOTE_TERMS[S.lang]?S.lang:'en',shipping=S.shippingOpt||'client';
+  const now=new Date();
+  const today=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const regDate=document.getElementById('invRegDate').value||today;
+  const date=wfAddCalendarDays(regDate,days);
+  document.getElementById('invLoadDate').value=date;
+  const el=document.getElementById('invNotes');if(!el)return;
+  const hasTemplate=el.value.split('\n').some(line=>wfParseDeliveryLine(line));
+  if(hasTemplate)wfRefreshFormNotes(lang,{days,shipping});
+  else {
+    const custom=el.value;
+    el.value=`${getDynamicDeliveryText(days,lang,date)} — ${NOTE_SHIPPING_TEXT[lang][shipping]}\n\n`+
+      NOTE_TERMS[lang].map((term,i)=>`(${i+1}) ${term}`).join('\n')+(custom?`\n${custom}`:'');
+    wfSyncNoteTemplateState();
+    el.style.height='auto';el.style.height=(el.scrollHeight+2)+'px';
+  }
+  renderNoteTemplates();
+  if(!silent)showToast({ar:'📝 تم تحديث الشروط والتاريخ',tr:'📝 Şartlar ve tarih güncellendi',en:'📝 Terms & date updated'}[lang],'ok');
+}
 function onLoadDateChange() {
-  const loadDateVal = document.getElementById('invLoadDate').value;
-  const regDateVal = document.getElementById('invRegDate').value;
-  if (!loadDateVal) return;
-
-  const loadDate = new Date(loadDateVal);
-  const regDate = regDateVal ? new Date(regDateVal) : new Date();
-  
-  loadDate.setHours(0,0,0,0);
-  regDate.setHours(0,0,0,0);
-
-  const diffTime = loadDate - regDate;
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  const days = Math.max(0, diffDays); 
-
-  const notesEl = document.getElementById('invNotes');
-  if (!notesEl || !notesEl.value) return;
-
-  const lang = S.lang || 'ar';
-  const newDeliveryText = getDynamicDeliveryText(days, lang);
-
-  // ✅ حفظ الأيام المخصصة الجديدة لتعمل الترجمة بشكل صحيح
-  notesEl.dataset.customDays = days;
-
-  let text = notesEl.value;
-  text = text.replace(/(التسليم بعد \d+ يوماً من استلام الدفعة المقدمة|تسليم فوري)/g, newDeliveryText);
-  text = text.replace(/(Depozito alındıktan \d+ gün sonra teslimat|Hemen Teslim)/g, newDeliveryText);
-  text = text.replace(/(Delivery \d+ days after receiving the deposit|Immediate Delivery)/g, newDeliveryText);
-
-  notesEl.value = text;
-  notesEl.style.height = 'auto';
-  notesEl.style.height = (notesEl.scrollHeight + 2) + 'px';
-
-  const defaultOpt = document.getElementById('noteSelectDefault');
-  if (defaultOpt) {
-    defaultOpt.textContent = { ar: '✏️ تاريخ مخصص', tr: '✏️ Özel Tarih', en: '✏️ Custom Date' }[lang];
-  }
+  const load=wfCalendarDate(document.getElementById('invLoadDate').value);
+  const reg=wfCalendarDate(document.getElementById('invRegDate').value);
+  if(!load)return;
+  const overrides=reg?{days:Math.max(0,Math.round((load-reg)/86400000))}:{};
+  wfRefreshFormNotes(S.lang||'ar',overrides);
+  renderNoteTemplates();
 }
 
-
-
-
-/* ============================================================
-   SHIPPING OPTION — اختيار من يتحمل الشحن
-============================================================ */
+/* SHIPPING OPTION — choose who pays for shipping. */
 const STEP1_TEXTS = {
   ar: {
     step1Title:              'تفاصيل الفاتورة',
@@ -20366,7 +20377,7 @@ const STEP1_TEXTS = {
     lbl_currency:            'العملة',
     lbl_loadDate:            'تاريخ التحميل',
     lbl_deliveryDate:        'موعد التسليم',
-    lbl_45days:              '45 يوم من الدفعة',
+    lbl_45days:              '45 يوم',
     lbl_manualDate:          'تاريخ يدوي',
     lbl_plate:               'رقم اللوحة',
     lbl_truck:               'رقم الشاحنة',
@@ -20380,7 +20391,7 @@ const STEP1_TEXTS = {
   lbl_noteTemplates: 'صيغ جاهزة',
     deliveryModeBadge_manual:'يدوي',
     deliveryModeBadge_45:    '45 يوم',
-    delivery45Info:          'التسليم بعد 45 يوماً من استلام الدفعة المقدمة',
+    delivery45Info:          'التسليم بعد 45 يوماً',
     lbl_regDate:             'تاريخ التسجيل', // 👈 تم نقلها هنا
     shippingBadge: {
       client:  '👤 على العميل',
@@ -20396,7 +20407,7 @@ const STEP1_TEXTS = {
     lbl_currency:            'Para Birimi',
     lbl_loadDate:            'Yükleme Tarihi',
     lbl_deliveryDate:        'Teslimat Tarihi',
-    lbl_45days:              'Depozito + 45 Gün',
+    lbl_45days:              '45 Gün',
     lbl_manualDate:          'Manuel Tarih',
     lbl_plate:               'Plaka No',
     lbl_truck:               'Kamyon No',
@@ -20410,7 +20421,7 @@ const STEP1_TEXTS = {
   lbl_noteTemplates: 'Hazır Şablonlar',
     deliveryModeBadge_manual:'Manuel',
     deliveryModeBadge_45:    '45 Gün',
-    delivery45Info:          'Depozito alındıktan 45 gün sonra teslimat',
+    delivery45Info:          '45 gün sonra teslimat',
     lbl_regDate:             'Kayıt Tarihi', // 👈 تم نقلها هنا
     shippingBadge: {
       client:  '👤 Alıcı Öder',
@@ -20426,7 +20437,7 @@ const STEP1_TEXTS = {
     lbl_currency:            'Currency',
     lbl_loadDate:            'Loading Date',
     lbl_deliveryDate:        'Delivery Date',
-    lbl_45days:              'Deposit + 45 Days',
+    lbl_45days:              '45 Days',
     lbl_manualDate:          'Manual Date',
     lbl_plate:               'Plate No',
     lbl_truck:               'Truck No',
@@ -20440,7 +20451,7 @@ const STEP1_TEXTS = {
   lbl_noteTemplates: 'Quick Templates',
     deliveryModeBadge_manual:'Manual',
     deliveryModeBadge_45:    '45 Days',
-    delivery45Info:          'Delivery 45 days after receiving the deposit',
+    delivery45Info:          'Delivery after 45 days',
     lbl_regDate:             'Registration Date', // 👈 تم نقلها هنا
     shippingBadge: {
       client:  '👤 Buyer Pays',
@@ -20514,22 +20525,8 @@ function updateStep1Texts() {
   /* ✅ 4 — تحديث شارة وضع التسليم */
   updateDeliveryModeUI();
 
-  /* ✅ 5 — تحديث لغة الشروط مع الحفاظ على الأيام المخصصة والشحن */
-  const notesEl = document.getElementById('invNotes');
-  if (notesEl && notesEl.dataset.customDays !== undefined) {
-    const days = parseInt(notesEl.dataset.customDays);
-    const sOpt = notesEl.dataset.templateOpt || S.shippingOpt || 'client';
-    
-    const baseNote = getDynamicDeliveryText(days, lang);
-    const shipText = (NOTE_SHIPPING_TEXT[lang] || NOTE_SHIPPING_TEXT.ar)[sOpt];
-    const termsArray = NOTE_TERMS[lang] || NOTE_TERMS.ar;
-
-    const numberedTerms = termsArray.map((term, i) => `(${i + 1}) ${term}`).join('\n');
-    notesEl.value = `${baseNote} — ${shipText}\n\n${numberedTerms}`;
-
-    notesEl.style.height = 'auto';
-    notesEl.style.height = (notesEl.scrollHeight + 2) + 'px';
-  }
+  /* Translate recognized terms without replacing custom notes. */
+  wfRefreshFormNotes(lang);
 
   /* ✅ 6 — تحديث نصوص قائمة طريقة الدفع المنسدلة */
   const pmLabels = {
@@ -20594,33 +20591,11 @@ function updateStep1Texts() {
 /* ── اختيار خيار الشحن ── */
 /* ── اختيار خيار الشحن ── */
 function selectShippingOpt(opt) {
-  S.shippingOpt = opt;
+  S.shippingOpt=opt;
+  wfRefreshFormNotes(S.lang||'ar',{shipping:opt});
   updateShippingUI();
-  renderNoteTemplates(); 
-
-  const notesEl = document.getElementById('invNotes');
-  if (notesEl) {
-    // ✅ حفظ خيار الشحن الجديد للترجمة
-    notesEl.dataset.templateOpt = opt;
-
-    if (notesEl.dataset.customDays !== undefined) {
-      // إذا كان هناك أيام محفوظة (سواء من قالب أو مخصصة)، أعد بناء النص بصمت
-      const lang = S.lang || 'ar';
-      const days = parseInt(notesEl.dataset.customDays);
-      const baseNote = getDynamicDeliveryText(days, lang);
-      const shipText = (NOTE_SHIPPING_TEXT[lang] || NOTE_SHIPPING_TEXT.ar)[opt];
-      const termsArray = NOTE_TERMS[lang] || NOTE_TERMS.ar;
-
-      const numberedTerms = termsArray.map((term, i) => `(${i + 1}) ${term}`).join('\n');
-      notesEl.value = `${baseNote} — ${shipText}\n\n${numberedTerms}`;
-
-      notesEl.style.height = 'auto';
-      notesEl.style.height = (notesEl.scrollHeight + 2) + 'px';
-    }
-  }
+  renderNoteTemplates();
 }
-
-
 
 /* ── تحديث واجهة الشحن ── */
 function updateShippingUI() {
@@ -20642,10 +20617,8 @@ function setDelivery45Days() {
   S.deliveryMode = '45days';
   updateDeliveryModeUI();
 
-  /* اليوم + 45 يوم */
-  const date = new Date();
-  date.setDate(date.getDate() + 45);
-  const formatted = date.toISOString().split('T')[0];
+  applyNoteTemplate(3,true);
+  const formatted = document.getElementById('invLoadDate')?.value||'';
 
   const el = document.getElementById('invDeliveryDate');
   if (el) {
