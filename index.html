@@ -12680,13 +12680,13 @@ async function savePr(){
   const priceA=parseFloat(document.getElementById('prPriceA').value);
   if(!Number.isFinite(priceA)||priceA<=0){showToast(t('fill_req'),'er');document.getElementById('prPriceA').focus();return false;}
 
-  // Capture the visible package rows before resetting the form; write once.
+  // Physical product dimensions and shipping packages are independent snapshots.
   const pieces=(S.dimPieces?.length?S.dimPieces:[{l:0,w:0,h:0,weight:0,packets:1}]).map(p=>({...p,
     l:Number(p.l)||0,w:Number(p.w)||0,h:Number(p.h)||0,
     weight:Number(p.weight)||0,packets:parseInt(p.packets)||1
   }));
-  const dims=pieces.map(({l,w,h})=>({l,w,h}));
-  const first=pieces[0];
+  const dims=getPrDimsValue();
+  const first=dims[0]||{l:0,w:0,h:0};
   const cbm=Number(pieces.reduce((sum,p)=>sum+p.l*p.w*p.h/1000000,0).toFixed(4));
   const totalWeight=pieces.reduce((sum,p)=>sum+p.weight,0);
   const totalPackets=pieces.reduce((sum,p)=>sum+p.packets,0);
@@ -12699,7 +12699,7 @@ async function savePr(){
     priceC:parseFloat(document.getElementById('prPriceC').value)||0,
     priceUSD:priceA,priceTRY:usdToTry(priceA),activeTier:S.prActiveTier,
     dimL:first.l,dimW:first.w,dimH:first.h,
-    dimensions:first.l&&first.w&&first.h?`${first.l}×${first.w}×${first.h}`:'',
+    dimensions:dims.filter(d=>d.l&&d.w&&d.h).map(d=>`${d.l}×${d.w}×${d.h}`).join(' + '),
     dims,dimPieces:pieces,cbm,totalCBM:cbm,
     weight:totalWeight,totalWeight,packets:totalPackets,totalPackets,
     color:getPrColorValue(),colorHex:S.selColor,image:S.prImgData,
@@ -12880,33 +12880,22 @@ function onPrDimRowInput(i) {
   onPrDimAllInput();
 }
 
-/* ── حساب CBM الإجمالي من كل الصفوف ── */
+/* Physical dimensions never update shipping volume, weight or package count. */
 function onPrDimAllInput() {
-  const totalCBM = S.prDims.reduce((sum, d) => {
-    const l = d.l || 0, w = d.w || 0, h = d.h || 0;
-    return sum + (l && w && h ? (l * w * h / 1000000) : 0);
-  }, 0);
-
-  const cbmEl = document.getElementById('cbmCalc');
-  if (cbmEl) cbmEl.textContent = totalCBM.toFixed(4) + ' m³';
-
-  // ── ✅ تحديث حقل CBM في "معلومات القطعة"
-  const prCbmInfoInp = document.getElementById('prCbmInfo');
-  if (prCbmInfoInp) prCbmInfoInp.value = totalCBM.toFixed(4) + ' m³';
-
-  // ── ✅ تحديث حقل الوزن من dimPieces
-  calcTotalCBM();
+  return getPrDimsValue();
 }
-
 
 
 /* ── قراءة الأبعاد عند الحفظ ── */
 function getPrDimsValue() {
-  return S.prDims.map(d => ({
-    l: d.l || 0,
-    w: d.w || 0,
-    h: d.h || 0,
-  }));
+  return (S.prDims||[]).map(d=>({l:Number(d.l)||0,w:Number(d.w)||0,h:Number(d.h)||0}));
+}
+
+// Legacy dimL/W/H are physical dimensions; package rows are never a fallback.
+function wfGetProductDims(product){
+  const rows=Array.isArray(product.dims)&&product.dims.length?product.dims:
+    [{l:product.dimL||0,w:product.dimW||0,h:product.dimH||0}];
+  return rows.map(d=>({l:Number(d.l)||0,w:Number(d.w)||0,h:Number(d.h)||0}));
 }
 
 
@@ -13398,15 +13387,9 @@ function editPr(id){
     if (p.dimPieces && p.dimPieces.length) {
       S.dimPieces = p.dimPieces.map(d => ({ ...d }));
     } else {
-      S.dimPieces = (p.dims?.length?p.dims:[{l:p.dimL,w:p.dimW,h:p.dimH}]).map((d,i)=>({
-        ...d,
-        l:       d.l    || 0,
-        w:       d.w    || 0,
-        h:       d.h    || 0,
-        weight:  i===0?(p.weight||0):0,
-        packets: i===0?Math.max(1,(p.packets||1)-((p.dims?.length||1)-1)):1,
-        color:   p.color   || 'STANDARD',
-      }));
+      // Missing shipping details stay blank instead of copying the product size.
+      S.dimPieces = [{l:0,w:0,h:0,
+        weight:p.weight||0,packets:p.packets||1,color:p.color||'STANDARD'}];
     }
     renderDimPieces();
 
@@ -13689,20 +13672,12 @@ function addItemToInv(product){
     ex.totalUSD=ex.qty*price;ex.totalTRY=ex.qty*priceTRY;ex.totalEUR=ex.qty*priceEUR;
     ex.totalCBM=(ex.cbm||0)*ex.qty;
   }else{
-    // 🌟 الأولوية لجلب "الأبعاد (سم)" الأساسية للمنتج
-    let dp = [];
-    if (product.dims && product.dims.length > 0) {
-      dp = JSON.parse(JSON.stringify(product.dims));
-    } else if (product.dimPieces && product.dimPieces.length > 0) {
-      dp = JSON.parse(JSON.stringify(product.dimPieces));
-    } else {
-      dp = [{l: product.dimL||0, w: product.dimW||0, h: product.dimH||0}];
-    }
+    const dp=wfGetProductDims(product);
 
     S.invItems.push({
       productId:product.id,name:product.name,
       dimensions:product.dimensions||'',
-      dimPieces: dp, // تخزين الأبعاد هنا لتعديلها داخل الفاتورة
+      dimPieces:dp, // Physical dimensions displayed and edited in the invoice.
       color:product.color||'STANDARD',
       priceUSD:price,priceTRY,priceEUR,
       qty:1,totalUSD:price,totalTRY:priceTRY,totalEUR:priceEUR,
@@ -13856,15 +13831,8 @@ function changeInvItemDim(itemIdx, pieceIdx, field, value) {
   
   item.dimPieces[pieceIdx][field] = parseFloat(value) || 0;
   
-  // إعادة حساب CBM للقطعة بناءً على الأبعاد الجديدة
-  let totalCBM = 0;
-  item.dimPieces.forEach(dp => {
-    totalCBM += ((dp.l || 0) * (dp.w || 0) * (dp.h || 0)) / 1000000;
-  });
-  
-  item.cbm = totalCBM;
-  item.totalCBM = totalCBM * item.qty;
-  
+  // These are physical dimensions. Shipping CBM remains the saved package volume.
+
   // تحديث النص الوصفي للأبعاد ليظهر في الـ PDF بشكل صحيح
   if(item.dimPieces.length === 1) {
     item.dimensions = `${item.dimPieces[0].l}×${item.dimPieces[0].w}×${item.dimPieces[0].h}`;
@@ -14875,11 +14843,13 @@ function previewInvoice(showModal=true){
     subtotalUSD,discountUSD,depositUSD,grandTotal:grandUSD,
     totalPaidUSD,remainingUSD,
     totalCBM:parseFloat(totalCBM.toFixed(4)),totalPackets:totalPkts,
+    regDate:document.getElementById('invRegDate').value,
     loadDate:document.getElementById('invLoadDate').value,
     plate:document.getElementById('invPlate')?.value||'',
     truck:document.getElementById('invTruck')?.value||'',
     notes:document.getElementById('invNotes').value,
-    date:(S.editInvId && S.invoices.find(i=>i.id===S.editInvId)?.date) || new Date().toLocaleDateString(),
+    date:S.editInvId ? (S.invoices.find(i=>i.id===S.editInvId)?.date || '') : new Date().toLocaleDateString(),
+    createdAt:S.editInvId ? (S.invoices.find(i=>i.id===S.editInvId)?.createdAt || '') : new Date().toISOString(),
     usdTry:S.usdTry,usdEur:S.usdEur,
     payments:[...S.currentInvPayments],
     printOpts:{...S.printOpts},
@@ -15693,6 +15663,27 @@ function _toWordsCore(n, lang) {
 
 
 
+// Keep calendar dates independent of the browser locale and timezone.
+function wfInvoiceOrderDate(inv, lang='en') {
+  const formatISO = value => {
+    const match = String(value || '').trim().match(/^(\d{4})-(\d{2})-(\d{2})(?:$|T)/);
+    if (!match) return '';
+    const year = Number(match[1]), month = Number(match[2]), day = Number(match[3]);
+    const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+    const days = [31,leap ? 29 : 28,31,30,31,30,31,31,30,31,30,31];
+    if (month < 1 || month > 12 || day < 1 || day > days[month - 1]) return '';
+    if (lang !== 'en') return `${match[1]}-${match[2]}-${match[3]}`;
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${day} ${months[month - 1]} ${match[1]}`;
+  };
+  const selected = formatISO(inv.regDate);
+  if (selected) return selected;
+  // Preserve ambiguous historical locale strings rather than guessing day/month order.
+  const legacy = String(inv.date || '').trim();
+  if (legacy) return formatISO(legacy) || legacy;
+  return formatISO(inv.createdAt) || '—';
+}
+
 function buildInvoiceHTML(inv, lang, opts) {
   lang = lang || 'en';
   opts = opts || {
@@ -15713,6 +15704,7 @@ function buildInvoiceHTML(inv, lang, opts) {
     : 'border-left:1px solid #e2e8f0;  border-right:1px solid #e2e8f0;';
 
   const L   = PDF_TR[lang] || PDF_TR.en;
+  const orderDate = wfInvoiceOrderDate(inv, lang);
   const cur = inv.currency || 'USD';
   const sym = symOf(cur);
   const usdTry = inv.usdTry || S.usdTry;
@@ -15787,7 +15779,7 @@ function buildInvoiceHTML(inv, lang, opts) {
     ql.type,
     ql.sep,
     `${ql.invNo}: ${inv.invNo || '-'}`,
-    `${ql.regDate}: ${inv.date || new Date().toLocaleDateString()}`,
+    `${ql.regDate}: ${orderDate}`,
     `${ql.coName}: ${inv.companyName || '-'}`,
     `${ql.country}: ${qrCountryVal}`,
     `${ql.city}: ${inv.city || '-'}`,
@@ -15905,7 +15897,7 @@ function buildInvoiceHTML(inv, lang, opts) {
   const bottomQrLines = [
     bql.company,
     `${bql.invNo}: ${inv.invNo || '-'}`,
-    `${bql.regDate}: ${inv.date || new Date().toLocaleDateString()}`,
+    `${bql.regDate}: ${orderDate}`,
     bql.sep,
     ...productLines,
     bql.sep,
@@ -16880,7 +16872,7 @@ const sellerSig = `
           
           return [
             [L.no,          inv.invNo || '—', true], // true تعني أن هذا الحقل هو رقم الفاتورة
-            [L.orderDate,   inv.date || new Date().toLocaleDateString()],
+            [L.orderDate,   orderDate],
             [L.companyName, inv.companyName || '—'],
             [countryOrProvLabel, countryOrProvVal],
             [L.city || 'CITY', inv.city || '—'],
@@ -17306,14 +17298,7 @@ function getPrColorValue() {
 
 /* ── حساب CBM من الحقول الجديدة ── */
 function onPrDimInput() {
-const dims = getPrDimsValue();
-const l = dims[0]?.l || 0;
-const w = dims[0]?.w || 0;
-const h = dims[0]?.h || 0;
-
-  const cbm = (l && w && h) ? (l * w * h / 1000000) : 0;
-  const el = document.getElementById('cbmCalc');
-  if (el) el.textContent = cbm.toFixed(4) + ' m³';
+  return onPrDimAllInput();
 }
 
 
@@ -19331,15 +19316,7 @@ function qblSendToInvoice() {
         const priceTRY = usdToTry(price);
         const priceEUR = usdToEur(price);
 
-        // 🌟 الأولوية لجلب "الأبعاد (سم)" الأساسية للمنتج
-        let dp = [];
-        if (cartItem.product.dims && cartItem.product.dims.length > 0) {
-          dp = JSON.parse(JSON.stringify(cartItem.product.dims));
-        } else if (cartItem.product.dimPieces && cartItem.product.dimPieces.length > 0) {
-          dp = JSON.parse(JSON.stringify(cartItem.product.dimPieces));
-        } else {
-          dp = [{l: cartItem.product.dimL||0, w: cartItem.product.dimW||0, h: cartItem.product.dimH||0}];
-        }
+        const dp=wfGetProductDims(cartItem.product);
 
         S.invItems.push({
           productId:  cartItem.product.id,
