@@ -9035,25 +9035,90 @@ function wfDehydrateClone(value,mediaRows,seen,forceMedia){
   return o;
 }
 
-function initDB(){return new Promise((res,rej)=>{
-  const r=indexedDB.open(DB_NAME,DB_VER);
-  r.onupgradeneeded=e=>{
-    const d=e.target.result;
-    ['companies','products','invoices','settings','payments',WF_MEDIA_STORE].forEach(s=>{
-      if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:'id'});
-    });
-  };
-  r.onsuccess=e=>{
-    db=e.target.result;
-    db.onversionchange=()=>{try{db.close()}catch(_){}};
-    res();
-  };
-  r.onerror=e=>rej(e);
-  r.onblocked=()=>console.warn('WOW IndexedDB upgrade is waiting for another open tab.');
-})}
-
-const dbGetRaw=(s,id)=>new Promise((res,rej)=>{const r=db.transaction(s,'readonly').objectStore(s).get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
-const dbGetAllRaw=s=>new Promise((res,rej)=>{const r=db.transaction(s,'readonly').objectStore(s).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)});
+// A tablet may suspend/close a connection while leaving this page open.
+// Reuse one opener, preserve the existing database and repair missing stores.
+let WF_DB_OPENING=null;
+const WF_DB_STORES=['companies','products','invoices','settings','payments',WF_MEDIA_STORE];
+function initDB(){
+  if(WF_DB_OPENING)return WF_DB_OPENING;
+  if(db){
+    try{db.transaction('settings','readonly');return Promise.resolve(db);}
+    catch(_){try{db.close();}catch(_){}db=null;}
+  }
+  WF_DB_OPENING=new Promise((resolve,reject)=>{
+    let settled=false,blockedTimer;
+    const fail=err=>{
+      if(settled)return;settled=true;clearTimeout(blockedTimer);
+      reject(err||new Error('Database could not open'));
+    };
+    const open=version=>{
+      let request;
+      try{request=version===undefined?indexedDB.open(DB_NAME):indexedDB.open(DB_NAME,version);}
+      catch(err){fail(err);return;}
+      request.onupgradeneeded=()=>{
+        const connection=request.result;
+        for(const name of WF_DB_STORES){
+          if(!connection.objectStoreNames.contains(name))connection.createObjectStore(name,{keyPath:'id'});
+        }
+      };
+      request.onerror=()=>{
+        // A previous app version on this device may have a newer schema number.
+        if(request.error?.name==='VersionError'&&version!==undefined&&!settled){open();return;}
+        fail(request.error);
+      };
+      request.onblocked=()=>{
+        clearTimeout(blockedTimer);
+        blockedTimer=setTimeout(()=>{
+          const err=new Error('Close other open copies of WOW and retry.');
+          err.name='DatabaseBlockedError';fail(err);
+        },8000);
+      };
+      request.onsuccess=()=>{
+        const connection=request.result;
+        clearTimeout(blockedTimer);
+        if(settled){connection.close();return;}
+        if(WF_DB_STORES.some(name=>!connection.objectStoreNames.contains(name))){
+          const nextVersion=Math.max(DB_VER,connection.version+1);
+          connection.close();open(nextVersion);return;
+        }
+        db=connection;
+        connection.onversionchange=()=>{
+          connection.close();if(db===connection)db=null;
+        };
+        connection.onclose=()=>{if(db===connection)db=null;};
+        settled=true;resolve(connection);
+      };
+    };
+    open(DB_VER);
+  }).finally(()=>{WF_DB_OPENING=null;});
+  return WF_DB_OPENING;
+}
+async function wfReconnectDB(connection){
+  if(db===connection){try{connection.close();}catch(_){}db=null;}
+  return initDB();
+}
+async function wfReadRaw(store,method,id){
+  for(let attempt=0;attempt<2;attempt++){
+    if(!db)await initDB();
+    const connection=db;
+    try{
+      return await new Promise((resolve,reject)=>{
+        const tx=connection.transaction(store,'readonly');
+        const request=id===undefined?tx.objectStore(store)[method]():tx.objectStore(store)[method](id);
+        request.onsuccess=()=>resolve(request.result);
+        request.onerror=()=>reject(request.error);
+        tx.onabort=()=>reject(tx.error||new Error('Database read aborted'));
+      });
+    }catch(err){
+      if(attempt===0&&['InvalidStateError','NotFoundError'].includes(err?.name)){
+        await wfReconnectDB(connection);continue;
+      }
+      throw err;
+    }
+  }
+}
+const dbGetRaw=(s,id)=>wfReadRaw(s,'get',id);
+const dbGetAllRaw=async s=>(await wfReadRaw(s,'getAll'))||[];
 function wfStorageWriteError(err){
   if(err&&(err.name==='QuotaExceededError'||String(err).includes('QuotaExceeded'))){
     try{
@@ -9069,16 +9134,18 @@ function wfNewRecordId(){
 }
 async function wfWriteBatch(operations){
   if(!operations.length)return [];
-  if(!db)await initDB();
   const mediaRows=new Map();
   const prepared=operations.map(op=>({...op,value:op.type==='delete'?undefined:
     (op.store===WF_MEDIA_STORE?op.value:wfDehydrateClone(op.value,mediaRows,undefined,true))}));
   const stores=[...new Set(prepared.map(op=>op.store).concat(mediaRows.size?[WF_MEDIA_STORE]:[]))];
-  return new Promise((resolve,reject)=>{
+  for(let attempt=0;attempt<2;attempt++){
+    if(!db)await initDB();
+    const connection=db;
+    try{return await new Promise((resolve,reject)=>{
     let tx,failed;
     const results=[];
     try{
-      tx=db.transaction(stores,'readwrite');
+      tx=connection.transaction(stores,'readwrite');
       tx.oncomplete=()=>{
         for(const id of mediaRows.keys())WF_MEDIA_PERSISTED.add(id);
         resolve(results);
@@ -9101,12 +9168,18 @@ async function wfWriteBatch(operations){
     }catch(err){
       failed=err;
       if(tx){try{tx.abort();}catch(_){} }
+      if(!tx&&['InvalidStateError','NotFoundError'].includes(err?.name))err.wfRetryConnection=true;
       wfStorageWriteError(err);reject(err);
     }
-  });
+    });}catch(err){
+      // Retry only when no transaction was created: nothing can be duplicated.
+      if(attempt===0&&err?.wfRetryConnection){await wfReconnectDB(connection);continue;}
+      throw err;
+    }
+  }
 }
 const dbPutRaw=async(s,o)=>(await wfWriteBatch([{store:s,value:o}]))[0];
-const dbGetAllKeysRaw=s=>new Promise((res,rej)=>{const r=db.transaction(s,'readonly').objectStore(s).getAllKeys();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)});
+const dbGetAllKeysRaw=async s=>(await wfReadRaw(s,'getAllKeys'))||[];
 
 async function wfLoadMediaIds(ids){
   const missing=[...ids].filter(id=>id&&!WF_MEDIA_CACHE.has(id));
@@ -12633,9 +12706,19 @@ async function savePr(){
     barcode:name.toUpperCase(),createdAt:existing?.createdAt||new Date().toISOString(),
   };
   await dbPut('products',pr);
-  const idx=S.products.findIndex(p=>p.id===pr.id);
-  if(idx>=0)S.products[idx]=pr;else S.products.push(pr);
-  showToast(t('saved_pr'));resetPrForm();updateDash();showPage('products');
+  // The product is committed; a display error must not report a failed write.
+  try{
+    const idx=S.products.findIndex(p=>p.id===pr.id);
+    if(idx>=0)S.products[idx]=pr;else S.products.push(pr);
+    resetPrForm();updateDash();showPage('products');
+    showToast(t('saved_pr'));
+  }catch(err){
+    console.error('WOW product saved, display refresh failed:',err);
+    const msg=S.lang==='tr'?'Ürün kaydedildi. Görünümü yenilemek için sayfayı yeniden yükleyin.':
+      S.lang==='en'?'Product saved. Reload the page to refresh the display.':
+      'تم حفظ المنتج. أعد تحميل الصفحة لتحديث العرض.';
+    try{showToast(msg,'in');}catch(_){}
+  }
   return true;
 }
 
@@ -12950,7 +13033,7 @@ function renderPr(){
 
   const list=S.products.filter(p=>{
     const matchTab=S.prTabFilter==='all'||p.type===S.prTabFilter;
-    const matchSearch=p.name.toLowerCase().includes(search);
+    const matchSearch=String(p.name??'').toLowerCase().includes(search);
     return matchTab&&matchSearch;
   });
 
@@ -22000,6 +22083,20 @@ function imgViewerEscHandler(e) {
 
 
 /* SAVE GUARDS: keep input on failure and ignore repeat taps while writing. */
+let WF_LAST_SAVE_ERROR=null;
+function wfSaveErrorMessage(err){
+  const lang=S.lang||'ar',name=err?.name||'Error';
+  const reasons={
+    QuotaExceededError:{ar:'المساحة المسموح بها لهذا البرنامج ممتلئة. صدّر نسخة احتياطية ووفّر مساحة على الجهاز.',tr:'Uygulamanın depolama kotası doldu. Yedek alıp cihazda yer açın.',en:'App storage is full. Export a backup and free device space.'},
+    SecurityError:{ar:'المتصفح يمنع التخزين في طريقة فتح الملف الحالية. افتح البرنامج مباشرة في Chrome، خارج معاينة الملفات والوضع الخفي.',tr:'Dosyanın açıldığı ortam depolamayı engelliyor. Programı dosya önizlemesi veya gizli mod dışında doğrudan Chrome ile açın.',en:'This file viewer blocks storage. Open the app directly in Chrome, outside file preview and private mode.'},
+    DatabaseBlockedError:{ar:'أغلق النسخ الأخرى المفتوحة من برنامج WOW، ثم اضغط حفظ مجددًا.',tr:'Diğer açık WOW sekmelerini kapatıp yeniden kaydedin.',en:'Close other open copies of WOW, then save again.'},
+    InvalidStateError:{ar:'انقطع اتصال التخزين. أعد المحاولة؛ وإذا استمر الخطأ أعد فتح البرنامج.',tr:'Depolama bağlantısı kesildi. Tekrar deneyin; sorun sürerse programı yeniden açın.',en:'Storage disconnected. Try again; reopen the app if it persists.'},
+  };
+  const detail=(reasons[name]||{})[lang];
+  const prefix=lang==='tr'?'Kaydedilemedi. ':lang==='en'?'Could not save. ':'تعذر الحفظ. ';
+  const fallback=lang==='tr'?'Bilgileri koruyun ve aşağıdaki hata kodunu paylaşın.':lang==='en'?'Keep your input and share the error code below.':'احتفظ ببيانات الإدخال وأرسل لي رمز الخطأ الظاهر.';
+  return prefix+(detail||fallback)+' ['+name.replace(/[^a-zA-Z0-9_-]/g,'').slice(0,60)+']';
+}
 const WF_SAVE_PENDING=new Set();
 async function wfRunSave(name,action){
   if(WF_SAVE_PENDING.has(name))return false;
@@ -22010,9 +22107,8 @@ async function wfRunSave(name,action){
   try{return await action();}
   catch(err){
     console.error('WOW save failed:',name,err);
-    const msg=S.lang==='tr'?'Kaydedilemedi. Girdiğiniz bilgiler korunuyor. Depolama alanını kontrol edip tekrar deneyin.':
-      S.lang==='en'?'Could not save. Your input is preserved. Check storage and try again.':
-      'تعذر الحفظ. بيانات الإدخال ما زالت موجودة. تحقق من مساحة التخزين وحاول مجددًا.';
+    WF_LAST_SAVE_ERROR={action:name,name:err?.name||'Error',message:String(err?.message||err)};
+    const msg=wfSaveErrorMessage(err);
     showToast(msg,'er');return false;
   }finally{
     WF_SAVE_PENDING.delete(name);
