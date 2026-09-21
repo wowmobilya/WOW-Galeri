@@ -5983,85 +5983,65 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
   .wf-data-grid{grid-template-columns:1fr 1fr;}
 }
 
-</style>
-<script id="wf-security-boot">document.documentElement.classList.add("wf-sec-pending");</script>
-<style id="wf-r2-runtime">/* Isolated R2 runtime styles. Original UI/PDF stylesheet is retained unchanged. */
-@media screen {
-  html.wf-sec-pending body > :not(#wfLockOverlay):not(script):not(style),
-  html.wf-sec-locked body > :not(#wfLockOverlay):not(script):not(style){visibility:hidden!important;pointer-events:none!important}
-  html.wf-sec-locked,html.wf-sec-pending{overflow:hidden!important}
-  #wfLockOverlay[hidden]{display:none!important}
-  #wfLockOverlay{position:fixed;inset:0;z-index:2147483647;background:var(--bg,#f0f4f8);color:var(--text,#1a202c);overflow:auto;overscroll-behavior:contain;padding:24px;display:flex;align-items:flex-start;justify-content:center;visibility:visible!important;touch-action:pan-y}
-  #wfLockContent{width:100%;max-width:520px;margin:auto;background:var(--card,#fff);border:1px solid var(--border,#e2e8f0);border-radius:20px;padding:28px;box-shadow:var(--shadow2)}
-  #wfLockContent h1{font-size:24px;text-align:center}#wfLockContent>p{text-align:center}
-  #wfLockContent>.btn{margin-top:12px;width:100%;justify-content:center}
-  #wfLockContent form{display:flex;flex-direction:column;gap:14px;margin-top:18px}
-  .wf-sec-lock-icon{text-align:center;font-size:38px;margin-bottom:10px}
-  #page-security{padding-bottom:100px!important}
-  #wfSecurityBody{width:100%;max-width:1040px;margin:0 auto;overflow-wrap:anywhere}
-  #wfSecurityBody .card{margin-top:16px}#wfSecurityBody h2{font-size:17px;margin-bottom:14px}
-  .wf-sec-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
-  .wf-sec-heading h1{font-size:22px}.wf-sec-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
-  .wf-sec-actions .btn,#wfLockContent .btn{white-space:normal;min-height:44px;text-align:center;justify-content:center}
-  .wf-sec-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0}
-  .wf-sec-field{display:flex;flex-direction:column;gap:6px;font-size:13px;margin:10px 0;min-width:0}
-  .wf-sec-field .fc{font-size:16px;min-height:44px}
-  .wf-sec-note{font-size:12px;line-height:1.85;color:var(--muted);margin:8px 0}
-  .wf-sec-message{min-height:24px;color:var(--gold2);font-size:13px;font-weight:700;margin:12px 0;line-height:1.8}
-  .wf-sec-check{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.7;margin:12px 0}
-  .wf-sec-check input{accent-color:var(--gold);width:18px;height:18px;flex-shrink:0;margin-top:2px}
-  .wf-sec-perms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
-  #wfSecurityBody fieldset{border:1px solid var(--border);border-radius:12px;padding:14px}#wfSecurityBody legend{font-size:12px;padding:0 6px;color:var(--muted)}
-  .wf-sec-user{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid var(--border);padding:14px 0;flex-wrap:wrap}.wf-sec-user:first-child{margin-top:12px}
-  .wf-sec-audit{max-height:240px;overflow:auto;font-size:11px;line-height:1.9}.wf-sec-audit p{padding:5px 0;border-bottom:1px solid var(--border)}
-  .wf-sec-language{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:12px 0}
-  #wfSecurityBody button:disabled,#wfLockOverlay button:disabled{opacity:.5;cursor:not-allowed}
-  #wfSecEditor{scroll-margin-top:80px}
-  /* Invisible overlays no longer paint/animate while closed. No open-overlay styling changes. */
-  .modal-ov:not(.open),.delete-modal-ov:not(.open),.deliver-modal-ov:not(.open),#imgViewerModal:not(.open){visibility:hidden}
-  .modal-ov:not(.open) *,.delete-modal-ov:not(.open) *,.deliver-modal-ov:not(.open) *{animation-play-state:paused!important}
-  /* A pan-y ancestor previously prevented horizontal table swipes. This changes gestures, not layout. */
-  #mainContent,.main .card,.main .inv-step,.main .inv-step-body{touch-action:pan-x pan-y!important}
+
+/* ============================================================
+   TABLET MEMORY/PAN PERFORMANCE PATCH V7 — NO LAYOUT/PDF CHANGES
+============================================================ */
+@media (hover:none) and (pointer:coarse) and (min-width:600px) and (max-width:1366px){
+  /* Large GPU-promoted grids consume substantial tablet memory; keep normal compositing. */
+  .main,.sidebar,.co-grid,.pr-grid-new,.inv-grid,.ps-list{
+    transform:none !important;
+    will-change:auto !important;
+    backface-visibility:visible !important;
+  }
+
+  /* Entry-only motion is skipped on touch tablets; final visual state is unchanged. */
+  .co-card,.pr-card-new,.inv-card,.client-type-step-card,.pr-type-step-card,
+  .qbl-cart-item,.greeting-card.rotating,.tip-card-standalone.rotating{
+    animation:none !important;
+  }
+
+  /* Let the browser skip paint/layout work for cards that are far outside the viewport. */
+  .co-card,.pr-card-new,.inv-card{
+    content-visibility:auto;
+    contain-intrinsic-size:auto 360px;
+  }
 }
-@media screen and (max-width:600px){.wf-sec-grid,.wf-sec-perms{grid-template-columns:1fr}#wfLockOverlay{padding:12px}#wfLockContent{padding:20px}.wf-sec-heading h1{font-size:19px}}
-@media print{#wfLockOverlay,#page-security{display:none!important}html.wf-sec-locked body>*,html.wf-sec-pending body>*,html.wf-print-denied body>*{display:none!important}}
 
-@media print{html.wf-sec-locked #print-area,html.wf-sec-pending #print-area,html.wf-print-denied #print-area{display:none!important}}
-</style>
-<style id="wf-security-pro-r3">
-/* R3 additions are scoped to security components and permission visibility. */
-[data-wf-denied="1"],[data-user-search][hidden]{display:none!important}
-#wfSecurityBody{max-width:1120px}#wfSecurityBody .wf-sec-hero{padding:24px;border-radius:18px;border:1px solid var(--border);background:var(--nav);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
-#wfSecurityBody .wf-sec-hero p{font-size:12px;line-height:1.9;color:#e2e8f0}#wfSecurityBody .wf-sec-hero h1{font-size:24px;margin:6px 0}
-#wfSecurityBody .wf-sec-tabs{display:flex;gap:8px;overflow:auto;margin:16px 0;padding-bottom:4px;scrollbar-width:thin}#wfSecurityBody .wf-sec-tabs .btn{flex:1;justify-content:center;min-height:46px;white-space:nowrap}
-#wfSecurityBody .wf-tab-active{background:var(--gold-light);border-color:var(--gold);color:var(--gold2);font-weight:800}
-#wfSecurityBody .wf-sec-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}#wfSecurityBody .wf-sec-metrics>div{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px}#wfSecurityBody .wf-sec-metrics strong{font-size:26px;color:var(--gold2)}#wfSecurityBody .wf-sec-metrics span{font-size:12px;color:var(--text2)}
-#wfSecurityBody .wf-sec-tag{display:inline-block;border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--gold2);background:var(--gold-light);white-space:normal}
-#wfSecurityBody .wf-user-info{display:flex;align-items:center;gap:14px;min-width:0}#wfSecurityBody .wf-user-avatar{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--gold-light);color:var(--gold2);font-size:20px;font-weight:800;flex-shrink:0}#wfSecurityBody .wf-sec-user .wf-sec-actions{margin:0}
-#wfSecurityBody .wf-permission-row{display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:center;border-bottom:1px solid var(--border);padding:12px 0}#wfSecurityBody .wf-permission-row:last-child{border-bottom:0}#wfSecurityBody .wf-permission-row>strong{font-size:13px}#wfSecurityBody .wf-permission-row>div{display:flex;gap:8px;flex-wrap:wrap}#wfSecurityBody .wf-permission-cell{display:flex;align-items:center;gap:7px;border:1px solid var(--border);border-radius:10px;padding:10px;min-height:44px;font-size:12px;cursor:pointer;background:var(--input)}#wfSecurityBody .wf-permission-cell:has(input:checked){background:var(--gold-light);border-color:var(--gold)}#wfSecurityBody .wf-permission-cell input{width:19px;height:19px;accent-color:var(--gold)}
-#wfSecurityBody #wfPermissionFields{padding:0 16px;border:1px solid var(--border);border-radius:14px;margin-top:16px}#wfSecurityBody .wf-editor-footer{display:flex;gap:12px;background:var(--card);padding:14px 0;position:sticky;bottom:0;border-top:1px solid var(--border);z-index:3}#wfSecurityBody .wf-editor-footer .btn{min-width:140px;justify-content:center}
-#wfSecurityBody .wf-security-warning{padding:14px;background:var(--gold-light);border:1px solid var(--gold);border-radius:12px;font-size:12px;line-height:1.9}#wfSecurityBody .wf-sec-boundary,#wfSecurityBody .wf-sec-detail{margin-top:20px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:12px;line-height:1.8}#wfSecurityBody summary{cursor:pointer;font-weight:700}
-#wfSecurityBody .wf-error,#wfLockOverlay .wf-error{color:var(--red);background:rgba(229,62,62,.07);border-radius:10px;padding:12px}
-#wfSecurityBody .wf-secret-wrap,#wfLockOverlay .wf-secret-wrap{display:flex;gap:8px;align-items:stretch}#wfSecurityBody .wf-secret-wrap .fc,#wfLockOverlay .wf-secret-wrap .fc{min-width:0;flex:1;letter-spacing:4px}#wfSecurityBody .wf-pad-open,#wfLockOverlay .wf-pad-open{min-width:50px;border:1px solid var(--gold);border-radius:10px;background:var(--gold-light);color:var(--gold2);font-size:22px}
-#wfKeypad{position:fixed;inset:0;z-index:2147483647;background:rgba(12,18,30,.72);display:flex;justify-content:center;align-items:center;padding:16px;overflow:auto;overscroll-behavior:contain;touch-action:pan-y}
-#wfKeypad .wf-pad-card{width:min(100%,360px);background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:var(--shadow2);max-height:96vh;max-height:96dvh;overflow:auto;color:var(--text);margin:auto}
-#wfKeypad .wf-pad-top{display:flex;justify-content:space-between;align-items:center}#wfKeypad .wf-pad-top button{width:38px;height:38px;border:0;border-radius:10px;background:var(--input);color:var(--text)}
-#wfPadDisplay{background:var(--input);border:1px solid var(--border);border-radius:12px;padding:14px;height:58px;margin:10px 0;text-align:center;font-size:22px;letter-spacing:5px}
-#wfKeypad .wf-pad-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}#wfKeypad .wf-pad-keys button{min-height:56px;border:1px solid var(--border);border-radius:12px;background:var(--input);color:var(--text);font-size:24px;font-weight:700;touch-action:manipulation}#wfKeypad button:active{background:var(--gold-light)}#wfKeypad .btn{justify-content:center;min-height:44px;margin-top:8px}
-html.wf-no-prices .pr-card-new-prices,html.wf-no-prices .qbl-tier-row,html.wf-no-prices #qblStickyTotal,html.wf-no-prices .qbl-price-display{display:none!important}
-html.wf-no-invoices .co-fin-summary,html.wf-no-payments .co-fin-summary,html.wf-no-payments .inv-card-pay,html.wf-no-payments .inv-card-badges .badge:nth-child(n+2){display:none!important}
-html.wf-no-barcode #qblStickyCart,html.wf-no-barcode .qbl-cart-fab,html.wf-no-barcode #qblCartBar{display:none!important}
-@media(max-width:1024px){#wfSecurityBody .wf-editor-footer{bottom:calc(72px + env(safe-area-inset-bottom))}}
-@media(max-width:720px){#wfSecurityBody .wf-sec-grid{grid-template-columns:1fr}#wfSecurityBody .wf-permission-row{grid-template-columns:1fr;gap:8px}#wfSecurityBody .wf-sec-hero{padding:18px}#wfSecurityBody .wf-sec-hero h1{font-size:21px}#wfSecurityBody .wf-sec-metrics{gap:6px}#wfSecurityBody .wf-sec-metrics>div{padding:12px}#wfSecurityBody .wf-sec-user .wf-sec-actions .btn{flex:1}#wfSecurityBody .wf-sec-tabs .btn{flex:none}}
-@media(max-height:610px) and (orientation:landscape){#wfKeypad .wf-pad-card{padding:12px;max-width:380px}#wfKeypad .wf-pad-keys button{min-height:40px}#wfKeypad .wf-pad-keys{gap:5px}#wfPadDisplay{height:42px;padding:8px}#wfKeypad .wf-sec-note{margin:2px}}
-@media print{#wfKeypad{display:none!important}}
 
-html.wf-no-prices [data-wf-view="prices.view"]{display:none!important}
+/* ============================================================
+   TABLET PORTRAIT SIDEBAR FIX — TOUCH TABLETS UP TO 1366px
+   Portrait behaves like tablet/mobile navigation: sidebar closed by default.
+============================================================ */
+@media (hover:none) and (pointer:coarse) and (min-width:600px) and (max-width:1366px) and (orientation:portrait){
+  :root{--side-w:0px !important;}
+
+  .sidebar{
+    width:260px !important;
+    transform:translateX(100%) translateZ(0) !important;
+    box-shadow:none !important;
+  }
+  [dir="ltr"] .sidebar{
+    transform:translateX(-100%) translateZ(0) !important;
+  }
+  .sidebar.open{
+    transform:translateX(0) translateZ(0) !important;
+    box-shadow:-4px 0 30px rgba(0,0,0,.2) !important;
+  }
+  [dir="ltr"] .sidebar.open{
+    box-shadow:4px 0 30px rgba(0,0,0,.2) !important;
+  }
+
+  .main{
+    margin-right:0 !important;
+    margin-left:0 !important;
+  }
+  .hamburger{display:flex !important;}
+}
 
 </style>
 </head>
 <body>
-<div id="wfLockOverlay" role="dialog" aria-modal="true" aria-label="WOW Protection"><div id="wfLockContent"><h1>WOW Furniture</h1><p class="wf-sec-note">جارٍ فتح البرنامج… / Loading…</p></div></div>
 
 <div class="toast-box" id="toastBox"></div>
 <div class="sidebar-overlay" id="sideOv" onclick="closeSidebar()"></div>
@@ -6348,7 +6328,7 @@ html.wf-no-prices [data-wf-view="prices.view"]{display:none!important}
   <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
   
   <h1 class="co-toolbar-title" data-i18n="pr_title">🛋️ المنتجات</h1>
-  <input type="text" class="fc" id="prSearch" placeholder="🔍" oninput="WFPerf.search('renderPr')">
+  <input type="text" class="fc" id="prSearch" placeholder="🔍" oninput="wfDebouncedRenderPr()">
   <button class="btn btn-p" onclick="showPage('add-product')">➕ <span data-i18n="btn_add_pr">إضافة</span></button>
 </div>
 
@@ -6390,7 +6370,7 @@ html.wf-no-prices [data-wf-view="prices.view"]{display:none!important}
   <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
   
   <h1 class="co-toolbar-title" data-i18n="co_title">👥 العملاء</h1>
-  <input type="text" class="fc" id="coSearch" placeholder="🔍" oninput="WFPerf.search('renderCo')">
+  <input type="text" class="fc" id="coSearch" placeholder="🔍" oninput="wfDebouncedRenderCo()">
   <button class="btn btn-p" onclick="showPage('select-client-type')">➕ <span data-i18n="btn_add_co">إضافة</span></button>
 </div>
 
@@ -6924,7 +6904,7 @@ html.wf-no-prices [data-wf-view="prices.view"]{display:none!important}
   <button class="sct-back-btn" onclick="goBack()">← <span data-i18n="btn_back">رجوع</span></button>
   
   <h1 class="co-toolbar-title" data-i18n="inv_title">📄 الفواتير</h1>
-  <input type="text" class="fc" id="invSearch" placeholder="🔍" oninput="WFPerf.search('renderInvList')">
+  <input type="text" class="fc" id="invSearch" placeholder="🔍" oninput="wfDebouncedRenderInv()">
   <button class="btn btn-p" onclick="showPage('select-invoice-type')">✏️ <span data-i18n="btn_create">إنشاء</span></button>
 </div>
 
@@ -7430,7 +7410,7 @@ html.wf-no-prices [data-wf-view="prices.view"]{display:none!important}
 </style>
 
 <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-  <input type="text" class="fc" id="invPrSearch" placeholder="🔍 ابحث عن منتج..." oninput="WFPerf.search('renderPrSelector')" style="flex:1; height: 48px; padding: 0 14px; font-size: 14px; border-radius: 12px; border: 1.5px solid var(--border);">
+  <input type="text" class="fc" id="invPrSearch" placeholder="🔍 ابحث عن منتج..." oninput="renderPrSelector()" style="flex:1; height: 48px; padding: 0 14px; font-size: 14px; border-radius: 12px; border: 1.5px solid var(--border);">
   <button class="btn-scanner-large" onclick="openBarcodeScanner('invoice')" title="مسح الباركود">
     📷
   </button>
@@ -8383,7 +8363,7 @@ html.wf-no-prices [data-wf-view="prices.view"]{display:none!important}
       </button>
 <button class="tab-btn" onclick="switchTab('about')" style="border-radius: 10px 10px 0 0; flex-shrink: 0;">
   ℹ️ <span data-i18n="tab_about">عن البرنامج</span>
-</button><button type="button" class="btn btn-s" id="wfSecuritySettingsBtn" onclick="WFSecurity.open()" style="border-radius:10px 10px 0 0;flex-shrink:0;">🛡️ <span id="wfSecuritySettingsLabel">الحماية والمستخدمين</span></button>
+</button>
 
        
     </div>
@@ -8604,7 +8584,6 @@ html.wf-no-prices [data-wf-view="prices.view"]{display:none!important}
 
        
 
-<section class="page" id="page-security"><div id="wfSecurityBody"></div></section>
 </main>
 
 <!-- ========== MODAL: PDF PREVIEW ========== -->
@@ -8904,59 +8883,6 @@ html.wf-no-prices [data-wf-view="prices.view"]{display:none!important}
 ============================================================ -->
 <script>
 'use strict';
-/* WOW tablet runtime R2 — cooperative rendering; no invoice/PDF template changes. */
-const WFPerf=(()=>{
-  const jobs=new Map(),searchTimers=new Map();
-  function active(el){const pg=el?.closest('.page');return !!el&&(!pg||pg.classList.contains('active'));}
-  function cancel(id,clear=false){const j=jobs.get(id);if(j){j.cancelled=true;clearTimeout(j.timer);j.observer?.disconnect();jobs.delete(id);}if(clear)document.getElementById(id)?.replaceChildren();}
-  function begin(el){cancel(el.id);if(!active(el)){el.replaceChildren();return false;}return true;}
-  function render(el,rows,draw){
-    cancel(el.id);el.replaceChildren();
-    const j={cancelled:false,i:0,timer:0,observer:null};jobs.set(el.id,j);
-    el.setAttribute('aria-busy','true');
-    function more(){
-      if(j.cancelled||!active(el)){cancel(el.id);return;}
-      j.observer?.disconnect();
-      const frag=document.createDocumentFragment(),start=performance.now();let n=0;
-      // Small lists retain their exact layout; large lists yield between small batches.
-      do{
-        const tpl=document.createElement('template');tpl.innerHTML=draw(rows[j.i],j.i);j.i++;n++;
-        tpl.content.querySelectorAll('img').forEach(img=>{img.loading='lazy';img.decoding='async';});
-        frag.append(tpl.content);
-      }while(j.i<rows.length&&n<(rows.length<=24?24:6)&&(rows.length<=24||performance.now()-start<7));
-      el.append(frag);el.setAttribute('aria-busy','false');
-      if(j.i>=rows.length){jobs.delete(el.id);return;}
-      if('IntersectionObserver' in window){
-        const root=el.id==='prSelectorList'?el:null;
-        j.observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){j.observer.disconnect();j.timer=setTimeout(more,0);}},{root,rootMargin:'800px 0px'});
-        j.observer.observe(el.lastElementChild);
-      }else j.timer=setTimeout(more,16);
-    }
-    if(rows.length)more();else{el.removeAttribute('aria-busy');jobs.delete(el.id);}
-  }
-  function cleanup(){for(const id of ['coGrid','prGrid','invListContainer','prSelectorList']){const el=document.getElementById(id);if(el&&!active(el))cancel(id,true);}}
-  function search(name){clearTimeout(searchTimers.get(name));searchTimers.set(name,setTimeout(()=>{searchTimers.delete(name);window[name]?.();},140));}
-  function group(rows,key){const m=new Map();for(const r of rows){const k=r[key];if(!m.has(k))m.set(k,[]);m.get(k).push(r);}return m;}
-  function clientTotals(){
-    const sums=new Map();for(const p of S.payments)sums.set(p.invoiceId,(sums.get(p.invoiceId)||0)+(p.amount||0));
-    const out=new Map();
-    for(const i of S.invoices){const k=i.companyId;let f=out.get(k);if(!f){f={count:0,totalInvoiced:0,totalPaid:0,remaining:0};out.set(k,f);}f.count++;f.totalInvoiced+=i.grandTotal||0;f.totalPaid=f.totalPaid+(i.deposit||0)+(sums.get(i.id)||0);}
-    for(const f of out.values())f.remaining=Math.max(0,f.totalInvoiced-f.totalPaid);
-    return out;
-  }
-  return {active,begin,render,cleanup,search,group,clientTotals,cancel};
-})();
-let wfScanEpoch=0,wfQblEpoch=0,wfBottomFrame=0,wfBottomTimer=0,wfBottomReady=false,wfGreetingTimer=0,wfViewerTimer=0;
-function wfStopTransientWork(){
-  try{closeScanner();}catch(_){}try{qblStopCamera();}catch(_){}
-  try{clearTimeout(_pdfPrepareTimer);_pdfPrepareTimer=null;}catch(_){}
-  try{clearInterval(twTimer);twTimer=null;}catch(_){}
-  try{speechSynthesis.cancel();}catch(_){}
-  try{_wfImageCache.clear();}catch(_){}
-}
-document.addEventListener('visibilitychange',()=>{if(document.hidden)wfStopTransientWork();},{passive:true});
-window.addEventListener('pagehide',wfStopTransientWork,{passive:true});
-
 
 
 
@@ -8997,151 +8923,351 @@ document.addEventListener('wheel', function(e) {
 /* ============================================================
    INDEXEDDB
 ============================================================ */
-/* WOW internal storage R2 — transaction-complete acknowledgements and lossless media reuse.
-   Main database name and public db* interfaces are retained. No records are deleted by maintenance. */
 const DB_NAME='WowFurnitureDB',DB_VER=7;let db;
-const WF_MEDIA_STORE='wf_media';
-const WF_MEDIA_TAG='__wow_media_sha256_v1';
-const wfMediaDecoded=new Map(),wfMediaEncoded=new Map();
-let wfMediaCacheBytes=0;
-function wfStorageError(error){
-  console.error('WOW storage:',error);
-  const lang=typeof S==='object'?S.lang:'ar';
-  const full=error?.name==='QuotaExceededError';
-  const msg=full?{ar:'المساحة المتاحة ممتلئة. لم يكتمل الحفظ؛ صدّر نسخة احتياطية ووفّر مساحة على الجهاز.',tr:'Depolama dolu. Kayıt tamamlanmadı; yedek alın ve cihazda yer açın.',en:'Storage is full. Save did not complete; back up your data and free device space.'}:
-    {ar:'لم يكتمل حفظ البيانات. أبقِ الصفحة مفتوحة وأعد المحاولة أو صدّر نسخة احتياطية.',tr:'Kayıt tamamlanmadı. Sayfayı açık tutun, yeniden deneyin veya yedek alın.',en:'Save did not complete. Keep this page open, retry or export a backup.'};
-  if(typeof showToast==='function')showToast(msg[lang]||msg.en,'er');
+
+/* ============================================================
+   STORAGE ENGINE V7 — MEDIA DEDUP + PERSISTENT INDEXEDDB
+   - keeps the app/PDF data shape unchanged in memory
+   - stores repeated Base64 images once and keeps lightweight refs in records
+============================================================ */
+const WF_MEDIA_STORE='media';
+const WF_MEDIA_PREFIX='wfmedia:';
+const WF_MEDIA_CACHE=new Map();       // media id -> original data URL (one copy in RAM)
+const WF_MEDIA_REVERSE=new Map();     // original data URL -> media id
+const WF_MEDIA_PERSISTED=new Set();   // ids already written to IndexedDB
+let WF_MEDIA_SEQ=0;
+let WF_STORAGE_MAINTENANCE_SCHEDULED=false;
+
+/* ============================================================
+   256 GB TABLET / CHROME MAX-STORAGE PROFILE
+   Chrome controls the real quota. For Chromium the documented
+   origin ceiling is approximately 60% of total disk capacity.
+   This profile never hard-caps IndexedDB; it always uses the
+   actual quota reported by navigator.storage.estimate().
+============================================================ */
+const WF_DEVICE_NOMINAL_GB=256;
+const WF_CHROMIUM_ORIGIN_RATIO=0.60;
+const WF_THEORETICAL_ORIGIN_GB=WF_DEVICE_NOMINAL_GB*WF_CHROMIUM_ORIGIN_RATIO; // 153.6 GB theoretical
+let WF_STORAGE_TELEMETRY={usage:0,quota:0,remaining:0,persisted:false,updatedAt:0};
+let WF_PERSIST_REQUEST=null;
+
+function wfIsImageDataUrl(v){
+  return typeof v==='string' && /^data:image\/[a-zA-Z0-9.+-]+;base64,/.test(v);
 }
-function initDB(){return new Promise((resolve,reject)=>{
-  const r=indexedDB.open(DB_NAME,DB_VER);
-  r.onupgradeneeded=()=>{const d=r.result;['companies','products','invoices','settings','payments',WF_MEDIA_STORE].forEach(s=>{if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:'id'});});};
-  r.onblocked=()=>{if(typeof showToast==='function')showToast('أغلق نسخ WOW الأخرى ثم أعد فتح هذه النسخة / Close other WOW tabs to upgrade storage.','er');};
-  r.onsuccess=()=>{db=r.result;db.onversionchange=()=>{db.close();if(typeof showToast==='function')showToast('أعد فتح البرنامج لتحديث قاعدة البيانات / Reopen WOW to update the database.','in');};resolve();};
-  r.onerror=()=>reject(r.error||new Error('IndexedDB unavailable'));
-});}
-function wfRawRead(store,id){return new Promise((res,rej)=>{
-  try{const r=db.transaction(store,'readonly').objectStore(store).get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}catch(e){rej(e);}
-});}
-async function wfDecodeMedia(value){
-  if(!value||typeof value!=='object')return value;
-  if(!Array.isArray(value)&&typeof value[WF_MEDIA_TAG]==='string'&&Object.keys(value).length===1){
-    const id=value[WF_MEDIA_TAG];
-    if(wfMediaDecoded.has(id))return wfMediaDecoded.get(id);
-    const pending=(async()=>{
-      const row=await wfRawRead(WF_MEDIA_STORE,id);
-      if(!row)throw new Error('Missing stored image: '+id.slice(0,12));
-      if(row.encoding==='gzip'){
-        if(typeof DecompressionStream!=='function')throw new Error('This browser cannot decompress stored images. Use the previous browser or import a portable backup.');
-        return new Response(row.payload.stream().pipeThrough(new DecompressionStream('gzip'))).text();
-      }
-      return row.payload instanceof Blob?row.payload.text():row.payload;
-    })();
-    wfMediaDecoded.set(id,pending);
-    if(wfMediaDecoded.size>64)wfMediaDecoded.delete(wfMediaDecoded.keys().next().value);
-    try{return await pending;}catch(e){wfMediaDecoded.delete(id);throw e;}
+function wfNewMediaId(){
+  try{if(globalThis.crypto&&typeof crypto.randomUUID==='function')return 'm_'+crypto.randomUUID();}catch(_){}
+  WF_MEDIA_SEQ++;
+  return 'm_'+Date.now().toString(36)+'_'+WF_MEDIA_SEQ.toString(36)+'_'+Math.random().toString(36).slice(2,10);
+}
+function wfRegisterMedia(data,preferredId){
+  if(!wfIsImageDataUrl(data))return null;
+  const known=WF_MEDIA_REVERSE.get(data);
+  if(known)return known;
+  let id=preferredId||wfNewMediaId();
+  if(WF_MEDIA_CACHE.has(id)&&WF_MEDIA_CACHE.get(id)!==data)id=wfNewMediaId();
+  WF_MEDIA_CACHE.set(id,data);
+  WF_MEDIA_REVERSE.set(data,id);
+  return id;
+}
+function wfCollectMediaIds(value,ids,seen){
+  if(value==null)return;
+  if(typeof value==='string'){
+    if(value.startsWith(WF_MEDIA_PREFIX))ids.add(value.slice(WF_MEDIA_PREFIX.length));
+    return;
   }
-  if(Array.isArray(value)){const result=[];for(const item of value)result.push(await wfDecodeMedia(item));return result;}
-  const result={};for(const key of Object.keys(value))result[key]=await wfDecodeMedia(value[key]);return result;
+  if(typeof value!=='object')return;
+  seen=seen||new WeakSet();
+  if(seen.has(value))return;seen.add(value);
+  if(Array.isArray(value)){for(const v of value)wfCollectMediaIds(v,ids,seen);return;}
+  for(const k of Object.keys(value))wfCollectMediaIds(value[k],ids,seen);
 }
-async function wfEncodeMedia(value,assets){
-  if(typeof value==='string'&&value.length>=1024&&/^data:image\//i.test(value)&&globalThis.crypto?.subtle){
-    let entry=wfMediaEncoded.get(value);
-    if(!entry){
-      const bytes=new TextEncoder().encode(value);
-      const digest=await crypto.subtle.digest('SHA-256',bytes);
-      const id=Array.from(new Uint8Array(digest),x=>x.toString(16).padStart(2,'0')).join('');
-      // Keep original data URL text EXACT. Shared storage removes repeated invoice/product copies.
-      // Text Blob is intentionally portable to browsers lacking CompressionStream.
-      entry={id,encoding:'text',payload:new Blob([value],{type:'text/plain;charset=utf-8'})};
-      if(value.length<4*1024*1024){
-        while(wfMediaCacheBytes+value.length>8*1024*1024&&wfMediaEncoded.size){const k=wfMediaEncoded.keys().next().value;wfMediaCacheBytes-=k.length;wfMediaEncoded.delete(k);}
-        wfMediaEncoded.set(value,entry);wfMediaCacheBytes+=value.length;
-      }
+function wfHydrateInPlace(value,seen){
+  if(value==null)return value;
+  if(typeof value==='string'){
+    if(value.startsWith(WF_MEDIA_PREFIX)){
+      const id=value.slice(WF_MEDIA_PREFIX.length);
+      return WF_MEDIA_CACHE.get(id)||value;
     }
-    assets.set(entry.id,entry);return {[WF_MEDIA_TAG]:entry.id};
+    if(wfIsImageDataUrl(value)){
+      const id=wfRegisterMedia(value);
+      return (id&&WF_MEDIA_CACHE.get(id))||value;
+    }
+    return value;
   }
-  if(Array.isArray(value)){const result=[];for(const item of value)result.push(await wfEncodeMedia(item,assets));return result;}
-  if(value&&typeof value==='object'&&!(value instanceof Blob)&&!(value instanceof Date)&&!(value instanceof ArrayBuffer)){
-    const result={};for(const key of Object.keys(value))result[key]=await wfEncodeMedia(value[key],assets);return result;
+  if(typeof value!=='object')return value;
+  seen=seen||new WeakSet();
+  if(seen.has(value))return value;seen.add(value);
+  if(Array.isArray(value)){
+    for(let i=0;i<value.length;i++)value[i]=wfHydrateInPlace(value[i],seen);
+    return value;
   }
+  for(const k of Object.keys(value))value[k]=wfHydrateInPlace(value[k],seen);
   return value;
 }
-const dbGet=async(s,id)=>wfDecodeMedia(await wfRawRead(s,id));
-const dbGetAll=async s=>{
-  const out=[];let last;
-  for(;;){
-    const rows=await new Promise((res,rej)=>{try{const r=db.transaction(s,'readonly').objectStore(s).getAll(last===undefined?undefined:IDBKeyRange.lowerBound(last,true),80);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}catch(e){rej(e);}});
-    for(const row of rows)out.push(await wfDecodeMedia(row));
-    if(rows.length<80)break;
-    last=rows[rows.length-1].id;await new Promise(r=>setTimeout(r,0));
-  }
-  return out;
-};
-function wfStorePermission(s,id,remove=false,value=null){
-  if(window.WFSecurity&&!WFSecurity.storeAllowed(s,id,remove,value))throw new DOMException('Permission denied','NotAllowedError');
-}
-const dbPut=async(s,o)=>{
-  const wfTicket=window.WFSecurity?.token();
-  wfStorePermission(s,o?.id,false,o);
-  const assets=new Map();const encoded=await wfEncodeMedia(o,assets);
-  if(wfTicket!==window.WFSecurity?.token())throw new DOMException('Session changed','NotAllowedError');
-  wfStorePermission(s,o?.id,false,o);
-  return new Promise((res,rej)=>{
-    let tx;try{
-      tx=db.transaction(assets.size?[s,WF_MEDIA_STORE]:s,'readwrite');
-      // Request success is NOT commit success: acknowledge only after the transaction completes.
-      tx.oncomplete=()=>res(o.id);
-      tx.onabort=()=>{const e=tx.error||new Error('Write aborted');wfStorageError(e);rej(e);};
-      tx.onerror=()=>{};
-      if(assets.size)for(const a of assets.values())tx.objectStore(WF_MEDIA_STORE).put(a);
-      tx.objectStore(s).put(encoded);
-    }catch(e){try{tx?.abort();}catch(_){}wfStorageError(e);rej(e);}
-  });
-};
-const dbDel=(s,id)=>new Promise((res,rej)=>{
-  try{wfStorePermission(s,id,true);const tx=db.transaction(s,'readwrite');tx.oncomplete=()=>res();tx.onabort=()=>{const e=tx.error||new Error('Delete aborted');wfStorageError(e);rej(e);};tx.onerror=()=>{};tx.objectStore(s).delete(id);}catch(e){rej(e);}
-});
-async function wfStorageInfo(){
-  const e=await navigator.storage?.estimate?.();const persistent=await navigator.storage?.persisted?.();
-  return {usage:e?.usage??null,quota:e?.quota??null,persistent:!!persistent};
-}
-async function wfCompactStorage(progress){
-  if(window.WFSecurity&&!WFSecurity.admin())throw new Error('Administrator required');
-  let done=0;
-  // Read persisted data, not stale in-memory UI copies. Compare again inside the commit transaction.
-  for(const name of ['companies','products','invoices','settings']){
-    const keys=await new Promise((res,rej)=>{const r=db.transaction(name).objectStore(name).getAllKeys();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});
-    for(const key of keys){
-      if(window.WFSecurity&&!WFSecurity.admin())throw new Error('Administrator required');
-      const raw=await wfRawRead(name,key);if(!raw)continue;
-      const assets=new Map(),encoded=await wfEncodeMedia(raw,assets);if(!assets.size)continue;
-      if(window.WFSecurity&&!WFSecurity.admin())throw new Error('Administrator required');
-      await new Promise((resolve,reject)=>{
-        const tx=db.transaction([name,WF_MEDIA_STORE],'readwrite'),os=tx.objectStore(name),r=os.get(key);
-        tx.oncomplete=resolve;tx.onabort=()=>reject(tx.error||new Error('Compaction aborted'));tx.onerror=()=>{};
-        r.onsuccess=()=>{if(JSON.stringify(r.result)!==JSON.stringify(raw))return;for(const a of assets.values())tx.objectStore(WF_MEDIA_STORE).put(a);os.put(encoded);};
-      });
-      done++;if(progress)progress(done);await new Promise(r=>setTimeout(r,0));
+function wfDehydrateClone(value,mediaRows,seen,forceMedia){
+  if(value==null)return value;
+  if(typeof value==='string'){
+    if(value.startsWith(WF_MEDIA_PREFIX))return value;
+    if(wfIsImageDataUrl(value)){
+      let id=WF_MEDIA_REVERSE.get(value);
+      if(!id)id=wfRegisterMedia(value);
+      if(id&&(forceMedia||!WF_MEDIA_PERSISTED.has(id))){
+        mediaRows.set(id,{id,data:value,kind:'image',size:value.length,updatedAt:Date.now()});
+      }
+      return id?WF_MEDIA_PREFIX+id:value;
     }
+    return value;
   }
-  wfMediaEncoded.clear();wfMediaCacheBytes=0;return done;
+  if(typeof value!=='object')return value;
+  if(value instanceof Date)return new Date(value.getTime());
+  if(value instanceof Blob)return value;
+  seen=seen||new WeakMap();
+  if(seen.has(value))return seen.get(value);
+  if(Array.isArray(value)){
+    const a=[];seen.set(value,a);
+    for(const v of value)a.push(wfDehydrateClone(v,mediaRows,seen,forceMedia));
+    return a;
+  }
+  const proto=Object.getPrototypeOf(value);
+  if(proto!==Object.prototype&&proto!==null)return value;
+  const o={};seen.set(value,o);
+  for(const k of Object.keys(value))o[k]=wfDehydrateClone(value[k],mediaRows,seen,forceMedia);
+  return o;
 }
-async function wfCommitRecords(records){
-  const wfTicket=window.WFSecurity?.token();
-  const assets=new Map(),encoded=[];
-  for(const [store,row] of records){wfStorePermission(store,row.id,false,row);encoded.push([store,await wfEncodeMedia(row,assets)]);}
-  if(wfTicket!==window.WFSecurity?.token())throw new DOMException('Session changed','NotAllowedError');
-  for(const [store,row] of records)wfStorePermission(store,row.id,false,row);
-  await new Promise((resolve,reject)=>{
-    let tx;try{
-      const stores=[...new Set(encoded.map(([s])=>s))];if(assets.size)stores.push(WF_MEDIA_STORE);
-      tx=db.transaction(stores,'readwrite');tx.oncomplete=resolve;tx.onabort=()=>{const e=tx.error||new Error('Save aborted');wfStorageError(e);reject(e);};tx.onerror=()=>{};
-      if(assets.size)for(const a of assets.values())tx.objectStore(WF_MEDIA_STORE).put(a);
-      for(const [s,row] of encoded)tx.objectStore(s).put(row);
-    }catch(e){try{tx?.abort();}catch(_){}wfStorageError(e);reject(e);}
+
+function initDB(){return new Promise((res,rej)=>{
+  const r=indexedDB.open(DB_NAME,DB_VER);
+  r.onupgradeneeded=e=>{
+    const d=e.target.result;
+    ['companies','products','invoices','settings','payments',WF_MEDIA_STORE].forEach(s=>{
+      if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:'id'});
+    });
+  };
+  r.onsuccess=e=>{
+    db=e.target.result;
+    db.onversionchange=()=>{try{db.close()}catch(_){}};
+    res();
+  };
+  r.onerror=e=>rej(e);
+  r.onblocked=()=>console.warn('WOW IndexedDB upgrade is waiting for another open tab.');
+})}
+
+const dbGetRaw=(s,id)=>new Promise((res,rej)=>{const r=db.transaction(s,'readonly').objectStore(s).get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+const dbGetAllRaw=s=>new Promise((res,rej)=>{const r=db.transaction(s,'readonly').objectStore(s).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)});
+function wfStorageWriteError(err){
+  if(err&&(err.name==='QuotaExceededError'||String(err).includes('QuotaExceeded'))){
+    try{
+      const msg=S.lang==='tr'?'Chrome depolama kotası doldu. Yedek alın ve cihazda boş alan açın.':S.lang==='en'?'Chrome storage quota is full. Export a backup and free device space.':'وصل تخزين Chrome إلى الحد المتاح. صدّر نسخة احتياطية ووفّر مساحة على الجهاز.';
+      if(typeof showToast==='function')showToast(msg,'er');
+    }catch(_){}
+    wfRefreshStorageTelemetry();
+  }
+}
+const dbPutRaw=(s,o)=>new Promise((res,rej)=>{
+  let tx;
+  try{
+    tx=db.transaction(s,'readwrite');
+    const r=tx.objectStore(s).put(o);
+    r.onsuccess=()=>res(r.result);
+    r.onerror=()=>{wfStorageWriteError(r.error);rej(r.error)};
+    tx.onabort=()=>{wfStorageWriteError(tx.error);rej(tx.error||new Error('IndexedDB write aborted'))};
+  }catch(err){wfStorageWriteError(err);rej(err)}
+});
+const dbGetAllKeysRaw=s=>new Promise((res,rej)=>{const r=db.transaction(s,'readonly').objectStore(s).getAllKeys();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)});
+
+async function wfLoadMediaIds(ids){
+  const missing=[...ids].filter(id=>id&&!WF_MEDIA_CACHE.has(id));
+  if(!missing.length||!db.objectStoreNames.contains(WF_MEDIA_STORE))return;
+  await new Promise((res,rej)=>{
+    const tx=db.transaction(WF_MEDIA_STORE,'readonly');
+    const os=tx.objectStore(WF_MEDIA_STORE);
+    tx.oncomplete=()=>res();
+    tx.onerror=()=>rej(tx.error);
+    tx.onabort=()=>rej(tx.error||new Error('Media read aborted'));
+    missing.forEach(id=>{
+      const r=os.get(id);
+      r.onsuccess=()=>{
+        const row=r.result;
+        if(row&&wfIsImageDataUrl(row.data)){
+          // Keep every persisted id directly resolvable, even if an older orphan row
+          // happens to contain bytes identical to another media id.
+          WF_MEDIA_CACHE.set(id,row.data);
+          if(!WF_MEDIA_REVERSE.has(row.data))WF_MEDIA_REVERSE.set(row.data,id);
+          WF_MEDIA_PERSISTED.add(id);
+        }
+      };
+    });
+  });
+}
+async function wfHydrateDBValue(value){
+  if(value==null)return value;
+  const ids=new Set();wfCollectMediaIds(value,ids);
+  if(ids.size)await wfLoadMediaIds(ids);
+  return wfHydrateInPlace(value);
+}
+async function wfPutMediaRows(mediaRows){
+  if(!mediaRows||!mediaRows.size)return;
+  await new Promise((res,rej)=>{
+    const tx=db.transaction(WF_MEDIA_STORE,'readwrite');
+    const os=tx.objectStore(WF_MEDIA_STORE);
+    tx.oncomplete=()=>{for(const id of mediaRows.keys())WF_MEDIA_PERSISTED.add(id);res();};
+    tx.onerror=()=>rej(tx.error);
+    tx.onabort=()=>rej(tx.error||new Error('Media write aborted'));
+    for(const row of mediaRows.values())os.put(row);
   });
 }
 
+const dbGet=async(s,id)=>{
+  const row=await dbGetRaw(s,id);
+  return s===WF_MEDIA_STORE?row:wfHydrateDBValue(row);
+};
+const dbGetAll=async s=>{
+  const rows=await dbGetAllRaw(s);
+  return s===WF_MEDIA_STORE?rows:wfHydrateDBValue(rows);
+};
+const dbPut=async(s,o)=>{
+  if(s===WF_MEDIA_STORE)return dbPutRaw(s,o);
+  const mediaRows=new Map();
+  const prepared=wfDehydrateClone(o,mediaRows);
+  if(mediaRows.size)await wfPutMediaRows(mediaRows);
+  return dbPutRaw(s,prepared);
+};
+const dbDel=(s,id)=>new Promise((res,rej)=>{const r=db.transaction(s,'readwrite').objectStore(s).delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)});
+
+function wfYieldToBrowser(){
+  return new Promise(resolve=>{
+    if('requestIdleCallback' in window)requestIdleCallback(()=>resolve(),{timeout:80});
+    else setTimeout(resolve,0);
+  });
+}
+async function wfRefreshStorageTelemetry(){
+  try{
+    if(!navigator.storage)return WF_STORAGE_TELEMETRY;
+    let usage=0,quota=0,persisted=false;
+    if(navigator.storage.estimate){
+      const e=await navigator.storage.estimate();
+      usage=Number(e&&e.usage)||0;
+      quota=Number(e&&e.quota)||0;
+    }
+    if(navigator.storage.persisted){
+      try{persisted=!!(await navigator.storage.persisted());}catch(_){}
+    }
+    WF_STORAGE_TELEMETRY={
+      usage,quota,remaining:Math.max(0,quota-usage),persisted,updatedAt:Date.now()
+    };
+    return WF_STORAGE_TELEMETRY;
+  }catch(err){
+    console.warn('Storage telemetry unavailable',err);
+    return WF_STORAGE_TELEMETRY;
+  }
+}
+
+async function wfRequestPersistentStorage(){
+  if(WF_PERSIST_REQUEST)return WF_PERSIST_REQUEST;
+  WF_PERSIST_REQUEST=(async()=>{
+    try{
+      if(!navigator.storage)return false;
+      if(navigator.storage.persisted&&await navigator.storage.persisted()){
+        await wfRefreshStorageTelemetry();
+        return true;
+      }
+      let granted=false;
+      if(navigator.storage.persist)granted=!!(await navigator.storage.persist());
+      await wfRefreshStorageTelemetry();
+      try{localStorage.setItem('wf_storage_persistent',granted?'1':'0');}catch(_){}
+      return granted;
+    }catch(err){
+      console.warn('Persistent storage request unavailable',err);
+      return false;
+    }finally{
+      WF_PERSIST_REQUEST=null;
+    }
+  })();
+  return WF_PERSIST_REQUEST;
+}
+
+function wfInstallPersistentStorageHooks(){
+  // Retry once after a real user gesture. Chromium can grant persistence
+  // based on engagement and may deny an early startup request.
+  const retry=()=>{
+    wfRequestPersistentStorage().then(()=>{
+      if(document.getElementById('wfStorageText'))wfUpdateDataPanel();
+    }).catch(()=>{});
+  };
+  document.addEventListener('pointerdown',retry,{once:true,capture:true,passive:true});
+  document.addEventListener('keydown',retry,{once:true,capture:true});
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible')wfRefreshStorageTelemetry();
+  },{passive:true});
+}
+async function wfMigrateCurrentDataToMediaStore(){
+  const flag='wf_media_dedupe_v1';
+  try{if(localStorage.getItem(flag)==='1')return;}catch(_){}
+  const groups=[
+    ['companies',S.companies||[]],
+    ['products',S.products||[]],
+    ['invoices',S.invoices||[]],
+  ];
+  let n=0;
+  for(const [store,rows] of groups){
+    for(const row of rows){
+      await dbPut(store,row);
+      n++;
+      if(n%8===0)await wfYieldToBrowser();
+    }
+  }
+  await dbPut('settings',{id:'main',...S.settings});
+  try{localStorage.setItem(flag,'1');}catch(_){}
+}
+function wfCollectStoredMediaRefs(value,refs,seen){
+  if(value==null)return;
+  if(typeof value==='string'){
+    if(value.startsWith(WF_MEDIA_PREFIX))refs.add(value.slice(WF_MEDIA_PREFIX.length));
+    return;
+  }
+  if(typeof value!=='object')return;
+  seen=seen||new WeakSet();
+  if(seen.has(value))return;seen.add(value);
+  if(Array.isArray(value)){for(const v of value)wfCollectStoredMediaRefs(v,refs,seen);return;}
+  for(const k of Object.keys(value))wfCollectStoredMediaRefs(value[k],refs,seen);
+}
+async function wfMediaGC(){
+  if(!db||!db.objectStoreNames.contains(WF_MEDIA_STORE))return;
+  const refs=new Set();
+  for(const store of ['companies','products','invoices','settings']){
+    const rows=await dbGetAllRaw(store);
+    wfCollectStoredMediaRefs(rows,refs);
+    await wfYieldToBrowser();
+  }
+  const keys=await dbGetAllKeysRaw(WF_MEDIA_STORE);
+  const dead=keys.filter(id=>!refs.has(String(id)));
+  if(!dead.length)return;
+  await new Promise((res,rej)=>{
+    const tx=db.transaction(WF_MEDIA_STORE,'readwrite');
+    const os=tx.objectStore(WF_MEDIA_STORE);
+    tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);tx.onabort=()=>rej(tx.error||new Error('Media cleanup aborted'));
+    dead.forEach(id=>os.delete(id));
+  });
+  dead.forEach(id=>{
+    const data=WF_MEDIA_CACHE.get(String(id));
+    if(data)WF_MEDIA_REVERSE.delete(data);
+    WF_MEDIA_CACHE.delete(String(id));WF_MEDIA_PERSISTED.delete(String(id));
+  });
+}
+function wfScheduleStorageMaintenance(){
+  if(WF_STORAGE_MAINTENANCE_SCHEDULED)return;
+  WF_STORAGE_MAINTENANCE_SCHEDULED=true;
+  const run=async()=>{
+    try{
+      await wfRequestPersistentStorage();
+      await wfMigrateCurrentDataToMediaStore();
+      await wfYieldToBrowser();
+      await wfMediaGC();
+    }catch(err){console.warn('WOW storage maintenance skipped:',err);}
+  };
+  if('requestIdleCallback' in window)requestIdleCallback(()=>run(),{timeout:1800});
+  else setTimeout(()=>run(),900);
+}
 
 /* ============================================================
    DATA SAFETY & BACKUP — WOW 2026 ENHANCEMENT
@@ -9158,10 +9284,13 @@ function wfBackupTexts(){
 }
 
 function wfFmtBytes(n){
-  n=Number(n)||0;
-  if(n<1024)return `${n} B`;
-  if(n<1048576)return `${(n/1024).toFixed(1)} KB`;
-  return `${(n/1048576).toFixed(2)} MB`;
+  n=Math.max(0,Number(n)||0);
+  const KB=1024,MB=KB*1024,GB=MB*1024,TB=GB*1024;
+  if(n<KB)return `${Math.round(n)} B`;
+  if(n<MB)return `${(n/KB).toFixed(1)} KB`;
+  if(n<GB)return `${(n/MB).toFixed(n>=100*MB?1:2)} MB`;
+  if(n<TB)return `${(n/GB).toFixed(n>=100*GB?1:2)} GB`;
+  return `${(n/TB).toFixed(2)} TB`;
 }
 
 async function wfUpdateDataPanel(){
@@ -9176,11 +9305,22 @@ async function wfUpdateDataPanel(){
   const last=localStorage.getItem('wf_last_backup');
   set('wfLastBackup',`${T.last}: ${last ? new Date(last).toLocaleString(S.lang==='ar'?'ar':S.lang==='tr'?'tr':'en') : '—'}`);
   try{
-    if(navigator.storage && navigator.storage.estimate){
-      const e=await navigator.storage.estimate();
-      const used=e.usage||0, quota=e.quota||0, pct=quota?Math.min(100,(used/quota)*100):0;
+    if(navigator.storage){
+      const st=await wfRefreshStorageTelemetry();
+      const used=st.usage||0,quota=st.quota||0,pct=quota?Math.min(100,(used/quota)*100):0;
       set('wfStorageText',quota?`${wfFmtBytes(used)} / ${wfFmtBytes(quota)}`:wfFmtBytes(used));
       const fill=document.getElementById('wfStorageFill');if(fill)fill.style.width=`${pct.toFixed(2)}%`;
+      const storageText=document.getElementById('wfStorageText');
+      if(storageText){
+        const state=st.persisted?(S.lang==='ar'?'تخزين دائم مفعّل':S.lang==='tr'?'Kalıcı depolama etkin':'Persistent storage enabled'):(S.lang==='ar'?'أفضل جهد — سيعاد طلب التخزين الدائم':S.lang==='tr'?'En iyi çaba — kalıcı depolama tekrar istenecek':'Best effort — persistence will be retried');
+        const remaining=quota?wfFmtBytes(st.remaining):'—';
+        const theoretical=`${WF_THEORETICAL_ORIGIN_GB.toFixed(1)} GB`;
+        storageText.title=(S.lang==='ar'
+          ?`الحالة: ${state} | المتبقي حسب Chrome: ${remaining} | الحد النظري لجهاز 256GB: ${theoretical}`
+          :S.lang==='tr'
+            ?`Durum: ${state} | Chrome'a göre kalan: ${remaining} | 256GB cihaz için teorik sınır: ${theoretical}`
+            :`Status: ${state} | Chrome-reported remaining: ${remaining} | Theoretical ceiling for a 256GB device: ${theoretical}`);
+      }
     }
   }catch(err){console.warn('Storage estimate unavailable',err);}
 }
@@ -9199,7 +9339,7 @@ function wfBuildBackup(){
       nextInvNo:S.nextInvNo||5001,
       rates:{usdTry:S.usdTry,usdEur:S.usdEur,rateTime:S.rateTime}
     },
-    preferences:{lang:S.lang,theme:S.theme,qblCart:JSON.stringify(QBL_CART.items.map(i=>({productId:i.product.id,tier:i.tier,qty:i.qty})))}
+    preferences:{lang:S.lang,theme:S.theme,qblCart:localStorage.getItem('wf_qbl_cart')||null}
   };
 }
 
@@ -9229,18 +9369,32 @@ function wfValidateBackup(b){
 }
 
 function wfReplaceStoresFromBackup(b){
+  const mediaRows=new Map();
+  const prepared={
+    companies:(b.data.companies||[]).map(row=>wfDehydrateClone(row,mediaRows)),
+    products:(b.data.products||[]).map(row=>wfDehydrateClone(row,mediaRows)),
+    invoices:(b.data.invoices||[]).map(row=>wfDehydrateClone(row,mediaRows)),
+    payments:(b.data.payments||[]).map(row=>wfDehydrateClone(row,mediaRows)),
+  };
+  const mainSettings=wfDehydrateClone({id:'main',...(b.data.settings||{})},mediaRows);
   return new Promise((resolve,reject)=>{
-    const stores=['companies','products','invoices','payments','settings'];
+    const stores=['companies','products','invoices','payments','settings',WF_MEDIA_STORE];
     const tx=db.transaction(stores,'readwrite');
-    tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||new Error('Restore aborted'));
-    const map={companies:b.data.companies,products:b.data.products,invoices:b.data.invoices,payments:b.data.payments};
-    Object.entries(map).forEach(([name,rows])=>{
-      const os=tx.objectStore(name);os.clear();rows.forEach(row=>os.put(row));
+    tx.oncomplete=()=>{
+      for(const id of mediaRows.keys())WF_MEDIA_PERSISTED.add(id);
+      try{localStorage.setItem('wf_media_dedupe_v1','1');}catch(_){}
+      resolve();
+    };
+    tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||new Error('Restore aborted'));
+    ['companies','products','invoices','payments','settings'].forEach(name=>tx.objectStore(name).clear());
+    Object.entries(prepared).forEach(([name,rows])=>{
+      const os=tx.objectStore(name);rows.forEach(row=>os.put(row));
     });
-    const st=tx.objectStore('settings');st.clear();
-    st.put({id:'main',...(b.data.settings||{})});
+    const st=tx.objectStore('settings');
+    st.put(mainSettings);
     st.put({id:'nextInvNo',value:Number(b.data.nextInvNo)||5001});
     if(b.data.rates)st.put({id:'usdTry',value:Number(b.data.rates.usdTry)||46.98,eur:Number(b.data.rates.usdEur)||0.92,time:b.data.rates.rateTime||null});
+    const ms=tx.objectStore(WF_MEDIA_STORE);for(const row of mediaRows.values())ms.put(row);
   });
 }
 
@@ -10711,10 +10865,21 @@ set('greetingSub', `${companyNames[S.lang] || 'WOW Furniture'} — ${invoiceLabe
 /* ── المؤقت التلقائي كل 20 دقيقة ── */
 let _greetRotateTimer = null;
 
-function startGreetingRotation(){
-  clearTimeout(wfGreetingTimer);clearInterval(_greetRotateTimer);_greetRotateTimer=null;
-  const d=new Date(),elapsed=(d.getMinutes()%20)*60000+d.getSeconds()*1000+d.getMilliseconds();
-  wfGreetingTimer=setTimeout(()=>{if(!document.hidden&&getCurrentPage()==='dashboard')updateGreeting(true);startGreetingRotation();},20*60000-elapsed);
+function startGreetingRotation() {
+  // أوقف أي مؤقت سابق
+  if (_greetRotateTimer) clearInterval(_greetRotateTimer);
+
+  // احسب الوقت المتبقي حتى أقرب 20 دقيقة
+  const now       = new Date();
+  const msInBlock = (now.getMinutes() % 20) * 60000 + now.getSeconds() * 1000 + now.getMilliseconds();
+  const msToNext  = 20 * 60000 - msInBlock;
+
+  // أول تشغيل عند بداية الـ block التالي
+  setTimeout(() => {
+    updateGreeting(true); // مع أنيميشن
+    // ثم كل 20 دقيقة بالضبط
+    _greetRotateTimer = setInterval(() => updateGreeting(true), 20 * 60000);
+  }, msToNext);
 }
 
 /* ============================================================
@@ -11102,7 +11267,6 @@ function setLang(l){
   if(S.currentPayInvId){
     renderPayHistory(S.currentPayInvId);
   }
-  if(window.WFSecurity)WFSecurity.changedLanguage();
 }
 
 /* ============================================================
@@ -11302,6 +11466,24 @@ window.addEventListener('resize', function() {
 })();
 
 /* ============================================================
+   LIGHTWEIGHT SEARCH RENDER SCHEDULER — TABLET SAFE
+============================================================ */
+const WF_RENDER_TIMERS=Object.create(null);
+function wfDebouncedRender(key,fn,delay=90){
+  clearTimeout(WF_RENDER_TIMERS[key]);
+  WF_RENDER_TIMERS[key]=setTimeout(()=>{
+    delete WF_RENDER_TIMERS[key];
+    requestAnimationFrame(fn);
+  },delay);
+}
+function wfDebouncedRenderCo(){wfDebouncedRender('co',renderCo);}
+function wfDebouncedRenderPr(){wfDebouncedRender('pr',renderPr);}
+function wfDebouncedRenderInv(){wfDebouncedRender('inv',renderInvList);}
+function wfIsTouchTablet(){
+  try{return matchMedia('(hover: none) and (pointer: coarse) and (min-width: 600px) and (max-width: 1366px)').matches;}catch(_){return false;}
+}
+
+/* ============================================================
    SIDEBAR / NAVIGATION
 ============================================================ */
 let _isPopState=false;
@@ -11342,7 +11524,7 @@ if(id==='add-product'){
   // ✅ أوقف الكاميرا القديمة أولاً قبل إعادة التهيئة
   qblStopCamera();
   // ✅ ثم أعد التهيئة
-  setTimeout(() => {if(getCurrentPage()==='quick-barcode'&&!WFSecurity.isLocked())initQblPage();}, 50);
+  setTimeout(() => initQblPage(), 50);
 
   const bar = document.getElementById('qblStickyCart');
   if (bar) bar.classList.remove('visible');
@@ -11359,8 +11541,7 @@ if(id==='add-product'){
 
 closeSidebar();
 updateQabActive(id); // ✅ أضف هنا
-WFPerf.cleanup();
-window.scrollTo({top:0,behavior:'auto'});
+window.scrollTo({top:0,behavior:wfIsTouchTablet()?'auto':'smooth'});
   if(pushHistory&&!_isPopState){
     const url='#'+id;
     if(window.location.hash===url)history.replaceState({page:id},'',url);
@@ -11380,6 +11561,18 @@ window.addEventListener('popstate',(e)=>{
 });
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sideOv').classList.toggle('open');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sideOv').classList.remove('open');}
+
+/* Keep the sidebar closed whenever a touch tablet enters portrait mode. */
+(function initTabletPortraitSidebarGuard(){
+  let mq;
+  try{mq=window.matchMedia('(hover: none) and (pointer: coarse) and (min-width: 600px) and (max-width: 1366px) and (orientation: portrait)');}
+  catch(_){return;}
+  const sync=()=>{if(mq.matches)closeSidebar();};
+  if(mq.addEventListener)mq.addEventListener('change',sync);
+  else if(mq.addListener)mq.addListener(sync);
+  window.addEventListener('pageshow',sync,{passive:true});
+  setTimeout(sync,0);
+})();
    /* ============================================================
    SMART BACK — الرجوع الهرمي الذكي
 ============================================================ */
@@ -11469,7 +11662,7 @@ function updateDash(){
   const bco=document.getElementById('badge-co');if(bco)bco.textContent=S.companies.length;
   const bpr=document.getElementById('badge-pr');if(bpr)bpr.textContent=S.products.length;
   const binv=document.getElementById('badge-inv');if(binv)binv.textContent=S.invoices.length;
-  const recent=S.invoices.slice(-5).reverse();
+  const recent=[...S.invoices].reverse().slice(0,5);
   const c=document.getElementById('dashRecentInv');if(!c)return;
    const dashTx = {
     no_inv:     { ar:'لا توجد فواتير',    tr:'Fatura yok',       en:'No invoices'       },
@@ -11919,20 +12112,36 @@ function getClientFinancials(coId){
   const remaining=Math.max(0,totalInvoiced-totalPaid);
   return{count:invs.length,totalInvoiced,totalPaid,remaining};
 }
+function wfBuildClientFinancialIndex(){
+  const paidByInvoice=new Map();
+  for(const p of S.payments){
+    paidByInvoice.set(p.invoiceId,(paidByInvoice.get(p.invoiceId)||0)+(p.amount||0));
+  }
+  const out=new Map();
+  for(const i of S.invoices){
+    const id=i.companyId;
+    let row=out.get(id);
+    if(!row){row={count:0,totalInvoiced:0,totalPaid:0,remaining:0};out.set(id,row);}
+    row.count++;
+    row.totalInvoiced+=(i.grandTotal||0);
+    row.totalPaid+=(i.deposit||0)+(paidByInvoice.get(i.id)||0);
+  }
+  for(const row of out.values())row.remaining=Math.max(0,row.totalInvoiced-row.totalPaid);
+  return out;
+}
 
 /* ============================================================
    COMPANIES RENDER
 ============================================================ */
 function renderCo(){
   const grid=document.getElementById('coGrid');if(!grid)return;
-  if(!WFPerf.begin(grid))return;
   const search=(document.getElementById('coSearch')?.value||'').toLowerCase();
   const counts={all:0,external:0,internal_retail:0,internal_wholesale:0};
   S.companies.forEach(c=>{counts.all++;if(counts[c.type]!==undefined)counts[c.type]++;});
   const animBadge=(id,val)=>{const el=document.getElementById(id);if(!el)return;if(el.textContent!==String(val)){el.textContent=val;el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');el.addEventListener('animationend',()=>el.classList.remove('updated'),{once:true});}};
   animBadge('badge-tab-all',counts.all);animBadge('badge-tab-ext',counts.external);
   animBadge('badge-tab-ret',counts.internal_retail);animBadge('badge-tab-whl',counts.internal_wholesale);
-  document.querySelectorAll('#coStatsBar .co-stat-pill').forEach(pill=>{
+  document.querySelectorAll('.co-stat-pill').forEach(pill=>{
     const pf=pill.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
     pill.classList.toggle('active',pf===S.coTabFilter);
   });
@@ -11945,14 +12154,14 @@ function renderCo(){
     grid.innerHTML=`<div class="co-empty-state"><div class="ei">👥</div><h3>${t('no_co')}</h3><p>${S.coTabFilter!=='all'?t('no_co_filter'):t('no_co_start')}</p><button class="btn btn-p" onclick="showPage('select-client-type')">➕ ${t('btn_add_co')}</button></div>`;
     return;
   }
+  const finIndex=wfBuildClientFinancialIndex();
   const typeMap={
     external:{cls:'b-ext',icon:'🌍',lbl:()=>t('t_ext')},
     internal_retail:{cls:'b-int',icon:'🏠',lbl:()=>t('t_int_retail')},
     internal_wholesale:{cls:'b-whl',icon:'📦',lbl:()=>t('t_int_whl')},
   };
 
-  const clientTotals=WFPerf.clientTotals();
-  WFPerf.render(grid,list,c=>{
+  grid.innerHTML=list.map(c=>{
     const tm=typeMap[c.type]||typeMap.external;
     const logo = c.logo ? renderSafeImg(c.logo, 'logo', 'width:100%;height:100%;object-fit:cover;display:block;', DEFAULT_COMPANY_PLACEHOLDER) : `<span>${(c.name||'C')[0].toUpperCase()}</span>`;
     const location=c.province
@@ -11960,7 +12169,7 @@ function renderCo(){
       :c.country
         ?`🌍 ${COUNTRY_NAMES[c.country]||c.country}${c.city?' · '+c.city:''}`
         :c.city?`🏙️ ${c.city}`:'';
-    const fin=clientTotals.get(c.id)||{count:0,totalInvoiced:0,totalPaid:0,remaining:0};
+    const fin=finIndex.get(c.id)||{count:0,totalInvoiced:0,totalPaid:0,remaining:0};
 
     /* ── صفوف التفاصيل ── */
     const detailsRows=[
@@ -12048,7 +12257,7 @@ function renderCo(){
       </div>
 
     </div>`;
-  });
+  }).join('');
 }
 
 
@@ -12067,7 +12276,7 @@ function toggleCoDetails(coId){
 function setCoTab(filter){
   S.coTabFilter=filter;
   const grid=document.getElementById('coGrid');
-  if(grid){clearTimeout(grid._wfFilterTimer);grid.classList.add('filtering');grid._wfFilterTimer=setTimeout(()=>{grid.classList.remove('filtering');renderCo();},200);}
+  if(grid){grid.classList.add('filtering');setTimeout(()=>{grid.classList.remove('filtering');renderCo();},200);}
   else renderCo();
 }
 function editCo(id){
@@ -12651,8 +12860,6 @@ function setPrTab(filter){
 }
 function renderPr(){
   const grid=document.getElementById('prGrid');if(!grid)return;
-  if(!WFPerf.begin(grid))return;
-  document.querySelectorAll('#prStatsBar .co-stat-pill').forEach(p=>p.classList.toggle('active',p.getAttribute('onclick')?.match(/'([^']+)'/)?.[1]===S.prTabFilter));
   const search=(document.getElementById('prSearch')?.value||'').toLowerCase();
   const counts={all:0,coffee_table:0,dresser:0,side_table:0,tv_table:0,other:0};
   S.products.forEach(p=>{counts.all++;if(counts[p.type]!==undefined)counts[p.type]++;});
@@ -12684,7 +12891,7 @@ function renderPr(){
   };
   const tl = typeLabels[lang] || typeLabels.en;
 
-  WFPerf.render(grid,list,p=>{
+  grid.innerHTML=list.map(p=>{
     const icon=TYPE_ICONS[p.type]||'📦';
     const priceA=p.priceA||p.priceUSD||0;
     const priceB=p.priceB||0;
@@ -12698,7 +12905,7 @@ function renderPr(){
        max-height:220px;
        opacity:1;
      ">
-       <img src="${p.image}" alt="${p.name}">
+       <img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async">
        <span class="pr-card-type-badge">${icon} ${typeName}</span>
      </div>`
   : `<div id="prCardImg-${p.id}" class="pr-card-new-img" style="
@@ -12827,7 +13034,7 @@ function renderPr(){
             </div>
 
             <!-- قائمة الأسعار A / B / C -->
-            <div data-wf-view="prices.view" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px;">
+            <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px;">
               ${[
                 { lbl:'A', usd:priceA, try_:usdToTry(priceA), eur:usdToEur(priceA) },
                 { lbl:'B', usd:priceB, try_:usdToTry(priceB), eur:usdToEur(priceB) },
@@ -12911,7 +13118,7 @@ function renderPr(){
 
       </div>
     </div>`;
-  });
+  }).join('');
 }
 function editPr(id){
   const p = S.products.find(x => x.id === id);
@@ -13068,24 +13275,20 @@ function openBarcodeScanner(mode){
   openModal('scannerModal');startCamera();
 }
 async function startCamera(){
-  const ticket=++wfScanEpoch;
   try{
-    if(S.scannerStream)S.scannerStream.getTracks().forEach(t=>t.stop());
     const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
-    if(ticket!==wfScanEpoch||document.hidden||!document.getElementById('scannerModal').classList.contains('open')){stream.getTracks().forEach(t=>t.stop());return;}
-    S.scannerStream=stream;const video=document.getElementById('scannerVideo');video.srcObject=stream;
-    await video.play();if(ticket===wfScanEpoch)startBarcodeDetection(video);
-  }catch(err){if(ticket===wfScanEpoch)document.getElementById('scannerStatus').textContent='⚠️ تعذّر فتح الكاميرا — استخدم الإدخال اليدوي';}
+    S.scannerStream=stream;
+    const video=document.getElementById('scannerVideo');
+    video.srcObject=stream;await video.play();startBarcodeDetection(video);
+  }catch(err){document.getElementById('scannerStatus').textContent='⚠️ تعذّر فتح الكاميرا — استخدم الإدخال اليدوي';}
 }
 function startBarcodeDetection(video){
-  clearTimeout(S.scannerInterval);const ticket=wfScanEpoch;
-  if(!('BarcodeDetector'in window)){document.getElementById('scannerStatus').textContent='⚠️ استخدم الإدخال اليدوي';return;}
-  let detector;try{detector=new BarcodeDetector();}catch(_){return;}
-  const scan=async()=>{
-    if(ticket!==wfScanEpoch||document.hidden||!S.scannerStream)return;
-    try{if(video.readyState>=2){const codes=await detector.detect(video);if(ticket!==wfScanEpoch)return;if(codes.length){S.scannerInterval=null;processBarcodeResult(codes[0].rawValue);return;}}}catch(_){}
-    if(ticket===wfScanEpoch)S.scannerInterval=setTimeout(scan,400);
-  };S.scannerInterval=setTimeout(scan,100);
+  if('BarcodeDetector' in window){
+    const detector=new BarcodeDetector({formats:['qr_code','code_128','code_39','ean_13','ean_8','upc_a','upc_e']});
+    S.scannerInterval=setInterval(async()=>{
+      try{const barcodes=await detector.detect(video);if(barcodes.length>0){clearInterval(S.scannerInterval);processBarcodeResult(barcodes[0].rawValue);}}catch{}
+    },400);
+  }else{document.getElementById('scannerStatus').textContent='⚠️ استخدم الإدخال اليدوي';}
 }
 function processBarcodeResult(raw){
   const barcode=raw.trim().toUpperCase();
@@ -13102,7 +13305,6 @@ function processBarcodeResult(raw){
 }
 function confirmManualBarcode(){const val=document.getElementById('manualBarcodeInput').value.trim();if(val)processBarcodeResult(val);}
 function closeScanner(){
-  wfScanEpoch++;
   if(S.scannerInterval){clearInterval(S.scannerInterval);S.scannerInterval=null;}
   if(S.scannerStream){S.scannerStream.getTracks().forEach(t=>t.stop());S.scannerStream=null;}
   document.getElementById('scannerVideo').srcObject=null;closeModal('scannerModal');
@@ -13296,23 +13498,22 @@ function updateKdvDisplay(){
 ============================================================ */
 function renderPrSelector(){
   const container=document.getElementById('prSelectorList');if(!container)return;
-  if(!WFPerf.begin(container))return;
   const search=(document.getElementById('invPrSearch')?.value||'').toLowerCase();
   const list=S.products.filter(p=>p.name.toLowerCase().includes(search));
   if(!list.length){container.innerHTML=`<div class="empty" style="padding:20px;"><div class="ei" style="font-size:28px;">📦</div><p>${t('no_pr')}</p></div>`;return;}
-  WFPerf.render(container,list,p=>{
+  container.innerHTML=list.map(p=>{
     const price=getTierPrice(p,S.invTier);
     const dispPrice=fmtCurr(price,S.invCurrency);
     return `
     <div class="ps-item" onclick="addItemToInv_id('${p.id}')">
-      <div class="ps-thumb">${p.image?`<img src="${p.image}" alt="${p.name}">`:(TYPE_ICONS[p.type]||'📦')}</div>
+      <div class="ps-thumb">${p.image?`<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async">`:(TYPE_ICONS[p.type]||'📦')}</div>
       <div style="flex:1;min-width:0;">
         <div class="ps-name">${p.name}</div>
         <div class="ps-meta">${p.dimensions||''} ${p.dimensions?'cm':''} · 🎯${S.invTier}</div>
       </div>
       <div class="ps-price">${dispPrice}</div>
     </div>`;
-  });
+  }).join('');
 }
 function addItemToInv_id(id){const p=S.products.find(x=>x.id===id);if(p)addItemToInv(p);}
 function addItemToInv(product){
@@ -13597,7 +13798,7 @@ async function saveInvoice(){
     buyerName:co?.buyerName||'',
     currency:cur,tier:S.invTier,payMethod:S.invPayMethod,
     kdvEnabled:S.kdvEnabled,kdvRate:S.settings.kdvRate||20,kdvAmtUSD,
-    items:S.invItems.map(i=>({...i})),
+    items:[...S.invItems],
     subtotalUSD,discountUSD,depositUSD,grandTotal:grandUSD,
     totalPaidUSD,remainingUSD,
       totalCBM:parseFloat(totalCBM.toFixed(4)),totalPackets:totalPkts,
@@ -13613,26 +13814,30 @@ async function saveInvoice(){
     createdAt:new Date().toISOString(),
     usdTry:S.usdTry,usdEur:S.usdEur,
     printLang:S.printLang,printOpts:{...S.printOpts},
-    payments:S.currentInvPayments.map(p=>({...p})),
+    payments:[...S.currentInvPayments],
   };
-  const nextSettings={...S.settings};
+  await dbPut('invoices',inv);
+  
+  // 2️⃣ زيادة العداد الخاص بالنوع المختار فقط وحفظه في الإعدادات
   if(!S.editInvId){
-    if(S.invType==='internal_retail')nextSettings.nextNoRet++;
-    else if(S.invType==='internal_wholesale')nextSettings.nextNoWhl++;
-    else nextSettings.nextNoExt++;
+    if (S.invType === 'internal_retail') S.settings.nextNoRet++;
+    else if (S.invType === 'internal_wholesale') S.settings.nextNoWhl++;
+    else S.settings.nextNoExt++;
+    
+    await dbPut('settings', {id:'main', ...S.settings});
   }
-  const paymentRows=S.currentInvPayments.map(p=>({...p,invoiceId:invId}));
-  const records=[['invoices',inv],...paymentRows.map(p=>['payments',p])];
-  if(!S.editInvId)records.push(['settings',{id:'main',...nextSettings}]);
-  await (QBL_CART._wfSaveTail||Promise.resolve());
-  records.push(['settings',{id:'wf_qbl_cart',items:[]}]);
-  await wfCommitRecords(records);
-  QBL_CART._wfRevision=(QBL_CART._wfRevision||0)+1;
-  if(!S.editInvId)Object.assign(S.settings,nextSettings);
+  
   const idx=S.invoices.findIndex(i=>i.id===invId);
   if(idx>=0)S.invoices[idx]=inv;else S.invoices.push(inv);
-  for(const p of paymentRows){const pi=S.payments.findIndex(x=>x.id===p.id);if(pi>=0)S.payments[pi]=p;else S.payments.push(p);}
-
+  
+  // save payments separately
+  for(const p of S.currentInvPayments){
+    p.invoiceId=invId;
+    await dbPut('payments',p);
+    const pi=S.payments.findIndex(x=>x.id===p.id);
+    if(pi>=0)S.payments[pi]=p;else S.payments.push(p);
+  }
+  
   showToast(S.editInvId?t('updated_inv'):t('saved_inv'),'ok');
   S.editInvId=null;S.invItems=[];S.currentInvPayments=[];
 
@@ -13663,8 +13868,6 @@ function setInvTab(filter){
 function renderInvList(){
   const container=document.getElementById('invListContainer');
   if(!container)return;
-  if(!WFPerf.begin(container))return;
-  document.querySelectorAll('#invStatsBar .co-stat-pill').forEach(p=>p.classList.toggle('active',p.getAttribute('onclick')?.match(/'([^']+)'/)?.[1]===S.invTabFilter));
 
   const search=(document.getElementById('invSearch')?.value||'').toLowerCase();
 
@@ -13732,6 +13935,14 @@ function renderInvList(){
     return;
   }
 
+  const wfInvPayIndex=new Map();
+  for(const p of S.payments){
+    let row=wfInvPayIndex.get(p.invoiceId);
+    if(!row){row={sum:0,count:0};wfInvPayIndex.set(p.invoiceId,row);}
+    row.sum+=(p.amount||0);row.count++;
+  }
+  const wfCompanyIndex=new Map(S.companies.map(c=>[c.id,c]));
+
   const typeMap={
     external:          {cls:'b-ext', icon:'🌍', lbl:()=>t('t_ext')},
     internal_retail:   {cls:'b-int', icon:'🏠', lbl:()=>t('t_int_retail')},
@@ -13745,15 +13956,13 @@ function renderInvList(){
     en:{pay:'Payment',paid:'Paid',remain:'Left',items:'items',progress:'Payment',preview:'Preview',edit:'Edit',del:'Delete',deliver:'Deliver ✅',unarchive:'Unarchive'},
   }[lang]||{pay:'Payment',paid:'Paid',remain:'Left',items:'items',progress:'Payment',preview:'Preview',edit:'Edit',del:'Delete',deliver:'Deliver ✅',unarchive:'Unarchive'};
 
-  const paymentMap=WFPerf.group(S.payments,'invoiceId');
-  const companyMap=new Map(S.companies.map(c=>[c.id,c]));
-  WFPerf.render(container,list,(inv,idx)=>{
+  container.innerHTML=list.map((inv,idx)=>{
     const tm=typeMap[inv.companyType||'external']||typeMap.external;
-    const invPayments=paymentMap.get(inv.id)||[];
-    const totalPaid=(inv.depositUSD||0)+invPayments.reduce((s,p)=>s+(p.amount||0),0);
+    const wfPayRow=wfInvPayIndex.get(inv.id)||{sum:0,count:0};
+    const totalPaid=(inv.depositUSD||0)+wfPayRow.sum;
     const remaining=Math.max(0,(inv.grandTotal||0)-totalPaid);
     const pct=inv.grandTotal>0?Math.min(100,(totalPaid/inv.grandTotal)*100):0;
-    const payCount=invPayments.length+(inv.depositUSD>0?1:0);
+    const payCount=wfPayRow.count+(inv.depositUSD>0?1:0);
     const barColor=pct>=100?'#38a169':pct>=60?'#c8a96e':'#e53e3e';
     const pctColor=pct>=100?'var(--green)':pct>=60?'var(--gold2)':'var(--red)';
     const pmIcon=pmIcons[inv.payMethod||'cash']||'💵';
@@ -13779,7 +13988,7 @@ function renderInvList(){
       <span class="inv-archived-badge">🗂️ ${arcLbls[lang]||'Archive'}</span>` : '';
 
     const typeDefaultIcons={external:'🌍',internal_retail:'🏠',internal_wholesale:'📦'};
-    const co=companyMap.get(inv.companyId);
+    const co=wfCompanyIndex.get(inv.companyId);
     const coLogo=co?.logo||inv.companyLogo||null;
     const fallbackIcon=typeDefaultIcons[inv.companyType||'external']||'📄';
 
@@ -13802,7 +14011,7 @@ function renderInvList(){
           <div class="inv-card-hdr">
             <div class="inv-card-avatar" style="${coLogo?'padding:0;overflow:hidden;background:#fff;':'background:var(--input);border:1.5px solid var(--border);'}">
               ${coLogo
-                ?`<img src="${coLogo}" alt="${inv.companyName||''}" style="width:100%;height:100%;object-fit:contain;border-radius:12px;display:block;">`
+                ?`<img src="${coLogo}" alt="${inv.companyName||''}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:contain;border-radius:12px;display:block;">`
                 :`<span style="font-size:22px;line-height:1;">${fallbackIcon}</span>`}
             </div>
             <div class="inv-card-hdr-info">
@@ -13918,7 +14127,7 @@ function renderInvList(){
               </div><!-- end inv-card-actions -->
 
     </div>`;
-  });
+  }).join('');
 }
 
 
@@ -14450,14 +14659,11 @@ function editInv(id){
 async function deleteInv(id){
   const inv=S.invoices.find(i=>i.id===id);if(!inv)return;
   openDM(inv.invNo||'—',async()=>{
-    if(!WFSecurity.require('invoices.delete'))return;
-    const rows=S.payments.filter(p=>p.invoiceId===id);
-    await new Promise((resolve,reject)=>{
-      let tx;try{tx=db.transaction(['invoices','payments'],'readwrite');tx.oncomplete=resolve;tx.onabort=()=>reject(tx.error||new Error('Delete aborted'));tx.onerror=()=>{};
-        tx.objectStore('invoices').delete(id);for(const p of rows)tx.objectStore('payments').delete(p.id);
-      }catch(e){try{tx?.abort();}catch(_){}reject(e);}
-    });
-    S.invoices=S.invoices.filter(i=>i.id!==id);S.payments=S.payments.filter(p=>p.invoiceId!==id);
+    await dbDel('invoices',id);
+    S.invoices=S.invoices.filter(i=>i.id!==id);
+    const invPayments=S.payments.filter(p=>p.invoiceId===id);
+    for(const p of invPayments){await dbDel('payments',p.id);}
+    S.payments=S.payments.filter(p=>p.invoiceId!==id);
     showToast(t('deleted'),'in');renderInvList();updateDash();
   });
 }
@@ -14557,7 +14763,8 @@ const _wfImageCache=new Map();
 
 function safePdfFileName(invNo) {
   const base=String(invNo||'invoice').replace(/[\\/:*?"<>|\x00-\x1f]+/g,'-').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'')||'invoice';
-  return base.slice(0,100)+'.pdf';
+  const wowBase=/^WOW(?:[-_ ]|$)/i.test(base)?base:`WOW_${base}`;
+  return wowBase.slice(0,100)+'.pdf';
 }
 function getInvoicePdfRenderKey() {
   const html=document.getElementById('invoicePaperWrap')?.innerHTML||'';
@@ -14882,7 +15089,7 @@ async function shareInvoicePdfFile(channel) {
     if(!file)file=await createInvoicePdfFile();
     let supported=false;
     try{supported=!!(navigator.share&&navigator.canShare?.({files:[file]}));}catch{}
-    if(!supported){if(!WFSecurity.require('invoices.export'))return false;triggerPdfFileDownload(file);showToast(wfPdfMessage('downloaded'),'in');return false;}
+    if(!supported){triggerPdfFileDownload(file);showToast(wfPdfMessage('downloaded'),'in');return false;}
     await navigator.share({files:[file],title:pdfShareText()});return true;
   }catch(err){
     if(err?.name==='AbortError')return false;
@@ -14895,13 +15102,11 @@ async function downloadPDF() {
   catch(err){wfReportPdfError(err);return null;}
 }
 async function printInvoice() {
-  const accessTicket=WFSecurity.token();
   let set;
   try{
     wfRefreshCurrentPreview();
     const wrap=document.getElementById('invoicePaperWrap');
     set=await wfBuildPageSet(wrap?.innerHTML,_lastPreviewInv?.invNo,S.printLang||'en');
-    if(accessTicket!==WFSecurity.token()||!WFSecurity.can('invoices.print'))throw new DOMException('Session changed','NotAllowedError');
     const style=set.doc.createElement('style');style.textContent='@page{size:A4;margin:5mm} @media print{html,body{width:200mm!important}.wf-pdf-page{width:794px!important;zoom:0.952;width:794px;break-after:page;page-break-after:always}.wf-pdf-page:last-child{break-after:auto;page-break-after:auto}}';set.doc.head.append(style);
     const printed=set;set=null;
     printed.frame.contentWindow.addEventListener('afterprint',()=>printed.dispose(),{once:true});
@@ -16936,10 +17141,24 @@ const h = dims[0]?.h || 0;
 
    
 /* ============================================================
+   MEMORY / CAMERA CLEANUP — NO UI CHANGES
+============================================================ */
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){
+    try{if(typeof qblStopCamera==='function')qblStopCamera();}catch(_){}
+    try{if(S.scannerInterval){clearInterval(S.scannerInterval);S.scannerInterval=null;}}catch(_){}
+  }
+},{passive:true});
+window.addEventListener('pagehide',()=>{
+  for(const k of Object.keys(WF_RENDER_TIMERS)){clearTimeout(WF_RENDER_TIMERS[k]);delete WF_RENDER_TIMERS[k];}
+  try{if(typeof qblStopCamera==='function')qblStopCamera();}catch(_){}
+  try{if(S.scannerInterval){clearInterval(S.scannerInterval);S.scannerInterval=null;}}catch(_){}
+},{passive:true});
+
+/* ============================================================
    INIT
 ============================================================ */
 async function init(){
-  await WFSecurity.ready();
   loadTheme();
   await initDB();
   // load settings
@@ -16997,8 +17216,10 @@ const validPages=['dashboard','companies','products','invoices','add-company','a
     const hh=String(now.getHours()).padStart(2,'0');const mm=String(now.getMinutes()).padStart(2,'0');
     const el=document.getElementById('greetingTime');if(el)el.textContent=`${hh}:${mm}`;
   },60000);
+  wfInstallPersistentStorageHooks();
+  wfScheduleStorageMaintenance();
+  wfRefreshStorageTelemetry();
 initBottomNav();
-WFSecurity.afterInit();
 
 }
 
@@ -17912,32 +18133,46 @@ function initQblPage() {
    الكاميرا
 ══════════════════════════════════════════ */
 function qblStopCamera() {
-  wfQblEpoch++;
   if (QBL.interval) { clearInterval(QBL.interval); QBL.interval = null; }
   if (QBL.stream)   { QBL.stream.getTracks().forEach(t => t.stop()); QBL.stream = null; }
   const v = document.getElementById('qblVideo');
   if (v) v.srcObject = null;
 }
 
-async function qblStartCamera(){
-  const ticket=++wfQblEpoch;
-  try{
-    if(QBL.stream)QBL.stream.getTracks().forEach(t=>t.stop());
-    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
-    const video=document.getElementById('qblVideo');
-    if(ticket!==wfQblEpoch||document.hidden||getCurrentPage()!=='quick-barcode'||!video){stream.getTracks().forEach(t=>t.stop());return;}
-    QBL.stream=stream;video.srcObject=stream;await video.play();if(ticket===wfQblEpoch)qblStartDetection(video);
-  }catch(_){if(ticket===wfQblEpoch){const e=document.getElementById('qblStatus');if(e)e.textContent=qblTx('cam_err');}}
+async function qblStartCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment' }
+    });
+    QBL.stream = stream;
+    const video = document.getElementById('qblVideo');
+    if (!video) return;
+    video.srcObject = stream;
+    await video.play();
+    qblStartDetection(video);
+  } catch {
+    const el = document.getElementById('qblStatus');
+    if (el) el.textContent = qblTx('cam_err');
+  }
 }
 
-function qblStartDetection(video){
-  clearTimeout(QBL.interval);if(!('BarcodeDetector'in window))return;
-  const ticket=wfQblEpoch;let detector;try{detector=new BarcodeDetector();}catch(_){return;}
-  const scan=async()=>{
-    if(ticket!==wfQblEpoch||document.hidden||!QBL.stream||getCurrentPage()!=='quick-barcode')return;
-    try{if(video.readyState>=2){const codes=await detector.detect(video);if(ticket!==wfQblEpoch)return;if(codes.length){QBL.interval=null;const raw=codes[0].rawValue.trim(),inp=document.getElementById('qblInput');if(inp)inp.value=raw;qblFindProduct(raw);return;}}}catch(_){}
-    if(ticket===wfQblEpoch)QBL.interval=setTimeout(scan,400);
-  };QBL.interval=setTimeout(scan,100);
+function qblStartDetection(video) {
+  if (!('BarcodeDetector' in window)) return;
+  const detector = new BarcodeDetector({
+    formats: ['qr_code','code_128','code_39','ean_13','ean_8','upc_a','upc_e']
+  });
+  QBL.interval = setInterval(async () => {
+    try {
+      const barcodes = await detector.detect(video);
+      if (barcodes.length > 0) {
+        clearInterval(QBL.interval); QBL.interval = null;
+        const raw = barcodes[0].rawValue.trim();
+        const inp = document.getElementById('qblInput');
+        if (inp) inp.value = raw;
+        qblFindProduct(raw);
+      }
+    } catch {}
+  }, 400);
 }
 
 /* ══════════════════════════════════════════
@@ -18477,24 +18712,44 @@ const QBL_CART = {
    QBL CART — حفظ واسترجاع من localStorage
 ============================================================ */
 
-function qblCartSave(){
-  const toSave=QBL_CART.items.map(i=>({productId:i.product.id,tier:i.tier,qty:i.qty}));
-  QBL_CART._wfRevision=(QBL_CART._wfRevision||0)+1;
-  // A thin cart is small; database storage avoids the Web Storage quota entirely.
-  QBL_CART._wfSaveTail=(QBL_CART._wfSaveTail||Promise.resolve()).catch(()=>{}).then(()=>dbPut('settings',{id:'wf_qbl_cart',items:toSave}));
-  QBL_CART._wfSaveTail.catch(wfStorageError);
+function qblCartSave() {
+  try {
+    const toSave = QBL_CART.items.map(i => ({
+      productId: i.product.id,
+      tier:      i.tier,
+      qty:       i.qty,
+    }));
+    localStorage.setItem('wf_qbl_cart', JSON.stringify(toSave));
+  } catch(e) {}
 }
 
-async function qblCartLoad(){
-  const revision=QBL_CART._wfRevision||0;
-  try{
-    const record=await dbGet('settings','wf_qbl_cart');
-    const saved=record?.items??JSON.parse(localStorage.getItem('wf_qbl_cart')||'[]');
-    if(!Array.isArray(saved)||revision!==(QBL_CART._wfRevision||0))return;
-    const map=new Map(S.products.map(p=>[p.id,p]));
-    QBL_CART.items=saved.map(e=>({product:map.get(e.productId),tier:e.tier||'A',qty:Math.max(1,parseInt(e.qty)||1)})).filter(e=>e.product);
-    qblUpdateCartUI();if(QBL_CART.open)qblRenderCartList();
-  }catch(e){console.warn('WOW cart load:',e);}
+function qblCartLoad() {
+  try {
+    const raw = localStorage.getItem('wf_qbl_cart');
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    if (!Array.isArray(saved) || !saved.length) return;
+
+    // تأكد أن المنتجات محملة
+    if (!S.products || !S.products.length) return;
+
+    QBL_CART.items = [];
+
+    saved.forEach(entry => {
+      const product = S.products.find(p => p.id === entry.productId);
+      if (!product) return;
+      QBL_CART.items.push({
+        product,
+        tier: entry.tier || 'A',
+        qty:  Math.max(1, parseInt(entry.qty) || 1),
+      });
+    });
+
+    if (QBL_CART.items.length) {
+      qblUpdateCartUI();
+      qblRenderCartList();
+    }
+  } catch(e) {}
 }
 
 /* ── نصوص السلة ── */
@@ -19426,7 +19681,7 @@ function bnavMoveToIndex(idx) {
   const circle = document.getElementById('bnavCircle');
   const curve  = document.getElementById('bnavCurve');
   const iconEl = document.getElementById('bnavCircleIcon');
-  if (!nav || !circle || !nav.offsetWidth) return;
+  if (!nav || !circle) return;
 
   const totalW  = nav.offsetWidth;
   const btnW    = totalW / BNAV_CONFIG.count;
@@ -19452,11 +19707,10 @@ function bnavMoveToIndex(idx) {
   }
 
   /* تغيير الأيقونة */
-  if (iconEl && iconEl.textContent !== BNAV_CONFIG.icons[idx]) {
-    clearTimeout(wfBottomTimer);
+  if (iconEl) {
     _bnavAnimating = true;
     iconEl.classList.add('switching');
-    wfBottomTimer=setTimeout(() => {
+    setTimeout(() => {
       iconEl.textContent = BNAV_CONFIG.icons[idx];
       iconEl.classList.remove('switching');
       _bnavAnimating = false;
@@ -19485,12 +19739,28 @@ function bnavShowDot(idx, show = true) {
 }
 
 /* ── تهيئة عند التحميل ── */
-function initBottomNav(){
-  if(wfBottomReady)return;wfBottomReady=true;
-  const queue=()=>{if(wfBottomFrame)return;wfBottomFrame=requestAnimationFrame(()=>{wfBottomFrame=0;if(!document.hidden)bnavMoveToIndex(_bnavCurrentIdx);});};
-  setTimeout(queue,100);window.addEventListener('resize',queue,{passive:true});window.addEventListener('orientationchange',queue,{passive:true});
-  const observer=new MutationObserver(()=>{const path=document.getElementById('bnavCurvePath');if(path)path.setAttribute('fill',document.documentElement.getAttribute('data-theme')==='dark'?'#161927':'white');});
-  observer.observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+function initBottomNav() {
+  /* تأخير بسيط لضمان حساب العرض الصحيح */
+  setTimeout(() => {
+    bnavMoveToIndex(_bnavCurrentIdx);
+  }, 100);
+
+  /* إعادة الحساب عند تغيير حجم الشاشة */
+  window.addEventListener('resize', () => {
+    bnavMoveToIndex(_bnavCurrentIdx);
+  });
+
+  /* مراقبة تغيير الثيم لتحديث لون المنحنى */
+  const observer = new MutationObserver(() => {
+    const curvePath = document.getElementById('bnavCurvePath');
+    if (!curvePath) return;
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    curvePath.setAttribute('fill', isDark ? '#161927' : 'white');
+  });
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme']
+  });
 }
 
 /* استدعِ initBottomNav داخل دالة init() الموجودة */
@@ -21603,7 +21873,6 @@ window.addEventListener('resize', closeShareMenu);
    SMART IMAGE VIEWER LOGIC
 ============================================================ */
 function openImgViewer(src) {
-  clearTimeout(wfViewerTimer);
   const modal = document.getElementById('imgViewerModal');
   const img = document.getElementById('imgViewerSrc');
   if(modal && img) {
@@ -21624,9 +21893,9 @@ function closeImgViewer() {
     document.removeEventListener('keydown', imgViewerEscHandler);
     
     // تفريغ الصورة بعد انتهاء تأثير الاختفاء (0.35s)
-    clearTimeout(wfViewerTimer);wfViewerTimer=setTimeout(() => {
+    setTimeout(() => {
       const img = document.getElementById('imgViewerSrc');
-      if (img&&!document.getElementById('imgViewerModal').classList.contains('open'))img.removeAttribute('src');
+      if (img) img.src = '';
     }, 350); 
   }
 }
@@ -21656,677 +21925,11 @@ function imgViewerEscHandler(e) {
 
 
 
-
-/* WOW Protection & Users R2 — local application access control, NOT database encryption.
-   WebAuthn uses the OS authenticator; this program never reads fingerprint/face templates.
-   On a shared OS account, any enrolled device biometric/PIN can authorize its stored passkeys.
-   For independent staff identities use individual OS profiles/devices or per-user passwords.
-   See W3C WebAuthn §7.2: challenge/type/origin/RP hash/UP+UV/user handle/signature verification. */
-/* SJCL SHA-256/HMAC subset, from SJCL 1.0.8. Unused ciphers, PRNG and modes excluded.
- * Copyright (c) 2009-2015, Emily Stark, Mike Hamburg and Dan Boneh at Stanford University.
- * All rights reserved. Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * 1. Redistributions of source code must retain the above copyright notice, this list of
- * conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice, this list
- * of conditions and the following disclaimer in the documentation and/or other materials.
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
- * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * Source: https://raw.githubusercontent.com/bitwiseshiftleft/sjcl/1.0.8/sjcl.js
- * WOW modification: subset isolation + asynchronous PBKDF2 adapter. Never uses Math.random.
- */
-window.WFPinCrypto=(()=>{
-function primitives(){
-var sjcl={hash:{},misc:{},codec:{},exception:{invalid:function(a){this.message=a;this.toString=function(){return 'INVALID: '+this.message;};}}};
-sjcl.bitArray={concat:function(a,b){if(0===a.length||0===b.length)return a.concat(b);var c=a[a.length-1],d=sjcl.bitArray.getPartial(c);return 32===d?a.concat(b):sjcl.bitArray.$(b,d,c|0,a.slice(0,a.length-1))},bitLength:function(a){var b=a.length;return 0===b?0:32*(b-1)+sjcl.bitArray.getPartial(a[b-1])},clamp:function(a,b){if(32*a.length<b)return a;a=a.slice(0,Math.ceil(b/32));var c=a.length;b=b&31;0<c&&b&&(a[c-1]=sjcl.bitArray.partial(b,a[c-1]&2147483648>>b-1,1));return a},partial:function(a,b,c){return 32===a?b:(c?b|0:b<<32-a)+0x10000000000*a},getPartial:function(a){return Math.round(a/0x10000000000)||32},$:function(a,b,c,d){var e;e=0;for(void 0===d&&(d=[]);32<=b;b-=32)d.push(c),c=0;if(0===b)return d.concat(a);for(e=0;e<a.length;e++)d.push(c|a[e]>>>b),c=a[e]<<32-b;e=a.length?a[a.length-1]:0;a=sjcl.bitArray.getPartial(e);d.push(sjcl.bitArray.partial(b+a&31,32<b+a?c:d.pop(),1));return d}};
-sjcl.codec.utf8String={toBits:function(a){a=unescape(encodeURIComponent(a));var b=[],c,d=0;for(c=0;c<a.length;c++)d=d<<8|a.charCodeAt(c),3===(c&3)&&(b.push(d),d=0);c&3&&b.push(sjcl.bitArray.partial(8*(c&3),d));return b}};
-sjcl.codec.hex={fromBits:function(a){var b='',c;for(c=0;c<a.length;c++)b+=((a[c]|0)+0xf00000000000).toString(16).substr(4);return b.substr(0,sjcl.bitArray.bitLength(a)/4)},toBits:function(a){var b,c=[],d;a=a.replace(/\s|0x/g,'');d=a.length;a=a+'00000000';for(b=0;b<a.length;b+=8)c.push(parseInt(a.substr(b,8),16)^0);return sjcl.bitArray.clamp(c,4*d)}};
-sjcl.hash.sha256=function(a){this.b[0]||this.O();a?(this.F=a.F.slice(0),this.A=a.A.slice(0),this.l=a.l):this.reset()};sjcl.hash.sha256.hash=function(a){return(new sjcl.hash.sha256).update(a).finalize()};
-sjcl.hash.sha256.prototype={blockSize:512,reset:function(){this.F=this.Y.slice(0);this.A=[];this.l=0;return this},update:function(a){'string'===typeof a&&(a=sjcl.codec.utf8String.toBits(a));var b,c=this.A=sjcl.bitArray.concat(this.A,a);b=this.l;a=this.l=b+sjcl.bitArray.bitLength(a);if(0x1fffffffffffff<a)throw new sjcl.exception.invalid('Cannot hash more than 2^53 - 1 bits');if('undefined'!==typeof Uint32Array){var d=new Uint32Array(c),e=0;for(b=512+b-(512+b&0x1ff);b<=a;b+=512)u(this,d.subarray(16*e,16*(e+1))),e+=1;c.splice(0,16*e)}else for(b=512+b-(512+b&0x1ff);b<=a;b+=512)u(this,c.splice(0,16));return this},finalize:function(){var a,b=this.A,c=this.F,b=sjcl.bitArray.concat(b,[sjcl.bitArray.partial(1,1)]);for(a=b.length+2;a&15;a++)b.push(0);b.push(Math.floor(this.l/0x100000000));for(b.push(this.l|0);b.length;)u(this,b.splice(0,16));this.reset();return c},Y:[],b:[],O:function(){function a(a){return 0x100000000*(a-Math.floor(a))|0}for(var b=0,c=2,d,e;64>b;c++){e=!0;for(d=2;d*d<=c;d++)if(0===c%d){e=!1;break}e&&(8>b&&(this.Y[b]=a(Math.pow(c,.5))),this.b[b]=a(Math.pow(c,1/3)),b++)}}};
-function u(a,b){var c,d,e,f=a.F,g=a.b,h=f[0],k=f[1],l=f[2],n=f[3],m=f[4],p=f[5],r=f[6],q=f[7];for(c=0;64>c;c++)16>c?d=b[c]:(d=b[c+1&15],e=b[c+14&15],d=b[c&15]=(d>>>7^d>>>18^d>>>3^d<<25^d<<14)+(e>>>17^e>>>19^e>>>10^e<<15^e<<13)+b[c&15]+b[c+9&15]|0),d=d+q+(m>>>6^m>>>11^m>>>25^m<<26^m<<21^m<<7)+(r^m&(p^r))+g[c],q=r,r=p,p=m,m=n+d|0,n=l,l=k,k=h,h=d+(k&l^n&(k^l))+(k>>>2^k>>>13^k>>>22^k<<30^k<<19^k<<10)|0;f[0]=f[0]+h|0;f[1]=f[1]+k|0;f[2]=f[2]+l|0;f[3]=f[3]+n|0;f[4]=f[4]+m|0;f[5]=f[5]+p|0;f[6]=f[6]+r|0;f[7]=f[7]+q|0}
-sjcl.misc.hmac=function(a,b){this.W=b=b||sjcl.hash.sha256;var c=[[],[]],d,e=b.prototype.blockSize/32;this.w=[new b,new b];a.length>e&&(a=b.hash(a));for(d=0;d<e;d++)c[0][d]=a[d]^909522486,c[1][d]=a[d]^1549556828;this.w[0].update(c[0]);this.w[1].update(c[1]);this.R=new b(this.w[0])};
-sjcl.misc.hmac.prototype.encrypt=sjcl.misc.hmac.prototype.mac=function(a){if(this.aa)throw new sjcl.exception.invalid('encrypt on already updated hmac called!');this.update(a);return this.digest(a)};sjcl.misc.hmac.prototype.reset=function(){this.R=new this.W(this.w[0]);this.aa=!1};sjcl.misc.hmac.prototype.update=function(a){this.aa=!0;this.R.update(a)};sjcl.misc.hmac.prototype.digest=function(){var a=this.R.finalize(),a=(new this.W(this.w[1])).update(a).finalize();this.reset();return a};
-return sjcl;
-}
-async function derive(password,saltHex,rounds,yieldMain){
- if(!Number.isSafeInteger(rounds)||rounds<1||rounds>2000000)throw new Error('Invalid PBKDF2 rounds');
- const s=primitives(),h=new s.misc.hmac(s.codec.utf8String.toBits(password));
- let v=h.encrypt(s.bitArray.concat(s.codec.hex.toBits(saltHex),[1])),out=v.slice(),started=Date.now();
- for(let i=1;i<rounds;i++){v=h.encrypt(v);for(let j=0;j<8;j++)out[j]^=v[j];if(yieldMain&&i%256===0&&Date.now()-started>=8){await new Promise(r=>setTimeout(r,0));started=Date.now();}}
- return s.codec.hex.fromBits(out);
-}
-function hexToB64(hex){return btoa(hex.match(/../g).map(x=>String.fromCharCode(parseInt(x,16))).join('')).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
-async function hash(password,salt,rounds=600000){
- const raw=atob(salt.replace(/-/g,'+').replace(/_/g,'/')),hex=Array.from(raw,c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join('');
- if(typeof Worker==='function'){
-  let worker,url;
-  try{
-   url=URL.createObjectURL(new Blob([primitives.toString(),'\n',derive.toString(),';self.onmessage=async e=>{try{self.postMessage({value:await derive(...e.data,false)})}catch(err){self.postMessage({error:String(err)})}}'],{type:'application/javascript'}));
-   worker=new Worker(url);
-   const value=await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('Password calculation timed out')),120000);worker.onmessage=e=>{clearTimeout(timer);e.data.error?reject(new Error(e.data.error)):resolve(e.data.value)};worker.onerror=()=>{clearTimeout(timer);reject(new Error('Worker unavailable'))};worker.postMessage([password,hex,rounds])});
-   return hexToB64(value);
-  }catch(e){console.info('WOW uses responsive local password calculation:',e.message);}
-  finally{worker?.terminate();if(url)URL.revokeObjectURL(url);}
- }
- return hexToB64(await derive(password,hex,rounds,true));
-}
-return Object.freeze({hash,derive});
-})();
-
-/* WOW R3 permission catalog. Only explicit grants are accepted; dependencies are visible in the editor. */
-window.WFACL=(()=>{
- const names={
- dashboard:['لوحة التحكم','Kontrol paneli','Dashboard'],reports:['إجمالي المبيعات','Satış toplamları','Sales totals'],clients:['العملاء','Müşteriler','Clients'],products:['المنتجات','Ürünler','Products'],prices:['الأسعار والخصومات','Fiyatlar ve indirimler','Prices & discounts'],invoices:['الفواتير','Faturalar','Invoices'],payments:['الدفعات','Ödemeler','Payments'],barcode:['الباركود والسلة','Barkod ve sepet','Barcode & cart'],settings:['إعدادات الشركة','Şirket ayarları','Company settings'],backup:['نسخ بيانات الأعمال','İş verisi yedekleri','Business data backups'],
- catalogView:['عرض أسعار الكتالوج','Katalog fiyatlarını gör','View catalog prices'],view:['العرض','Görüntüle','View'],create:['إضافة','Ekle','Create'],edit:['تعديل','Düzenle','Edit'],delete:['حذف','Sil','Delete'],deliver:['تسليم وأرشفة','Teslim / arşiv','Deliver / archive'],preview:['معاينة كاملة','Tam önizleme','Full preview'],print:['طباعة','Yazdır','Print'],export:['تصدير','Dışa aktar','Export'],share:['مشاركة','Paylaş','Share'],import:['استعادة','Geri yükle','Restore'],use:['استخدام','Kullan','Use'],
- admin:['مدير النظام — صلاحية كاملة','Sistem yöneticisi — tam yetki','System administrator — full access'],sales_manager:['مدير المبيعات','Satış müdürü','Sales manager'],sales:['موظف مبيعات','Satış personeli','Sales staff'],accountant:['محاسب','Muhasebeci','Accountant'],viewer:['مشاهد','Görüntüleyici','Viewer'],custom:['صلاحيات مخصصة','Özel yetkiler','Custom permissions'],staff:['موظف — صلاحيات سابقة','Personel — eski yetkiler','Staff — legacy permissions']
- };
- const groups={dashboard:['view'],reports:['view'],clients:['view','create','edit','delete'],products:['view','create','edit','delete'],prices:['view','edit'],invoices:['view','create','edit','delete','deliver','preview','print','export','share'],payments:['view','create','delete'],barcode:['use'],settings:['view','edit'],backup:['export','import']};
- const keys=Object.entries(groups).flatMap(([m,acts])=>acts.map(a=>m+'.'+a));
- const deps={};for(const [m,acts] of Object.entries(groups))for(const a of acts)if(a!=='view'&&acts.includes('view'))deps[m+'.'+a]=[m+'.view'];
- Object.assign(deps,{'products.create':['products.view','prices.edit'],'prices.view':['products.view'],'invoices.view':[],'invoices.delete':['invoices.view','payments.delete'],'invoices.create':['invoices.view','products.view','prices.view','clients.view'],'invoices.edit':['invoices.view','products.view','prices.view','clients.view','payments.view'],'payments.view':['invoices.view'],'reports.view':['dashboard.view'],'barcode.use':['products.view'],'invoices.preview':['invoices.view','payments.view'],'invoices.print':['invoices.preview'],'invoices.export':['invoices.preview'],'invoices.share':['invoices.preview'],'backup.export':['clients.view','products.view','invoices.view','payments.view','settings.view'],'backup.import':['backup.export','clients.create','clients.edit','clients.delete','products.create','products.edit','products.delete','prices.edit','invoices.create','invoices.edit','invoices.delete','payments.create','payments.delete','settings.edit']});
- const label=k=>names[k]?.[({ar:0,tr:1,en:2})[typeof S==='object'?S.lang:'ar']||0]||k;
- function normalize(p){const out=Object.fromEntries(keys.map(k=>[k,p?.[k]===true]));function add(k){for(const d of deps[k]||[])if(!out[d]){out[d]=true;add(d)}}for(const k of keys)if(out[k])add(k);return out;}
- function toggle(p,key,value){const out={...p,[key]:value};if(value)return normalize(out);let changed=true;while(changed){changed=false;for(const k of keys)if(out[k]&&(deps[k]||[]).some(d=>!out[d])){out[k]=false;changed=true}}return out;}
- function preset(role){let list=[];
- if(role==='admin')list=keys;
- if(role==='sales_manager')list=['dashboard.view','reports.view','clients.view','clients.create','clients.edit','products.view','prices.view','prices.edit','invoices.view','invoices.create','invoices.edit','invoices.deliver','invoices.print','invoices.export','invoices.share','payments.view','payments.create','barcode.use'];
- if(role==='sales')list=['dashboard.view','clients.view','clients.create','products.view','prices.view','invoices.view','invoices.create','invoices.print','invoices.export','invoices.share','barcode.use'];
- if(role==='accountant')list=['dashboard.view','reports.view','clients.view','products.view','prices.view','invoices.view','invoices.print','invoices.export','payments.view','payments.create'];
- if(role==='viewer')list=['dashboard.view','products.view'];
- return normalize(Object.fromEntries(list.map(k=>[k,true])));
- }
- function migrate(u){if(u.permissionsVersion===2){u.permissions=normalize(u.permissions);return u;}const p=u.permissions||{},next=preset('custom');['dashboard.view','reports.view','clients.view','products.view','prices.view','invoices.view','payments.view','barcode.use','settings.view'].forEach(k=>next[k]=true);
- for(const [old,module] of [['clients','clients'],['products','products'],['invoices','invoices'],['payments','payments']])if(p[old]){next[module+'.create']=true;if(module!=='payments')next[module+'.edit']=true;if(p.delete)next[module+'.delete']=true;}
- if(p.products)next['prices.edit']=true;if(p.invoices)next['invoices.deliver']=true;if(p.export)['print','export','share'].forEach(k=>next['invoices.'+k]=true);if(p.settings)next['settings.edit']=true;if(p.backup){next['backup.export']=true;next['backup.import']=true;}
- u.permissions=normalize(next);u.permissionsVersion=2;u.authType=u.authType||'password';return u;}
- return Object.freeze({names,groups,keys,deps,label,normalize,toggle,preset,migrate,roles:['admin','sales_manager','sales','accountant','viewer','custom']});
-})();
-
-window.WFSecurity=(()=>{
- 'use strict';
- const WORDS={
-  title:['الحماية والمستخدمين','Güvenlik ve Kullanıcılar','Protection & Users'],back:['رجوع','Geri','Back'],
-  setup:['إنشاء حساب المدير وتفعيل الحماية','Yönetici oluştur ve korumayı aç','Create administrator & enable protection'],
-  name:['اسم المستخدم','Kullanıcı adı','User name'],language:['لغة المستخدم والترحيب','Kullanıcı ve karşılama dili','User & greeting language'],
-  password:['كلمة المرور','Parola','Password'],confirm:['تأكيد كلمة المرور','Parolayı doğrula','Confirm password'],
-  minpass:['ثمانية أحرف على الأقل؛ استخدم كلمة مرور قوية وفريدة.','En az 8 karakter; güçlü, benzersiz bir parola kullanın.','At least 8 characters; use a strong, unique password.'],
-  role:['الصلاحية','Yetki','Role'],admin:['مدير كامل','Tam yetkili yönetici','Administrator'],staff:['موظف بصلاحيات محددة','Özel yetkili çalışan','Custom staff'],viewer:['عرض فقط','Yalnızca görüntüleme','View only'],
-  users:['المستخدمون','Kullanıcılar','Users'],add:['إضافة مستخدم','Kullanıcı ekle','Add user'],save:['حفظ','Kaydet','Save'],cancel:['إلغاء','Vazgeç','Cancel'],edit:['تعديل','Düzenle','Edit'],remove:['حذف المستخدم','Kullanıcıyı sil','Delete user'],
-  active:['الحساب مفعّل','Hesap etkin','Account enabled'],enabled:['قفل البرنامج مفعّل','Program kilidi etkin','App lock enabled'],
-  idle:['القفل بعد عدم الاستخدام','Kullanılmadığında kilitle','Lock after inactivity'],never:['بدون مهلة','Zaman aşımı yok','No timeout'],minutes:['دقيقة','dakika','minutes'],
-  background:['القفل عند مغادرة البرنامج أو إخفائه','Uygulamadan ayrılınca kilitle','Lock when the app is hidden'],voice:['الترحيب الصوتي','Sesli karşılama','Spoken greeting'],
-  policy:['إعدادات القفل','Kilit ayarları','Lock settings'],lock:['قفل الآن / تبديل المستخدم','Şimdi kilitle / kullanıcı değiştir','Lock now / switch user'],
-  locked:['البرنامج مقفل','Program kilitli','Application locked'],unlock:['فتح بكلمة المرور','Parolayla aç','Unlock with password'],
-  device:['البصمة / الوجه أو رمز الجهاز','Parmak izi / yüz veya cihaz PIN’i','Fingerprint / face or device PIN'],
-  register:['ربط بصمة / وجه الجهاز بحسابي','Cihaz doğrulamasını hesabıma bağla','Register device verification for my account'],
-  revoke:['إلغاء ربط الجهاز','Cihaz kaydını kaldır','Remove device credential'],
-  deviceNote:['التحقق يتم عبر نظام الجهاز (مثل Touch ID أو Face ID أو Windows Hello)، وليس مطابقة صورة بكاميرا عادية. لا يستقبل البرنامج صور وجه أو بصمات. يلزم HTTPS وجهاز ومتصفح يدعمان الميزة.','Doğrulama cihaz sistemiyle (Touch ID, Face ID veya Windows Hello) yapılır; normal kamera fotoğrafı eşleştirmesi değildir. Uygulama biyometrik şablon almaz. HTTPS ve uyumlu cihaz/tarayıcı gerekir.','Verification uses the device system (such as Touch ID, Face ID or Windows Hello), not ordinary camera photo matching. No biometric templates are received. HTTPS and a compatible device/browser are required.'],
-  sharedNote:['مهم: بصمات ووجوه ورمز القفل المسجلة في حساب نظام واحد يمكنها فتح مفاتيح ذلك الحساب. لتمييز الموظفين على تابليت مشترك استخدم كلمات مرورهم المستقلة أو حسابات نظام/أجهزة شخصية.','Önemli: aynı işletim sistemi hesabına kayıtlı biyometri/PIN o hesaptaki anahtarları açabilir. Ortak tablette çalışanları ayırmak için kişisel parolalar veya ayrı sistem hesapları/cihazlar kullanın.','Important: biometrics/PIN enrolled in one OS account can unlock its passkeys. For separate identities on a shared tablet use independent passwords or personal OS accounts/devices.'],
-  consent:['أفهم ذلك وهذا حساب نظام شخصي مخصص لي.','Anladım; bu bana ait kişisel sistem hesabıdır.','I understand; this is my personal OS account.'],
-  unsupported:['ربط البصمة/الوجه غير متاح هنا. افتح البرنامج من عنوان HTTPS ثابت، وتحقق من إعدادات بصمة/وجه الجهاز. كلمة المرور تبقى متاحة.','Cihaz doğrulaması burada kullanılamıyor. Sabit bir HTTPS adresi kullanın ve cihaz biyometrisini ayarlayın. Parola kullanılabilir.','Device verification is unavailable here. Use a stable HTTPS address and set up device biometrics. Password access remains available.'],
-  myaccount:['حسابي ووسائل الدخول','Hesabım ve giriş yöntemleri','My account & sign-in methods'],
-  currentpass:['كلمة مروري الحالية للتأكيد','Onay için mevcut parolam','My current password to confirm'],
-  newpass:['كلمة المرور الجديدة (اتركها فارغة دون تغيير)','Yeni parola (değişmeyecekse boş bırakın)','New password (leave blank to keep)'],
-  changePass:['تغيير كلمة مروري','Parolamı değiştir','Change my password'],
-  permissions:['صلاحيات تنفيذ العمليات؛ العرض متاح لكل مستخدم مسجل','İşlem yetkileri; kayıtlı kullanıcılar verileri görüntüleyebilir','Action permissions; signed-in users can view records'],
-  clients:['إضافة وتعديل العملاء','Müşteri ekle/düzenle','Create/edit clients'],products:['إضافة وتعديل المنتجات','Ürün ekle/düzenle','Create/edit products'],
-  invoices:['إنشاء وتعديل وتسليم الفواتير','Fatura oluştur/düzenle/teslim','Create/edit/deliver invoices'],payments:['إضافة وتعديل الدفعات','Ödeme ekle/düzenle','Create/edit payments'],
-  delete:['السماح بالحذف ضمن الأقسام المسموحة','İzinli bölümlerde silme','Delete within allowed sections'],export:['طباعة ومشاركة PDF','PDF yazdır/paylaş','Print/share PDF'],settings:['تعديل إعدادات الشركة','Şirket ayarlarını düzenle','Edit company settings'],backup:['النسخ الاحتياطي والاستعادة','Yedekle ve geri yükle','Backup & restore'],
-  storage:['التخزين والذاكرة','Depolama ve bellek','Storage & memory'],persist:['طلب الاحتفاظ الدائم بالبيانات','Kalıcı depolama iste','Request persistent storage'],
-  compact:['تقليل تكرار الصور دون فقد الجودة','Kalite kaybı olmadan görsel tekrarını azalt','Deduplicate images without quality loss'],
-  storageNote:['السعة يحددها المتصفح ومساحة الجهاز، وليست غير محدودة. لا تمسح بيانات المتصفح، واحتفظ بنسخة احتياطية خارج الجهاز. التحسين لا يحذف سجلات أو يخفض جودة الصور.','Kapasite tarayıcı ve boş disk alanına bağlıdır; sınırsız değildir. Tarayıcı verilerini silmeyin ve cihaz dışında yedek tutun. Bu işlem kayıt silmez veya görsel kalitesini düşürmez.','Capacity depends on the browser and free device space; it is not unlimited. Do not clear browser data; keep an external backup. Optimization does not delete records or reduce image quality.'],
-  permanent:['التخزين الدائم مفعّل','Kalıcı depolama etkin','Persistent storage granted'],temporary:['لم يمنح المتصفح التخزين الدائم','Tarayıcı kalıcı depolama izni vermedi','Persistent storage not granted by the browser'],
-  localNote:['هذه حماية دخول محلية للبرنامج وصلاحيات داخل واجهته، وليست تشفيراً لقاعدة البيانات أو حماية من شخص يعدّل ملف HTML أو بيانات المتصفح. حسابات الحماية محفوظة في هذا المتصفح، وليست مزامنة بين الأجهزة. النسخ الاحتياطي العادي لا يتضمن حسابات الحماية.','Bu yerel uygulama kilidi ve arayüz yetkileridir; veritabanı şifrelemesi veya HTML/tarayıcı verilerini değiştiren kişiye karşı koruma değildir. Güvenlik hesapları bu tarayıcıdadır, cihazlar arasında eşitlenmez ve normal veri yedeğinde bulunmaz.','This is a local application lock and UI access control, not database encryption or protection against editing the HTML/browser data. Security accounts stay in this browser, are not synced between devices and are not included in ordinary data backups.'],
-  audit:['آخر أحداث الحماية','Son güvenlik olayları','Recent security events'],success:['تم الحفظ','Kaydedildi','Saved'],wrong:['كلمة المرور غير صحيحة أو الحساب غير مفعّل.','Parola yanlış veya hesap devre dışı.','Incorrect password or account disabled.'],
-  denied:['ليس لديك صلاحية لهذه العملية.','Bu işlem için yetkiniz yok.','You do not have permission for this action.'],
-  lastAdmin:['يجب إبقاء مدير مفعّل واحد على الأقل.','En az bir etkin yönetici kalmalıdır.','At least one enabled administrator must remain.'],
-  wait:['محاولات كثيرة. أعد المحاولة بعد','Çok fazla deneme. Şu kadar saniye sonra deneyin:','Too many attempts. Try again in'],seconds:['ثانية','saniye','seconds'],
-  failed:['تعذرت العملية. لم يتم فتح القفل.','İşlem başarısız. Kilit açılmadı.','Operation failed. The lock was not opened.'],
-  mismatch:['تحقق من الاسم وكلمتي المرور (8 أحرف على الأقل).','Adı ve parolaları kontrol edin (en az 8 karakter).','Check the name and matching passwords (at least 8 characters).'],
-  duplicate:['هذا الاسم مستخدم بالفعل.','Bu ad zaten kullanılıyor.','That user name is already in use.'],
-  deleteConfirm:['هل تريد حذف هذا المستخدم ووسائل دخوله؟','Bu kullanıcı ve giriş yöntemleri silinsin mi?','Delete this user and their sign-in methods?'],
-  disableConfirm:['تعطيل القفل يسمح بفتح البرنامج دون تسجيل دخول. متابعة؟','Kilidi kapatmak giriş yapmadan erişime izin verir. Devam?','Disabling the lock allows access without sign-in. Continue?'],
-  cryptofail:['هذا السياق لا يدعم التشفير المطلوب. افتح البرنامج من HTTPS أو متصفح حديث يدعم Web Crypto. لم يتم إنشاء كلمة مرور ضعيفة أو بديل غير آمن.','Gerekli kriptografi desteklenmiyor. HTTPS veya Web Crypto destekleyen güncel tarayıcı kullanın. Güvensiz alternatif oluşturulmadı.','Required cryptography is unavailable. Use HTTPS or a modern Web Crypto-compatible browser. No insecure fallback was created.'],
-  auto:['لغة البرنامج','Uygulama dili','Application language'],salutation:['صيغة الترحيب','Hitap','Greeting title'],sir:['سيد','Bay','Mr.'],madam:['سيدة','Bayan','Ms.'],none:['بدون لقب','Unvansız','No title'],
-  welcome:['مرحباً','Merhaba','Hello'],disabled:['غير مفعّل','Devre dışı','Disabled'],noDevice:['لم يتم ربط جهاز','Cihaz kayıtlı değil','No device credential'],deviceReady:['تم ربط وسيلة دخول الجهاز','Cihaz girişi kayıtlı','Device credential registered'],
-  help:['عند نسيان كلمة المرور استخدم وسيلة الجهاز المسجلة أو اطلب إعادة تعيينها من مدير آخر. لا توجد كلمة مرور خلفية.','Parolanızı unutursanız kayıtlı cihazı kullanın veya başka bir yöneticiden sıfırlamasını isteyin. Arka kapı parolası yoktur.','Forgotten password: use an enrolled device credential or ask another administrator to reset it. There is no backdoor password.'],
-  working:['جارٍ التنفيذ…','İşleniyor…','Working…'],checkDevice:['فحص دعم الجهاز','Cihaz desteğini kontrol et','Check device support'],testVoice:['تجربة الترحيب','Karşılamayı dene','Test greeting'],
-  voiceMissing:['قد لا يتوفر صوت لهذه اللغة على الجهاز. الترحيب المكتوب متاح دائماً.','Bu dilin sesi cihazda bulunmayabilir. Yazılı karşılama her zaman kullanılabilir.','A voice for this language may not be installed. The written greeting remains available.']
- };
-  Object.assign(WORDS,{
-  permissions:['تحديد العرض والعمليات لكل مستخدم','Kullanıcıya özel görüntüleme ve işlem izinleri','Per-user view and action permissions'],
-  pin:['رمز الدخول الرقمي PIN','Sayısal giriş PIN’i','Numeric sign-in PIN'],authType:['طريقة الدخول الأساسية','Ana giriş yöntemi','Primary sign-in method'],
-  pinHint:['رمز من 6 إلى 12 رقماً؛ الأفضل 8 أرقام أو أكثر. أدخله من لوحة البرنامج. الأصفار في البداية محفوظة.','6–12 rakam; 8 veya fazlası önerilir. Uygulama tuş takımını kullanın. Baştaki sıfırlar korunur.','6–12 digits; 8 or more recommended. Use the in-app keypad. Leading zeros are preserved.'],
-  pinError:['رمز الدخول يجب أن يكون من 6 إلى 12 رقماً ومتطابقاً مع التأكيد.','PIN 6–12 rakam olmalı ve doğrulamayla eşleşmelidir.','PIN must be 6–12 digits and match its confirmation.'],
-  authHint:['الحسابات القديمة تبقى بكلمات مرورها. يمكنك تحويل الحساب إلى رمز رقمي عند تعيين رمز جديد.','Eski parolalar geçerlidir. Yeni bir PIN belirleyerek giriş yöntemini değiştirebilirsiniz.','Existing passwords remain valid. Set a new PIN to change the sign-in method.'],
-  usersTab:['المستخدمون والصلاحيات','Kullanıcılar ve izinler','Users & permissions'],accountTab:['حسابي','Hesabım','My account'],policyTab:['سياسة الحماية','Güvenlik ilkesi','Security policy'],auditTab:['سجل الحماية','Güvenlik günlüğü','Security log'],storageTab:['التخزين','Depolama','Storage'],
-  dependencies:['تُربط الصلاحيات اللازمة تلقائياً. عرض الفواتير مستقل عن فتح قوائم العملاء والمنتجات؛ ويشمل بيانات وأسعار الفاتورة نفسها. تعديل الفاتورة ومعاينتها وطباعتها يتضمن عرض الدفعات. حذف الفاتورة يشمل دفعاتها لذلك يلزمه حذف الدفعات أيضاً. إلغاء صلاحية لازمة يلغي العمليات التابعة لها.','Gerekli izinler otomatik bağlanır. Fatura görüntüleme müşteri/ürün listelerinden bağımsızdır; faturanın kayıtlı verilerini ve fiyatlarını içerir. düzenleme/önizleme/yazdırma ödemeleri de içerir. Fatura silme, bağlı ödemeleri de siler ve ödeme silme izni gerektirir. Gerekli bir izni kaldırmak bağlı işlemleri kaldırır.','Dependencies are linked automatically. Invoice viewing is independent of opening client/product lists and includes the recorded data and prices within each invoice; editing/previewing/printing also includes payment data. Deleting an invoice also deletes its payments and requires payment-delete permission. Revoking a prerequisite revokes dependent actions.'],
-  preset:['تطبيق الصلاحيات الافتراضية للدور','Rol varsayılanlarını uygula','Apply role defaults'],selectAll:['منح كل صلاحيات الأعمال','Tüm iş izinlerini ver','Grant all business permissions'],selectNone:['إلغاء كل صلاحيات الأعمال','İş izinlerini kaldır','Revoke all business permissions'],
-  adminNote:['مدير النظام وحده يدير الحسابات وسياسة الحماية. صلاحياته كاملة وثابتة. الأدوار الأخرى قابلة للتخصيص، ولا تحصل على إدارة الحسابات.','Yalnız sistem yöneticisi hesapları ve güvenlik ilkesini yönetir. Diğer roller özelleştirilebilir; hesap yönetimine erişmez.','Only the system administrator manages accounts and security policy. Its permissions are fixed. Other roles are customizable and do not gain account administration.'],
-  saveEnable:['إنشاء المدير وتفعيل الحماية','Yöneticiyi oluştur ve korumayı aç','Create admin & enable protection'],
-  conflict:['تغيرت الحسابات في نسخة أخرى. أعد تسجيل الدخول ثم كرر التعديل؛ لم يتم استبدال التغييرات الأحدث.','Hesaplar başka sekmede değişti. Tekrar giriş yapın; daha yeni değişiklikler korunmuştur.','Accounts changed in another tab. Sign in again and retry; newer changes were not overwritten.'],
-  storeError:['تعذر حفظ الحساب. تحقق من إتاحة تخزين المتصفح والمساحة، وأغلق نسخ البرنامج الأخرى ثم أعد المحاولة. لم تُحذف بياناتك.','Hesap kaydedilemedi. Tarayıcı depolamasını ve boş alanı kontrol edin, diğer sekmeleri kapatıp tekrar deneyin. Veriler silinmedi.','Account could not be saved. Check browser storage and free space, close other copies and retry. No data was deleted.'],
-  nameError:['أدخل اسماً من حرفين إلى 80 حرفاً.','2–80 karakterlik ad girin.','Enter a name of 2–80 characters.'],
-  savedAdmin:['تم إنشاء المدير وحفظه وتفعيل الحماية. يمكنك الآن إضافة المستخدمين أو قفل البرنامج لتجربة الدخول.','Yönetici kaydedildi ve koruma açıldı. Kullanıcı ekleyebilir veya kilitleyip girişi deneyebilirsiniz.','Administrator saved and protection enabled. Add users or lock the app to test sign-in.'],
-  enabledAlways:['تسجيل الدخول إلزامي عند وجود حسابات. يمكنك ضبط القفل التلقائي أدناه.','Hesaplar varsa giriş zorunludur. Otomatik kilidi aşağıdan ayarlayın.','Sign-in is required while accounts exist. Automatic locking can be configured below.'],
-  fallbackNote:['وضع التوافق: حساب رمز الدخول يعمل محلياً حتى دون Web Crypto. استخدم HTTPS عند استضافة البرنامج؛ الاتصال HTTP لا يحمي الملف من التعديل أثناء النقل.','Uyumluluk modu: PIN hesaplama Web Crypto olmadan yerel çalışır. Yayında HTTPS kullanın; HTTP aktarımı korumaz.','Compatibility mode: local PIN hashing works without Web Crypto. Use HTTPS when hosting; HTTP does not protect the application in transit.'],
-  keypad:['لوحة الأرقام','Sayısal tuş takımı','Numeric keypad'],done:['تأكيد الرقم','Onayla','Confirm number'],clear:['مسح الكل','Temizle','Clear'],backspace:['حذف آخر رقم','Son rakamı sil','Backspace'],
-  currentUser:['المستخدم الحالي','Geçerli kullanıcı','Current user'],status:['الحالة','Durum','Status'],suspend:['إيقاف الحساب','Hesabı durdur','Suspend account'],activate:['تفعيل الحساب','Hesabı etkinleştir','Activate account'],
-  lastLogin:['آخر دخول','Son giriş','Last sign-in'],neverLogin:['لم يسجل دخولاً بعد','Henüz giriş yok','No sign-in yet'],count:['صلاحية','izin','permissions'],
-  searchUsers:['بحث بالاسم أو الدور…','Ad veya rol ara…','Search name or role…'],notFound:['لا يوجد مستخدم مطابق','Eşleşen kullanıcı yok','No matching users'],
-  customBadge:['مخصص','Özel','Customized'],resetAttempts:['إلغاء حظر المحاولات','Deneme engelini kaldır','Reset sign-in lockout'],
-  currentProtected:['لا يمكن حذف حسابك الحالي أو إيقافه. استخدم مديراً آخر لتنفيذ ذلك.','Geçerli hesabı silemez veya durduramazsınız. Başka yönetici kullanın.','You cannot delete or suspend the current account. Use another administrator.'],
-  failed:['لم تكتمل العملية. تحقق من الرسالة وحاول مجدداً.','İşlem tamamlanmadı. Mesajı kontrol edip tekrar deneyin.','Operation did not complete. Check the message and retry.'],
-  pinLogin:['دخول بالرمز الرقمي','PIN ile giriş','Sign in with PIN'],viewOwn:['صفحتك الشخصية متاحة دائماً؛ أقسام الأعمال حسب صلاحياتك.','Kişisel sayfanız her zaman açıktır; iş bölümleri izinlere bağlıdır.','Your personal page is always available; business sections follow your permissions.'],
-  securityVersion:['إدارة الحماية • الإصدار R3','Güvenlik yönetimi • R3','Security administration • R3'],confirmAction:['تأكيد العملية','İşlemi onayla','Confirm action']
- });
- let pendingSecurityOpen=false,secTab='users',padTarget=null,padDraft='',uiRAF=0,signalRevision=0;
- const digitString=v=>String(v||'').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776));
- const authValue=(value,type)=>type==='pin'?digitString(value):value;
- const userType=u=>u?.authType==='pin'?'pin':'password';
- function secretField(id,label,type='pin',value=''){
-  return `<label class="wf-sec-field"><span>${esc(label)}</span><span class="wf-secret-wrap"><input id="${id}" class="fc" type="password" value="${esc(value)}" maxlength="${type==='pin'?12:256}" autocomplete="off" ${type==='pin'?'readonly inputmode="none" data-wf-pad="1"':'autocomplete="current-password"'} aria-label="${esc(label)}"><button type="button" class="wf-pad-open" data-pad-target="${id}" title="${esc(tx('keypad'))}" aria-label="${esc(tx('keypad'))}">⌨</button></span></label>`;
- }
- function setAuthFields(prefix,type){
-  const ids=prefix==='wfUser'?['wfUserPassword','wfUserConfirm']:['wfOwnNewPassword','wfOwnNewConfirm'];
-  for(const id of ids){const input=el(id);if(!input)continue;input.value='';input.readOnly=type==='pin';input.inputMode=type==='pin'?'none':'text';input.maxLength=type==='pin'?12:256;input.toggleAttribute('data-wf-pad',type==='pin');const title=tx(id.endsWith('Confirm')?'confirm':type==='pin'?'pin':'password');input.setAttribute('aria-label',title);const label=input.closest('label')?.querySelector(':scope > span');if(label)label.textContent=title;}
-  const hint=el(prefix+'AuthHint');if(hint)hint.textContent=tx(type==='pin'?'pinHint':'minpass');
- }
- function openPad(target){
-  if(busy||!target||target.disabled)return;closePad(false);padTarget=target;padDraft=target.value;
-  const host=locked?el('wfLockOverlay'):el('wfSecurityBody'),box=document.createElement('div');box.id='wfKeypad';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-label',tx('keypad'));
-  box.innerHTML=`<div class="wf-pad-card"><div class="wf-pad-top"><strong>${esc(tx('keypad'))}</strong><button type="button" data-pad="cancel" aria-label="${esc(tx('cancel'))}">✕</button></div><p class="wf-sec-note">${esc(target.closest('label')?.querySelector('span')?.textContent||tx('pin'))}</p><div id="wfPadDisplay" aria-live="polite" dir="ltr"></div><div class="wf-pad-keys" dir="ltr">${['1','2','3','4','5','6','7','8','9','clear','0','back'].map(k=>`<button type="button" data-pad="${k}" aria-label="${esc(k==='clear'?tx('clear'):k==='back'?tx('backspace'):k)}">${k==='clear'?'C':k==='back'?'⌫':k}</button>`).join('')}</div><button type="button" class="btn btn-p w100" data-pad="done">${esc(tx('done'))}</button><button type="button" class="btn btn-s w100" data-pad="cancel">${esc(tx('cancel'))}</button></div>`;
-  host.append(box);updatePad();box.querySelector('[data-pad="1"]').focus();
- }
- function updatePad(){if(el('wfPadDisplay'))el('wfPadDisplay').textContent=padDraft?'●'.repeat(padDraft.length):'—';}
- function closePad(commit=false){if(commit&&padTarget?.isConnected){padTarget.value=padDraft;padTarget.dispatchEvent(new Event('input',{bubbles:true}));padTarget.dispatchEvent(new Event('change',{bubbles:true}));}el('wfKeypad')?.remove();padTarget=null;padDraft='';}
- function padKey(k){if(k==='done'){closePad(true);return}if(k==='cancel'){closePad(false);return}if(k==='clear')padDraft='';else if(k==='back')padDraft=padDraft.slice(0,-1);else if(/^\d$/.test(k)&&padDraft.length<12)padDraft+=k;updatePad();}
- function getFormPermissions(){return Object.fromEntries(WFACL.keys.map(k=>[k,checked('wfPerm-'+k)]));}
- function permissionMatrix(p,admin=false){return Object.entries(WFACL.groups).map(([m,acts])=>`<div class="wf-permission-row"><strong>${esc(WFACL.label(m))}</strong><div>${acts.map(a=>`<label class="wf-permission-cell"><input type="checkbox" id="wfPerm-${m+'.'+a}" data-permission="${m+'.'+a}" ${p[m+'.'+a]?'checked':''} ${admin?'disabled':''}><span>${esc(WFACL.label(m==='prices'&&a==='view'?'catalogView':a))}</span></label>`).join('')}</div></div>`).join('');}
- function paintPermissions(p){const admin=val('wfUserRole')==='admin';for(const k of WFACL.keys){const i=el('wfPerm-'+k);if(i){i.checked=admin||p[k]===true;i.disabled=admin;}}updatePermCount();}
- function updatePermCount(){if(el('wfPermCount'))el('wfPermCount').textContent=Object.values(getFormPermissions()).filter(Boolean).length+' / '+WFACL.keys.length+' '+tx('count');}
- function searchUsers(){const q=val('wfUserSearch').trim().toLocaleLowerCase();let count=0;el('wfUsersList')?.querySelectorAll('[data-user-search]').forEach(row=>{row.hidden=q&&!row.dataset.userSearch.includes(q);if(!row.hidden)count++;});if(el('wfUserEmpty'))el('wfUserEmpty').hidden=count!==0;}
- function homePage(){return ['dashboard','invoices','products','companies','security'].find(id=>pageAllowed(id))||'security';}
- function pageAllowed(id){
-  if(!cfg||locked)return false;if(!cfg.users.length)return true;
-  if(id==='security')return !!current?.active;
-  const map={dashboard:'dashboard.view',companies:'clients.view',products:'products.view',invoices:'invoices.view','select-client-type':'clients.create','add-company':S.editCoId?'clients.edit':'clients.create','add-product':S.editPrId?'products.edit':'products.create','select-invoice-type':'invoices.create','create-invoice':S.editInvId?'invoices.edit':'invoices.create','payment-management':'payments.view','quick-barcode':'barcode.use',settings:'settings.view'};
-  return !!map[id]&&can(map[id]);
- }
- function publishAccess(){document.documentElement.classList.toggle('wf-no-barcode',!can('barcode.use')||!can('prices.view'));document.documentElement.classList.toggle('wf-no-prices',!can('prices.view'));document.documentElement.classList.toggle('wf-no-payments',!can('payments.view'));document.documentElement.classList.toggle('wf-no-invoices',!can('invoices.view'));document.documentElement.classList.toggle('wf-no-reports',!can('reports.view'));document.documentElement.classList.toggle('wf-no-price-edit',!can('prices.edit'));document.documentElement.classList.toggle('wf-no-payment-create',!can('payments.create'));if(window.WFApplyAccess)WFApplyAccess();}
- function requireActive(){return !!current?.active&&!locked;}
- function changeSummary(){if(val('wfUserRole')!=='admin')paintPermissions(WFACL.preset(val('wfUserRole')));else paintPermissions(WFACL.preset('admin'));}
- function safeSaveError(e){return ['QuotaExceededError','AbortError','InvalidStateError','UnknownError'].includes(e?.name)?tx('storeError'):e?.message||tx('failed');}
- async function refreshConfig(){
-  if(!secdb||!cfg||busy)return;
-  try{const next=await load();if(!next||next.revision===cfg.revision)return;validate(next);next.users.forEach(WFACL.migrate);if(next.users.length)next.enabled=true;cfg=next;lock();}catch(e){if(cfg.users.length)lock();setMessage(tx('storeError'),true);}
- }
-
- function auditLabel(event){
-  const labels={
-   'administrator:created':['إنشاء حساب المدير','Yönetici oluşturuldu','Administrator created'],
-   'user:created':['إضافة مستخدم','Kullanıcı eklendi','User added'],
-   'user:updated':['تعديل مستخدم أو صلاحياته','Kullanıcı / izinler güncellendi','User or permissions updated'],
-   'user:deleted':['حذف مستخدم','Kullanıcı silindi','User removed'],
-   'user:enabled':['تفعيل حساب','Hesap etkinleştirildi','Account activated'],
-   'user:suspended':['إيقاف حساب','Hesap durduruldu','Account suspended'],
-   'user:unblocked':['إلغاء حظر المحاولات','Giriş engeli kaldırıldı','Sign-in lockout reset'],
-   'policy:updated':['تعديل سياسة الحماية','Güvenlik ilkesi değişti','Security policy updated'],
-   'password:changed':['تغيير رمز أو كلمة الدخول','Giriş sırrı değiştirildi','Sign-in secret changed'],
-   'device:registered':['تسجيل مصادقة الجهاز','Cihaz doğrulaması kaydedildi','Device authentication registered'],
-   'device:removed':['إزالة مصادقة الجهاز','Cihaz doğrulaması kaldırıldı','Device authentication removed'],
-   'login:password':['دخول برمز أو كلمة مرور','PIN / parola ile giriş','PIN / password sign-in'],
-   'login:device':['دخول بمصادقة الجهاز','Cihaz ile giriş','Device-authenticated sign-in'],
-   'login:denied':['محاولة دخول مرفوضة','Giriş reddedildi','Sign-in denied']
-  };return labels[event]?.[({ar:0,tr:1,en:2})[lang()]||0]||event;
- }
-
- let cfg=null,secdb=null,current=null,locked=true,loaded=false,busy=false,authController=null,epoch=0,lastActivity=Date.now(),lastHidden=0;
- let resolveReady=null,readyPromise=null,policyTimer=0,editing=null,deviceSupported=false,channel=null,previousUser=null;
- const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- function lang(){try{return ['ar','tr','en'].includes(S.lang)?S.lang:'ar';}catch(_){return 'ar';}}
- const idx=()=>({ar:0,tr:1,en:2}[lang()]||0);
- function tx(k){return WORDS[k]?.[idx()]||k;}
- const el=id=>document.getElementById(id);
- const val=id=>el(id)?.value||'';
- const checked=id=>!!el(id)?.checked;
- function setMessage(message,error=false){for(const id of ['wfSecMessage','wfLockMessage','wfEditorMessage'])if(el(id)){el(id).textContent=message;el(id).classList.toggle('wf-error',error);}}
- function options(values,selected){return values.map(([v,t])=>`<option value="${esc(v)}"${v===selected?' selected':''}>${esc(t)}</option>`).join('');}
- function field(id,label,type='text',value='',extra=''){return `<label class="wf-sec-field"><span>${esc(label)}</span><input class="fc" id="${id}" type="${type}" value="${esc(value)}" ${extra}></label>`;}
- function button(action,label,style='btn-s',extra=''){return `<button type="button" class="btn ${style}" data-wf-action="${action}" ${extra}>${esc(label)}</button>`;}
- function note(key){return `<p class="wf-sec-note">${esc(tx(key))}</p>`;}
- function isAdmin(){return !!cfg&&(!cfg.users.length||(!locked&&current?.role==='admin'&&current.active));}
- function can(permission){
- if(!cfg||locked)return false;if(!cfg.users.length)return true;if(!current?.active)return false;if(current.role==='admin')return true;
- const alias={clients:['clients.create','clients.edit'],products:['products.create','products.edit'],invoices:['invoices.create','invoices.edit'],payments:['payments.create','payments.delete'],delete:['clients.delete','products.delete','invoices.delete','payments.delete'],export:['invoices.print','invoices.export','invoices.share'],settings:['settings.edit'],backup:['backup.export','backup.import']};
- if(alias[permission])return alias[permission].some(p=>can(p));
- if(!WFACL.keys.includes(permission)||current.permissions?.[permission]!==true)return false;
- return (WFACL.deps[permission]||[]).every(p=>can(p));
-}
- function requirePermission(permission){if(can(permission))return true;setMessage(tx('denied'));if(typeof showToast==='function')showToast(tx('denied'),'er');return false;}
- function storeAllowed(store,id,remove=false,value=null){
- if(store==='settings'&&id==='usdTry')return !!cfg; // Harmless exchange-rate cache, not a company/account setting.
- if(!cfg||locked)return false;if(!cfg.users.length||isAdmin())return true;
- if(store==='settings'&&id==='wf_qbl_cart')return can('barcode.use')||can('invoices.create')||can('invoices.edit');
- const module={companies:'clients',products:'products',invoices:'invoices',payments:'payments'}[store];
- if(module){
-  const existing=(S[store]||[]).some(x=>x.id===id);
-  if(remove)return can(module+'.delete');
-  if(store==='invoices'&&existing&&!can('invoices.edit')){
-   const old=(S.invoices||[]).find(x=>x.id===id),keys=Object.keys(value||{}).filter(k=>JSON.stringify(value[k])!==JSON.stringify(old?.[k]));
-   if(value&&can('invoices.deliver')&&keys.every(k=>['delivered','deliveredAt','archived'].includes(k)))return true;
-   if(value&&(can('payments.create')||can('payments.delete'))&&keys.every(k=>['totalPaidUSD','remainingUSD','payments'].includes(k)))return true;
-  }
-  if(store==='payments'){
-   const old=S.payments.find(p=>p.id===id);
-   // Re-saving an unchanged payment snapshot while editing an invoice does not create a payment.
-   if(existing&&value&&can('invoices.edit')&&JSON.stringify({...old,invoiceId:old.invoiceId})===JSON.stringify(value))return true;
-   return can('payments.create')&&!remove;
-  }
-  return can(module+(existing?'.edit':'.create'));
- }
- if(store==='settings'){
-  if(can('settings.edit'))return true;
-  if(id==='main'&&value&&can('invoices.create')){
-   const keys=Object.keys(value).filter(k=>k!=='id'&&JSON.stringify(value[k])!==JSON.stringify(S.settings[k]));
-   return keys.every(k=>['nextNoExt','nextNoRet','nextNoWhl'].includes(k));
-  }
- }
- return false;
-}
- function bytes(a){return a instanceof Uint8Array?a:new Uint8Array(a);}
- function b64(a){let s='';for(const n of bytes(a))s+=String.fromCharCode(n);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
- function unb64(s){const str=atob(s.replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(str,c=>c.charCodeAt(0));}
- function random(n=32){if(!globalThis.crypto?.getRandomValues)throw new Error(tx('cryptofail'));return crypto.getRandomValues(new Uint8Array(n));}
- function equal(a,b){a=bytes(a);b=bytes(b);let d=a.length^b.length;for(let i=0;i<Math.max(a.length,b.length);i++)d|=(a[i]||0)^(b[i]||0);return d===0;}
- function cryptography(){if(!crypto?.subtle)throw new Error(tx('cryptofail'));}
- async function passwordHash(password,salt,iterations=600000){
- if(!Number.isSafeInteger(iterations)||iterations<100000||iterations>2000000)throw new Error(tx('cryptofail'));
- if(globalThis.crypto?.subtle){try{const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveBits']);return b64(await crypto.subtle.deriveBits({name:'PBKDF2',salt:unb64(salt),iterations,hash:'SHA-256'},k,256));}catch(e){if(!['NotSupportedError','OperationError'].includes(e.name))throw e;}}
- return WFPinCrypto.hash(password,salt,iterations);
-}
- async function makePassword(password){const salt=b64(random(16));return {salt,iterations:600000,hash:await passwordHash(password,salt)};}
- async function verifyPassword(user,password){if(!user?.password||!user.active||password.length>256)return false;return equal(unb64(await passwordHash(authValue(password,userType(user)),user.password.salt,user.password.iterations)),unb64(user.password.hash));}
- function validate(c){
- if(!c||![1,2].includes(c.version)||!Array.isArray(c.users)||!Array.isArray(c.audit))throw new Error('Invalid security database');
- const ids=new Set(),names=new Set();
- for(const u of c.users){if(!u.id||ids.has(u.id)||!u.name||names.has(u.name.trim().toLocaleLowerCase())||!WFACL.roles.concat('staff').includes(u.role)||!u.password?.hash||!u.password?.salt||!Number.isSafeInteger(u.password.iterations)||u.password.iterations<100000||u.password.iterations>2000000||unb64(u.password.hash).length!==32||unb64(u.password.salt).length<16)throw new Error('Invalid user record');ids.add(u.id);names.add(u.name.trim().toLocaleLowerCase());}
- if(c.users.length&&!c.users.some(u=>u.role==='admin'&&u.active))throw new Error(tx('lastAdmin'));
- if(c.enabled&&!c.users.length)throw new Error(tx('lastAdmin'));
-}
- function copy(){return JSON.parse(JSON.stringify(cfg));}
- function audit(c,event,user){c.audit.unshift({at:new Date().toISOString(),event,user:user?.name||'',actor:current?.name||''});c.audit=c.audit.slice(0,200);}
- async function persist(next,broadcast=true){
- next.version=2;next.revision=(cfg.revision||0)+1;validate(next);
- let conflict=false;
- try{await new Promise((resolve,reject)=>{
-  const t=secdb.transaction('state','readwrite'),os=t.objectStore('state'),r=os.get('main');
-  t.oncomplete=resolve;t.onabort=()=>reject(conflict?new Error(tx('conflict')):t.error||new DOMException('Account save aborted','AbortError'));t.onerror=()=>{};
-  r.onsuccess=()=>{if((r.result?.revision||0)!==(cfg.revision||0)){conflict=true;t.abort();return;}os.put({id:'main',...next});};
- });}catch(e){if(conflict){const latest=await load();if(latest){latest.users.forEach(WFACL.migrate);validate(latest);cfg=latest;if(cfg.users.length)lock();}}throw e;}
- cfg=next;if(current)current=cfg.users.find(u=>u.id===current.id)||null;
- if(broadcast){channel?.postMessage({changed:true,revision:cfg.revision});try{localStorage.setItem('wf_security_revision',String(Date.now())+':'+cfg.revision);}catch(_){}}
-}
- async function load(){return new Promise((resolve,reject)=>{const r=secdb.transaction('state').objectStore('state').get('main');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
- function conceal(on){
-  document.documentElement.classList.toggle('wf-sec-locked',on);
-  document.querySelectorAll('body > *').forEach(n=>{if(n.id==='wfLockOverlay'||n.tagName==='SCRIPT'||n.tagName==='STYLE')return;if(on){if(!n.hasAttribute('data-wf-inert'))n.setAttribute('data-wf-inert',n.inert?'1':'0');n.inert=true;}else if(n.hasAttribute('data-wf-inert')){n.inert=n.getAttribute('data-wf-inert')==='1';n.removeAttribute('data-wf-inert');}});
-  el('wfLockOverlay').hidden=!on;
- }
- function greeting(u){
-  const l=u.lang==='auto'?lang():u.lang;
-  const name=u.name;
-  if(l==='ar')return `مرحباً ${u.salutation==='madam'?'سيدة ':u.salutation==='sir'?'سيد ':''}${name}`;
-  if(l==='tr')return `Merhaba ${u.salutation==='none'?'':'Sayın '}${name}`;
-  return `Hello ${u.salutation==='madam'?'Ms. ':u.salutation==='sir'?'Mr. ':''}${name}`;
- }
- function speak(u,force=false){
-  if(!u)return;
-  const text=greeting(u);setMessage(text);
-  if(typeof showToast==='function'&&loaded)showToast(esc(text),'ok');
-  if(!cfg.voice&&!force)return;
-  if(!('speechSynthesis'in window)){setMessage(tx('voiceMissing'));return;}
-  const l=u.lang==='auto'?lang():u.lang;
-  speechSynthesis.cancel();const utter=new SpeechSynthesisUtterance(text);utter.lang=({ar:'ar-SA',tr:'tr-TR',en:'en-US'})[l]||l;utter.rate=0.95;
-  const voices=speechSynthesis.getVoices();const voice=voices.find(v=>v.lang.toLowerCase().startsWith(l));if(voice)utter.voice=voice;
-  utter.onerror=()=>{if(!locked&&force)setMessage(tx('voiceMissing'));};speechSynthesis.speak(utter);
- }
- function renderLock(){
- el('wfLockOverlay').dir=lang()==='ar'?'rtl':'ltr';const chosen=val('wfLockUser'),users=(cfg?.users||[]).filter(u=>u.active),selected=users.find(u=>u.id===chosen)||users[0],type=userType(selected);
- el('wfLockContent').innerHTML=`<div class="wf-sec-lock-icon" aria-hidden="true">🔒</div><h1>${esc(tx('locked'))}</h1><p class="wf-sec-note">WOW Furniture · R3</p><form id="wfLoginForm" novalidate><label class="wf-sec-field"><span>${esc(tx('name'))}</span><select class="fc" id="wfLockUser" autocomplete="username">${options(users.map(u=>[u.id,u.name+' — '+WFACL.label(u.role)]),selected?.id)}</select></label>${secretField('wfLockPassword',tx(type==='pin'?'pin':'password'),type)}<button class="btn btn-p w100" type="submit">${esc(tx(type==='pin'?'pinLogin':'unlock'))}</button></form>${button('unlockDevice','🔑 '+tx('device'),'btn-s','id="wfDeviceUnlock"')}<div id="wfLockMessage" class="wf-sec-message" role="status" aria-live="polite"></div><div class="wf-sec-language">${['ar','tr','en'].map(l=>button('lockLang',l==='ar'?'العربية':l==='tr'?'Türkçe':'English','btn-s btn-sm',`data-lang="${l}"`)).join('')}</div><details><summary>${esc(tx('help'))}</summary>${note('deviceNote')}${note('sharedNote')}</details>`;
- refreshDeviceButton();
-}
- function refreshDeviceButton(){const u=cfg?.users.find(x=>x.id===val('wfLockUser'));const b=el('wfDeviceUnlock');if(b){b.disabled=busy||!u?.credentials?.length||!deviceSupported;b.title=!deviceSupported?tx('unsupported'):!u?.credentials?.length?tx('noDevice'):'';}}
- async function checkDevice(){
-  deviceSupported=false;
-  try{deviceSupported=!!(window.isSecureContext&&/^https?:$/.test(location.protocol)&&window.PublicKeyCredential&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable());}catch(_){}
-  refreshDeviceButton();const b=el('wfEnrollDevice');if(b)b.disabled=!deviceSupported||busy;
-  return deviceSupported;
- }
- function lock(){
- if(!cfg?.users.length)return;closePad(false);epoch++;authController?.abort();authController=null;locked=true;previousUser=current?.id||previousUser;current=null;
- try{wfStopTransientWork();closeShareMenu();closeImgViewer();closeDM();closeDeliverModal();invalidateInvoicePdfFile();_lastPreviewInv=null;}catch(_){}
- for(const id of ['invoicePaperWrap','print-area','wfSecEditor'])el(id)?.replaceChildren();
- document.querySelectorAll('.modal-ov.open,.delete-modal-ov.open,.deliver-modal-ov.open').forEach(n=>n.classList.remove('open'));
- clearTimeout(policyTimer);conceal(true);renderLock();if(el('wfOwnPassword'))el('wfOwnPassword').value='';publishAccess();
-}
- function timeoutCheck(){
-  clearTimeout(policyTimer);if(!cfg?.enabled||locked||!current)return;
-  const limit=Number(cfg.idleMinutes)||0;
-  if(limit&&Date.now()-lastActivity>=limit*60000){lock();return;}
-  policyTimer=setTimeout(timeoutCheck,Math.min(10000,limit?Math.max(1000,limit*60000-(Date.now()-lastActivity)):10000));
- }
- async function accepted(user,method,ticket=epoch){
- if(ticket!==epoch)throw new Error(tx('failed'));const next=copy(),u=next.users.find(x=>x.id===user.id);if(!u?.active)throw new Error(tx('wrong'));
- u.failures=0;u.blockedUntil=0;u.lastLoginAt=new Date().toISOString();audit(next,'login:'+method,u);await persist(next,false);if(ticket!==epoch)throw new Error(tx('failed'));
- current=cfg.users.find(x=>x.id===u.id);locked=false;lastActivity=Date.now();
- const different=previousUser&&previousUser!==current.id;
- if(different){S.invItems=[];S.editInvId=null;S.currentInvPayments=[];S.editCoId=null;S.editPrId=null;S.currentPayInvId=null;QBL_CART.items=[];try{resetCoForm();resetPrForm();qblUpdateCartUI();}catch(_){}for(const id of ['coGrid','prGrid','invListContainer','invoicePaperWrap','dashRecentInv'])el(id)?.replaceChildren();}
- const chosenLang=current.lang==='auto'?lang():current.lang;try{localStorage.setItem('wf_lang',chosenLang);}catch(_){}S.lang=chosenLang;
- publishAccess();conceal(false);document.documentElement.classList.remove('wf-sec-pending');
- if(resolveReady){const done=resolveReady;resolveReady=null;done();}
- if(loaded){setLang(chosenLang);showPage(different||!pageAllowed(getCurrentPage())?homePage():getCurrentPage());renderPage();speak(current);}
- previousUser=current.id;el('wfLockContent').replaceChildren();timeoutCheck();
-}
- function checkBlocked(u){const seconds=Math.ceil(((u?.blockedUntil||0)-Date.now())/1000);if(seconds>0)throw new Error(tx('wait')+' '+seconds+' '+tx('seconds'));}
- async function badPassword(u){
-  if(u){const n=copy(),v=n.users.find(x=>x.id===u.id);v.failures=(v.failures||0)+1;if(v.failures>=5)v.blockedUntil=Date.now()+Math.min(300,30*2**Math.min(4,v.failures-5))*1000;audit(n,'login:denied',v);await persist(n,false);}
-  throw new Error(tx('wrong'));
- }
- async function loginPassword(){const u=cfg.users.find(x=>x.id===val('wfLockUser'));checkBlocked(u);const password=val('wfLockPassword'),ticket=epoch;
-  if(!await verifyPassword(u,password))return badPassword(u);if(ticket!==epoch)throw new Error(tx('failed'));await accepted(u,'password',ticket);
- }
- function concat(a,b){a=bytes(a);b=bytes(b);const out=new Uint8Array(a.length+b.length);out.set(a);out.set(b,a.length);return out;}
- function derToRaw(signature){
-  const d=bytes(signature);let i=0;
-  if(d[i++]!==0x30||d[i++]!==d.length-2||d[i++]!==2)throw new Error('Invalid authenticator signature');
-  const r=d.slice(i+1,i+1+d[i]);i+=1+d[i];if(d[i++]!==2)throw new Error('Invalid authenticator signature');
-  const s=d.slice(i+1,i+1+d[i]);i+=1+d[i];if(i!==d.length)throw new Error('Invalid authenticator signature');
-  const norm=x=>{if(x.length===33&&x[0]===0)x=x.slice(1);if(!x.length||x.length>32)throw new Error('Invalid ECDSA scalar');const y=new Uint8Array(32);y.set(x,32-x.length);return y;};
-  return concat(norm(r),norm(s));
- }
- async function validateResponse(response,challenge,type,rp){
-  const c=JSON.parse(new TextDecoder().decode(response.clientDataJSON));
-  if(c.type!==type||c.challenge!==b64(challenge)||c.origin!==location.origin||c.crossOrigin===true)throw new Error('Authenticator context mismatch');
-  const data=bytes(type==='webauthn.create'?response.getAuthenticatorData():response.authenticatorData);
-  if(data.length<37||!(data[32]&1)||!(data[32]&4))throw new Error('Verified user presence is required');
-  const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(rp));if(!equal(data.slice(0,32),hash))throw new Error('Authenticator RP mismatch');
-  return data;
- }
- async function unlockDevice(){
-  cryptography();const u=cfg.users.find(x=>x.id===val('wfLockUser'));checkBlocked(u);
-  if(!deviceSupported||!u?.active||!u.credentials?.length)throw new Error(tx('unsupported'));
-  const challenge=random(),ticket=epoch;authController=new AbortController();
-  const result=await navigator.credentials.get({publicKey:{challenge,rpId:location.hostname,userVerification:'required',timeout:60000,allowCredentials:u.credentials.filter(c=>c.origin===location.origin).map(c=>({type:'public-key',id:unb64(c.id),transports:c.transports||['internal']}))},signal:authController.signal});
-  authController=null;if(!result||ticket!==epoch)throw new Error(tx('failed'));
-  const c=u.credentials.find(c=>c.id===b64(result.rawId)&&c.origin===location.origin);if(!c)throw new Error('Unknown credential');
-  if(result.response.userHandle&&!equal(result.response.userHandle,unb64(u.handle)))throw new Error('Wrong user handle');
-  const data=await validateResponse(result.response,challenge,'webauthn.get',c.rpId);
-  const key=await crypto.subtle.importKey('spki',unb64(c.publicKey),{name:'ECDSA',namedCurve:'P-256'},false,['verify']);
-  const digest=await crypto.subtle.digest('SHA-256',result.response.clientDataJSON);
-  if(!await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},key,derToRaw(result.response.signature),concat(data,digest)))throw new Error('Invalid authenticator signature');
-  const count=new DataView(data.buffer,data.byteOffset,data.byteLength).getUint32(33,false);
-  if(count&&c.counter&&count<=c.counter)throw new Error('Authenticator counter did not advance');
-  if(ticket!==epoch)throw new Error(tx('failed'));
-  const n=copy();n.users.find(x=>x.id===u.id).credentials.find(x=>x.id===c.id).counter=count;await persist(n,false);
-  await accepted(u,'device',ticket);
- }
- async function confirmSelf(){
-  if(!current||locked)throw new Error(tx('denied'));const user=current,ticket=epoch;checkBlocked(user);
-  const ok=await verifyPassword(user,val('wfOwnPassword'));if(ticket!==epoch||locked||current?.id!==user.id)throw new Error(tx('denied'));
-  if(!ok)return badPassword(user);return user;
- }
- async function enroll(){
-  const user=await confirmSelf(),ticket=epoch;
-  if(!checked('wfDeviceConsent'))throw new Error(tx('consent'));
-  if(!await checkDevice())throw new Error(tx('unsupported'));
-  if(ticket!==epoch||locked)throw new Error(tx('denied'));
-  const challenge=random();authController=new AbortController();
-  const credential=await navigator.credentials.create({publicKey:{challenge,rp:{name:'WOW Furniture',id:location.hostname},user:{id:unb64(user.handle),name:user.name,displayName:user.name},pubKeyCredParams:[{type:'public-key',alg:-7}],authenticatorSelection:{authenticatorAttachment:'platform',residentKey:'preferred',userVerification:'required'},excludeCredentials:(user.credentials||[]).map(c=>({type:'public-key',id:unb64(c.id)})),attestation:'none',timeout:60000},signal:authController.signal});
-  authController=null;if(!credential||ticket!==epoch||locked)throw new Error(tx('failed'));
-  if(typeof credential.response.getPublicKey!=='function'||credential.response.getPublicKeyAlgorithm()!==-7)throw new Error(tx('unsupported'));
-  const data=await validateResponse(credential.response,challenge,'webauthn.create',location.hostname),pk=credential.response.getPublicKey();if(!pk)throw new Error(tx('unsupported'));
-  await crypto.subtle.importKey('spki',pk,{name:'ECDSA',namedCurve:'P-256'},false,['verify']);
-  if(ticket!==epoch||locked||current?.id!==user.id)throw new Error(tx('denied'));
-  const n=copy(),u=n.users.find(x=>x.id===user.id);u.credentials=u.credentials||[];
-  u.credentials.push({id:b64(credential.rawId),publicKey:b64(pk),rpId:location.hostname,origin:location.origin,transports:credential.response.getTransports?.()||['internal'],counter:new DataView(data.buffer,data.byteOffset,data.byteLength).getUint32(33,false),createdAt:new Date().toISOString()});
-  audit(n,'device:registered',u);await persist(n);renderPage();setMessage(tx('deviceReady'));
- }
- const perms=WFACL.keys;
- function editor(user=null,setup=false){
- if(!isAdmin())throw new Error(tx('denied'));editing=user?.id||null;const role=setup?'admin':user?.role||'sales',type=user?userType(user):'pin';const p=role==='admin'?WFACL.preset('admin'):user?.permissions||WFACL.preset(role);
- el('wfSecEditor').innerHTML=`<div class="card wf-editor-card"><div class="wf-sec-heading"><h2>${esc(setup?tx('saveEnable'):user?tx('edit')+' · '+user.name:tx('add'))}</h2><span class="wf-sec-tag">${esc(WFACL.label(role))}</span></div><form id="wfUserForm" novalidate><div class="wf-sec-grid">${field('wfUserName',tx('name'),'text',user?.name||'','maxlength="80" autocomplete="off"')}
- <label class="wf-sec-field"><span>${esc(tx('role'))}</span><select class="fc" id="wfUserRole" ${setup?'disabled':''}>${options(WFACL.roles.concat(user?.role==='staff'?['staff']:[]).map(r=>[r,WFACL.label(r)]),role)}</select></label>
- <label class="wf-sec-field"><span>${esc(tx('language'))}</span><select class="fc" id="wfUserLang">${options([['auto',tx('auto')],['ar','العربية'],['tr','Türkçe'],['en','English']],user?.lang||'auto')}</select></label>
- <label class="wf-sec-field"><span>${esc(tx('salutation'))}</span><select class="fc" id="wfUserSalutation">${options(['sir','madam','none'].map(v=>[v,tx(v)]),user?.salutation||'sir')}</select></label></div>
- <label class="wf-sec-field"><span>${esc(tx('authType'))}</span><select class="fc" id="wfUserAuthType">${options([['pin',tx('pin')],['password',tx('password')]],type)}</select></label><div class="wf-sec-grid">${secretField('wfUserPassword',user?tx('newpass'):tx(type==='pin'?'pin':'password'),type)}${secretField('wfUserConfirm',tx('confirm'),type)}</div><p id="wfUserAuthHint" class="wf-sec-note">${esc(tx(type==='pin'?'pinHint':'minpass'))}</p>${user?note('authHint'):''}
- <label class="wf-sec-check"><input type="checkbox" id="wfUserActive" ${user?.active===false?'':'checked'} ${setup?'disabled':''}>${esc(tx('active'))}</label>
- <div class="wf-sec-heading"><h2>${esc(tx('permissions'))}</h2><span id="wfPermCount" class="wf-sec-tag"></span></div>${note('adminNote')}${note('dependencies')}
- <div class="wf-sec-actions wf-perm-tools">${button('roleDefaults',tx('preset'))}${button('allPermissions',tx('selectAll'))}${button('noPermissions',tx('selectNone'))}</div>
- <div id="wfPermissionFields">${permissionMatrix(p,role==='admin')}</div>
- <div id="wfEditorMessage" class="wf-sec-message" role="status" aria-live="polite"></div><div class="wf-editor-footer"><button type="submit" class="btn btn-p">💾 ${esc(setup?tx('saveEnable'):tx('save'))}</button>${setup?'':button('cancelEdit',tx('cancel'))}</div></form></div>`;
- roleFields(false);
-}
- function roleFields(reset=true){if(reset)changeSummary();const admin=val('wfUserRole')==='admin';el('wfSecEditor')?.querySelectorAll('.wf-perm-tools button').forEach(b=>b.disabled=admin);updatePermCount();}
- function renderPage(){
- const root=el('wfSecurityBody');if(!root||!cfg)return;const admin=isAdmin(),setup=!cfg.users.length;if(!admin&&secTab!=='account')secTab='account';
- const tabs=admin?['users','account','policy','audit','storage']:['account'];
- root.innerHTML=`<div class="wf-sec-hero"><div><p>${esc(tx('securityVersion'))}</p><h1>🛡️ ${esc(tx('title'))}</h1><p>${esc(current?current.name+' · '+WFACL.label(current.role):tx('setup'))}</p></div><div class="wf-sec-actions">${button('back','← '+tx('back'))}${setup?'':button('lock','🔒 '+tx('lock'),'btn-p')}</div></div>
- <div id="wfSecMessage" class="wf-sec-message" role="status" aria-live="polite"></div>${!globalThis.crypto?.subtle?`<div class="wf-security-warning">${esc(tx('fallbackNote'))}</div>`:''}
- ${setup?'':`<div class="wf-sec-tabs" role="tablist">${tabs.map(k=>button('tab',tx(k+'Tab'),'btn-s'+(secTab===k?' wf-tab-active':''),`data-tab="${k}" role="tab" aria-selected="${secTab===k}"`)).join('')}</div>`}
- <div id="wfSecPanel"></div><div id="wfSecEditor"></div><details class="wf-sec-boundary"><summary>${esc(tx('localNote').split('.')[0])}</summary>${note('localNote')}${note('help')}</details>`;
- const panel=el('wfSecPanel');
- if(setup){editor(null,true);translateButton();return;}
- if(secTab==='users'&&admin){panel.innerHTML=`<div class="wf-sec-metrics"><div><strong>${cfg.users.length}</strong><span>${esc(tx('users'))}</span></div><div><strong>${cfg.users.filter(u=>u.active).length}</strong><span>${esc(tx('active'))}</span></div><div><strong>${WFACL.keys.length}</strong><span>${esc(tx('count'))}</span></div></div><div class="card"><div class="wf-sec-heading"><h2>${esc(tx('usersTab'))}</h2>${button('addUser','＋ '+tx('add'),'btn-p')}</div><input class="fc" id="wfUserSearch" placeholder="${esc(tx('searchUsers'))}" autocomplete="off"><div id="wfUsersList">${cfg.users.map(u=>`<article class="wf-sec-user" data-user-search="${esc((u.name+' '+WFACL.label(u.role)).toLocaleLowerCase())}"><div class="wf-user-info"><span class="wf-user-avatar" aria-hidden="true">${esc(u.name.slice(0,1))}</span><div><strong>${esc(u.name)}</strong>${current?.id===u.id?` <span class="wf-sec-tag">${esc(tx('currentUser'))}</span>`:''}<p class="wf-sec-note">${esc(WFACL.label(u.role))} · ${esc(tx(u.active?'active':'disabled'))} · ${esc(tx(userType(u)==='pin'?'pin':'password'))}</p><p class="wf-sec-note">${esc(tx('lastLogin'))}: ${u.lastLoginAt?esc(new Date(u.lastLoginAt).toLocaleString(lang())):esc(tx('neverLogin'))}</p></div></div><div class="wf-sec-actions">${button('editUser',tx('edit'),'btn-s',`data-user="${esc(u.id)}"`)}${button('toggleUser',tx(u.active?'suspend':'activate'),'btn-s',`data-user="${esc(u.id)}"`)}${button('resetAttempts',tx('resetAttempts'),'btn-s',`data-user="${esc(u.id)}"`)}${button('deleteUser',tx('remove'),'btn-s',`data-user="${esc(u.id)}"`)}</div></article>`).join('')}</div><p id="wfUserEmpty" class="wf-sec-note" hidden>${esc(tx('notFound'))}</p></div>${note('adminNote')}`;}
- if(secTab==='account'){const type=userType(current);panel.innerHTML=`<div class="card"><h2>${esc(tx('myaccount'))}</h2><p><strong>${esc(current?.name||'')}</strong> · ${esc(WFACL.label(current?.role||'viewer'))}</p>${note('viewOwn')}${secretField('wfOwnPassword',tx('currentpass'),type)}<div class="wf-sec-actions">${button('voiceTest',tx('testVoice'))}${button('deviceCheck',tx('checkDevice'))}</div><details class="wf-sec-detail"><summary>${esc(tx('device'))}</summary>${note('deviceNote')}${note('sharedNote')}<label class="wf-sec-check"><input type="checkbox" id="wfDeviceConsent">${esc(tx('consent'))}</label><p class="wf-sec-note">${esc(tx(current?.credentials?.length?'deviceReady':'noDevice'))} (${current?.credentials?.length||0})</p><div class="wf-sec-actions">${button('enroll',tx('register'),'btn-p','id="wfEnrollDevice" disabled')}${button('revoke',tx('revoke'))}</div></details><h2 style="margin-top:24px">${esc(tx('changePass'))}</h2><label class="wf-sec-field"><span>${esc(tx('authType'))}</span><select class="fc" id="wfOwnAuthType">${options([['pin',tx('pin')],['password',tx('password')]],'pin')}</select></label><div class="wf-sec-grid">${secretField('wfOwnNewPassword',tx('pin'),'pin')}${secretField('wfOwnNewConfirm',tx('confirm'),'pin')}</div><p id="wfOwnAuthHint" class="wf-sec-note">${esc(tx('pinHint'))}</p>${button('changePassword',tx('changePass'),'btn-p')}</div>`;}
- if(secTab==='policy'&&admin){panel.innerHTML=`<div class="card"><h2>${esc(tx('policy'))}</h2>${note('enabledAlways')}<form id="wfPolicyForm"><label class="wf-sec-field"><span>${esc(tx('idle'))}</span><select class="fc" id="wfIdleMinutes">${options([0,1,2,5,10,15,30,60].map(n=>[String(n),n?n+' '+tx('minutes'):tx('never')]),String(cfg.idleMinutes))}</select></label><label class="wf-sec-check"><input type="checkbox" id="wfBackgroundLock"${cfg.background?' checked':''}>${esc(tx('background'))}</label><label class="wf-sec-check"><input type="checkbox" id="wfVoiceEnabled"${cfg.voice?' checked':''}>${esc(tx('voice'))}</label><button type="submit" class="btn btn-p">${esc(tx('save'))}</button></form></div>`;}
- if(secTab==='audit'&&admin){panel.innerHTML=`<div class="card"><h2>${esc(tx('audit'))}</h2><div class="wf-sec-audit">${cfg.audit.slice(0,200).map(a=>`<p><time>${esc(new Date(a.at).toLocaleString(lang()))}</time> · ${esc(a.user)} · <bdi>${esc(auditLabel(a.event))}</bdi>${a.actor?' · '+esc(a.actor):''}</p>`).join('')}</div></div>`;}
- if(secTab==='storage'&&admin){panel.innerHTML=`<div class="card"><h2>${esc(tx('storage'))}</h2><p id="wfStorageDetails" class="wf-sec-note">—</p><div class="wf-sec-actions">${button('persist',tx('persist'))}${button('compact',tx('compact'))}</div>${note('storageNote')}</div>`;storageDetails();}
- checkDevice();translateButton();
-}
- async function storageDetails(){try{const s=await wfStorageInfo();if(el('wfStorageDetails'))el('wfStorageDetails').textContent=(s.quota!==null?wfFmtBytes(s.usage)+' / '+wfFmtBytes(s.quota):'—')+' · '+tx(s.persistent?'permanent':'temporary');}catch(_){} }
- function translateButton(){if(el('wfSecuritySettingsLabel'))el('wfSecuritySettingsLabel').textContent=tx('title');}
- async function saveUser(){
- if(!isAdmin())throw new Error(tx('denied'));const first=!cfg.users.length,name=val('wfUserName').trim(),type=val('wfUserAuthType'),password=authValue(val('wfUserPassword'),type),confirmation=authValue(val('wfUserConfirm'),type),role=first?'admin':val('wfUserRole');
- if(name.length<2||name.length>80){el('wfUserName')?.focus();throw new Error(tx('nameError'));}
- if(cfg.users.some(u=>u.id!==editing&&u.name.trim().toLocaleLowerCase()===name.toLocaleLowerCase()))throw new Error(tx('duplicate'));
- if(!WFACL.roles.concat('staff').includes(role))throw new Error(tx('denied'));
- const old=cfg.users.find(u=>u.id===editing);
- if(!password&&(!old||type!==userType(old)))throw new Error(tx(type==='pin'?'pinError':'mismatch'));
- if(password||confirmation){if(type==='pin'?!/^\d{6,12}$/.test(password)||password!==confirmation:password.length<8||password.length>256||password!==confirmation)throw new Error(tx(type==='pin'?'pinError':'mismatch'));}
- const n=copy();let u=old?n.users.find(u=>u.id===editing):null;
- if(!u){u={id:b64(random(16)),handle:b64(random(32)),credentials:[],failures:0,blockedUntil:0,createdAt:new Date().toISOString()};n.users.push(u);}
- const ticket=epoch,active=first||checked('wfUserActive');
- if(!first&&u.id===current?.id&&(!active||role!=='admin'))throw new Error(tx('currentProtected'));
- Object.assign(u,{name,role,lang:val('wfUserLang'),salutation:val('wfUserSalutation'),active,permissions:role==='admin'?WFACL.preset('admin'):WFACL.normalize(getFormPermissions()),permissionsVersion:2,authType:type,updatedAt:new Date().toISOString()});
- if(password){u.password=await makePassword(password);u.failures=0;u.blockedUntil=0;u.credentials=[];u.authVersion=(u.authVersion||0)+1;}
- if(ticket!==epoch||(!first&&!isAdmin()))throw new Error(tx('denied'));
- n.enabled=true;if(first){n.background=true;n.idleMinutes=5;n.voice=true;}
- validate(n);audit(n,first?'administrator:created':editing?'user:updated':'user:created',u);await persist(n);
- if(first){current=cfg.users.find(x=>x.id===u.id);locked=false;previousUser=current.id;conceal(false);}
- editing=null;secTab='users';renderPage();publishAccess();setMessage(tx(first?'savedAdmin':'success'));timeoutCheck();
-}
- async function savePolicy(){if(!isAdmin())throw new Error(tx('denied'));const n=copy();n.enabled=true;n.idleMinutes=Number(val('wfIdleMinutes'));if(![0,1,2,5,10,15,30,60].includes(n.idleMinutes))throw new Error(tx('failed'));n.background=checked('wfBackgroundLock');n.voice=checked('wfVoiceEnabled');audit(n,'policy:updated',current);await persist(n);setMessage(tx('success'));timeoutCheck();}
- async function dispatch(action,node){
- if(action==='lock'){lock();return;}if(action==='back'){if(can('settings.view'))openSettingsPage();else showPage(homePage());return;}
- if(action==='lockLang'){S.lang=node.dataset.lang;renderLock();return;}
- if(action==='unlockPassword')return loginPassword();if(action==='unlockDevice')return unlockDevice();if(locked)throw new Error(tx('denied'));
- if(action==='saveUser')return saveUser();if(action==='savePolicy')return savePolicy();
- if(action==='tab'){closePad();editing=null;secTab=node.dataset.tab;renderPage();return;}
- if(action==='roleDefaults'){paintPermissions(WFACL.preset(val('wfUserRole')));return;}
- if(action==='allPermissions'){paintPermissions(WFACL.preset('admin'));return;}if(action==='noPermissions'){paintPermissions(WFACL.preset('custom'));return;}
- if(action==='addUser'){editor();el('wfSecEditor').scrollIntoView({block:'start',behavior:'auto'});return;}
- if(action==='cancelEdit'){editing=null;el('wfSecEditor').replaceChildren();return;}
- if(action==='editUser'){editor(cfg.users.find(u=>u.id===node.dataset.user));el('wfSecEditor').scrollIntoView({block:'start',behavior:'auto'});return;}
- if(['deleteUser','toggleUser','resetAttempts'].includes(action)){
-  if(!isAdmin())throw new Error(tx('denied'));const n=copy(),u=n.users.find(u=>u.id===node.dataset.user);if(!u)return;
-  if(action!=='resetAttempts'&&u.id===current?.id)throw new Error(tx('currentProtected'));
-  if(action==='deleteUser'){if(!confirm(tx('deleteConfirm')+' '+u.name))return;n.users=n.users.filter(x=>x.id!==u.id);}
-  if(action==='toggleUser')u.active=!u.active;
-  if(action==='resetAttempts'){u.failures=0;u.blockedUntil=0;}
-  if(!n.users.length)throw new Error(tx('lastAdmin'));validate(n);audit(n,action==='deleteUser'?'user:deleted':action==='toggleUser'?(u.active?'user:enabled':'user:suspended'):'user:unblocked',u);await persist(n);renderPage();setMessage(tx('success'));return;
- }
- if(action==='enroll')return enroll();
- if(action==='revoke'){const u=await confirmSelf(),n=copy();n.users.find(x=>x.id===u.id).credentials=[];audit(n,'device:removed',u);await persist(n);renderPage();return;}
- if(action==='changePassword'){
-  const u=await confirmSelf(),type=val('wfOwnAuthType'),password=authValue(val('wfOwnNewPassword'),type),confirmation=authValue(val('wfOwnNewConfirm'),type);
-  if(type==='pin'?!/^\d{6,12}$/.test(password)||password!==confirmation:password.length<8||password.length>256||password!==confirmation)throw new Error(tx(type==='pin'?'pinError':'mismatch'));
-  const ticket=epoch,n=copy(),target=n.users.find(x=>x.id===u.id);target.password=await makePassword(password);target.authType=type;target.authVersion=(target.authVersion||0)+1;target.credentials=[];
-  if(ticket!==epoch||locked)throw new Error(tx('denied'));audit(n,'password:changed',u);await persist(n);renderPage();setMessage(tx('success'));return;
- }
- if(action==='deviceCheck'){setMessage(await checkDevice()?tx('deviceNote'):tx('unsupported'));return;}
- if(action==='voiceTest'){speak(current,true);return;}
- if(action==='persist'){if(!isAdmin())throw new Error(tx('denied'));await navigator.storage?.persist?.();await storageDetails();return;}
- if(action==='compact'){if(!isAdmin())throw new Error(tx('denied'));await wfCompactStorage(n=>setMessage(tx('working')+' '+n));await storageDetails();setMessage(tx('success'));return;}
-}
- async function run(action,node){
- if(busy)return;busy=true;setMessage(tx('working'));const root=locked?el('wfLockOverlay'):el('wfSecurityBody'),buttons=[...root.querySelectorAll('button')].map(b=>[b,b.disabled]);buttons.forEach(([b])=>b.disabled=true);root.setAttribute('aria-busy','true');
- try{await dispatch(action,node||{});if(!['saveUser','unlockPassword','changePassword','savePolicy','voiceTest','deviceCheck','compact','persist'].includes(action))setMessage('');}
- catch(e){console.warn('WOW protection:',e);setMessage(e.name==='NotAllowedError'?tx('failed'):safeSaveError(e),true);}
- finally{busy=false;authController=null;root.removeAttribute('aria-busy');buttons.forEach(([b,d])=>{if(b.isConnected)b.disabled=d;});if(document.hidden&&cfg?.enabled&&cfg.background&&!locked)lock();refreshDeviceButton();if(el('wfEnrollDevice'))el('wfEnrollDevice').disabled=!deviceSupported;if(action==='roleDefaults'||action==='allPermissions'||action==='noPermissions')roleFields(false);}
-}
- function attach(){
- for(const id of ['wfLockOverlay','wfSecurityBody']){
-  el(id).addEventListener('click',e=>{const pad=e.target.closest('[data-pad]');if(pad){e.preventDefault();padKey(pad.dataset.pad);return;}const key=e.target.closest('[data-pad-target],[data-wf-pad]');if(key){e.preventDefault();openPad(key.dataset.padTarget?el(key.dataset.padTarget):key);return;}const b=e.target.closest('[data-wf-action]');if(b){e.preventDefault();run(b.dataset.wfAction,b);}});
-  el(id).addEventListener('submit',e=>{e.preventDefault();const map={wfLoginForm:'unlockPassword',wfUserForm:'saveUser',wfPolicyForm:'savePolicy'};if(map[e.target.id])run(map[e.target.id]);});
-  el(id).addEventListener('input',e=>{if(e.target.id==='wfUserSearch')searchUsers();});
-  el(id).addEventListener('change',e=>{if(e.target.id==='wfLockUser')renderLock();if(e.target.id==='wfUserRole')roleFields();if(e.target.id==='wfUserAuthType')setAuthFields('wfUser',e.target.value);if(e.target.id==='wfOwnAuthType')setAuthFields('wfOwn',e.target.value);if(e.target.dataset.permission)paintPermissions(WFACL.toggle(getFormPermissions(),e.target.dataset.permission,e.target.checked));});
- }
- document.addEventListener('keydown',e=>{
-  if(el('wfKeypad')){if(/^[0-9٠-٩۰-۹]$/.test(e.key)){e.preventDefault();e.stopImmediatePropagation();padKey(digitString(e.key));return;}if(['Backspace','Delete','Escape','Enter'].includes(e.key)){e.preventDefault();e.stopImmediatePropagation();padKey({Backspace:'back',Delete:'clear',Escape:'cancel',Enter:'done'}[e.key]);return;}}
-  if(e.target.hasAttribute?.('data-wf-pad')&&['Enter',' '].includes(e.key)){e.preventDefault();openPad(e.target);return;}
-  if(locked&&e.target.closest?.('#wfLockOverlay')===null){e.preventDefault();e.stopImmediatePropagation();el('wfLockUser')?.focus();return;}
-  if((locked||el('wfKeypad'))&&e.key==='Tab'){const root=el('wfKeypad')||el('wfLockOverlay'),focus=[...root.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')].filter(x=>x.offsetParent!==null);const first=focus[0],last=focus.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}
-  if(!locked&&e.ctrlKey&&e.altKey&&e.key.toLowerCase()==='l'){e.preventDefault();lock();}
- },true);
- for(const ev of ['pointerdown','keydown'])document.addEventListener(ev,()=>{if(!locked)lastActivity=Date.now();},{passive:true,capture:true});
- document.addEventListener('visibilitychange',()=>{if(authController){lastHidden=0;return;}if(document.hidden){lastHidden=Date.now();if(cfg?.enabled&&cfg.background&&!locked)lock();}else{if(cfg?.enabled&&!locked&&(cfg.background&&lastHidden||cfg.idleMinutes&&Date.now()-lastActivity>=cfg.idleMinutes*60000))lock();lastHidden=0;refreshConfig();}});
- window.addEventListener('pagehide',()=>{if(cfg?.enabled)lock();},{passive:true});window.addEventListener('pageshow',()=>{if(cfg?.enabled&&!current)lock();},{passive:true});
- window.addEventListener('storage',e=>{if(e.key==='wf_security_revision')refreshConfig();});window.addEventListener('focus',refreshConfig);
- window.addEventListener('beforeprint',()=>document.documentElement.classList.toggle('wf-print-denied',!can('invoices.print')));window.addEventListener('afterprint',()=>document.documentElement.classList.remove('wf-print-denied'));
-}
- async function ready(){
- if(readyPromise)return readyPromise;
- readyPromise=(async()=>{
-  attach();secdb=await new Promise((resolve,reject)=>{const r=indexedDB.open('WowFurnitureSecurityDB',1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('state'))r.result.createObjectStore('state',{keyPath:'id'});};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onblocked=()=>setMessage(tx('storeError'),true);});
-  secdb.onversionchange=()=>{lock();secdb.close();};
-  cfg=await load()||{version:2,revision:0,enabled:false,idleMinutes:5,background:true,voice:true,users:[],audit:[]};validate(cfg);cfg.users.forEach(WFACL.migrate);if(cfg.users.length)cfg.enabled=true;
-  try{const saved=localStorage.getItem('wf_lang');if(['ar','tr','en'].includes(saved))S.lang=saved;}catch(_){}
-  try{if('BroadcastChannel'in window){channel=new BroadcastChannel('WOW-SECURITY-R2');channel.onmessage=refreshConfig;}}catch(_){}
-  translateButton();checkDevice();
-  if(cfg.users.length){conceal(true);renderLock();document.documentElement.classList.remove('wf-sec-pending');await new Promise(resolve=>resolveReady=resolve);}
-  else{locked=false;conceal(false);document.documentElement.classList.remove('wf-sec-pending');}
- })().catch(error=>{locked=true;conceal(true);document.documentElement.classList.remove('wf-sec-pending');el('wfLockContent').innerHTML=`<h1>🔒 WOW Furniture</h1><p class="wf-sec-note">${esc(tx('storeError'))}</p><p class="wf-sec-note">${esc(error.message)}</p>`;throw error;});return readyPromise;
-}
- function open(){if(!loaded){pendingSecurityOpen=true;return;}if(!cfg)return;if(cfg.users.length&&!current){lock();return;}secTab=isAdmin()?'users':'account';showPage('security');renderPage();}
- function changedLanguage(){translateButton();if(getCurrentPage()==='security')renderPage();}
- function afterInit(){loaded=true;translateButton();previousUser=current?.id||null;publishAccess();if(!pageAllowed(getCurrentPage()))showPage(homePage());if(getCurrentPage()==='security')renderPage();if(current)speak(current);timeoutCheck();if(pendingSecurityOpen){pendingSecurityOpen=false;open();}}
- return {ready,open,lock,can,admin:isAdmin,require:requirePermission,storeAllowed,changedLanguage,afterInit,pageAllowed,home:homePage,render:renderPage,token:()=>epoch,session:()=>current?({id:current.id,name:current.name,role:current.role}):null,isLocked:()=>locked};
-})();
-
-
-
-/* R3 UI+route+operation enforcement, independent of the original invoice/PDF layout. */
-(function installWowGates(){
- const rules={
- saveCo:()=>[S.editCoId?'clients.edit':'clients.create'],editCo:['clients.edit'],deleteCo:['clients.delete'],handleLogoUpload:()=>[S.editCoId?'clients.edit':'clients.create'],useCoInInvoice:['invoices.view'],
- savePr:()=>[S.editPrId?'products.edit':'products.create'],editPr:['products.edit'],deletePr:['products.delete'],handlePrImg:()=>[S.editPrId?'products.edit':'products.create'],deletePrImg:()=>[S.editPrId?'products.edit':'products.create'],
- saveInvoice:()=>[S.editInvId?'invoices.edit':'invoices.create'],editInv:['invoices.edit'],addPrToInv:['invoices.create'],addItemToInv:()=>[S.editInvId?'invoices.edit':'invoices.create'],addItemToInv_id:()=>[S.editInvId?'invoices.edit':'invoices.create'],qblSendToInvoice:['invoices.create'],
- deleteInv:['invoices.delete'],markDelivered:['invoices.deliver'],unarchiveInv:['invoices.deliver'],confirmDeliverModal:['invoices.deliver'],
- addPaymentToInv:['payments.create'],deletePayment:['payments.delete'],openPaymentMgmt:['payments.view'],renderPayHistory:['payments.view'],
- saveSettings:['settings.edit'],handleSettingsLogo:['settings.edit'],resetSettingsLogo:['settings.edit'],loadSettingsToForm:['settings.view'],
- wfExportBackup:['backup.export'],wfBuildBackup:['backup.export'],wfImportBackup:['backup.import'],wfReplaceStoresFromBackup:['backup.import'],
- previewSaved:['invoices.preview'],previewInvoice:['invoices.preview'],downloadSavedPDF:['invoices.export'],downloadPDF:['invoices.export'],printInvoice:['invoices.print'],shareWA:['invoices.share'],shareEmail:['invoices.share'],shareInvoicePdfFile:['invoices.share'],
- setPrice:['prices.edit'],updatePriceFromTRY:['prices.edit'],
- qblStartCamera:['barcode.use'],initQblPage:['barcode.use'],searchQbl:['barcode.use'],qblFindProduct:['barcode.use'],qblPickFromDropdown:['barcode.use'],qblBuildResult:['barcode.use','prices.view'],qblTransitionToResult:['barcode.use','prices.view'],qblSelectTierAndTransition:['barcode.use','prices.view'],qblAddToInvoice:['barcode.use','prices.view'],qblOpenCart:['barcode.use','prices.view'],qblToggleCart:['barcode.use','prices.view'],qblBuildTierButtons:['barcode.use','prices.view'],
- renderCo:['clients.view'],renderPr:['products.view'],renderInvList:['invoices.view'],updateDash:['dashboard.view'],renderPrSelector:['products.view','prices.view'],populateCoSelect:['clients.view'],
- openBarcodeScanner:['barcode.use'],confirmManualBarcode:['barcode.use'],processBarcodeResult:['barcode.use'],openScanner:['barcode.use'],startScanner:['barcode.use'],selectTypeAndContinue:['clients.create'],selectInvTypeAndContinue:['invoices.create']
- };
- const quiet=new Set(['renderCo','renderPr','renderInvList','updateDash','renderPayHistory','renderPrSelector','populateCoSelect','qblBuildResult','qblBuildTierButtons']);
- const containers={renderCo:'coGrid',renderPr:'prGrid',renderInvList:'invListContainer',updateDash:'dashRecentInv',renderPrSelector:'prSelectorList'};
- const requirements=(name,args=[])=>typeof rules[name]==='function'?rules[name](...args):rules[name]||[];
- const running=new Set();
- for(const [name] of Object.entries(rules)){
-  const original=window[name];if(typeof original!=='function')continue;
-  const isAsync=original.constructor.name==='AsyncFunction';
-  window[name]=function(...args){
-   const permitted=requirements(name,args).every(p=>WFSecurity.can(p));
-   if(!permitted){if(containers[name])document.getElementById(containers[name])?.replaceChildren();if(!quiet.has(name))WFSecurity.require(requirements(name,args).find(p=>!WFSecurity.can(p))||'invalid');return isAsync?Promise.resolve(false):false;}
-   if(name==='saveInvoice'){
-    const old=S.invoices.find(i=>i.id===S.editInvId),deposit=Number(document.getElementById('sumDeposit')?.value)||0,discount=Number(document.getElementById('sumDiscount')?.value)||0;
-    if(deposit!==(old?.depositUSD||0)&&!WFSecurity.require('payments.create'))return Promise.resolve(false);
-    if(discount!==(old?.discountUSD||0)&&!WFSecurity.require('prices.edit'))return Promise.resolve(false);
-   }
-   if(name==='savePr'&&S.editPrId&&!WFSecurity.can('prices.edit')){
-    const old=S.products.find(i=>i.id===S.editPrId);if(old&&['A','B','C'].some(t=>Number(document.getElementById('prPrice'+t)?.value||0)!==Number(old['price'+t]||0))){WFSecurity.require('prices.edit');return Promise.resolve(false);}
-   }
-   if(isAsync&&running.has(name))return Promise.resolve(false);
-   if(!isAsync){const result=original.apply(this,args);window.WFApplyAccess?.();return result;}
-   running.add(name);
-   return Promise.resolve(original.apply(this,args)).catch(e=>{console.error('WOW action '+name,e);showToast(S.lang==='ar'?'لم تكتمل العملية؛ لم يتم تأكيد الحفظ.':S.lang==='tr'?'İşlem tamamlanmadı.':'The operation did not complete.','er');return false;}).finally(()=>{running.delete(name);window.WFApplyAccess?.();});
-  };
- }
- const baseShowPage=showPage;
- window.showPage=function(id,...args){
-  if(WFSecurity.isLocked())return false;
-  if(!WFSecurity.pageAllowed(id)){
-   WFSecurity.require('invalid');const current=getCurrentPage();if(!WFSecurity.pageAllowed(current)){const target=WFSecurity.home();baseShowPage.call(this,target,...args);if(target==='security')WFSecurity.render();}
-   window.WFApplyAccess?.();return false;
-  }
-  const result=baseShowPage.call(this,id,...args);if(id==='security')WFSecurity.render();window.WFApplyAccess?.();return result;
- };
- const baseSettings=openSettingsPage;
- window.openSettingsPage=function(){if(!WFSecurity.can('settings.view'))return WFSecurity.open();return baseSettings();};
- // Read-only printing/export preparation must not imply permission to deliver the file.
- for(const name of ['createInvoicePdfFile','scheduleInvoicePdfPreparation']){
-  const original=window[name];window[name]=function(...args){const ticket=WFSecurity.token();if(!WFSecurity.can('invoices.preview'))return name==='createInvoicePdfFile'?Promise.reject(new DOMException('Permission denied','NotAllowedError')):false;const result=original.apply(this,args);return name==='createInvoicePdfFile'?Promise.resolve(result).then(file=>{if(ticket!==WFSecurity.token()||!WFSecurity.can('invoices.preview'))throw new DOMException('Session changed','NotAllowedError');return file;}):result;};
- }
- const baseDownload=triggerPdfFileDownload;
- window.triggerPdfFileDownload=function(...args){if(!WFSecurity.require('invoices.export'))return false;return baseDownload(...args);};
- // Handler annotation affects visibility only. Every action and route above checks again.
- let raf=0;
- const attr=(n,deny)=>{if(deny){if(n.getAttribute('data-wf-denied')!=='1')n.setAttribute('data-wf-denied','1');}else n.removeAttribute('data-wf-denied');};
- const pageAlias={};
- window.WFApplyAccess=function(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;
-  document.querySelectorAll('[onclick],[oninput],[onchange]').forEach(n=>{
-   if(n.closest('#wfSecurityBody,#wfLockOverlay'))return;
-   const js=[n.getAttribute('onclick'),n.getAttribute('oninput'),n.getAttribute('onchange')].filter(Boolean).join(';');
-   let deny=false;const route=js.match(/showPage\(['"]([^'"]+)/);
-   if(route)deny=!WFSecurity.pageAllowed(route[1]);
-   const names=js.match(/[A-Za-z_$][\w$]*(?=\s*\()/g)||[];
-   for(const name of names)if(rules[name]&&!requirements(name).every(p=>WFSecurity.can(p)))deny=true;
-   if(n.matches('input,select,textarea')){if(deny){n.setAttribute('data-wf-field-locked','1');n.disabled=true;}else if(n.hasAttribute('data-wf-field-locked')){n.disabled=false;n.removeAttribute('data-wf-field-locked');}}
-   else attr(n,deny);
-  });
-  document.querySelectorAll('.page').forEach(n=>attr(n,!WFSecurity.pageAllowed(n.id.replace('page-',''))));
-  for(const [id,perm] of Object.entries({sumDiscount:'prices.edit',sumDeposit:'payments.create',prPriceA:'prices.edit',prPriceB:'prices.edit',prPriceC:'prices.edit'})){
-   const field=document.getElementById(id);if(field){field.readOnly=!WFSecurity.can(perm);field.setAttribute('aria-readonly',String(field.readOnly));}
-  }
-  for(const [id,p] of Object.entries({wfDataCompanies:'clients.view',wfDataProducts:'products.view',wfDataInvoices:'invoices.view',wfDataPayments:'payments.view'})){const stat=document.getElementById(id)?.closest('.wf-data-stat');if(stat)attr(stat,!WFSecurity.can(p));}
-  document.querySelectorAll('[data-wf-view]').forEach(n=>attr(n,!WFSecurity.can(n.dataset.wfView)));
-  const recent=document.getElementById('dashRecentInv')?.closest('.card');if(recent)attr(recent,!WFSecurity.can('invoices.view'));
-  for(const [id,p] of Object.entries({'s-co':'clients.view','s-pr':'products.view','s-inv':'invoices.view','s-total':'reports.view'})){const card=document.getElementById(id)?.closest('.stat-card');if(card)attr(card,!WFSecurity.can(p));}
-  const bottom=document.querySelector('.bnav-btn.bnav-active');const marker=document.getElementById('bnavCircle');if(marker)attr(marker,!!bottom?.hasAttribute('data-wf-denied'));
- });};
- const observer=new MutationObserver(mutations=>{if(mutations.some(m=>![...m.addedNodes].every(n=>n.nodeType===3)&&!m.target.closest?.('#wfSecurityBody,#wfLockOverlay')))WFApplyAccess();});
- for(const id of ['mainContent','sidebar','bottomNav','pdfModal']){const node=document.getElementById(id);if(node)observer.observe(node,{childList:true,subtree:true});}
- // Block already-open modal entry points after a role change.
- const baseModal=openModal;window.openModal=function(id,...args){if(WFSecurity.isLocked())return false;if(id==='pdfModal'&&!WFSecurity.require('invoices.preview'))return false;return baseModal(id,...args);};
- PARENT_MAP.security='settings';
-})();
-
 </script>
 
 
 <script>
-  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js').then(reg => {
         
@@ -22337,7 +21940,7 @@ window.WFSecurity=(()=>{
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
               // تم العثور على تحديث جديد! إعادة تحميل الصفحة تلقائياً
               console.log('يوجد تحديث جديد، جاري إعادة التحميل...');
-              console.info('WOW update ready; it will be used on the next manual restart.');
+              window.location.reload();
             }
           });
         });
@@ -22373,5 +21976,7 @@ window.WFSecurity=(()=>{
 
    
    
+
+<!-- WOW Tablet Fast/Storage V7: internal performance patch; UI/PDF layout unchanged -->
 </body>
 </html>
