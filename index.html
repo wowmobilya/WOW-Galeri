@@ -9063,16 +9063,49 @@ function wfStorageWriteError(err){
     wfRefreshStorageTelemetry();
   }
 }
-const dbPutRaw=(s,o)=>new Promise((res,rej)=>{
-  let tx;
-  try{
-    tx=db.transaction(s,'readwrite');
-    const r=tx.objectStore(s).put(o);
-    r.onsuccess=()=>res(r.result);
-    r.onerror=()=>{wfStorageWriteError(r.error);rej(r.error)};
-    tx.onabort=()=>{wfStorageWriteError(tx.error);rej(tx.error||new Error('IndexedDB write aborted'))};
-  }catch(err){wfStorageWriteError(err);rej(err)}
-});
+// Resolve writes only after the entire transaction has committed.
+function wfNewRecordId(){
+  return globalThis.crypto?.randomUUID?.() || Date.now().toString(36)+'_'+Math.random().toString(36).slice(2);
+}
+async function wfWriteBatch(operations){
+  if(!operations.length)return [];
+  if(!db)await initDB();
+  const mediaRows=new Map();
+  const prepared=operations.map(op=>({...op,value:op.type==='delete'?undefined:
+    (op.store===WF_MEDIA_STORE?op.value:wfDehydrateClone(op.value,mediaRows,undefined,true))}));
+  const stores=[...new Set(prepared.map(op=>op.store).concat(mediaRows.size?[WF_MEDIA_STORE]:[]))];
+  return new Promise((resolve,reject)=>{
+    let tx,failed;
+    const results=[];
+    try{
+      tx=db.transaction(stores,'readwrite');
+      tx.oncomplete=()=>{
+        for(const id of mediaRows.keys())WF_MEDIA_PERSISTED.add(id);
+        resolve(results);
+      };
+      tx.onerror=()=>{failed=tx.error||failed;};
+      tx.onabort=()=>{
+        const err=failed||tx.error||new Error('IndexedDB write aborted');
+        wfStorageWriteError(err);reject(err);
+      };
+      prepared.forEach((op,i)=>{
+        const os=tx.objectStore(op.store);
+        const r=op.type==='delete'?os.delete(op.id):os.put(op.value);
+        r.onsuccess=()=>{results[i]=r.result;};
+        r.onerror=()=>{failed=r.error;};
+      });
+      if(mediaRows.size){
+        const os=tx.objectStore(WF_MEDIA_STORE);
+        for(const row of mediaRows.values())os.put(row);
+      }
+    }catch(err){
+      failed=err;
+      if(tx){try{tx.abort();}catch(_){} }
+      wfStorageWriteError(err);reject(err);
+    }
+  });
+}
+const dbPutRaw=async(s,o)=>(await wfWriteBatch([{store:s,value:o}]))[0];
 const dbGetAllKeysRaw=s=>new Promise((res,rej)=>{const r=db.transaction(s,'readonly').objectStore(s).getAllKeys();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)});
 
 async function wfLoadMediaIds(ids){
@@ -9125,14 +9158,8 @@ const dbGetAll=async s=>{
   const rows=await dbGetAllRaw(s);
   return s===WF_MEDIA_STORE?rows:wfHydrateDBValue(rows);
 };
-const dbPut=async(s,o)=>{
-  if(s===WF_MEDIA_STORE)return dbPutRaw(s,o);
-  const mediaRows=new Map();
-  const prepared=wfDehydrateClone(o,mediaRows);
-  if(mediaRows.size)await wfPutMediaRows(mediaRows);
-  return dbPutRaw(s,prepared);
-};
-const dbDel=(s,id)=>new Promise((res,rej)=>{const r=db.transaction(s,'readwrite').objectStore(s).delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)});
+const dbPut=async(s,o)=>(await wfWriteBatch([{store:s,value:o}]))[0];
+const dbDel=async(s,id)=>{await wfWriteBatch([{store:s,type:'delete',id}]);};
 
 function wfYieldToBrowser(){
   return new Promise(resolve=>{
@@ -9231,28 +9258,48 @@ function wfCollectStoredMediaRefs(value,refs,seen){
   if(Array.isArray(value)){for(const v of value)wfCollectStoredMediaRefs(v,refs,seen);return;}
   for(const k of Object.keys(value))wfCollectStoredMediaRefs(value[k],refs,seen);
 }
+
 async function wfMediaGC(){
   if(!db||!db.objectStoreNames.contains(WF_MEDIA_STORE))return;
-  const refs=new Set();
-  for(const store of ['companies','products','invoices','settings']){
-    const rows=await dbGetAllRaw(store);
-    wfCollectStoredMediaRefs(rows,refs);
-    await wfYieldToBrowser();
+  const stores=['companies','products','invoices','payments','settings'];
+  const dead=await new Promise((resolve,reject)=>{
+    let tx,failed=false,keys=[],pending=stores.length+1;
+    const refs=new Set();
+    const fail=err=>{
+      if(failed)return;failed=true;
+      try{if(tx)tx.abort();}catch(_){}
+      reject(err||new Error('Media cleanup aborted'));
+    };
+    const scanned=()=>{
+      if(--pending||failed)return;
+      try{
+        keys=keys.filter(id=>!refs.has(String(id)));
+        const media=tx.objectStore(WF_MEDIA_STORE);
+        for(const id of keys)media.delete(id);
+      }catch(err){fail(err);}
+    };
+    try{
+      // One transaction keeps reference scanning and deletion consistent with saves.
+      tx=db.transaction([...stores,WF_MEDIA_STORE],'readwrite');
+      tx.oncomplete=()=>{if(!failed)resolve(keys);};
+      tx.onerror=()=>fail(tx.error);
+      tx.onabort=()=>fail(tx.error||new Error('Media cleanup aborted'));
+      for(const store of stores){
+        const request=tx.objectStore(store).getAll();
+        request.onsuccess=()=>{
+          try{wfCollectStoredMediaRefs(request.result||[],refs);scanned();}
+          catch(err){fail(err);}
+        };
+      }
+      const request=tx.objectStore(WF_MEDIA_STORE).getAllKeys();
+      request.onsuccess=()=>{keys=request.result||[];scanned();};
+    }catch(err){fail(err);}
+  });
+  for(const id of dead){
+    const key=String(id),data=WF_MEDIA_CACHE.get(key);
+    if(data&&WF_MEDIA_REVERSE.get(data)===key)WF_MEDIA_REVERSE.delete(data);
+    WF_MEDIA_CACHE.delete(key);WF_MEDIA_PERSISTED.delete(key);
   }
-  const keys=await dbGetAllKeysRaw(WF_MEDIA_STORE);
-  const dead=keys.filter(id=>!refs.has(String(id)));
-  if(!dead.length)return;
-  await new Promise((res,rej)=>{
-    const tx=db.transaction(WF_MEDIA_STORE,'readwrite');
-    const os=tx.objectStore(WF_MEDIA_STORE);
-    tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);tx.onabort=()=>rej(tx.error||new Error('Media cleanup aborted'));
-    dead.forEach(id=>os.delete(id));
-  });
-  dead.forEach(id=>{
-    const data=WF_MEDIA_CACHE.get(String(id));
-    if(data)WF_MEDIA_REVERSE.delete(data);
-    WF_MEDIA_CACHE.delete(String(id));WF_MEDIA_PERSISTED.delete(String(id));
-  });
 }
 function wfScheduleStorageMaintenance(){
   if(WF_STORAGE_MAINTENANCE_SCHEDULED)return;
@@ -9302,7 +9349,7 @@ async function wfUpdateDataPanel(){
   set('wfDataCompaniesLbl',T.companies);set('wfDataProductsLbl',T.products);set('wfDataInvoicesLbl',T.invoices);set('wfDataPaymentsLbl',T.payments);
   set('wfBackupTitle',T.backup);set('wfExportLbl',T.export);set('wfImportLbl',T.import);set('wfBackupNote',T.note);
   set('wfStorageTitle',T.storage);set('wfStorageLbl',T.used);set('wfCheckLbl',T.check);
-  const last=localStorage.getItem('wf_last_backup');
+  let last=null;try{last=localStorage.getItem('wf_last_backup');}catch(_){}
   set('wfLastBackup',`${T.last}: ${last ? new Date(last).toLocaleString(S.lang==='ar'?'ar':S.lang==='tr'?'tr':'en') : '—'}`);
   try{
     if(navigator.storage){
@@ -9339,7 +9386,7 @@ function wfBuildBackup(){
       nextInvNo:S.nextInvNo||5001,
       rates:{usdTry:S.usdTry,usdEur:S.usdEur,rateTime:S.rateTime}
     },
-    preferences:{lang:S.lang,theme:S.theme,qblCart:localStorage.getItem('wf_qbl_cart')||null}
+    preferences:{lang:S.lang,theme:S.theme,qblCart:(()=>{try{return localStorage.getItem('wf_qbl_cart')||null;}catch(_){return null;}})()}
   };
 }
 
@@ -9356,48 +9403,81 @@ function wfExportBackup(){
     a.href=url;a.download=`WOW-Furniture-Backup-${stamp}.json`;
     document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),1000);
-    localStorage.setItem('wf_last_backup',new Date().toISOString());
+    try{localStorage.setItem('wf_last_backup',new Date().toISOString());}catch(_){}
     wfUpdateDataPanel();
     if(typeof showToast==='function')showToast(T.exported,'ok');
   }catch(err){console.error('Backup export failed',err);if(typeof showToast==='function')showToast('⚠️ Backup failed','err');}
 }
 
+
 function wfValidateBackup(b){
-  return !!(b && b.format==='WOW_FURNITURE_BACKUP' && b.data &&
-    Array.isArray(b.data.companies) && Array.isArray(b.data.products) &&
-    Array.isArray(b.data.invoices) && Array.isArray(b.data.payments));
+  if(!b||b.format!=='WOW_FURNITURE_BACKUP'||!b.data||
+     (b.version!==undefined&&b.version!==WF_BACKUP_VERSION))return false;
+  for(const name of ['companies','products','invoices','payments']){
+    const rows=b.data[name];
+    if(!Array.isArray(rows))return false;
+    const ids=new Set();
+    for(const row of rows){
+      if(!row||typeof row!=='object'||Array.isArray(row))return false;
+      const id=row.id;
+      if(!((typeof id==='string'&&id.trim())||(typeof id==='number'&&Number.isFinite(id))))return false;
+      const key=typeof id+':'+String(id);
+      if(ids.has(key))return false;
+      ids.add(key);
+    }
+  }
+  for(const name of ['settings','rates']){
+    const value=b.data[name];
+    if(value!==undefined&&(!value||typeof value!=='object'||Array.isArray(value)))return false;
+  }
+  if(b.preferences!==undefined&&(!b.preferences||typeof b.preferences!=='object'||Array.isArray(b.preferences)))return false;
+  return true;
 }
 
 function wfReplaceStoresFromBackup(b){
+  if(!wfValidateBackup(b))return Promise.reject(new Error('Invalid backup data'));
   const mediaRows=new Map();
+  const prepare=row=>wfDehydrateClone(row,mediaRows,undefined,true);
   const prepared={
-    companies:(b.data.companies||[]).map(row=>wfDehydrateClone(row,mediaRows)),
-    products:(b.data.products||[]).map(row=>wfDehydrateClone(row,mediaRows)),
-    invoices:(b.data.invoices||[]).map(row=>wfDehydrateClone(row,mediaRows)),
-    payments:(b.data.payments||[]).map(row=>wfDehydrateClone(row,mediaRows)),
+    companies:b.data.companies.map(prepare),
+    products:b.data.products.map(prepare),
+    invoices:b.data.invoices.map(prepare),
+    payments:b.data.payments.map(prepare),
   };
-  const mainSettings=wfDehydrateClone({id:'main',...(b.data.settings||{})},mediaRows);
+  const mainSettings=prepare({...b.data.settings,id:'main'});
   return new Promise((resolve,reject)=>{
-    const stores=['companies','products','invoices','payments','settings',WF_MEDIA_STORE];
-    const tx=db.transaction(stores,'readwrite');
-    tx.oncomplete=()=>{
-      for(const id of mediaRows.keys())WF_MEDIA_PERSISTED.add(id);
-      try{localStorage.setItem('wf_media_dedupe_v1','1');}catch(_){}
-      resolve();
+    let tx,failed=false;
+    const fail=err=>{
+      if(failed)return;failed=true;
+      // A synchronous DataError/DataCloneError does not abort IndexedDB by itself.
+      try{if(tx)tx.abort();}catch(_){}
+      reject(err||new Error('Restore aborted'));
     };
-    tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error||new Error('Restore aborted'));
-    ['companies','products','invoices','payments','settings'].forEach(name=>tx.objectStore(name).clear());
-    Object.entries(prepared).forEach(([name,rows])=>{
-      const os=tx.objectStore(name);rows.forEach(row=>os.put(row));
-    });
-    const st=tx.objectStore('settings');
-    st.put(mainSettings);
-    st.put({id:'nextInvNo',value:Number(b.data.nextInvNo)||5001});
-    if(b.data.rates)st.put({id:'usdTry',value:Number(b.data.rates.usdTry)||46.98,eur:Number(b.data.rates.usdEur)||0.92,time:b.data.rates.rateTime||null});
-    const ms=tx.objectStore(WF_MEDIA_STORE);for(const row of mediaRows.values())ms.put(row);
+    try{
+      const stores=['companies','products','invoices','payments','settings',WF_MEDIA_STORE];
+      tx=db.transaction(stores,'readwrite');
+      tx.oncomplete=()=>{
+        if(failed)return;
+        for(const id of mediaRows.keys())WF_MEDIA_PERSISTED.add(id);
+        try{localStorage.setItem('wf_media_dedupe_v1','1');}catch(_){}
+        resolve();
+      };
+      tx.onerror=()=>fail(tx.error);
+      tx.onabort=()=>fail(tx.error||new Error('Restore aborted'));
+      for(const name of ['companies','products','invoices','payments','settings'])tx.objectStore(name).clear();
+      for(const [name,rows] of Object.entries(prepared)){
+        const os=tx.objectStore(name);
+        for(const row of rows)os.put(row);
+      }
+      const st=tx.objectStore('settings');
+      st.put(mainSettings);
+      st.put({id:'nextInvNo',value:Number(b.data.nextInvNo)||5001});
+      if(b.data.rates)st.put({id:'usdTry',value:Number(b.data.rates.usdTry)||46.98,eur:Number(b.data.rates.usdEur)||0.92,time:b.data.rates.rateTime||null});
+      const ms=tx.objectStore(WF_MEDIA_STORE);
+      for(const row of mediaRows.values())ms.put(row);
+    }catch(err){fail(err);}
   });
 }
-
 async function wfImportBackup(event){
   const input=event?.target;const file=input?.files?.[0];if(!file)return;
   const T=wfBackupTexts();
@@ -9406,10 +9486,22 @@ async function wfImportBackup(event){
     if(!wfValidateBackup(b)){if(typeof showToast==='function')showToast(T.invalid,'err');return;}
     if(!window.confirm(T.confirm))return;
     await wfReplaceStoresFromBackup(b);
-    if(b.preferences?.lang)localStorage.setItem('wf_lang',b.preferences.lang);
-    if(b.preferences?.theme)localStorage.setItem('wf_theme',b.preferences.theme);
-    if(b.preferences?.qblCart)localStorage.setItem('wf_qbl_cart',b.preferences.qblCart);
-    localStorage.setItem('wf_last_backup',new Date().toISOString());
+    // Preferences are optional: blocked localStorage must not hide a committed restore.
+    const preferences=b.preferences||{};
+    const setPreference=(key,value)=>{
+      try{if(value==null)localStorage.removeItem(key);else localStorage.setItem(key,value);}
+      catch(err){console.warn('Optional backup preference unavailable:',key,err);}
+    };
+    if(['ar','tr','en'].includes(preferences.lang))setPreference('wf_lang',preferences.lang);
+    if(['light','dark'].includes(preferences.theme))setPreference('wf_theme',preferences.theme);
+    if(Object.prototype.hasOwnProperty.call(preferences,'qblCart')){
+      const cart=preferences.qblCart;
+      if(cart==null)setPreference('wf_qbl_cart',null);
+      else if(typeof cart==='string'){
+        try{if(Array.isArray(JSON.parse(cart)))setPreference('wf_qbl_cart',cart);}catch(_){}
+      }
+    }
+    setPreference('wf_last_backup',new Date().toISOString());
     if(typeof showToast==='function')showToast(T.restored,'ok');
     setTimeout(()=>location.reload(),350);
   }catch(err){console.error('Backup import failed',err);if(typeof showToast==='function')showToast(T.invalid,'err');}
@@ -10360,8 +10452,9 @@ function closeDM(){
 async function executeDM(){
   const kw=DM_KEYWORDS[S.lang||'ar']||'حذف';
   if(document.getElementById('dmInput').value.trim()!==kw)return;
-  const cb=_dmCallback;closeDM();
+  const cb=_dmCallback;
   if(typeof cb==='function')await cb();
+  closeDM();
 }
 
 /* ============================================================
@@ -11247,7 +11340,7 @@ function setLang(l){
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
   const btn=document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`);
   if(btn)btn.classList.add('active');
-  localStorage.setItem('wf_lang',l);
+  try{localStorage.setItem('wf_lang',l);}catch(_){}
   applyTr();
 
   // ── تحديث نصوص الباركود السريع فوراً
@@ -11272,8 +11365,8 @@ function setLang(l){
 /* ============================================================
    THEME
 ============================================================ */
-function toggleTheme(){S.theme=S.theme==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',S.theme);document.getElementById('themeBtn').textContent=S.theme==='dark'?'☀️':'🌙';localStorage.setItem('wf_theme',S.theme);}
-function loadTheme(){const th=localStorage.getItem('wf_theme')||'light';S.theme=th;document.documentElement.setAttribute('data-theme',th);document.getElementById('themeBtn').textContent=th==='dark'?'☀️':'🌙';}
+function toggleTheme(){S.theme=S.theme==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',S.theme);document.getElementById('themeBtn').textContent=S.theme==='dark'?'☀️':'🌙';try{localStorage.setItem('wf_theme',S.theme);}catch(_){} }
+function loadTheme(){let th='light';try{th=localStorage.getItem('wf_theme')||'light';}catch(_){} S.theme=th;document.documentElement.setAttribute('data-theme',th);document.getElementById('themeBtn').textContent=th==='dark'?'☀️':'🌙';}
 
 /* ============================================================
    EXCHANGE RATE
@@ -12068,7 +12161,7 @@ async function saveCo(){
   if(isRetail){if(!buyerEl.value.trim()){showToast(t('fill_req'),'er');return;}}
   else{if(!nameEl.value.trim()){showToast(t('fill_req'),'er');return;}}
   const co={
-    id:S.editCoId||Date.now().toString(),type:S.clientType,
+    id:S.editCoId||wfNewRecordId(),type:S.clientType,
     name:isRetail?buyerEl.value.trim():nameEl.value.trim(),
     buyerName:buyerEl.value.trim(),
     country:isInternal?'TR':document.getElementById('coCountry').value,
@@ -12079,7 +12172,7 @@ async function saveCo(){
     website:document.getElementById('coWebsite').value.trim(),
     showrooms:isRetail?0:(parseInt(document.getElementById('coShowrooms').value)||0),
     logo:isRetail?null:S.logoData,
-    createdAt:new Date().toISOString(),
+    createdAt:S.companies.find(c=>c.id===S.editCoId)?.createdAt||new Date().toISOString(),
   };
   await dbPut('companies',co);
   const idx=S.companies.findIndex(c=>c.id===co.id);
@@ -12510,55 +12603,41 @@ showToast(delMsgs[S.lang]||delMsgs.en,'in');
    
 async function savePr(){
   const name=document.getElementById('prName').value.trim();
-  if(!name){showToast(t('fill_req'),'er');return;}
+  if(!name){showToast(t('fill_req'),'er');document.getElementById('prName').focus();return false;}
+  const priceA=parseFloat(document.getElementById('prPriceA').value);
+  if(!Number.isFinite(priceA)||priceA<=0){showToast(t('fill_req'),'er');document.getElementById('prPriceA').focus();return false;}
 
-  const priceA=parseFloat(document.getElementById('prPriceA').value)||0;
-  if(!priceA){showToast(t('fill_req'),'er');return;}
-
-  // ── ✅ قراءة الأبعاد من النظام الديناميكي
-  const dims = getPrDimsValue();
-  const l = dims[0]?.l || 0;
-  const w = dims[0]?.w || 0;
-  const h = dims[0]?.h || 0;
-
-  // ── ✅ حساب CBM الإجمالي من كل الصفوف
-  const totalCBM = S.prDims.reduce((sum, d) => {
-    const dl = d.l || 0, dw = d.w || 0, dh = d.h || 0;
-    return sum + (dl && dw && dh ? (dl * dw * dh / 1000000) : 0);
-  }, 0);
-  const cbm = parseFloat(totalCBM.toFixed(4));
-
+  // Capture the visible package rows before resetting the form; write once.
+  const pieces=(S.dimPieces?.length?S.dimPieces:[{l:0,w:0,h:0,weight:0,packets:1}]).map(p=>({...p,
+    l:Number(p.l)||0,w:Number(p.w)||0,h:Number(p.h)||0,
+    weight:Number(p.weight)||0,packets:parseInt(p.packets)||1
+  }));
+  const dims=pieces.map(({l,w,h})=>({l,w,h}));
+  const first=pieces[0];
+  const cbm=Number(pieces.reduce((sum,p)=>sum+p.l*p.w*p.h/1000000,0).toFixed(4));
+  const totalWeight=pieces.reduce((sum,p)=>sum+p.weight,0);
+  const totalPackets=pieces.reduce((sum,p)=>sum+p.packets,0);
+  const existing=S.products.find(p=>p.id===S.editPrId);
   const pr={
-    id:S.editPrId||Date.now().toString(),name,type:S.prType,
+    ...existing,id:S.editPrId||wfNewRecordId(),name,type:S.prType,
     hsCode:document.getElementById('prHsCode').value.trim(),
     desc:document.getElementById('prDesc').value.trim(),
     priceA,priceB:parseFloat(document.getElementById('prPriceB').value)||0,
     priceC:parseFloat(document.getElementById('prPriceC').value)||0,
-    priceUSD:priceA,priceTRY:usdToTry(priceA),
-    activeTier:S.prActiveTier,
-
-    // ── ✅ الأبعاد الأساسية (أول صف)
-    dimL:l, dimW:w, dimH:h,
-    dimensions:l&&w&&h?`${l}×${w}×${h}`:'',
-    cbm,
-
-    // ── ✅ كل صفوف الأبعاد الديناميكية
-    dims: dims,
-
-    weight:parseFloat(document.getElementById('prWeight').value)||0,
-    packets:parseInt(document.getElementById('prPackets').value)||1,
-    color: getPrColorValue(),
-    colorHex:S.selColor,image:S.prImgData,
-    barcode:name.toUpperCase(),createdAt:new Date().toISOString(),
+    priceUSD:priceA,priceTRY:usdToTry(priceA),activeTier:S.prActiveTier,
+    dimL:first.l,dimW:first.w,dimH:first.h,
+    dimensions:first.l&&first.w&&first.h?`${first.l}×${first.w}×${first.h}`:'',
+    dims,dimPieces:pieces,cbm,totalCBM:cbm,
+    weight:totalWeight,totalWeight,packets:totalPackets,totalPackets,
+    color:getPrColorValue(),colorHex:S.selColor,image:S.prImgData,
+    barcode:name.toUpperCase(),createdAt:existing?.createdAt||new Date().toISOString(),
   };
-
   await dbPut('products',pr);
   const idx=S.products.findIndex(p=>p.id===pr.id);
   if(idx>=0)S.products[idx]=pr;else S.products.push(pr);
   showToast(t('saved_pr'));resetPrForm();updateDash();showPage('products');
+  return true;
 }
-
-
 
 
 /* ============================================================
@@ -13127,6 +13206,7 @@ function editPr(id){
   S.editPrId               = id;
   S._editPrReturnToProducts = true;
   S.prImgData              = p.image || null;
+  S.selColor               = p.colorHex || '#8B7355';
   S.prActiveTier           = p.activeTier || 'A';
   S.prType                 = p.type || 'coffee_table';
 
@@ -13235,14 +13315,15 @@ function editPr(id){
     if (p.dimPieces && p.dimPieces.length) {
       S.dimPieces = p.dimPieces.map(d => ({ ...d }));
     } else {
-      S.dimPieces = [{
-        l:       p.dimL    || 0,
-        w:       p.dimW    || 0,
-        h:       p.dimH    || 0,
-        weight:  p.weight  || 0,
-        packets: p.packets || 1,
+      S.dimPieces = (p.dims?.length?p.dims:[{l:p.dimL,w:p.dimW,h:p.dimH}]).map((d,i)=>({
+        ...d,
+        l:       d.l    || 0,
+        w:       d.w    || 0,
+        h:       d.h    || 0,
+        weight:  i===0?(p.weight||0):0,
+        packets: i===0?Math.max(1,(p.packets||1)-((p.dims?.length||1)-1)):1,
         color:   p.color   || 'STANDARD',
-      }];
+      }));
     }
     renderDimPieces();
 
@@ -13784,7 +13865,9 @@ async function saveInvoice(){
   const paymentsTotal=S.currentInvPayments.reduce((s,p)=>s+(p.amount||0),0);
   const totalPaidUSD=depositUSD+paymentsTotal;
   const remainingUSD=Math.max(0,grandUSD-totalPaidUSD);
-  const invId=S.editInvId||Date.now().toString();
+  const invId=S.editInvId||wfNewRecordId();
+  const existingInv=S.editInvId?S.invoices.find(i=>i.id===S.editInvId):null;
+  const payments=S.currentInvPayments.map(p=>({...p,invoiceId:invId}));
   
   // 1️⃣ توليد الرقم الأوتوماتيكي بناءً على نوع الفاتورة
   const generatedInvNo = getAutoInvNo(S.invType);
@@ -13792,57 +13875,56 @@ async function saveInvoice(){
   const invNo = S.editInvId ? (S.invoices.find(i => i.id === S.editInvId)?.invNo || generatedInvNo) : generatedInvNo;
 
   const inv={
+    ...(existingInv||{}),
     id:invId,invNo,companyId:coId,companyName:co?.name||'—',
     companyLogo:co?.logo||null,companyType:co?.type||S.invType,
     country:co?.country||'',province:co?.province||'',city:co?.city||'',
     buyerName:co?.buyerName||'',
     currency:cur,tier:S.invTier,payMethod:S.invPayMethod,
     kdvEnabled:S.kdvEnabled,kdvRate:S.settings.kdvRate||20,kdvAmtUSD,
-    items:[...S.invItems],
+    items:JSON.parse(JSON.stringify(S.invItems)),
     subtotalUSD,discountUSD,depositUSD,grandTotal:grandUSD,
     totalPaidUSD,remainingUSD,
       totalCBM:parseFloat(totalCBM.toFixed(4)),totalPackets:totalPkts,
     regDate:document.getElementById('invRegDate').value, // حفظ تاريخ التسجيل
     loadDate:document.getElementById('invLoadDate').value,
     deliveryDate:document.getElementById('invDeliveryDate')?.value||'',
-    delivered:false,
-    deliveredAt:null,
+    delivered:existingInv?.delivered||false,
+    deliveredAt:existingInv?.deliveredAt||null,
     plate:document.getElementById('invPlate')?.value||'',
     truck:document.getElementById('invTruck')?.value||'',
     notes:document.getElementById('invNotes').value,
-    date:new Date().toLocaleDateString(),
-    createdAt:new Date().toISOString(),
+    date:existingInv?.date||new Date().toLocaleDateString(),
+    createdAt:existingInv?.createdAt||new Date().toISOString(),
     usdTry:S.usdTry,usdEur:S.usdEur,
     printLang:S.printLang,printOpts:{...S.printOpts},
-    payments:[...S.currentInvPayments],
+    payments,
   };
-  await dbPut('invoices',inv);
-  
-  // 2️⃣ زيادة العداد الخاص بالنوع المختار فقط وحفظه في الإعدادات
+  const operations=[{store:'invoices',value:inv}];
+  const settings={...S.settings};
   if(!S.editInvId){
-    if (S.invType === 'internal_retail') S.settings.nextNoRet++;
-    else if (S.invType === 'internal_wholesale') S.settings.nextNoWhl++;
-    else S.settings.nextNoExt++;
-    
-    await dbPut('settings', {id:'main', ...S.settings});
+    const counter=S.invType==='internal_retail'?'nextNoRet':S.invType==='internal_wholesale'?'nextNoWhl':'nextNoExt';
+    const fallback=counter==='nextNoRet'?3000:counter==='nextNoWhl'?1000:5000;
+    settings[counter]=(Number(settings[counter])||fallback)+1;
+    operations.push({store:'settings',value:{id:'main',...settings}});
   }
-  
+  payments.forEach(p=>operations.push({store:'payments',value:p}));
+  await wfWriteBatch(operations);
+
+  if(!S.editInvId)S.settings=settings;
   const idx=S.invoices.findIndex(i=>i.id===invId);
   if(idx>=0)S.invoices[idx]=inv;else S.invoices.push(inv);
-  
-  // save payments separately
-  for(const p of S.currentInvPayments){
-    p.invoiceId=invId;
-    await dbPut('payments',p);
+  for(const p of payments){
     const pi=S.payments.findIndex(x=>x.id===p.id);
     if(pi>=0)S.payments[pi]=p;else S.payments.push(p);
   }
-  
+
   showToast(S.editInvId?t('updated_inv'):t('saved_inv'),'ok');
   S.editInvId=null;S.invItems=[];S.currentInvPayments=[];
 
   // إخفاء شريط السلة عند حفظ الفاتورة
   QBL_CART.items = [];
+  qblCartSave();
   qblUpdateCartUI();
   const stickyBar = document.getElementById('qblStickyCart');
   if (stickyBar) stickyBar.classList.remove('visible');
@@ -14552,7 +14634,7 @@ async function addPaymentToInv() {
   }
 
   const payment = {
-    id: Date.now().toString(),
+    id: wfNewRecordId(),
     invoiceId: invId,
     amount: finalAmtInInvCur,
     originalAmount,
@@ -14565,14 +14647,17 @@ async function addPaymentToInv() {
     createdAt: new Date().toISOString(),
   };
 
-  await dbPut('payments', payment);
-  S.payments.push(payment);
-
-  const invPayments = S.payments.filter(p => p.invoiceId === invId);
+  const invPayments = [...S.payments.filter(p => p.invoiceId === invId), payment];
   const totalPaid = (inv.depositUSD || 0) + invPayments.reduce((s, p) => s + (p.amount || 0), 0);
-  inv.totalPaidUSD = totalPaid;
-  inv.remainingUSD = Math.max(0, (inv.grandTotal || 0) - totalPaid);
-  await dbPut('invoices', inv);
+  const updatedInv = {...inv, payments:invPayments, totalPaidUSD:totalPaid,
+    remainingUSD:Math.max(0, (inv.grandTotal || 0) - totalPaid)};
+  await wfWriteBatch([
+    {store:'payments',value:payment},
+    {store:'invoices',value:updatedInv},
+  ]);
+  S.payments.push(payment);
+  const invIndex = S.invoices.findIndex(i => i.id === invId);
+  if(invIndex>=0)S.invoices[invIndex]=updatedInv;
 
   document.getElementById('pmNewAmt').value = '';
   document.getElementById('pmNewNote').value = '';
@@ -14590,15 +14675,22 @@ async function addPaymentToInv() {
 
 async function deletePayment(payId, invId) {
   openDM('Payment #' + payId.slice(-4), async () => {
-    await dbDel('payments', payId);
-    S.payments = S.payments.filter(p => p.id !== payId);
+    const remainingPayments = S.payments.filter(p => p.id !== payId);
     const inv = S.invoices.find(i => i.id === invId);
+    const operations = [{store:'payments',type:'delete',id:payId}];
+    let updatedInv;
     if (inv) {
-      const invPayments = S.payments.filter(p => p.invoiceId === invId);
+      const invPayments = remainingPayments.filter(p => p.invoiceId === invId);
       const totalPaid = (inv.depositUSD || 0) + invPayments.reduce((s, p) => s + (p.amount || 0), 0);
-      inv.totalPaidUSD = totalPaid;
-      inv.remainingUSD = Math.max(0, (inv.grandTotal || 0) - totalPaid);
-      await dbPut('invoices', inv);
+      updatedInv = {...inv, payments:invPayments, totalPaidUSD:totalPaid,
+        remainingUSD:Math.max(0, (inv.grandTotal || 0) - totalPaid)};
+      operations.push({store:'invoices',value:updatedInv});
+    }
+    await wfWriteBatch(operations);
+    S.payments = remainingPayments;
+    if(updatedInv){
+      const invIndex=S.invoices.findIndex(i=>i.id===invId);
+      if(invIndex>=0)S.invoices[invIndex]=updatedInv;
     }
     showToast(t('deleted'), 'in');
     renderPayHistory(invId);
@@ -14613,12 +14705,12 @@ async function deletePayment(payId, invId) {
 ============================================================ */
 function editInv(id){
   const inv=S.invoices.find(i=>i.id===id);if(!inv)return;
-  S.editInvId=id;S.invItems=[...inv.items];S.invTier=inv.tier||'A';
+  S.editInvId=id;S.invItems=JSON.parse(JSON.stringify(inv.items||[]));S.invTier=inv.tier||'A';
   S.invCurrency=inv.currency||'USD';S.kdvEnabled=inv.kdvEnabled||false;
   S.invPayMethod=inv.payMethod||'cash';S.printLang=inv.printLang||'en';
   S.printOpts={...S.printOpts,...(inv.printOpts||{})};
   S.invType=inv.companyType||'external';
-  S.currentInvPayments=S.payments.filter(p=>p.invoiceId===id);
+  S.currentInvPayments=S.payments.filter(p=>p.invoiceId===id).map(p=>({...p}));
   showPage('create-invoice');
   
   setTimeout(()=>{
@@ -14659,10 +14751,12 @@ function editInv(id){
 async function deleteInv(id){
   const inv=S.invoices.find(i=>i.id===id);if(!inv)return;
   openDM(inv.invNo||'—',async()=>{
-    await dbDel('invoices',id);
-    S.invoices=S.invoices.filter(i=>i.id!==id);
     const invPayments=S.payments.filter(p=>p.invoiceId===id);
-    for(const p of invPayments){await dbDel('payments',p.id);}
+    await wfWriteBatch([
+      {store:'invoices',type:'delete',id},
+      ...invPayments.map(p=>({store:'payments',type:'delete',id:p.id})),
+    ]);
+    S.invoices=S.invoices.filter(i=>i.id!==id);
     S.payments=S.payments.filter(p=>p.invoiceId!==id);
     showToast(t('deleted'),'in');renderInvList();updateDash();
   });
@@ -15128,7 +15222,9 @@ function openSettingsPage() {
   switchTab('company'); // فتح تبويب الشركة افتراضياً
 }
 
+let wfPendingSettingsLogo;
 function loadSettingsToForm(){
+  wfPendingSettingsLogo=undefined;
   const sv=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
   
   sv('stCompanyName',S.settings.companyName);
@@ -15170,42 +15266,45 @@ function loadSettingsToForm(){
 async function saveSettings(){
   const gv=id=>{const el=document.getElementById(id);return el?el.value.trim():'';};
   
-  S.settings.companyName=gv('stCompanyName');
-  S.settings.address=gv('stAddress');
-  S.settings.phone=gv('stPhone');
-  S.settings.email=gv('stEmail');
-  S.settings.website=gv('stWebsite');
-  S.settings.mersis=gv('stMersis');
-  S.settings.bankName=gv('stBankName');
-  S.settings.beneficiary=gv('stBeneficiary');
-  S.settings.ibanUSD=gv('stIbanUSD');
-  S.settings.ibanTRY=gv('stIbanTRY');
-  S.settings.ibanEUR=gv('stIbanEUR');
-  S.settings.swift=gv('stSwift');
-  S.settings.accountNo=gv('stAccountNo');
-  S.settings.authPerson=gv('stAuthPerson');
-  S.settings.defaultNotes=gv('stDefaultNotes');
+  const settings={...S.settings};
+  if(wfPendingSettingsLogo!==undefined)settings.logo=wfPendingSettingsLogo;
+  settings.companyName=gv('stCompanyName');
+  settings.address=gv('stAddress');
+  settings.phone=gv('stPhone');
+  settings.email=gv('stEmail');
+  settings.website=gv('stWebsite');
+  settings.mersis=gv('stMersis');
+  settings.bankName=gv('stBankName');
+  settings.beneficiary=gv('stBeneficiary');
+  settings.ibanUSD=gv('stIbanUSD');
+  settings.ibanTRY=gv('stIbanTRY');
+  settings.ibanEUR=gv('stIbanEUR');
+  settings.swift=gv('stSwift');
+  settings.accountNo=gv('stAccountNo');
+  settings.authPerson=gv('stAuthPerson');
+  settings.defaultNotes=gv('stDefaultNotes');
   
   // 2️⃣ حفظ السلاسل الثلاثة الأوتوماتيكية
-  S.settings.prefixExt = gv('stPrefixExt') || 'a'; 
-  S.settings.nextNoExt = parseInt(gv('stNextNoExt')) || 5000;
-  S.settings.prefixRet = gv('stPrefixRet') || 'b'; 
-  S.settings.nextNoRet = parseInt(gv('stNextNoRet')) || 3000;
-  S.settings.prefixWhl = gv('stPrefixWhl') || 'c'; 
-  S.settings.nextNoWhl = parseInt(gv('stNextNoWhl')) || 1000;
+  settings.prefixExt = gv('stPrefixExt') || 'a'; 
+  settings.nextNoExt = parseInt(gv('stNextNoExt')) || 5000;
+  settings.prefixRet = gv('stPrefixRet') || 'b'; 
+  settings.nextNoRet = parseInt(gv('stNextNoRet')) || 3000;
+  settings.prefixWhl = gv('stPrefixWhl') || 'c'; 
+  settings.nextNoWhl = parseInt(gv('stNextNoWhl')) || 1000;
 
-  S.settings.kdvRate=parseFloat(gv('stKdvRate'))||20;
+  settings.kdvRate=parseFloat(gv('stKdvRate'))||20;
   
   const manTry=parseFloat(gv('stManualUsdTry'));
   const manEur=parseFloat(gv('stManualUsdEur'));
-  S.settings.manualUsdTry=manTry||null;
-  S.settings.manualUsdEur=manEur||null;
-  
-  if(manTry) S.usdTry=manTry;
-  if(manEur) S.usdEur=manEur;
+  settings.manualUsdTry=manTry||null;
+  settings.manualUsdEur=manEur||null;
   
   // حفظ الإعدادات في قاعدة البيانات
-  await dbPut('settings',{id:'main',...S.settings});
+  await wfWriteBatch([{store:'settings',value:{id:'main',...settings}}]);
+  S.settings=settings;
+  wfPendingSettingsLogo=undefined;
+  if(manTry) S.usdTry=manTry;
+  if(manEur) S.usdEur=manEur;
   
   // تحديث واجهة المستخدم (اللوجو والاسم)
   const navTxt=document.getElementById('navTitle');
@@ -15237,7 +15336,7 @@ function handleSettingsLogo(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
   r.onload=ev=>{
-    S.settings.logo=ev.target.result;
+    wfPendingSettingsLogo=ev.target.result;
     const lp=document.getElementById('settingsLogoPrev');
     if(lp)lp.innerHTML = renderSafeImg(ev.target.result, 'logo', 'width:100%;height:100%;object-fit:contain;display:block;', DEFAULT_WOW_LOGO);
     const nl=document.getElementById('navLogo');
@@ -15254,7 +15353,7 @@ function handleSettingsLogo(e){
 
 function resetSettingsLogo() {
   const defaultLogo = DEFAULT_WOW_LOGO;
-  S.settings.logo = defaultLogo;
+  wfPendingSettingsLogo = defaultLogo;
   
   // تحديث المعاينة في الإعدادات
   const lp = document.getElementById('settingsLogoPrev');
@@ -17172,7 +17271,7 @@ async function init(){
   // load data
   [S.companies,S.products,S.invoices,S.payments]=await Promise.all([dbGetAll('companies'),dbGetAll('products'),dbGetAll('invoices'),dbGetAll('payments')]);
   // apply lang
-  const savedLang=localStorage.getItem('wf_lang')||'ar';
+  let savedLang='ar';try{savedLang=localStorage.getItem('wf_lang')||'ar';}catch(_){}
   S.lang=savedLang;
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
   const activeLangBtn=document.querySelector(`.lang-btn[onclick="setLang('${savedLang}')"]`);
@@ -17399,20 +17498,21 @@ function openDeliverModal(invId, mode = 'deliver') {
 
   // ── حفظ الـ callback
   _deliverModalCallback = async () => {
+    const savedInv={...inv};
     if (mode === 'deliver') {
-      inv.delivered  = true;
-      inv.deliveredAt = new Date().toISOString();
-      inv.archived   = true;
-      inv.archivedAt = new Date().toISOString();
+      savedInv.delivered  = true;
+      savedInv.deliveredAt = new Date().toISOString();
+      savedInv.archived   = true;
+      savedInv.archivedAt = new Date().toISOString();
     } else {
-      inv.delivered   = false;
-      inv.deliveredAt = null;
-      inv.archived    = false;
-      inv.archivedAt  = null;
+      savedInv.delivered   = false;
+      savedInv.deliveredAt = null;
+      savedInv.archived    = false;
+      savedInv.archivedAt  = null;
     }
-    await dbPut('invoices', inv);
+    await dbPut('invoices', savedInv);
     const idx = S.invoices.findIndex(i => i.id === invId);
-    if (idx >= 0) S.invoices[idx] = inv;
+    if (idx >= 0) S.invoices[idx] = savedInv;
     showToast(texts.toast, 'ok');
     renderInvList();
     updateDash();
@@ -17431,16 +17531,12 @@ function closeDeliverModal() {
 }
 
 async function confirmDeliverModal() {
-  const box = document.getElementById('deliverModalBox');
-  if (box) box.classList.add('confirming');
-
-  setTimeout(async () => {
-    if (typeof _deliverModalCallback === 'function') {
-      await _deliverModalCallback();
-    }
+  const box=document.getElementById('deliverModalBox');
+  if(box)box.classList.add('confirming');
+  try{
+    if(typeof _deliverModalCallback==='function')await _deliverModalCallback();
     closeDeliverModal();
-    if (box) box.classList.remove('confirming');
-  }, 380);
+  }finally{if(box)box.classList.remove('confirming');}
 }
 
 // ── دالة مساعدة تُستدعى من الأزرار
@@ -21153,30 +21249,7 @@ function isKnownColor(val) {
    HOOKS — ربط مع الدوال الأصلية
 ============================================================ */
 
-/* ── تعديل savePr ── */
-const _origSavePr = window.savePr;
-window.savePr = async function () {
-  const first = S.dimPieces[0] || {};
-  const setV  = (id, v) => { const el = document.getElementById(id); if (el) el.value = v ?? ''; };
-  setV('dimL',      first.l       || 0);
-  setV('dimW',      first.w       || 0);
-  setV('dimH',      first.h       || 0);
-  setV('prWeight',  first.weight  || 0);
-  setV('prPackets', first.packets || 1);
-  setV('prColor',   first.color   || 'STANDARD');
-
-  await _origSavePr.call(this);
-
-  // حفظ كل القطع في آخر منتج مُضاف
-  const pr = S.products[S.products.length - 1];
-  if (pr) {
-    pr.dimPieces    = S.dimPieces.map(p => ({ ...p }));
-    pr.totalCBM     = parseFloat(calcTotalCBM().toFixed(4));
-    pr.totalWeight  = S.dimPieces.reduce((s, p) => s + (p.weight  || 0), 0);
-    pr.totalPackets = S.dimPieces.reduce((s, p) => s + (p.packets || 1), 0);
-    await dbPut('products', pr);
-  }
-};
+// Product packages are committed together by savePr before the form resets.
 
 /* ── تعديل resetPrForm ── */
 const _origResetPrForm = window.resetPrForm;
@@ -21924,6 +21997,32 @@ function imgViewerEscHandler(e) {
 
 
 
+
+
+/* SAVE GUARDS: keep input on failure and ignore repeat taps while writing. */
+const WF_SAVE_PENDING=new Set();
+async function wfRunSave(name,action){
+  if(WF_SAVE_PENDING.has(name))return false;
+  WF_SAVE_PENDING.add(name);
+  const controls=[...document.querySelectorAll(`[onclick^="${name}("]`)];
+  const disabled=controls.map(el=>el.disabled);
+  controls.forEach(el=>{el.disabled=true;el.setAttribute('aria-busy','true');});
+  try{return await action();}
+  catch(err){
+    console.error('WOW save failed:',name,err);
+    const msg=S.lang==='tr'?'Kaydedilemedi. Girdiğiniz bilgiler korunuyor. Depolama alanını kontrol edip tekrar deneyin.':
+      S.lang==='en'?'Could not save. Your input is preserved. Check storage and try again.':
+      'تعذر الحفظ. بيانات الإدخال ما زالت موجودة. تحقق من مساحة التخزين وحاول مجددًا.';
+    showToast(msg,'er');return false;
+  }finally{
+    WF_SAVE_PENDING.delete(name);
+    controls.forEach((el,i)=>{el.disabled=disabled[i];el.removeAttribute('aria-busy');});
+  }
+}
+for(const name of ['savePr','saveCo','saveInvoice','saveSettings','addPaymentToInv','executeDM','confirmDeliverModal']){
+  const action=window[name];
+  if(typeof action==='function')window[name]=function(...args){return wfRunSave(name,()=>action.apply(this,args));};
+}
 
 </script>
 
