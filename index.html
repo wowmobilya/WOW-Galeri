@@ -6008,37 +6008,6 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
   }
 }
 
-
-/* ============================================================
-   TABLET PORTRAIT SIDEBAR FIX — TOUCH TABLETS UP TO 1366px
-   Portrait behaves like tablet/mobile navigation: sidebar closed by default.
-============================================================ */
-@media (hover:none) and (pointer:coarse) and (min-width:600px) and (max-width:1366px) and (orientation:portrait){
-  :root{--side-w:0px !important;}
-
-  .sidebar{
-    width:260px !important;
-    transform:translateX(100%) translateZ(0) !important;
-    box-shadow:none !important;
-  }
-  [dir="ltr"] .sidebar{
-    transform:translateX(-100%) translateZ(0) !important;
-  }
-  .sidebar.open{
-    transform:translateX(0) translateZ(0) !important;
-    box-shadow:-4px 0 30px rgba(0,0,0,.2) !important;
-  }
-  [dir="ltr"] .sidebar.open{
-    box-shadow:4px 0 30px rgba(0,0,0,.2) !important;
-  }
-
-  .main{
-    margin-right:0 !important;
-    margin-left:0 !important;
-  }
-  .hamburger{display:flex !important;}
-}
-
 </style>
 </head>
 <body>
@@ -11561,18 +11530,6 @@ window.addEventListener('popstate',(e)=>{
 });
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sideOv').classList.toggle('open');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sideOv').classList.remove('open');}
-
-/* Keep the sidebar closed whenever a touch tablet enters portrait mode. */
-(function initTabletPortraitSidebarGuard(){
-  let mq;
-  try{mq=window.matchMedia('(hover: none) and (pointer: coarse) and (min-width: 600px) and (max-width: 1366px) and (orientation: portrait)');}
-  catch(_){return;}
-  const sync=()=>{if(mq.matches)closeSidebar();};
-  if(mq.addEventListener)mq.addEventListener('change',sync);
-  else if(mq.addListener)mq.addListener(sync);
-  window.addEventListener('pageshow',sync,{passive:true});
-  setTimeout(sync,0);
-})();
    /* ============================================================
    SMART BACK — الرجوع الهرمي الذكي
 ============================================================ */
@@ -14763,8 +14720,7 @@ const _wfImageCache=new Map();
 
 function safePdfFileName(invNo) {
   const base=String(invNo||'invoice').replace(/[\\/:*?"<>|\x00-\x1f]+/g,'-').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'')||'invoice';
-  const wowBase=/^WOW(?:[-_ ]|$)/i.test(base)?base:`WOW_${base}`;
-  return wowBase.slice(0,100)+'.pdf';
+  return base.slice(0,100)+'.pdf';
 }
 function getInvoicePdfRenderKey() {
   const html=document.getElementById('invoicePaperWrap')?.innerHTML||'';
