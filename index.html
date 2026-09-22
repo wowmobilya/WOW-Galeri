@@ -4,7 +4,7 @@
 <meta name="google" content="notranslate">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>WOW FURNITURE — Invoice System · PDF R1</title>
+<title>WOW FURNITURE — Invoice System · V14</title>
 
 <!-- ربط ملف الـ Manifest -->
 <link rel="manifest" href="manifest.json">
@@ -2676,20 +2676,104 @@ textarea.fc{resize:vertical;min-height:72px}
 .print-opt-lbl{font-size:11px;font-weight:600;color:var(--text2);}
 .print-opt-item.active .print-opt-lbl{color:var(--gold2);}
 
-/* PRINT LANG SELECTOR */
-.print-lang-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+/* PRINT LANG SELECTOR — PREMIUM / INVOICE-ONLY */
+.wf14-print-language-card{
+  position:relative;overflow:hidden;margin-bottom:16px;padding:14px;
+  border:1px solid rgba(200,169,110,.32);border-radius:16px;
+  background:linear-gradient(135deg,var(--card) 0%,var(--gold-light) 160%);
+  box-shadow:0 5px 18px rgba(0,0,0,.045);
+}
+.wf14-print-language-card::before{
+  content:'';position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,var(--gold),var(--gold2));
+}
+.wf14-lang-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px;}
+.wf14-lang-title-wrap{min-width:0;}
+.wf14-lang-hint{font-size:10px;color:var(--muted);font-weight:650;line-height:1.45;margin-top:3px;}
+.wf14-lang-lock{
+  display:inline-flex;align-items:center;gap:5px;flex-shrink:0;
+  border:1px solid rgba(56,161,105,.22);background:rgba(56,161,105,.075);
+  color:var(--green);border-radius:999px;padding:4px 8px;font-size:9px;font-weight:800;
+}
+.print-lang-row{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0;
+  padding:5px;border:1px solid var(--border);border-radius:14px;background:var(--input);
+}
 .print-lang-btn{
-  flex:1;min-width:80px;padding:10px 12px;border-radius:var(--rs);
-  border:2px solid var(--border);cursor:pointer;text-align:center;
-  font-size:13px;font-weight:700;color:var(--text2);background:var(--input);
-  transition:all var(--tr);display:flex;align-items:center;justify-content:center;gap:6px;
+  position:relative;min-width:0;min-height:58px;padding:7px 9px;border-radius:11px;
+  border:1px solid transparent;cursor:pointer;text-align:start;
+  color:var(--text2);background:transparent;transition:all .18s ease;
+  display:flex;align-items:center;justify-content:flex-start;gap:8px;font-family:inherit;
 }
-.print-lang-btn:hover{border-color:var(--gold);color:var(--gold2);}
+.print-lang-btn .wf14-pl-flag{
+  width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  background:var(--card);border:1px solid var(--border);font-size:18px;flex-shrink:0;
+  box-shadow:0 2px 6px rgba(0,0,0,.04);
+}
+.print-lang-btn .wf14-pl-copy{display:flex;flex-direction:column;min-width:0;line-height:1.15;}
+.print-lang-btn .wf14-pl-name{font-size:11.5px;font-weight:850;color:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.print-lang-btn .wf14-pl-code{font-size:8.5px;font-weight:800;color:var(--muted);letter-spacing:1px;margin-top:3px;}
+.print-lang-btn .wf14-pl-check{
+  margin-inline-start:auto;width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:1000;color:transparent;background:transparent;border:1px solid transparent;flex-shrink:0;
+}
+.print-lang-btn:hover{border-color:rgba(200,169,110,.42);background:var(--card);color:var(--gold2);transform:translateY(-1px);}
 .print-lang-btn.sel{
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  border-color:transparent;color:#fff;
-  box-shadow:0 4px 12px rgba(200,169,110,.3);
+  background:var(--card);border-color:var(--gold);color:var(--gold2);
+  box-shadow:0 4px 13px rgba(200,169,110,.16);
 }
+.print-lang-btn.sel .wf14-pl-flag{border-color:rgba(200,169,110,.45);background:var(--gold-light);}
+.print-lang-btn.sel .wf14-pl-code{color:var(--gold2);}
+.print-lang-btn.sel .wf14-pl-check{color:#fff;background:linear-gradient(135deg,var(--gold),var(--gold2));border-color:transparent;}
+@media(max-width:520px){
+  .wf14-lang-head{align-items:flex-start;flex-direction:column;gap:7px}
+  .print-lang-row{gap:5px;padding:4px}
+  .print-lang-btn{min-height:52px;padding:6px;gap:6px}
+  .print-lang-btn .wf14-pl-flag{width:30px;height:30px;font-size:16px}
+  .print-lang-btn .wf14-pl-name{font-size:10px}
+  .print-lang-btn .wf14-pl-check{display:none}
+}
+
+/* Preview toolbar language switch — visually compact, logically isolated */
+.wf14-preview-lang{
+  display:flex;align-items:center;gap:7px;padding:4px 5px;border:1px solid var(--border);
+  border-radius:12px;background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.035);
+}
+.wf14-preview-lang-label{font-size:10px;color:var(--muted);font-weight:750;padding-inline:4px;white-space:nowrap;}
+.wf14-preview-lang-buttons{display:flex;align-items:center;gap:3px;background:var(--input);padding:3px;border-radius:9px;}
+.wf14-preview-lang-btn{
+  min-width:42px;height:30px;border:none;border-radius:7px;background:transparent;color:var(--muted);
+  cursor:pointer;font:800 10px inherit;display:flex;align-items:center;justify-content:center;gap:4px;padding:0 7px;transition:all .16s ease;
+}
+.wf14-preview-lang-btn:hover{color:var(--gold2);background:var(--card)}
+.wf14-preview-lang-btn.sel{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;box-shadow:0 3px 8px rgba(200,169,110,.25)}
+@media(max-width:700px){.wf14-preview-lang-label{display:none}.wf14-preview-lang-btn{min-width:36px;padding:0 5px}.wf14-preview-lang{padding:3px}}
+
+/* ===== V15 modern preview toolbar ===== */
+.pdf-bar{display:grid;grid-template-columns:minmax(170px,1fr) auto minmax(240px,auto);align-items:center;gap:14px;padding:14px 18px;background:linear-gradient(180deg,#fbfcfe 0%,#f4f6fa 100%);border-bottom:1px solid rgba(30,41,59,.08);box-shadow:0 8px 30px rgba(15,23,42,.04)}
+.wf15-preview-title{display:flex;align-items:center;gap:12px;min-width:0}
+.wf15-preview-title-badge{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(200,169,110,.18),rgba(200,169,110,.05));border:1px solid rgba(200,169,110,.26);color:var(--gold2);font-size:19px;box-shadow:0 8px 18px rgba(200,169,110,.10)}
+.wf15-preview-title-text{display:flex;flex-direction:column;min-width:0}
+.wf15-preview-title-main{font-size:16px;font-weight:850;letter-spacing:.01em;color:#182235;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wf15-preview-title-sub{font-size:11px;color:#7b8797;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#wf14PreviewLangControl.wf14-preview-lang{padding:8px 10px;border-radius:18px;border:1px solid rgba(15,23,42,.08);background:#fff;box-shadow:0 10px 26px rgba(15,23,42,.05);gap:10px;justify-self:center}
+#wf14PreviewLangControl .wf14-preview-lang-label{font-size:11px;font-weight:800;color:#6b7280;padding-inline:2px}
+#wf14PreviewLangControl .wf14-preview-lang-buttons{gap:6px;padding:4px;border-radius:14px;background:linear-gradient(180deg,#f7f8fb,#eef2f7);border:1px solid rgba(15,23,42,.05)}
+#wf14PreviewLangControl .wf14-preview-lang-btn{min-width:58px;height:36px;padding:0 10px;border-radius:11px;font-size:13px;font-weight:800;letter-spacing:.01em;color:#64748b;background:transparent;border:1px solid transparent;transition:all .18s ease;display:flex;align-items:center;justify-content:center;gap:6px}
+#wf14PreviewLangControl .wf14-preview-lang-btn:hover{background:#fff;color:#22314c;border-color:rgba(15,23,42,.08);transform:translateY(-1px)}
+#wf14PreviewLangControl .wf14-preview-lang-btn.sel{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border-color:transparent;box-shadow:0 10px 20px rgba(200,169,110,.22)}
+.wf15-preview-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.wf15-preview-actions .btn{height:40px;padding:0 16px;border-radius:14px;font-size:12px;font-weight:800;box-shadow:0 10px 22px rgba(15,23,42,.05)}
+.wf15-preview-actions .btn.btn-s{background:#fff;border:1px solid rgba(15,23,42,.08);color:#334155}
+.wf15-preview-actions .btn.btn-s:hover{background:#f8fafc;color:#182235;border-color:rgba(15,23,42,.14)}
+.wf15-preview-actions .btn.btn-p{background:linear-gradient(135deg,var(--gold),var(--gold2));border:0;color:#fff;box-shadow:0 14px 26px rgba(200,169,110,.28)}
+.wf15-preview-actions .btn.btn-p:hover{filter:brightness(.98);transform:translateY(-1px)}
+.wf15-preview-icon{width:40px;height:40px;border-radius:14px;border:1px solid rgba(15,23,42,.08);background:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;color:#5b6472;transition:all .18s ease;box-shadow:0 10px 22px rgba(15,23,42,.05)}
+.wf15-preview-icon:hover{background:#f8fafc;color:#1f2937;border-color:rgba(15,23,42,.16);transform:translateY(-1px)}
+.wf15-preview-icon.close:hover{background:#fff1f2;color:#e11d48;border-color:rgba(225,29,72,.18)}
+@media(max-width:1100px){.pdf-bar{grid-template-columns:1fr auto;grid-template-areas:'title actions' 'lang lang'}.wf15-preview-title{grid-area:title}.wf15-preview-actions{grid-area:actions}.wf14-preview-lang{grid-area:lang;justify-self:flex-start}}
+@media(max-width:700px){.pdf-bar{grid-template-columns:1fr;grid-template-areas:'title' 'lang' 'actions';padding:12px}.wf15-preview-actions{justify-content:stretch}.wf15-preview-actions .btn{flex:1 1 160px}.wf15-preview-icon{flex:0 0 40px}.wf15-preview-title-main{font-size:15px}.wf15-preview-title-sub{font-size:10px}#wf14PreviewLangControl.wf14-preview-lang{width:100%;justify-content:space-between}#wf14PreviewLangControl .wf14-preview-lang-label{display:inline-flex}.wf15-preview-actions{width:100%}}
+
 
 /* ============================================================
    INVOICE SUMMARY — STICKY RIGHT COLUMN
@@ -6039,6 +6123,127 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
   .hamburger{display:flex !important;}
 }
 
+
+/* ===== V16 compact / equal-height preview toolbar ===== */
+.pdf-bar{
+  grid-template-columns:minmax(180px,1fr) auto auto !important;
+  align-items:center !important;
+  gap:8px !important;
+  padding:9px 12px !important;
+  min-height:56px;
+  background:#f8fafc !important;
+  box-shadow:0 4px 14px rgba(15,23,42,.035) !important;
+}
+.wf15-preview-title{gap:8px !important;}
+.wf15-preview-title-badge{
+  width:34px !important;height:34px !important;border-radius:10px !important;
+  font-size:16px !important;box-shadow:none !important;
+}
+.wf15-preview-title-text{justify-content:center;}
+.wf15-preview-title-main{font-size:15px !important;font-weight:850 !important;line-height:1.15;}
+.wf15-preview-title-sub{display:none !important;}
+
+/* Print-language control: compact, with all 3 buttons identical. */
+#wf14PreviewLangControl.wf14-preview-lang{
+  min-height:42px !important;
+  padding:3px 5px !important;
+  border-radius:12px !important;
+  gap:6px !important;
+  box-shadow:none !important;
+  justify-self:center !important;
+}
+#wf14PreviewLangControl .wf14-preview-lang-label{
+  font-size:10px !important;font-weight:800 !important;padding-inline:4px !important;
+}
+#wf14PreviewLangControl .wf14-preview-lang-buttons{
+  gap:4px !important;padding:0 !important;border:none !important;background:transparent !important;
+}
+#wf14PreviewLangControl .wf14-preview-lang-btn{
+  width:52px !important;min-width:52px !important;height:36px !important;min-height:36px !important;
+  padding:0 7px !important;border-radius:9px !important;font-size:11.5px !important;
+  box-shadow:none !important;transform:none !important;
+}
+#wf14PreviewLangControl .wf14-preview-lang-btn.sel{
+  box-shadow:0 3px 8px rgba(200,169,110,.20) !important;
+}
+
+/* Every action uses the same normal 36px control height. */
+.wf15-preview-actions{
+  gap:6px !important;flex-wrap:nowrap !important;align-items:center !important;
+}
+.wf15-preview-actions .btn,
+.wf15-preview-icon{
+  height:36px !important;min-height:36px !important;
+  border-radius:9px !important;
+  box-shadow:none !important;
+  transform:none !important;
+}
+.wf15-preview-actions .btn{
+  padding:0 11px !important;
+  font-size:11.5px !important;
+  font-weight:800 !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+}
+.wf15-preview-icon{
+  width:36px !important;min-width:36px !important;flex:0 0 36px !important;
+  font-size:14px !important;
+}
+.wf15-preview-actions .btn:hover,
+.wf15-preview-icon:hover{transform:none !important;}
+
+/* Tablet: title + actions on first row, language neatly below. */
+@media(max-width:1100px){
+  .pdf-bar{
+    grid-template-columns:minmax(150px,1fr) auto !important;
+    grid-template-areas:'title actions' 'lang lang' !important;
+    gap:7px 10px !important;
+    padding:9px 12px !important;
+  }
+  .wf15-preview-title{grid-area:title !important;}
+  .wf15-preview-actions{grid-area:actions !important;justify-content:flex-end !important;}
+  #wf14PreviewLangControl.wf14-preview-lang{
+    grid-area:lang !important;justify-self:start !important;width:auto !important;
+  }
+}
+
+/* Phone: clean stacked layout; action controls stay equal. */
+@media(max-width:700px){
+  .pdf-bar{
+    grid-template-columns:1fr !important;
+    grid-template-areas:'title' 'lang' 'actions' !important;
+    gap:8px !important;
+    padding:10px !important;
+  }
+  .wf15-preview-title{width:100% !important;}
+  #wf14PreviewLangControl.wf14-preview-lang{
+    width:100% !important;justify-self:stretch !important;justify-content:space-between !important;
+  }
+  #wf14PreviewLangControl .wf14-preview-lang-buttons{flex:1 !important;display:grid !important;grid-template-columns:repeat(3,1fr) !important;}
+  #wf14PreviewLangControl .wf14-preview-lang-btn{width:100% !important;min-width:0 !important;}
+  .wf15-preview-actions{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:6px !important;
+  }
+  .wf15-preview-actions .btn,
+  .wf15-preview-icon{
+    width:100% !important;min-width:0 !important;max-width:none !important;flex:none !important;
+  }
+  .wf15-preview-actions .btn{
+    padding:0 6px !important;font-size:10.5px !important;
+    overflow:hidden !important;text-overflow:ellipsis !important;
+  }
+}
+
+/* Small phones: 2 x 2 equal action grid for comfortable touch targets. */
+@media(max-width:520px){
+  .wf15-preview-actions{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
+  .wf15-preview-actions .btn,
+  .wf15-preview-icon{height:38px !important;min-height:38px !important;}
+}
+
 </style>
 </head>
 <body>
@@ -8610,20 +8815,28 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
 <div class="modal-ov" id="pdfModal">
   <div class="modal" style="max-width:1024px;padding:0;overflow:hidden;">
     <div class="pdf-bar">
-      <span style="font-weight:700;" data-i18n="preview_title">معاينة الفاتورة</span>
-      <div class="pdf-lang-row">
-        <span style="font-size:11px;color:var(--muted);" data-i18n="print_lang_title">لغة:</span>
-        <select class="pdf-lang-sel" id="pdfLangSel" onchange="onPdfLangChange()">
-          <option value="en">🇬🇧 English</option>
-          <option value="tr">🇹🇷 Türkçe</option>
-          <option value="ar">🇸🇦 العربية</option>
-        </select>
+      <div class="wf15-preview-title">
+        <div class="wf15-preview-title-badge">🧾</div>
+        <div class="wf15-preview-title-text">
+          <span class="wf15-preview-title-main" data-i18n="preview_title">معاينة الفاتورة</span>
+        </div>
       </div>
-      <div style="margin-right:auto;display:flex;gap:6px;flex-wrap:wrap;">
+      <div class="wf14-preview-lang" id="wf14PreviewLangControl">
+        <span class="wf14-preview-lang-label" data-i18n="print_lang_title">لغة:</span>
+        <select class="pdf-lang-sel" id="pdfLangSel" onchange="onPdfLangChange()" style="display:none!important;" aria-hidden="true" tabindex="-1">
+          <option value="en">English</option><option value="tr">Türkçe</option><option value="ar">العربية</option>
+        </select>
+        <div class="wf14-preview-lang-buttons" role="radiogroup" aria-label="Invoice language">
+          <button type="button" class="wf14-preview-lang-btn sel" data-pvlang="en" onclick="wf14SelectPreviewLang('en',this)" title="English">🇬🇧 EN</button>
+          <button type="button" class="wf14-preview-lang-btn" data-pvlang="tr" onclick="wf14SelectPreviewLang('tr',this)" title="Türkçe">🇹🇷 TR</button>
+          <button type="button" class="wf14-preview-lang-btn" data-pvlang="ar" onclick="wf14SelectPreviewLang('ar',this)" title="العربية">🇸🇦 AR</button>
+        </div>
+      </div>
+      <div class="wf15-preview-actions">
         <button class="btn btn-s btn-sm" onclick="openPrintOptionsModal('preview')">⚙️ <span data-i18n="share_settings">إعدادات الطباعة</span></button>
-        <button class="btn btn-p btn-sm" onclick="openUnifiedShareModal(event)" style="gap:6px;">📤 <span data-i18n="share_btn">مشاركة</span></button>
-        <button class="btn btn-s btn-sm" onclick="printInvoice()">🖨️</button>
-        <button class="modal-close" onclick="closeModal('pdfModal')">✕</button>
+        <button class="btn btn-p btn-sm" onclick="openUnifiedShareModal(event)" style="gap:7px;">📤 <span data-i18n="share_btn">مشاركة</span></button>
+        <button class="wf15-preview-icon" onclick="printInvoice()" title="Print" aria-label="Print">🖨️</button>
+        <button class="wf15-preview-icon close" onclick="closeModal('pdfModal')" title="Close" aria-label="Close">✕</button>
       </div>
     </div>
     <div data-i18n="excel_hint" style="padding:6px 16px;font-size:11px;color:var(--muted);background:var(--input);">Excel: فاتورة بخلايا قابلة للتعديل ومجاميع تلقائية. راجع المبلغ كتابةً ورمز QR بعد التعديل؛ لا يتحدثان تلقائيًا.</div>
@@ -8815,13 +9028,25 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
       <button class="modal-close" onclick="closeModal('printOptionsModal')">✕</button>
     </div>
 
-    <!-- لغة الطباعة -->
-    <div style="margin-bottom:14px;">
-      <div class="print-opt-title" id="poLangTitle">🌐 لغة الطباعة والتنزيل</div>
-      <div class="print-lang-row">
-        <button class="print-lang-btn sel" data-pl="en" onclick="setPrintLang('en',this);updatePrintOptsBtnLabel()">🇬🇧 English</button>
-        <button class="print-lang-btn" data-pl="tr" onclick="setPrintLang('tr',this);updatePrintOptsBtnLabel()">🇹🇷 Türkçe</button>
-        <button class="print-lang-btn" data-pl="ar" onclick="setPrintLang('ar',this);updatePrintOptsBtnLabel()">🇸🇦 العربية</button>
+    <!-- لغة الفاتورة فقط — مستقلة عن لغة البرنامج -->
+    <div class="wf14-print-language-card">
+      <div class="wf14-lang-head">
+        <div class="wf14-lang-title-wrap">
+          <div class="print-opt-title" id="poLangTitle" style="margin-bottom:0;">🌐 لغة الفاتورة</div>
+          <div class="wf14-lang-hint" id="wf14PrintLangHint">تغيّر نص الفاتورة فقط — لغة البرنامج والأزرار لا تتغير</div>
+        </div>
+        <div class="wf14-lang-lock" id="wf14LangLock">🔒 واجهة مستقلة</div>
+      </div>
+      <div class="print-lang-row" role="radiogroup" aria-label="Invoice language">
+        <button type="button" class="print-lang-btn sel" data-pl="en" onclick="setPrintLang('en',this)" aria-pressed="true">
+          <span class="wf14-pl-flag">🇬🇧</span><span class="wf14-pl-copy"><span class="wf14-pl-name">English</span><span class="wf14-pl-code">EN</span></span><span class="wf14-pl-check">✓</span>
+        </button>
+        <button type="button" class="print-lang-btn" data-pl="tr" onclick="setPrintLang('tr',this)" aria-pressed="false">
+          <span class="wf14-pl-flag">🇹🇷</span><span class="wf14-pl-copy"><span class="wf14-pl-name">Türkçe</span><span class="wf14-pl-code">TR</span></span><span class="wf14-pl-check">✓</span>
+        </button>
+        <button type="button" class="print-lang-btn" data-pl="ar" onclick="setPrintLang('ar',this)" aria-pressed="false">
+          <span class="wf14-pl-flag">🇸🇦</span><span class="wf14-pl-copy"><span class="wf14-pl-name">العربية</span><span class="wf14-pl-code">AR</span></span><span class="wf14-pl-check">✓</span>
+        </button>
       </div>
     </div>
 
@@ -10613,18 +10838,34 @@ function updatePrintOpts(){
   });
   refreshActivePreviewFromPrintSettings();
 }
+function wf14SyncInvoiceLangControls(lang){
+  const v=['ar','tr','en'].includes(lang)?lang:'en';
+  document.querySelectorAll('#printOptionsModal .print-lang-btn').forEach(b=>{
+    const on=b.dataset.pl===v;b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on?'true':'false');
+  });
+  document.querySelectorAll('.wf14-preview-lang-btn').forEach(b=>{
+    const on=b.dataset.pvlang===v;b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on?'true':'false');
+  });
+  const pdfSel=document.getElementById('pdfLangSel');if(pdfSel&&pdfSel.value!==v)pdfSel.value=v;
+}
 function setPrintLang(lang,btn){
+  if(!['ar','tr','en'].includes(lang))return;
+  // IMPORTANT: only invoice/export language changes here. Never call setLang/applyTr.
   S.printLang=lang;
-  document.querySelectorAll('.print-lang-btn').forEach(b=>b.classList.remove('sel'));
-  if(btn)btn.classList.add('sel');
-  const pdfSel=document.getElementById('pdfLangSel');
-  if(pdfSel)pdfSel.value=lang;
+  wf14SyncInvoiceLangControls(lang);
   refreshActivePreviewFromPrintSettings();
 }
+function wf14SelectPreviewLang(lang,btn){
+  if(!['ar','tr','en'].includes(lang))return;
+  const pdfSel=document.getElementById('pdfLangSel');if(pdfSel)pdfSel.value=lang;
+  onPdfLangChange();
+}
 function onPdfLangChange(){
-  const val=document.getElementById('pdfLangSel').value;
+  const val=document.getElementById('pdfLangSel')?.value||S.printLang||'en';
+  if(!['ar','tr','en'].includes(val))return;
+  // Invoice only. The application UI remains governed exclusively by S.lang.
   S.printLang=val;
-  document.querySelectorAll('.print-lang-btn').forEach(b=>b.classList.toggle('sel',b.dataset.pl===val));
+  wf14SyncInvoiceLangControls(val);
   const wrap=document.getElementById('invoicePaperWrap');
   if(wrap&&wrap.innerHTML&&_lastPreviewInv){
     wrap.innerHTML=buildInvoiceHTML(_lastPreviewInv,val,S.printOpts);
@@ -10643,6 +10884,7 @@ function refreshActivePreviewFromPrintSettings(){
   wrap.innerHTML=buildInvoiceHTML(_lastPreviewInv,S.printLang,S.printOpts);
   const pdfSel=document.getElementById('pdfLangSel');
   if(pdfSel)pdfSel.value=S.printLang;
+  if(typeof wf14SyncInvoiceLangControls==='function')wf14SyncInvoiceLangControls(S.printLang);
   invalidateInvoicePdfFile();
   scheduleInvoicePdfPreparation();
 }
@@ -20286,9 +20528,7 @@ function openPrintOptionsModal(context='general') {
     S.printLang=document.getElementById('pdfLangSel')?.value||_lastPreviewInv.printLang||S.printLang;
   }
   syncPrintOptsToModal();
-  document.querySelectorAll('#printOptionsModal .print-lang-btn').forEach(b => {
-    b.classList.toggle('sel', b.dataset.pl === S.printLang);
-  });
+  if(typeof wf14SyncInvoiceLangControls==='function')wf14SyncInvoiceLangControls(S.printLang);
   const curSel=document.getElementById('poInvoiceCurrency');
   if(curSel)curSel.value=(_printOptionsContext==='preview'&&_lastPreviewInv?.currency)||S.invCurrency||'USD';
   const saveBtn=document.getElementById('poSaveActionBtn');
@@ -20313,7 +20553,7 @@ function updatePrintOptsModalTexts() {
   const lang = S.lang || 'ar';
   const titles = {
     modal:    { ar:'خيارات الطباعة والمشاركة', tr:'Yazdırma ve Paylaşım Seçenekleri', en:'Print & Share Options' },
-    lang:     { ar:'🌐 لغة الطباعة والتنزيل',  tr:'🌐 Yazdırma Dili',                  en:'🌐 Print Language'     },
+    lang:     { ar:'🌐 لغة الفاتورة',          tr:'🌐 Fatura Dili',                    en:'🌐 Invoice Language'   },
     showHide: { ar:'👁️ إظهار / إخفاء في الفاتورة', tr:'👁️ Faturada Göster / Gizle', en:'👁️ Show / Hide in Invoice' },
     currency: { ar:'💱 عملة الفاتورة وأسعار الصرف', tr:'💱 Fatura Para Birimi ve Döviz Kurları', en:'💱 Invoice Currency & Exchange Rates' },
     invCurrency:{ ar:'💵 عملة عرض الفاتورة', tr:'💵 Fatura Görüntüleme Para Birimi', en:'💵 Invoice Display Currency' },
@@ -20322,6 +20562,8 @@ function updatePrintOptsModalTexts() {
     preview:  { ar:'معاينة',   tr:'Önizle',    en:'Preview'  },
     save:     { ar:'حفظ',      tr:'Kaydet',    en:'Save'     },
     print:    { ar:'طباعة',    tr:'Yazdır',    en:'Print'    },
+    langHint: { ar:'تغيّر نص الفاتورة فقط — لغة البرنامج والأزرار لا تتغير', tr:'Yalnızca fatura metni değişir — program ve düğme dili değişmez', en:'Changes invoice text only — app and button language stays unchanged' },
+    langLock: { ar:'🔒 واجهة مستقلة', tr:'🔒 Bağımsız arayüz', en:'🔒 UI stays separate' },
   };
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   set('printOptionsModalTitle', titles.modal[lang]    || titles.modal.en);
@@ -20334,6 +20576,8 @@ function updatePrintOptsModalTexts() {
   set('poPreviewBtn',           titles.preview[lang]  || titles.preview.en);
   set('poSaveBtn',              titles.save[lang]     || titles.save.en);
   set('poPrintBtn',             titles.print[lang]    || titles.print.en);
+  set('wf14PrintLangHint',      titles.langHint[lang] || titles.langHint.en);
+  set('wf14LangLock',           titles.langLock[lang] || titles.langLock.en);
   updatePrintOptsBtnLabel();
 }
 
@@ -23827,6 +24071,224 @@ try{
 window.WF_SHARE_DIAGNOSTICS=function(){return {version:'V12-PREMIUM-TECH-NOTICE',pdfShare:true,excelShare:false,excelDownload:true,firstSheet:'WOW NOTICE',htmlFallback:false,csvFallback:false}};
 window.WF_EXCEL_NOTICE_V11=true;
 window.WF_EXCEL_NOTICE_V12=true;
+})();
+</script>
+
+
+
+<!-- ============================================================
+     WOW V13 — ORIGINAL + REVIEW COPY WORKFLOW
+     - PDF: Original system share + watermarked Review Copy share
+     - Excel: Original XLSX download + watermarked Review Copy XLSX download
+     - Review wording follows invoice print language (AR / TR / EN)
+     - Original exports remain completely unchanged
+     ============================================================ -->
+<style id="wf-v13-review-copy-style">
+#wfUnifiedShareOverlay .wf-share-choices{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px!important}
+#wfUnifiedShareOverlay .wf13-format-card{border:1.5px solid var(--border);background:var(--input);border-radius:18px;padding:14px;min-width:0;box-shadow:0 2px 10px rgba(0,0,0,.025)}
+#wfUnifiedShareOverlay .wf13-format-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+#wfUnifiedShareOverlay .wf13-format-icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:1000;letter-spacing:.5px;flex-shrink:0;box-shadow:0 5px 14px rgba(0,0,0,.12)}
+#wfUnifiedShareOverlay .wf13-format-icon.pdf{background:linear-gradient(135deg,#e53e3e,#b91c1c)}
+#wfUnifiedShareOverlay .wf13-format-icon.xls{background:linear-gradient(135deg,#38a169,#276749)}
+#wfUnifiedShareOverlay .wf13-format-copy{flex:1;min-width:0}
+#wfUnifiedShareOverlay .wf13-format-title{font-size:15px;font-weight:900;color:var(--text);line-height:1.2}
+#wfUnifiedShareOverlay .wf13-format-desc{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.45}
+#wfUnifiedShareOverlay .wf13-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#wfUnifiedShareOverlay .wf13-action{border:1.5px solid var(--border);background:var(--card);color:var(--text2);border-radius:12px;min-height:58px;padding:8px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:inherit;cursor:pointer;transition:all .18s ease;line-height:1.2}
+#wfUnifiedShareOverlay .wf13-action strong{font-size:11.5px;font-weight:900;color:inherit}
+#wfUnifiedShareOverlay .wf13-action small{font-size:8.5px;color:var(--muted);font-weight:650;line-height:1.25}
+#wfUnifiedShareOverlay .wf13-action:not(:disabled):hover{border-color:var(--gold);background:var(--gold-light);color:var(--gold2);transform:translateY(-1px);box-shadow:0 5px 14px rgba(200,169,110,.13)}
+#wfUnifiedShareOverlay .wf13-action.preview{border-color:rgba(229,62,62,.25);background:rgba(229,62,62,.035)}
+#wfUnifiedShareOverlay .wf13-action.preview:not(:disabled):hover{border-color:rgba(229,62,62,.55);background:rgba(229,62,62,.075);color:#c53030}
+#wfUnifiedShareOverlay .wf13-action:disabled{opacity:.48;cursor:wait;transform:none!important;box-shadow:none!important}
+#wfUnifiedShareOverlay .wf13-format-state{font-size:9px;color:var(--muted);text-align:center;margin-top:8px;min-height:14px;font-weight:650}
+#wfUnifiedShareOverlay .wf13-review-key{margin-top:11px;padding:9px 11px;border-radius:12px;background:linear-gradient(135deg,rgba(229,62,62,.055),rgba(200,169,110,.055));border:1px dashed rgba(229,62,62,.22);font-size:9.5px;color:var(--text2);line-height:1.55;text-align:center}
+#wfUnifiedShareOverlay .wf13-review-key b{color:#c53030}
+@media(max-width:600px){#wfUnifiedShareOverlay .wf-share-choices{grid-template-columns:1fr!important}#wfUnifiedShareOverlay .wf13-action{min-height:54px}}
+</style>
+<script id="wf-v13-review-copy-workflow">
+(function(){
+'use strict';
+if(typeof wfBuildPageSet!=='function'||typeof wfMakePdf!=='function'||typeof wfRasterizePage!=='function')return;
+
+const WF13={token:0,pdfOriginal:null,pdfReview:null,busyPdf:false,busyExcel:false,excelReview:false};
+const _wf13ExcelBuilder=(typeof wfMakeExcelLayoutWorkbook==='function')?wfMakeExcelLayoutWorkbook:null;
+
+function q(id){return document.getElementById(id)}
+function invoice(){
+  try{if(typeof wfRefreshCurrentPreview==='function')wfRefreshCurrentPreview()}catch(_){ }
+  if(typeof _lastPreviewInv!=='undefined'&&_lastPreviewInv)return _lastPreviewInv;
+  try{if(typeof S!=='undefined'&&S.invItems?.length&&typeof previewInvoice==='function'){previewInvoice(false);if(_lastPreviewInv)return _lastPreviewInv}}catch(_){ }
+  return null;
+}
+function invoiceLang(inv){
+  const v=(q('pdfLangSel')?.value||inv?.printLang||(typeof S!=='undefined'?S.printLang:null)||'en').toLowerCase();
+  return v==='ar'||v==='tr'||v==='en'?v:'en';
+}
+function uiLang(){
+  const v=((typeof S!=='undefined'&&S.lang)||document.documentElement.lang||'ar').toLowerCase();
+  return v==='ar'||v==='tr'||v==='en'?v:'ar';
+}
+function copy(L){
+  const D={
+    ar:{title:'إرسال الفاتورة',sub:'اختر النسخة الأصلية أو نسخة المراجعة قبل الاعتماد',pdfDesc:'مشاركة مباشرة من نافذة الجهاز',xlsDesc:'ملف XLSX حقيقي قابل للتعديل — تنزيل',original:'النسخة الأصلية',originalSubPdf:'نهائية ونظيفة',originalSubXls:'بدون علامة مراجعة',review:'نسخة للمراجعة',reviewSub:'بعلامة شفافة — غير نهائية',reviewMark:'نسخة للمراجعة',notFinal:'غير نهائية',reviewOnly:'للمراجعة فقط قبل الاعتماد',preparing:'جاري التجهيز…',ready:'جاهز',share:'مشاركة',download:'تنزيل',downloading:'جاري تجهيز Excel…',downloaded:'تم تنزيل الملف إلى Downloads',pdfFail:'تعذر فتح مشاركة PDF على هذا الجهاز',excelFail:'تعذر إنشاء ملف Excel',noInvoice:'لا توجد فاتورة جاهزة.',note:'أرسل نسخة المراجعة للمشتري أولاً عند الحاجة إلى تصحيح سعر أو صورة أو بيانات، ثم أرسل النسخة الأصلية بعد الاعتماد.'},
+    tr:{title:'Faturayı gönder',sub:'Onaydan önce orijinal veya kontrol kopyasını seçin',pdfDesc:'Cihazın paylaşım penceresiyle doğrudan paylaşım',xlsDesc:'Gerçek ve düzenlenebilir XLSX — indirme',original:'ORİJİNAL',originalSubPdf:'Temiz nihai kopya',originalSubXls:'Kontrol işareti yok',review:'KONTROL KOPYASI',reviewSub:'Şeffaf işaretli — nihai değildir',reviewMark:'KONTROL KOPYASI',notFinal:'NİHAİ DEĞİLDİR',reviewOnly:'ONAY ÖNCESİ KONTROL İÇİNDİR',preparing:'Hazırlanıyor…',ready:'Hazır',share:'Paylaş',download:'İndir',downloading:'Excel hazırlanıyor…',downloaded:'Dosya Downloads klasörüne indirildi',pdfFail:'Bu cihazda PDF paylaşımı açılamadı',excelFail:'Excel dosyası oluşturulamadı',noInvoice:'Hazır fatura yok.',note:'Fiyat, görsel veya veri düzeltmeleri gerekiyorsa önce kontrol kopyasını alıcıya gönderin; onaydan sonra orijinal kopyayı gönderin.'},
+    en:{title:'Send invoice',sub:'Choose the original or a review copy before approval',pdfDesc:'Direct share through the device share sheet',xlsDesc:'Real editable XLSX — download',original:'ORIGINAL',originalSubPdf:'Clean final copy',originalSubXls:'No review watermark',review:'REVIEW COPY',reviewSub:'Transparent mark — not final',reviewMark:'REVIEW COPY',notFinal:'NOT FINAL',reviewOnly:'FOR REVIEW BEFORE APPROVAL',preparing:'Preparing…',ready:'Ready',share:'Share',download:'Download',downloading:'Preparing Excel…',downloaded:'File downloaded to Downloads',pdfFail:'PDF sharing is unavailable on this device',excelFail:'Excel file could not be created',noInvoice:'No invoice is ready.',note:'Send the review copy first when the buyer may request changes to price, images or data; send the clean original after approval.'}
+  };
+  return D[L]||D.en;
+}
+function previewFileName(name,ext){
+  const base=String(name||('WOW_INVOICE.'+ext)).replace(new RegExp('\\.'+ext+'$','i'),'');
+  return base+'_REVIEW.'+ext;
+}
+function show(){const ov=q('wfUnifiedShareOverlay');if(!ov)return;ov.style.display='flex';requestAnimationFrame(()=>ov.classList.add('open'));ov.setAttribute('aria-hidden','false')}
+function hide(){const ov=q('wfUnifiedShareOverlay');if(!ov)return;ov.classList.remove('open');ov.setAttribute('aria-hidden','true');setTimeout(()=>{if(!ov.classList.contains('open'))ov.style.display='none'},220)}
+function canShare(file){try{return !!(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]})))}catch(_){return false}}
+function setDisabled(id,v){const el=q(id);if(el)el.disabled=!!v}
+function setState(id,v){const el=q(id);if(el)el.textContent=v}
+
+function buildModal(inv){
+  const L=uiLang(),T=copy(L),choices=q('wfUnifiedShareOverlay')?.querySelector('.wf-share-choices');
+  if(!choices)return;
+  q('wfShareTitle').textContent=T.title;q('wfShareSub').textContent=T.sub;
+  q('wfShareInvoiceChip').textContent=(inv.invNo||'Invoice')+(inv.companyName?'  •  '+inv.companyName:'');
+  choices.innerHTML=`
+    <div class="wf13-format-card">
+      <div class="wf13-format-head"><span class="wf13-format-icon pdf">PDF</span><div class="wf13-format-copy"><div class="wf13-format-title">PDF</div><div class="wf13-format-desc">${T.pdfDesc}</div></div></div>
+      <div class="wf13-actions">
+        <button type="button" class="wf13-action" id="wf13PdfOriginal" onclick="wf13ExportAction('pdf-original')" disabled><strong>${T.original}</strong><small>${T.originalSubPdf}</small></button>
+        <button type="button" class="wf13-action preview" id="wf13PdfReview" onclick="wf13ExportAction('pdf-review')" disabled><strong>${T.review}</strong><small>${T.reviewSub}</small></button>
+      </div>
+      <div class="wf13-format-state" id="wf13PdfState">${T.preparing}</div>
+    </div>
+    <div class="wf13-format-card">
+      <div class="wf13-format-head"><span class="wf13-format-icon xls">XLSX</span><div class="wf13-format-copy"><div class="wf13-format-title">Excel</div><div class="wf13-format-desc">${T.xlsDesc}</div></div></div>
+      <div class="wf13-actions">
+        <button type="button" class="wf13-action" id="wf13ExcelOriginal" onclick="wf13ExportAction('excel-original')"><strong>${T.original}</strong><small>${T.originalSubXls}</small></button>
+        <button type="button" class="wf13-action preview" id="wf13ExcelReview" onclick="wf13ExportAction('excel-review')"><strong>${T.review}</strong><small>${T.reviewSub}</small></button>
+      </div>
+      <div class="wf13-format-state" id="wf13ExcelState">${T.ready} · ${T.download}</div>
+    </div>`;
+  const note=q('wfShareNote');if(note){note.className='wf-share-note wf13-review-key';note.innerHTML='<b>'+T.reviewMark+' — '+T.notFinal+'</b><br>'+T.note;}
+}
+
+function addPdfReviewMark(page,L){
+  const T=copy(L),doc=page.ownerDocument;
+  const band=doc.createElement('div');
+  band.setAttribute('data-wf-review-watermark','1');
+  band.style.cssText='position:absolute;left:50%;top:52%;width:700px;transform:translate(-50%,-50%) rotate(-28deg);z-index:2147483000;pointer-events:none;text-align:center;color:rgba(165,45,45,.105);font-family:Segoe UI,Arial,sans-serif;font-weight:900;letter-spacing:2px;line-height:1.05;border:6px solid rgba(165,45,45,.065);border-radius:24px;padding:18px 8px;';
+  const big=doc.createElement('div');big.textContent=T.reviewMark;big.style.cssText='font-size:64px;white-space:nowrap;';
+  const sub=doc.createElement('div');sub.textContent=T.notFinal;sub.style.cssText='font-size:29px;margin-top:7px;white-space:nowrap;letter-spacing:3px;';
+  band.append(big,sub);page.appendChild(band);
+  const badge=doc.createElement('div');badge.textContent=T.reviewOnly;badge.setAttribute('data-wf-review-watermark','1');
+  badge.style.cssText='position:absolute;right:18px;top:16px;z-index:2147483001;pointer-events:none;padding:5px 11px;border-radius:999px;border:1px solid rgba(197,48,48,.22);background:rgba(255,255,255,.78);color:rgba(155,35,35,.58);font:800 8.5px Segoe UI,Arial,sans-serif;letter-spacing:.7px;';
+  page.appendChild(badge);
+}
+async function createReviewPdfFile(){
+  const wrap=q('invoicePaperWrap'),inv=invoice();if(!wrap?.innerHTML.trim()||!inv)throw new Error('NO_INVOICE_PREVIEW');
+  const html=wrap.innerHTML,invNo=inv.invNo||'invoice',L=invoiceLang(inv);
+  const runner=async()=>{let set;try{set=await wfBuildPageSet(html,invNo,L);for(const p of set.pages)addPdfReviewMark(p,L);const images=[];for(const p of set.pages)images.push(await wfRasterizePage(p,2));const blob=await wfMakePdf(images,invNo);const base=typeof safePdfFileName==='function'?safePdfFileName(invNo):('WOW_'+invNo+'.pdf');return new File([blob],previewFileName(base,'pdf'),{type:'application/pdf',lastModified:Date.now()});}finally{set?.dispose?.();}};
+  if(typeof _wfExportTail!=='undefined'){const job=_wfExportTail.catch(()=>{}).then(runner);_wfExportTail=job.then(()=>{},()=>{});return job;}return runner();
+}
+
+function watermarkPng(L){
+  const T=copy(L),c=document.createElement('canvas');c.width=1200;c.height=720;const x=c.getContext('2d');
+  x.clearRect(0,0,c.width,c.height);x.save();x.translate(c.width/2,c.height/2);x.rotate(-Math.PI/7);
+  x.strokeStyle='rgba(165,45,45,.075)';x.lineWidth=8;x.fillStyle='rgba(165,45,45,.105)';
+  x.strokeRect(-500,-130,1000,260);x.textAlign='center';x.textBaseline='middle';x.font='900 102px Segoe UI,Arial,sans-serif';x.fillText(T.reviewMark,0,-34);
+  x.font='900 48px Segoe UI,Arial,sans-serif';x.fillText(T.notFinal,0,62);x.restore();
+  return c.toDataURL('image/png');
+}
+if(_wf13ExcelBuilder){
+  wfMakeExcelLayoutWorkbook=function(model){
+    if(!WF13.excelReview||!model?.sheets?.length)return _wf13ExcelBuilder(model);
+    const L=(model.lang||'en').toLowerCase(),uri=watermarkPng(L);
+    const sheets=model.sheets.map((s,i)=>({...s,images:[...(s.images||[]),{uri,x:67,y:300,width:660,height:440,name:'WOW REVIEW COPY WATERMARK'}]}));
+    return _wf13ExcelBuilder({...model,sheets});
+  };
+}
+async function createReviewExcelFile(){
+  const wrap=q('invoicePaperWrap'),inv=invoice();if(!wrap?.innerHTML.trim()||!inv)throw new Error('NO_INVOICE_PREVIEW');
+  const html=wrap.innerHTML,invNo=inv.invNo||'invoice',L=invoiceLang(inv);
+  const cloned=JSON.parse(JSON.stringify({...inv,usdTry:inv.usdTry||(typeof S!=='undefined'?S.usdTry:0),usdEur:inv.usdEur||(typeof S!=='undefined'?S.usdEur:0)}));
+  const runner=async()=>{let set;try{set=await wfBuildPageSet(html,invNo,L);const data=wfExcelReadPageLayout(set,L,invNo,cloned);WF13.excelReview=true;let blob;try{blob=wfMakeExcelWorkbook({...data,lang:L,invNo});}finally{WF13.excelReview=false;}const base=typeof safeExcelFileName==='function'?safeExcelFileName(invNo):('WOW_'+invNo+'.xlsx');return new File([blob],previewFileName(base,'xlsx'),{type:typeof WF_EXCEL_MIME!=='undefined'?WF_EXCEL_MIME:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',lastModified:Date.now()});}finally{WF13.excelReview=false;set?.dispose?.();}};
+  if(typeof _wfExportTail!=='undefined'){const job=_wfExportTail.catch(()=>{}).then(runner);_wfExportTail=job.then(()=>{},()=>{});return job;}return runner();
+}
+
+async function preparePdfs(token){
+  const inv=invoice(),L=invoiceLang(inv),T=copy(uiLang());setDisabled('wf13PdfOriginal',true);setDisabled('wf13PdfReview',true);setState('wf13PdfState',T.preparing);
+  try{
+    const original=await createInvoicePdfFile();if(token!==WF13.token)return;WF13.pdfOriginal=original;setDisabled('wf13PdfOriginal',!canShare(original));
+    setState('wf13PdfState',canShare(original)?T.ready:T.pdfFail);
+  }catch(e){console.error('WOW V13 original PDF',e);if(token===WF13.token)setState('wf13PdfState',T.pdfFail);}
+  try{
+    const review=await createReviewPdfFile();if(token!==WF13.token)return;WF13.pdfReview=review;setDisabled('wf13PdfReview',!canShare(review));
+    if(canShare(WF13.pdfOriginal)&&canShare(review))setState('wf13PdfState',T.ready+' · '+T.share);
+  }catch(e){console.error('WOW V13 review PDF',e);if(token===WF13.token)setState('wf13PdfState',T.pdfFail);}
+}
+
+window.openUnifiedShareModal=function(e){
+  try{e?.preventDefault?.();e?.stopPropagation?.()}catch(_){ }
+  const inv=invoice();if(!inv){if(typeof showToast==='function')showToast(copy(uiLang()).noInvoice,'er');return false;}
+  WF13.token++;WF13.pdfOriginal=null;WF13.pdfReview=null;WF13.busyPdf=false;WF13.busyExcel=false;const token=WF13.token;
+  buildModal(inv);show();preparePdfs(token);return true;
+};
+window.closeUnifiedShareModal=function(){hide();return true};
+window.toggleShareMenu=function(e){return window.openUnifiedShareModal(e)};
+window.closeShareMenu=function(){return window.closeUnifiedShareModal()};
+window.shareWA=function(e){return window.openUnifiedShareModal(e)};
+window.shareEmail=function(e){return window.openUnifiedShareModal(e)};
+window.shareExcel=function(e){return window.openUnifiedShareModal(e)};
+window.wfShareSavedInvoice=function(id,e){try{e?.preventDefault?.();e?.stopPropagation?.()}catch(_){ }const inv=(typeof S!=='undefined'&&Array.isArray(S.invoices))?S.invoices.find(i=>i.id===id):null;if(!inv)return false;previewSaved(id,false);return window.openUnifiedShareModal(e)};
+window.shareSavedExcel=function(id,e){return window.wfShareSavedInvoice(id,e)};
+
+window.wf13ExportAction=async function(kind){
+  const inv=invoice(),L=invoiceLang(inv),T=copy(uiLang());if(!inv)return false;
+  if(kind==='pdf-original'||kind==='pdf-review'){
+    if(WF13.busyPdf)return false;const file=kind==='pdf-review'?WF13.pdfReview:WF13.pdfOriginal;if(!file||!navigator.share)return false;WF13.busyPdf=true;
+    try{await navigator.share({files:[file]});hide();return true;}catch(e){if(e?.name!=='AbortError'&&typeof showToast==='function')showToast(T.pdfFail,'er');return false;}finally{WF13.busyPdf=false;}
+  }
+  if(WF13.busyExcel)return false;WF13.busyExcel=true;setDisabled('wf13ExcelOriginal',true);setDisabled('wf13ExcelReview',true);setState('wf13ExcelState',T.downloading);
+  try{
+    const file=kind==='excel-review'?await createReviewExcelFile():await createInvoiceExcelFile();
+    triggerExcelFileDownload(file);setState('wf13ExcelState',T.downloaded);if(typeof showToast==='function')showToast(T.downloaded,'ok');setTimeout(()=>hide(),950);return true;
+  }catch(e){console.error('WOW V13 Excel',e);setState('wf13ExcelState',T.excelFail);if(typeof showToast==='function')showToast(T.excelFail,'er');return false;}
+  finally{WF13.busyExcel=false;setDisabled('wf13ExcelOriginal',false);setDisabled('wf13ExcelReview',false);}
+};
+window.wfSharePreparedFile=function(kind){return window.wf13ExportAction(kind==='pdf'?'pdf-original':'excel-original')};
+window.WF_SHARE_DIAGNOSTICS=function(){return {version:'V13-REVIEW-COPY',pdfOriginal:!!WF13.pdfOriginal,pdfReview:!!WF13.pdfReview,excelOriginalDownload:true,excelReviewDownload:true,reviewLanguage:invoiceLang(invoice()),uiLanguage:uiLang(),htmlFallback:false,csvFallback:false}};
+window.WF_REVIEW_COPY_V13=true;
+})();
+</script>
+
+<!-- ============================================================
+     WOW V14 — PRINT LANGUAGE UI ISOLATION
+     S.lang = application interface language
+     S.printLang = invoice / PDF / Excel language only
+     ============================================================ -->
+<script id="wf-v14-print-language-isolation">
+(function(){
+'use strict';
+window.WF_PRINT_LANG_ISOLATED_V14=true;
+const _wf14SetLang=window.setLang;
+if(typeof _wf14SetLang==='function'){
+  window.setLang=function(l){
+    const r=_wf14SetLang.apply(this,arguments);
+    try{
+      if(typeof updatePrintOptsModalTexts==='function')updatePrintOptsModalTexts();
+      if(typeof wf14SyncInvoiceLangControls==='function')wf14SyncInvoiceLangControls((typeof S!=='undefined'&&S.printLang)||'en');
+      // If share sheet is open, rebuild its labels in APP language only without touching invoice language.
+      const ov=document.getElementById('wfUnifiedShareOverlay');
+      if(ov?.classList.contains('open')&&typeof _lastPreviewInv!=='undefined'&&_lastPreviewInv){
+        try{ if(typeof buildModal==='function')buildModal(_lastPreviewInv); }catch(_){}
+      }
+    }catch(_){}
+    return r;
+  };
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  try{if(typeof wf14SyncInvoiceLangControls==='function'&&typeof S!=='undefined')wf14SyncInvoiceLangControls(S.printLang||'en');}catch(_){}
+});
 })();
 </script>
 
