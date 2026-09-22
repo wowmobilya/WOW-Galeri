@@ -7018,18 +7018,18 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
 
      <!-- ✅ زر المشاركة الجديد -->
 <div style="position:relative; display:inline-block;">
-  <button 
+  <button
     id="shareMainBtn"
-    onclick="toggleShareMenu(event)"
-    class="btn btn-s btn-sm" 
-    style="white-space:nowrap; border-color:var(--gold); color:var(--gold2); background:var(--gold-light); gap:5px;">
-    📤 <span data-i18n="share_btn">مشاركة</span> <span id="shareArrow" style="font-size:10px; transition:transform 0.2s;">▼</span>
+    onclick="openUnifiedShareModal(event)"
+    class="btn btn-s btn-sm"
+    style="white-space:nowrap;border-color:var(--gold);color:var(--gold2);background:var(--gold-light);gap:6px;box-shadow:0 2px 8px rgba(200,169,110,.16);">
+    📤 <span data-i18n="share_btn">مشاركة</span>
   </button>
 </div>
 
 <!-- ✅ القائمة المنسدلة — خارج كل الحاويات تماماً -->
-<div id="shareMenuPopup" style="
-  display: none;
+<div id="shareMenuPopup" aria-hidden="true" style="
+  display: none !important;
   position: fixed;
   z-index: 999999;
   background: var(--card);
@@ -7050,6 +7050,26 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
   " onmouseover="this.style.background='var(--gold-light)';this.style.color='var(--gold2)'"
      onmouseout="this.style.background='transparent';this.style.color='var(--text)'">
     📥 <span data-i18n="share_pdf">تحميل PDF</span>
+  </button>
+<button onclick="downloadExcel(); closeShareMenu()" style="
+    background:transparent; border:none; padding:11px 16px;
+    text-align:right; font-size:13px; font-weight:600;
+    color:var(--text); border-radius:10px; cursor:pointer;
+    display:flex; align-items:center; gap:10px; width:100%;
+    font-family:inherit; transition:background 0.15s;
+  " onmouseover="this.style.background='var(--gold-light)';this.style.color='var(--gold2)'"
+     onmouseout="this.style.background='transparent';this.style.color='var(--text)'">
+    📊 <span data-i18n="excel_download">تنزيل Excel</span>
+  </button>
+<button onclick="shareExcel(); closeShareMenu()" style="
+    background:transparent; border:none; padding:11px 16px;
+    text-align:right; font-size:13px; font-weight:600;
+    color:var(--text); border-radius:10px; cursor:pointer;
+    display:flex; align-items:center; gap:10px; width:100%;
+    font-family:inherit; transition:background 0.15s;
+  " onmouseover="this.style.background='var(--gold-light)';this.style.color='var(--gold2)'"
+     onmouseout="this.style.background='transparent';this.style.color='var(--text)'">
+    📤 <span data-i18n="excel_share">مشاركة Excel</span>
   </button>
 
   <button onclick="printInvoice(); closeShareMenu()" style="
@@ -8600,13 +8620,13 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
         </select>
       </div>
       <div style="margin-right:auto;display:flex;gap:6px;flex-wrap:wrap;">
-        <button class="btn btn-g btn-sm" onclick="downloadPDF()">📥 PDF</button>
-        <button class="btn btn-s btn-sm" onclick="shareWA()">💬📎</button>
-        <button class="btn btn-s btn-sm" onclick="shareEmail()">📧📎</button>
+        <button class="btn btn-s btn-sm" onclick="openPrintOptionsModal('preview')">⚙️ <span data-i18n="share_settings">إعدادات الطباعة</span></button>
+        <button class="btn btn-p btn-sm" onclick="openUnifiedShareModal(event)" style="gap:6px;">📤 <span data-i18n="share_btn">مشاركة</span></button>
         <button class="btn btn-s btn-sm" onclick="printInvoice()">🖨️</button>
         <button class="modal-close" onclick="closeModal('pdfModal')">✕</button>
       </div>
     </div>
+    <div data-i18n="excel_hint" style="padding:6px 16px;font-size:11px;color:var(--muted);background:var(--input);">Excel: فاتورة بخلايا قابلة للتعديل ومجاميع تلقائية. راجع المبلغ كتابةً ورمز QR بعد التعديل؛ لا يتحدثان تلقائيًا.</div>
     <div style="overflow-y:auto;max-height:85vh;padding:16px;background:#e5e5e5;">
       <div id="invoicePaperWrap"></div>
     </div>
@@ -8809,65 +8829,84 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
     <div class="print-options-panel" style="margin-bottom:16px;">
       <div class="print-opt-title" id="poShowHideTitle">👁️ إظهار / إخفاء في الفاتورة</div>
       <div class="print-opt-grid">
-        <label class="print-opt-item active" onclick="togglePrintOpt(this,'showBarcode')">
+        <label class="print-opt-item active" data-print-key="showBarcode" onclick="togglePrintOpt(this,'showBarcode',event)">
           <input type="checkbox" checked onchange="updatePrintOpts()">
           <span class="print-opt-lbl">📊 <span data-i18n="opt_barcode">الباركود</span></span>
         </label>
-        <label class="print-opt-item active" onclick="togglePrintOpt(this,'showImages')">
+        <label class="print-opt-item active" data-print-key="showImages" onclick="togglePrintOpt(this,'showImages',event)">
           <input type="checkbox" checked onchange="updatePrintOpts()">
           <span class="print-opt-lbl">🖼️ <span data-i18n="opt_images">الصور</span></span>
         </label>
-        <label class="print-opt-item active" onclick="togglePrintOpt(this,'showWeights')">
+        <label class="print-opt-item active" data-print-key="showWeights" onclick="togglePrintOpt(this,'showWeights',event)">
           <input type="checkbox" checked onchange="updatePrintOpts()">
           <span class="print-opt-lbl">⚖️ <span data-i18n="opt_weights">الأوزان</span></span>
         </label>
-        <label class="print-opt-item active" onclick="togglePrintOpt(this,'showCBM')">
+        <label class="print-opt-item active" data-print-key="showCBM" onclick="togglePrintOpt(this,'showCBM',event)">
           <input type="checkbox" checked onchange="updatePrintOpts()">
           <span class="print-opt-lbl">📦 CBM</span>
         </label>
-        <label class="print-opt-item active" onclick="togglePrintOpt(this,'showSignatures')">
+        <label class="print-opt-item active" data-print-key="showSignatures" onclick="togglePrintOpt(this,'showSignatures',event)">
           <input type="checkbox" checked onchange="updatePrintOpts()">
           <span class="print-opt-lbl">✍️ <span data-i18n="opt_signatures">التوقيعات</span></span>
         </label>
-        <label class="print-opt-item active" onclick="togglePrintOpt(this,'showNotes')">
+        <label class="print-opt-item active" data-print-key="showNotes" onclick="togglePrintOpt(this,'showNotes',event)">
           <input type="checkbox" checked onchange="updatePrintOpts()">
           <span class="print-opt-lbl">📝 <span data-i18n="opt_notes">الملاحظات</span></span>
         </label>
-        <label class="print-opt-item active" onclick="togglePrintOpt(this,'showBankInfo')">
+        <label class="print-opt-item active" data-print-key="showBankInfo" onclick="togglePrintOpt(this,'showBankInfo',event)">
           <input type="checkbox" checked onchange="updatePrintOpts()">
           <span class="print-opt-lbl">🏦 <span data-i18n="opt_bank">البنك</span></span>
         </label>
-        <label class="print-opt-item active" onclick="togglePrintOpt(this,'showRates')">
+        <label class="print-opt-item active" data-print-key="showRates" onclick="togglePrintOpt(this,'showRates',event)">
           <input type="checkbox" checked onchange="updatePrintOpts()">
           <span class="print-opt-lbl">💱 <span data-i18n="opt_rates">أسعار الصرف</span></span>
         </label>
       </div>
     </div>
 
-    <!-- أزرار الإجراءات -->
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <button class="btn btn-p" onclick="previewInvoice();closeModal('printOptionsModal')">
-          👁️ <span id="poPreviewBtn">معاينة</span>
-        </button>
-        <button class="btn btn-g" onclick="saveInvoice();closeModal('printOptionsModal')">
-          💾 <span id="poSaveBtn">حفظ</span>
-        </button>
-        <button class="btn btn-b" onclick="downloadPDF();closeModal('printOptionsModal')">
-          📥 PDF
-        </button>
-        <button class="btn btn-s" onclick="printInvoice();closeModal('printOptionsModal')">
-          🖨️ <span id="poPrintBtn">طباعة</span>
-        </button>
+    <!-- عملة الفاتورة + العملات الظاهرة في أسعار الصرف -->
+    <div class="print-options-panel" style="margin-bottom:16px;">
+      <div class="print-opt-title" id="poCurrencyTitle">💱 عملة الفاتورة وأسعار الصرف</div>
+      <div class="fg" style="margin-bottom:12px;">
+        <label class="fl" id="poInvoiceCurrencyLabel">💵 عملة عرض الفاتورة</label>
+        <select class="fc" id="poInvoiceCurrency" onchange="setPrintInvoiceCurrency(this.value)">
+          <option value="USD">💵 USD — Dollar</option>
+          <option value="EUR">💶 EUR — Euro</option>
+          <option value="TRY">🇹🇷 TRY — Türk Lirası</option>
+        </select>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <button class="btn btn-s" onclick="shareWA();closeModal('printOptionsModal')">
-          💬📎 WhatsApp PDF
-        </button>
-        <button class="btn btn-s" onclick="shareEmail();closeModal('printOptionsModal')">
-          📧📎 Email PDF
-        </button>
+      <div id="poCurrencyHint" style="font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:9px;">حدد العملات التي تريد ظهورها في قسم أسعار الصرف داخل PDF.</div>
+      <div class="print-opt-title" id="poRateCurrenciesTitle" style="margin-bottom:8px;">العملات الظاهرة في أسعار الصرف</div>
+      <div class="print-opt-grid">
+        <label class="print-opt-item active" data-print-key="rateUSD" onclick="togglePrintOpt(this,'rateUSD',event)">
+          <input type="checkbox" checked onchange="updatePrintOpts()">
+          <span class="print-opt-lbl">💵 USD — Dollar</span>
+        </label>
+        <label class="print-opt-item active" data-print-key="rateEUR" onclick="togglePrintOpt(this,'rateEUR',event)">
+          <input type="checkbox" checked onchange="updatePrintOpts()">
+          <span class="print-opt-lbl">💶 EUR — Euro</span>
+        </label>
+        <label class="print-opt-item active" data-print-key="rateTRY" onclick="togglePrintOpt(this,'rateTRY',event)">
+          <input type="checkbox" checked onchange="updatePrintOpts()">
+          <span class="print-opt-lbl">🇹🇷 TRY — Türk Lirası</span>
+        </label>
       </div>
+    </div>
+
+    <!-- أزرار الإجراءات — واجهة مختصرة واحترافية -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <button class="btn btn-p" onclick="applyPrintOptionsPreview();closeModal('printOptionsModal')">
+        👁️ <span id="poPreviewBtn">معاينة</span>
+      </button>
+      <button class="btn btn-g" id="poSaveActionBtn" onclick="saveInvoice();closeModal('printOptionsModal')">
+        💾 <span id="poSaveBtn">حفظ</span>
+      </button>
+      <button class="btn btn-b" onclick="closeModal('printOptionsModal');openUnifiedShareModal(event)">
+        📤 <span data-i18n="share_btn">مشاركة</span>
+      </button>
+      <button class="btn btn-s" onclick="printInvoice();closeModal('printOptionsModal')">
+        🖨️ <span id="poPrintBtn">طباعة</span>
+      </button>
     </div>
 
   </div>
@@ -9597,6 +9636,11 @@ function wfCheckDataIntegrity(){
 /* ============================================================
    STATE
 ============================================================ */
+const WF_DEFAULT_PRINT_OPTS=Object.freeze({
+  showBarcode:true,showImages:true,showWeights:true,showCBM:true,
+  showSignatures:true,showNotes:true,showBankInfo:true,showRates:true,
+  rateUSD:true,rateEUR:true,rateTRY:true
+});
 const S={
   companies:[],products:[],invoices:[],payments:[],
   lang:'ar',theme:'light',
@@ -9617,7 +9661,7 @@ invClientFilter:null,
   kdvEnabled:false,
   currentInvPayments:[],
   printLang:'en',
-  printOpts:{showBarcode:true,showImages:true,showWeights:true,showCBM:true,showSignatures:true,showNotes:true,showBankInfo:true,showRates:true},
+  printOpts:{...WF_DEFAULT_PRINT_OPTS},
   currentPayInvId:null,
   settings:{
     companyName:'WOW Furniture',
@@ -10545,19 +10589,29 @@ function toggleStep(id){
 /* ============================================================
    PRINT OPTIONS
 ============================================================ */
-function togglePrintOpt(label,key){
+function togglePrintOpt(label,key,ev){
   const cb=label.querySelector('input[type=checkbox]');
   if(!cb)return;
-  cb.checked=!cb.checked;
+  // Clicking the checkbox already toggles it before the label handler runs.
+  // Clicking elsewhere on the label needs one explicit toggle with the label default cancelled.
+  if(ev?.target!==cb){
+    ev?.preventDefault?.();
+    cb.checked=!cb.checked;
+  }
   label.classList.toggle('active',cb.checked);
   S.printOpts[key]=cb.checked;
+  refreshActivePreviewFromPrintSettings();
 }
 function updatePrintOpts(){
-  const labels=document.querySelectorAll('.print-opt-item');
+  const labels=document.querySelectorAll('#printOptionsModal .print-opt-item[data-print-key]');
   labels.forEach(label=>{
     const cb=label.querySelector('input[type=checkbox]');
-    if(cb)label.classList.toggle('active',cb.checked);
+    const key=label.dataset.printKey;
+    if(!cb||!key)return;
+    label.classList.toggle('active',cb.checked);
+    S.printOpts[key]=cb.checked;
   });
+  refreshActivePreviewFromPrintSettings();
 }
 function setPrintLang(lang,btn){
   S.printLang=lang;
@@ -10565,6 +10619,7 @@ function setPrintLang(lang,btn){
   if(btn)btn.classList.add('sel');
   const pdfSel=document.getElementById('pdfLangSel');
   if(pdfSel)pdfSel.value=lang;
+  refreshActivePreviewFromPrintSettings();
 }
 function onPdfLangChange(){
   const val=document.getElementById('pdfLangSel').value;
@@ -10573,14 +10628,48 @@ function onPdfLangChange(){
   const wrap=document.getElementById('invoicePaperWrap');
   if(wrap&&wrap.innerHTML&&_lastPreviewInv){
     wrap.innerHTML=buildInvoiceHTML(_lastPreviewInv,val,S.printOpts);
-   // استبدل السطر القديم بهذا (هنا نستخدم _lastPreviewInv لأننا نغير اللغة فقط):
-setTimeout(() => {
-  scheduleInvoicePdfPreparation();
-}, 80);
-
+    invalidateInvoicePdfFile();
+    scheduleInvoicePdfPreparation();
   }
 }
 let _lastPreviewInv=null;
+let _printOptionsContext='general';
+
+function refreshActivePreviewFromPrintSettings(){
+  const pdfOpen=document.getElementById('pdfModal')?.classList.contains('open');
+  if(!pdfOpen||!_lastPreviewInv)return;
+  const wrap=document.getElementById('invoicePaperWrap');
+  if(!wrap)return;
+  wrap.innerHTML=buildInvoiceHTML(_lastPreviewInv,S.printLang,S.printOpts);
+  const pdfSel=document.getElementById('pdfLangSel');
+  if(pdfSel)pdfSel.value=S.printLang;
+  invalidateInvoicePdfFile();
+  scheduleInvoicePdfPreparation();
+}
+
+function setPrintInvoiceCurrency(cur){
+  if(!['USD','EUR','TRY'].includes(cur))return;
+  const createActive=document.getElementById('page-create-invoice')?.classList.contains('active');
+  if(createActive){
+    S.invCurrency=cur;
+    const formSel=document.getElementById('invCurrency');
+    if(formSel)formSel.value=cur;
+    renderInvTable();updateSummary();renderPrSelector();updateSumCurrencyBadge();
+  }
+  if(_lastPreviewInv && (_printOptionsContext==='preview' || document.getElementById('pdfModal')?.classList.contains('open'))){
+    _lastPreviewInv={..._lastPreviewInv,currency:cur};
+  }
+  refreshActivePreviewFromPrintSettings();
+}
+
+function applyPrintOptionsPreview(){
+  const pdfOpen=document.getElementById('pdfModal')?.classList.contains('open');
+  if(pdfOpen&&_lastPreviewInv){
+    refreshActivePreviewFromPrintSettings();
+    return _lastPreviewInv;
+  }
+  return previewInvoice();
+}
 
 
 /* ============================================================
@@ -14236,9 +14325,9 @@ function renderInvList(){
   </button>
 
   <button class="btn"
-    style="background:var(--card);color:var(--text2);border:1.5px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.06);"
-    onclick="downloadSavedPDF('${inv.id}')">
-    📥 PDF
+    style="background:var(--gold-light);color:var(--gold2);border:1.5px solid var(--gold);box-shadow:0 2px 8px rgba(200,169,110,.12);"
+    onclick="wfShareSavedInvoice('${inv.id}',event)">
+    📤 ${({ar:'مشاركة',tr:'Paylaş',en:'Share'}[S.lang||'ar'])}
   </button>
 
   <button class="btn"
@@ -14869,19 +14958,19 @@ function previewInvoice(showModal=true){
   return inv;
 }
 
-function previewSaved(id){
+function previewSaved(id,showModal=true){
   const inv=S.invoices.find(i=>i.id===id);if(!inv)return;
   const invPayments=S.payments.filter(p=>p.invoiceId===id);
-  inv.payments=invPayments;
-  _lastPreviewInv=inv;
+  const previewInv={...inv,payments:invPayments,items:JSON.parse(JSON.stringify(inv.items||[])),printOpts:{...WF_DEFAULT_PRINT_OPTS,...(inv.printOpts||{})}};
+  _lastPreviewInv=previewInv;
   const wrap=document.getElementById('invoicePaperWrap');
   if(wrap) {
-    wrap.innerHTML=buildInvoiceHTML(inv,inv.printLang||S.printLang,inv.printOpts||S.printOpts);
+    wrap.innerHTML=buildInvoiceHTML(previewInv,previewInv.printLang||S.printLang,previewInv.printOpts||S.printOpts);
     // 👈 تفعيل القياس الذكي
 // استبدل السطر القديم بهذا:
   }
-  const pdfSel=document.getElementById('pdfLangSel');if(pdfSel)pdfSel.value=inv.printLang||S.printLang;
-  openModal('pdfModal');
+  const pdfSel=document.getElementById('pdfLangSel');if(pdfSel)pdfSel.value=previewInv.printLang||S.printLang;
+  if(showModal) openModal('pdfModal');
   scheduleInvoicePdfPreparation();
 }
 async function downloadSavedPDF(id){
@@ -14894,7 +14983,7 @@ async function downloadSavedPDF(id){
  * No html2pdf cloning, giant canvas, remote PDF service, or fake QR fallback.
  * Public download/share entry points and database schema are unchanged.
  */
-const WF_PDF_VERSION='2026.09.16-R1';
+const WF_PDF_VERSION='2026.09.22-R2-CURRENCY';
 const WF_PDF_PAGE={width:794,height:1139,bodyHeight:1109};
 const WF_PDF_BASE_CSS=`
   *,:before,:after{box-sizing:border-box;margin:0;padding:0}
@@ -15134,33 +15223,255 @@ async function wfRasterizePage(page,scale=2) {
   canvas.width=canvas.height=1;
   return result;
 }
-function wfMakePdf(images,title) {
+const WF_PDF_OWNER_PASSWORD='WOWMUTEZBELLAH3294';
+// MAX PDF protection while keeping normal opening password-free:
+// AES-256 / Standard Security Handler V=5, Revision=6 (AESV3).
+// Full-quality printing + accessibility remain available; modification, annotations,
+// form editing, page assembly and ordinary copy/extraction are denied in compliant editors.
+const WF_PDF_PERMISSIONS=-1340;
+const WF_PDF_AES_BITS=256;
+
+function wfPdfConcatBytes(...arrays){
+  const list=arrays.filter(Boolean).map(a=>a instanceof Uint8Array?a:new Uint8Array(a));
+  const total=list.reduce((n,a)=>n+a.length,0),out=new Uint8Array(total);let p=0;
+  for(const a of list){out.set(a,p);p+=a.length;}return out;
+}
+function wfPdfRandomBytes(n){
+  const out=new Uint8Array(n);
+  if(!globalThis.crypto?.getRandomValues)throw new Error('PDF_CRYPTO_UNAVAILABLE');
+  globalThis.crypto.getRandomValues(out);return out;
+}
+function wfPdfHex(bytes){return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();}
+function wfPdfHexBytes(hex){const out=new Uint8Array(hex.length/2);for(let i=0;i<out.length;i++)out[i]=parseInt(hex.slice(i*2,i*2+2),16);return out;}
+function wfPdfPreparePassword(password){
+  // Both passwords used by this app are ASCII (blank user password + fixed owner password),
+  // so UTF-8 + the ISO 127-byte cap is equivalent to the required preparation here.
+  return new TextEncoder().encode(String(password??'')).slice(0,127);
+}
+async function wfPdfDigest(name,data){
+  if(!globalThis.crypto?.subtle)throw new Error('PDF_AES256_UNAVAILABLE');
+  return new Uint8Array(await globalThis.crypto.subtle.digest(name,data));
+}
+async function wfPdfAesCbcEncrypt(keyBytes,iv,data){
+  if(!globalThis.crypto?.subtle)throw new Error('PDF_AES256_UNAVAILABLE');
+  const key=await globalThis.crypto.subtle.importKey('raw',keyBytes,{name:'AES-CBC'},false,['encrypt']);
+  return new Uint8Array(await globalThis.crypto.subtle.encrypt({name:'AES-CBC',iv},key,data));
+}
+async function wfPdfAesCbcNoPadEncrypt(keyBytes,iv,data){
+  if(data.length%16)throw new Error('PDF_AES_ALIGNMENT');
+  // WebCrypto adds PKCS#7 padding. CBC blocks preceding the padding block are identical
+  // to no-padding CBC, so keep exactly the ciphertext corresponding to the input blocks.
+  const encrypted=await wfPdfAesCbcEncrypt(keyBytes,iv,data);
+  return encrypted.slice(0,data.length);
+}
+async function wfPdfHash2B(passwordBytes,saltBytes,userKeyBytes){
+  const userKey=userKeyBytes||new Uint8Array(0);
+  let K=await wfPdfDigest('SHA-256',wfPdfConcatBytes(passwordBytes,saltBytes,userKey));
+  let round=0;
+  while(true){
+    const one=wfPdfConcatBytes(passwordBytes,K,userKey);
+    const K1=new Uint8Array(one.length*64);
+    for(let i=0;i<64;i++)K1.set(one,i*one.length);
+    const E=await wfPdfAesCbcNoPadEncrypt(K.slice(0,16),K.slice(16,32),K1);
+    let sum=0;for(let i=0;i<16;i++)sum+=E[i];
+    const mod=sum%3;
+    K=await wfPdfDigest(mod===0?'SHA-256':mod===1?'SHA-384':'SHA-512',E);
+    round++;
+    if(round>=64&&E[E.length-1]<=round-32)break;
+  }
+  return K.slice(0,32);
+}
+async function wfPdfBuildSecurityR6(ownerPassword,permissions){
+  const fileKey=wfPdfRandomBytes(32);
+  const userPwd=wfPdfPreparePassword('');
+  const ownerPwd=wfPdfPreparePassword(ownerPassword);
+  const zeroIV=new Uint8Array(16);
+
+  const uValidationSalt=wfPdfRandomBytes(8),uKeySalt=wfPdfRandomBytes(8);
+  const uHash=await wfPdfHash2B(userPwd,uValidationSalt,null);
+  const U=wfPdfConcatBytes(uHash,uValidationSalt,uKeySalt);
+  const uIntermediate=await wfPdfHash2B(userPwd,uKeySalt,null);
+  const UE=await wfPdfAesCbcNoPadEncrypt(uIntermediate,zeroIV,fileKey);
+
+  const oValidationSalt=wfPdfRandomBytes(8),oKeySalt=wfPdfRandomBytes(8);
+  const oHash=await wfPdfHash2B(ownerPwd,oValidationSalt,U);
+  const O=wfPdfConcatBytes(oHash,oValidationSalt,oKeySalt);
+  const oIntermediate=await wfPdfHash2B(ownerPwd,oKeySalt,U);
+  const OE=await wfPdfAesCbcNoPadEncrypt(oIntermediate,zeroIV,fileKey);
+
+  const permsPlain=new Uint8Array(16);
+  new DataView(permsPlain.buffer).setUint32(0,permissions>>>0,true);
+  permsPlain.set([0xFF,0xFF,0xFF,0xFF],4);
+  permsPlain[8]=0x54; // T = EncryptMetadata true
+  permsPlain.set([0x61,0x64,0x62],9); // "adb"
+  permsPlain.set(wfPdfRandomBytes(4),12);
+  const Perms=await wfPdfAesCbcNoPadEncrypt(fileKey,zeroIV,permsPlain);
+  return {fileKey,U,UE,O,OE,Perms};
+}
+async function wfPdfEncryptAESV3(fileKey,plainBytes){
+  const iv=wfPdfRandomBytes(16);
+  const cipher=await wfPdfAesCbcEncrypt(fileKey,iv,plainBytes);
+  return wfPdfConcatBytes(iv,cipher);
+}
+function wfPdfRandomId(){return wfPdfRandomBytes(16);}
+
+// WOW CERTIFIED PDF SEAL — DocMDP P=1.
+// This is tamper-evident protection on top of AES-256 permissions: compliant PDF viewers
+// can validate that the bytes have not changed after export. The invisible signature widget
+// is locked/read-only and the certification transform allows no document changes.
+const WF_PDF_CERT_DER_B64='MIIEfzCCAuegAwIBAgIUBYddzIjavSObMgztryWGgOiYvJQwDQYJKoZIhvcNAQELBQAwTzELMAkGA1UEBhMCVFIxFjAUBgNVBAoMDVdPVyBGdXJuaXR1cmUxKDAmBgNVBAMMH1dPVyBGdXJuaXR1cmUgUERGIENlcnRpZmljYXRpb24wHhcNMjYwOTIxMTUzMjU0WhcNMzYwOTE4MTUzMjU0WjBPMQswCQYDVQQGEwJUUjEWMBQGA1UECgwNV09XIEZ1cm5pdHVyZTEoMCYGA1UEAwwfV09XIEZ1cm5pdHVyZSBQREYgQ2VydGlmaWNhdGlvbjCCAaIwDQYJKoZIhvcNAQEBBQADggGPADCCAYoCggGBALgyULYPUJIwY+6N55zHnfMVpdr8NMlPjdqt9Zdncf071r4gXrDA0Hkbfpx9Yxmd15hGvURd/Aw3d2RQuXTcxLrgXGhZOE2wR6aU8DjRHlkN7jhluSlpd8kSASMH5Fw4GcEhDZUK1m8bodey91bCoc3rFp1TuDozs3lD2BzAKlXktLo41MRx+3cI8qebSKKJOBq+25ztSIlKbIytVYfu4tZGRLqiLG0Yol8koFez+/n5vcc1VEn3sq5dNj1dDKdVY86DtKrV5rrwR7Q+1QtnkGs0VafTXs/2BzheeOo7mKTPrhUSMT+6GIU7YNvc4MPx9jb9vJzUEZ5Vl7Jc5ncvbZhyWmOEtEHkwYqYnXP4LjMysJqwWzNlJOJKxvBrabRp12p5QkRYFjg1jyn6OnF85pYVMXenaZsPSkzk8xTJprq7oCE8bMouu2upvNHZL6p9WNJDJlUqo+hQN8rbEZ0UaFuW6kj1KEEgenNIFNtR4GtPH5oGSqidqia0cRLXk1b1XwIDAQABo1MwUTAdBgNVHQ4EFgQUzHdEL3mfNy26ZK6138Q+B+JiaAswHwYDVR0jBBgwFoAUzHdEL3mfNy26ZK6138Q+B+JiaAswDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAYEAjywxC7pjUH8o78FFmgcEDE5rqnABzJsXEYu2S49xkeFihHjeYMXkloiRuS5ej1NeRQr61YWw9Vsp45igteImrCWOFJcxTHEKYunh7mCJFeF4VWTrD1ykEKsSF49kX0eesy60I7o3faxOsb5/bzrotT4+vuxHL3x3/7kT3Lq3lG7RZPbzV/63L9EYuW7NMCZktTiV84PuMnz7WEwQtCHUwfUa2umEjRtrW5+NfqysPwrPxbit9kaYtVXTAOfQaboc2Tllqoze7AT8LTsI73QxXT9afRyWP2rA6t0LFJ4UHWveyPWcjOkSkdGwJAWIiK5k4E8Y4XyHlOptF79wFVbl0usDiRx3sITVrC18ZKylAyMJe14ulCOGAYIktYgIIHgY3NL6youd9gucPysTIVfu6SnVQ5of3IHThC4dlllOtxPYJK09d3iH2JnTL0N9QXPMdMlbl5ykLaqKV1R6/nlY8Dfevl+8MFoBs6cp6ZJHupMBKGnHAK7e0kCyAqOsFtcq';
+const WF_PDF_CERT_KEY_PKCS8_B64='MIIG/gIBADANBgkqhkiG9w0BAQEFAASCBugwggbkAgEAAoIBgQC4MlC2D1CSMGPujeecx53zFaXa/DTJT43arfWXZ3H9O9a+IF6wwNB5G36cfWMZndeYRr1EXfwMN3dkULl03MS64FxoWThNsEemlPA40R5ZDe44ZbkpaXfJEgEjB+RcOBnBIQ2VCtZvG6HXsvdWwqHN6xadU7g6M7N5Q9gcwCpV5LS6ONTEcft3CPKnm0iiiTgavtuc7UiJSmyMrVWH7uLWRkS6oixtGKJfJKBXs/v5+b3HNVRJ97KuXTY9XQynVWPOg7Sq1ea68Ee0PtULZ5BrNFWn017P9gc4XnjqO5ikz64VEjE/uhiFO2Db3ODD8fY2/byc1BGeVZeyXOZ3L22YclpjhLRB5MGKmJ1z+C4zMrCasFszZSTiSsbwa2m0addqeUJEWBY4NY8p+jpxfOaWFTF3p2mbD0pM5PMUyaa6u6AhPGzKLrtrqbzR2S+qfVjSQyZVKqPoUDfK2xGdFGhblupI9ShBIHpzSBTbUeBrTx+aBkqonaomtHES15NW9V8CAwEAAQKCAYAGVX0LW+GSArCIlTj2M10PtD3r3eXKkUUmVGxJK7dreMiwPj+24fC3gWl6cj0ip98iGf32RNRtJ8kf2iKOeEIaelWcCMQM8Ey3V60CXyjBm/uGDiyLALxksymhLbJ2inf9I/4b2f3U7e/SSmcfhM8VBtFwpolKv4ObeoUnc/FShZbe8LHoxsO9bIifmLwA2X7HynFc9V5UyrTgGGrnsVk0whaa1XjrECQTBZjn7O/IwS57hedxfpgy+frOOUa9SFNqcBb6awUo5AFz5rmthCL1Yk86F5V2bXHa40LCb5+QbDCgAfPgT+k6xwPg/sEMm6xz5QltaxHwknx6YzFycETNbwe7rkx7+2z1PTUBjTpjcaRRVBi7NyH+yCnnxAYFFvEaIMHk9rFTUi5oXkXoGN43ozl9KKtlEMDEHNeQtkVR38Ace3+M1l2rohpCjB+VsjlXWmDOzoMJp8zBSbbKvi4NYSucr3PN8BKCNTuMo81C4fWjZJFYlcRG/f3VDgXSQ/0CgcEA8WKPhcexSU7OEiYttXFq00npJHDwXzNxSLm0d66Bjm2+KOw2bIODQQ9HSIVEUeOpKWLHtGa8042MRqSoSwLXDXFWF9NZodeHn8BqxzD1U2pRwDD+anv2mVgo9odK33z0XUdiuLOAkzivnXsmtXrMEbeuZsrkNrMzUOCsae2e5W0WBO50VtEQC9ejUkNcEZrKQuDzObT3RV/jUfN/dzCHclri5dLObdfjZmLJkj1arjKPmDCYzUG1Cj5kolSGgkuLAoHBAMNZVxgkx7oi6OKhPkOcl6J2V4pxTmLmPDVaU6GRVl4VOsdCRZ3UHcYl7dcS/pHea37Kr92sdLi1j4pTrEHAcWsfIDj1Yp7mlDt3R4wOF/Zg4W21QbaxuOgGw+zPegrX5oVZwVxbvkqKL20RFEKk+fPPHKw8VswpsqG9ff6xUKm8Je5Hl8SdeKkLz9pBBnBlthHntN58Vl3xEnt2x8uShFlo81QrjaMoh9jkXMZUayFPKrwR7hU+AldESDxmk7SH/QKBwQCeMV+p5xMy3eiDUG4ISUofKoMWlMWTPp1xcfLptH3Hn/hNzXBlcVLlomOvDVeW60KDku8aNXJumodiDKsWbcgOUUaA2swVGrERawMPg/BjOHxXHkS9+HvGR1ahKk1RZgynzQ7PySPsV+wPoxPdP5rZya0MRM+HYa2xxWx5B3dpGDKkDLpF40FG4Y1xbh+6kd0YM2BzYzviRVMu9AuHS1CZCyNERwFuT1wCT5+WrYruOsiMjty1N+izy+wbzpVQcr0CgcAImjiRoZ0B/2OOB1e8lnq+9sMoH5E6HbVtDAs+xC2vevPZrntuVdbx0N3GaNm5BrhpHvfbpSqGr8ggaUreomDcPMSofXXYVYMVk00dR8maWe3TbPX126Gu5g1eskxHifZmzOsM7CVXFvq7rNLdlHJFYEt88jNITlXFdZjEzH4m21g4RALU77JOj2yZyd9Et9Xqt+9pFMSg4mrT8QkfV9ZoMYz1me1kz/YbgQLs4O7OyrOxEIERgmeL/D/KGSJMAukCgcEAp7cRIksPhY+85JabCkinkBGtQNzuYmUyZiH6YJYXZPIiWIIMsjv/xYdtPJhZR39xarz4M8RYQ1hqxih96yIUaWXCsM/jh8ZAfgWHyPMHBUQDVaMXRKs3mkwHV3OF50D2gfIqXEx/LbUMoJAT1bopCZcyPb2VucARRlAdS4ivn9NDw2X/XB05ysbQQwjdzIbpoW6D1oVmWi/DitDG9GILEw1GO5O8YaysIYr5G282TzMb5oYhR1EZglRwHOenQls9';
+const WF_PDF_CERT_ISSUER_HEX='304F310B300906035504061302545231163014060355040A0C0D574F57204675726E69747572653128302606035504030C1F574F57204675726E6974757265205044462043657274696669636174696F6E';
+const WF_PDF_CERT_SERIAL_HEX='05875DCC88DABD239B320CEDAF258680E898BC94';
+const WF_PDF_SIGNATURE_HEX_LENGTH=16384;
+let _wfPdfSigningKeyPromise=null;
+
+function wfPdfB64Bytes(s){
+  const raw=atob(s),out=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);
+  return out;
+}
+function wfDerLength(n){
+  if(n<128)return Uint8Array.of(n);
+  const b=[];while(n){b.unshift(n&255);n>>>=8;}
+  return Uint8Array.of(0x80|b.length,...b);
+}
+function wfDerTLV(tag,content){return wfPdfConcatBytes(Uint8Array.of(tag),wfDerLength(content.length),content);}
+function wfDerSeq(...items){return wfDerTLV(0x30,wfPdfConcatBytes(...items));}
+function wfDerSet(...items){return wfDerTLV(0x31,wfPdfConcatBytes(...items));}
+function wfDerNull(){return Uint8Array.of(0x05,0x00);}
+function wfDerOctet(bytes){return wfDerTLV(0x04,bytes);}
+function wfDerCtx0(bytes){return wfDerTLV(0xA0,bytes);}
+function wfDerIntegerNumber(n){
+  const b=[];while(n){b.unshift(n&255);n>>>=8;}
+  if(!b.length)b.push(0);if(b[0]&0x80)b.unshift(0);
+  return wfDerTLV(0x02,Uint8Array.from(b));
+}
+function wfDerIntegerBytes(bytes){
+  let b=bytes;
+  while(b.length>1&&b[0]===0&&!(b[1]&0x80))b=b.slice(1);
+  if(b[0]&0x80)b=wfPdfConcatBytes(Uint8Array.of(0),b);
+  return wfDerTLV(0x02,b);
+}
+function wfDerOid(oid){
+  const p=oid.split('.').map(Number),out=[40*p[0]+p[1]];
+  for(const n0 of p.slice(2)){let n=n0,stack=[n&127];n>>>=7;while(n){stack.unshift(0x80|(n&127));n>>>=7;}out.push(...stack);}
+  return wfDerTLV(0x06,Uint8Array.from(out));
+}
+async function wfPdfGetSigningKey(){
+  if(!_wfPdfSigningKeyPromise){
+    const der=wfPdfB64Bytes(WF_PDF_CERT_KEY_PKCS8_B64);
+    _wfPdfSigningKeyPromise=crypto.subtle.importKey('pkcs8',der,{name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['sign']);
+  }
+  return _wfPdfSigningKeyPromise;
+}
+async function wfPdfBuildCmsDetachedSignature(signedBytes){
+  if(!globalThis.crypto?.subtle)throw new Error('PDF_SIGNATURE_UNAVAILABLE');
+  const cert=wfPdfB64Bytes(WF_PDF_CERT_DER_B64);
+  const issuer=wfPdfHexBytes(WF_PDF_CERT_ISSUER_HEX);
+  const serial=wfPdfHexBytes(WF_PDF_CERT_SERIAL_HEX);
+  const key=await wfPdfGetSigningKey();
+  const signature=new Uint8Array(await crypto.subtle.sign({name:'RSASSA-PKCS1-v1_5'},key,signedBytes));
+  const algSha256=wfDerSeq(wfDerOid('2.16.840.1.101.3.4.2.1'),wfDerNull());
+  const algSha256Rsa=wfDerSeq(wfDerOid('1.2.840.113549.1.1.11'),wfDerNull());
+  const sid=wfDerSeq(issuer,wfDerIntegerBytes(serial));
+  const signerInfo=wfDerSeq(wfDerIntegerNumber(1),sid,algSha256,algSha256Rsa,wfDerOctet(signature));
+  const signedData=wfDerSeq(
+    wfDerIntegerNumber(1),
+    wfDerSet(algSha256),
+    wfDerSeq(wfDerOid('1.2.840.113549.1.7.1')),
+    wfDerCtx0(cert),
+    wfDerSet(signerInfo)
+  );
+  return wfDerSeq(wfDerOid('1.2.840.113549.1.7.2'),wfDerCtx0(signedData));
+}
+function wfPdfFindAscii(bytes,text){
+  const needle=new TextEncoder().encode(text);
+  outer:for(let i=0;i<=bytes.length-needle.length;i++){
+    for(let j=0;j<needle.length;j++)if(bytes[i+j]!==needle[j])continue outer;
+    return i;
+  }
+  return -1;
+}
+function wfPdfWriteAscii(bytes,start,text){
+  for(let i=0;i<text.length;i++)bytes[start+i]=text.charCodeAt(i);
+}
+
+async function wfMakePdf(images,title) {
   if(!images.length)throw new Error('EMPTY_PDF');
   const enc=new TextEncoder(),parts=[],offsets=[0];let length=0;
+  const infoId=3+images.length*3;
+  const sigFieldId=infoId+1;
+  const sigId=infoId+2;
+  const encryptId=infoId+3;
+  const fileId=wfPdfRandomId();
+  const security=await wfPdfBuildSecurityR6(WF_PDF_OWNER_PASSWORD,WF_PDF_PERMISSIONS);
   const push=value=>{const b=typeof value==='string'?enc.encode(value):value;parts.push(b);length+=b.length;};
   const object=(id,content)=>{offsets[id]=length;push(`${id} 0 obj\n`);push(content);push('\nendobj\n');};
-  const stream=(id,dict,bytes)=>{offsets[id]=length;push(`${id} 0 obj\n<<${dict} /Length ${bytes.length}>>\nstream\n`);push(bytes);push('\nendstream\nendobj\n');};
-  push('%PDF-1.4\n%');push(new Uint8Array([226,227,207,211]));push('\n');
-  object(1,'<< /Type /Catalog /Pages 2 0 R >>');
+  const stream=async(id,dict,bytes)=>{
+    const encrypted=await wfPdfEncryptAESV3(security.fileKey,bytes);
+    offsets[id]=length;push(`${id} 0 obj\n<<${dict} /Length ${encrypted.length}>>\nstream\n`);push(encrypted);push('\nendstream\nendobj\n');
+  };
+
+  push('%PDF-1.7\n%');push(new Uint8Array([226,227,207,211]));push('\n');
+  object(1,`<< /Type /Catalog /Pages 2 0 R /Extensions << /ADBE << /BaseVersion /1.7 /ExtensionLevel 8 >> >> /AcroForm << /Fields [${sigFieldId} 0 R] /SigFlags 3 >> /Perms << /DocMDP ${sigId} 0 R >> >>`);
   const pages=images.map((_,i)=>5+i*3);
   object(2,`<< /Type /Pages /Count ${images.length} /Kids [${pages.map(n=>n+' 0 R').join(' ')}] >>`);
-  images.forEach((im,i)=>{
+
+  for(let i=0;i<images.length;i++){
+    const im=images[i];
     if(!im.width||!im.height||!im.jpeg.startsWith('data:image/jpeg;base64,'))throw new Error('BAD_PDF_IMAGE');
     const binary=atob(im.jpeg.split(',')[1]);const bytes=new Uint8Array(binary.length);
     for(let j=0;j<binary.length;j++)bytes[j]=binary.charCodeAt(j);
     const imageId=3+i*3,contentId=imageId+1,pageId=imageId+2;
-    stream(imageId,` /Type /XObject /Subtype /Image /Width ${im.width} /Height ${im.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode`,bytes);
+    await stream(imageId,` /Type /XObject /Subtype /Image /Width ${im.width} /Height ${im.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode`,bytes);
     const w=200/25.4*72,h=w*1139/794,x=5/25.4*72,y=841.889764-x-h;
-    stream(contentId,'',enc.encode(`q\n${w.toFixed(6)} 0 0 ${h.toFixed(6)} ${x.toFixed(6)} ${y.toFixed(6)} cm\n/InvoicePage Do\nQ\n`));
-    object(pageId,`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.275591 841.889764] /Resources << /XObject << /InvoicePage ${imageId} 0 R >> >> /Contents ${contentId} 0 R >>`);
-  });
-  const infoId=3+images.length*3;
+    await stream(contentId,'',enc.encode(`q\n${w.toFixed(6)} 0 0 ${h.toFixed(6)} ${x.toFixed(6)} ${y.toFixed(6)} cm\n/InvoicePage Do\nQ\n`));
+    const annots=i===0?` /Annots [${sigFieldId} 0 R]`:'';
+    object(pageId,`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.275591 841.889764] /Resources << /XObject << /InvoicePage ${imageId} 0 R >> >> /Contents ${contentId} 0 R${annots} >>`);
+  }
+
   const titleHex='FEFF'+Array.from(String(title||'Invoice')).map(c=>{const cp=c.codePointAt(0);if(cp<=65535)return cp.toString(16).padStart(4,'0');const p=cp-65536;return (55296+(p>>10)).toString(16)+(56320+(p&1023)).toString(16);}).join('');
-  object(infoId,`<< /Producer (WOW Native PDF ${WF_PDF_VERSION}) /Title <${titleHex}> >>`);
-  const xref=length;push(`xref\n0 ${infoId+1}\n0000000000 65535 f \n`);
-  for(let id=1;id<=infoId;id++){if(!offsets[id])throw new Error('PDF_XREF');push(String(offsets[id]).padStart(10,'0')+' 00000 n \n');}
-  push(`trailer\n<< /Size ${infoId+1} /Root 1 0 R /Info ${infoId} 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
-  const blob=new Blob(parts,{type:'application/pdf'});
+  const producerBytes=await wfPdfEncryptAESV3(security.fileKey,enc.encode(`WOW Native PDF ${WF_PDF_VERSION} AES-256 CERTIFIED`));
+  const titleBytes=await wfPdfEncryptAESV3(security.fileKey,wfPdfHexBytes(titleHex));
+  object(infoId,`<< /Producer <${wfPdfHex(producerBytes)}> /Title <${wfPdfHex(titleBytes)}> >>`);
+
+  const sigNameBytes=await wfPdfEncryptAESV3(security.fileKey,enc.encode('WOW-CERTIFIED'));
+  object(sigFieldId,`<< /Type /Annot /Subtype /Widget /FT /Sig /T <${wfPdfHex(sigNameBytes)}> /Ff 1 /V ${sigId} 0 R /P 5 0 R /Rect [0 0 0 0] /F 196 /Lock << /Type /SigFieldLock /Action /All >> >>`);
+
+  // Keep fixed-width ByteRange and Contents placeholders so xref offsets never move after signing.
+  const byteRangeMarker='[0 0000000000 0000000000 0000000000]';
+  offsets[sigId]=length;
+  push(`${sigId} 0 obj\n<< /Type /Sig /Filter /Adobe.PPKLite /SubFilter /adbe.pkcs7.detached /ByteRange ${byteRangeMarker} /Contents <`);
+  const signatureHexStart=length;
+  push('0'.repeat(WF_PDF_SIGNATURE_HEX_LENGTH));
+  const signatureHexEnd=length;
+  push(`> /Reference [<< /Type /SigRef /TransformMethod /DocMDP /DigestMethod /SHA256 /TransformParams << /Type /TransformParams /P 1 /V /1.2 >> >>] >>\nendobj\n`);
+
+  object(encryptId,`<< /Filter /Standard /V 5 /R 6 /Length ${WF_PDF_AES_BITS} /O <${wfPdfHex(security.O)}> /U <${wfPdfHex(security.U)}> /OE <${wfPdfHex(security.OE)}> /UE <${wfPdfHex(security.UE)}> /P ${WF_PDF_PERMISSIONS} /Perms <${wfPdfHex(security.Perms)}> /EncryptMetadata true /CF << /StdCF << /CFM /AESV3 /AuthEvent /DocOpen /Length 32 >> >> /StmF /StdCF /StrF /StdCF >>`);
+
+  const xref=length;push(`xref\n0 ${encryptId+1}\n0000000000 65535 f \n`);
+  for(let id=1;id<=encryptId;id++){if(!offsets[id])throw new Error('PDF_XREF');push(String(offsets[id]).padStart(10,'0')+' 00000 n \n');}
+  const idHex=wfPdfHex(fileId);
+  push(`trailer\n<< /Size ${encryptId+1} /Root 1 0 R /Info ${infoId} 0 R /Encrypt ${encryptId} 0 R /ID [<${idHex}> <${idHex}>] >>\nstartxref\n${xref}\n%%EOF\n`);
+
+  let pdfBytes=wfPdfConcatBytes(...parts);
+  const byteRangePos=wfPdfFindAscii(pdfBytes,byteRangeMarker);
+  if(byteRangePos<0)throw new Error('PDF_SIGNATURE_BYTERANGE');
+  const range1Len=signatureHexStart-1; // exclude the '<' delimiter
+  const range2Start=signatureHexEnd+1; // resume after the '>' delimiter
+  const range2Len=pdfBytes.length-range2Start;
+  const byteRange=`[0 ${String(range1Len).padStart(10,'0')} ${String(range2Start).padStart(10,'0')} ${String(range2Len).padStart(10,'0')}]`;
+  if(byteRange.length!==byteRangeMarker.length)throw new Error('PDF_SIGNATURE_RANGE_SIZE');
+  wfPdfWriteAscii(pdfBytes,byteRangePos,byteRange);
+
+  const bytesToSign=wfPdfConcatBytes(pdfBytes.slice(0,range1Len),pdfBytes.slice(range2Start));
+  const cms=await wfPdfBuildCmsDetachedSignature(bytesToSign);
+  const cmsHex=wfPdfHex(cms);
+  if(cmsHex.length>WF_PDF_SIGNATURE_HEX_LENGTH)throw new Error('PDF_SIGNATURE_TOO_LARGE');
+  wfPdfWriteAscii(pdfBytes,signatureHexStart,cmsHex.padEnd(WF_PDF_SIGNATURE_HEX_LENGTH,'0'));
+
+  const blob=new Blob([pdfBytes],{type:'application/pdf'});
   if(blob.size<8000)throw new Error('EMPTY_PDF');
   return blob;
 }
@@ -15172,7 +15483,7 @@ async function wfExportSnapshot(html,invNo,lang) {
     // Do not lower QR resolution for narrow viewports. One page at a time bounds memory.
     const scale=2;
     for(const page of set.pages)images.push(await wfRasterizePage(page,scale));
-    const blob=wfMakePdf(images,invNo);
+    const blob=await wfMakePdf(images,invNo);
     const file=new File([blob],safePdfFileName(invNo),{type:'application/pdf',lastModified:Date.now()});
     const markup='<div data-wf-canonical="'+WF_PDF_VERSION+'" style="width:794px;max-width:none;margin:0 auto;background:#fff;">'+set.pages.map(p=>p.outerHTML).join('')+'</div>';
     return {file,markup,pageCount:set.pages.length};
@@ -15238,7 +15549,7 @@ async function shareInvoicePdfFile(channel) {
     if(!file)file=await createInvoicePdfFile();
     let supported=false;
     try{supported=!!(navigator.share&&navigator.canShare?.({files:[file]}));}catch{}
-    if(!supported){triggerPdfFileDownload(file);showToast(wfPdfMessage('downloaded'),'in');return false;}
+    if(!supported){showToast(wfNativeShareText('unsupported'),'er');return false;}
     await navigator.share({files:[file],title:pdfShareText()});return true;
   }catch(err){
     if(err?.name==='AbortError')return false;
@@ -15718,7 +16029,8 @@ function buildInvoiceHTML(inv, lang, opts) {
   opts = opts || {
     showBarcode:true, showImages:true, showWeights:true,
     showCBM:true, showSignatures:true, showNotes:true,
-    showBankInfo:true, showRates:true
+    showBankInfo:true, showRates:true,
+    rateUSD:true, rateEUR:true, rateTRY:true
   };
 
   /* ══════════════════════════════════════════
@@ -15747,6 +16059,17 @@ function buildInvoiceHTML(inv, lang, opts) {
   const fmt = usd => sym + toDisp(usd).toLocaleString('en-US', {
     minimumFractionDigits:2, maximumFractionDigits:2
   });
+  const fmtUSD = usd => '$' + Number(usd||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const fmtEUR = usd => '€' + (Number(usd||0)*usdEur).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const fmtTablePrice = usd => cur==='EUR'
+    ? `<div style="line-height:1.25;white-space:nowrap;"><div style="font-weight:800;color:#1a1a2e;">${fmtUSD(usd)}</div><div style="font-weight:800;color:#2b6cb0;">${fmtEUR(usd)}</div></div>`
+    : fmt(usd);
+
+  const rateCurrencyEnabled={USD:opts.rateUSD!==false,EUR:opts.rateEUR!==false,TRY:opts.rateTRY!==false};
+  const rateLines=[];
+  if(rateCurrencyEnabled.USD&&rateCurrencyEnabled.TRY)rateLines.push(`1 USD = ₺${usdTry.toFixed(2)}`);
+  if(rateCurrencyEnabled.USD&&rateCurrencyEnabled.EUR)rateLines.push(`1 USD = €${usdEur.toFixed(4)}`);
+  if(rateCurrencyEnabled.EUR&&rateCurrencyEnabled.TRY)rateLines.push(`1 EUR = ₺${(usdTry/usdEur).toFixed(2)}`);
 
   const st = S.settings;
 
@@ -15968,7 +16291,11 @@ function buildInvoiceHTML(inv, lang, opts) {
       unitWeight:'وزن\nالوحدة', totalWeight:'الوزن\nالإجمالي',
     },
   };
-  const CH = colHeaders[lang] || colHeaders.en;
+  const CH = {...(colHeaders[lang] || colHeaders.en)};
+  if(cur==='EUR'){
+    CH.unitPrice={en:'UNIT\nPRICE\nUSD / EUR',tr:'BİRİM\nFİYAT\nUSD / EUR',ar:'سعر\nالوحدة\nUSD / EUR'}[lang]||'UNIT\nPRICE\nUSD / EUR';
+    CH.totalPrice={en:'TOTAL\nPRICE\nUSD / EUR',tr:'TOPLAM\nFİYAT\nUSD / EUR',ar:'الإجمالي\nUSD / EUR'}[lang]||'TOTAL\nPRICE\nUSD / EUR';
+  }
 
 
   const totalPerLabel = {
@@ -16096,8 +16423,8 @@ function buildInvoiceHTML(inv, lang, opts) {
       <td style="${td}font-size:7.5px;max-width:55px;word-break:break-word;">${!item.color || String(item.color).trim().toUpperCase() === 'STANDARD' ? `<span style="white-space:nowrap;">${wfEsc(getColorDisplay(item.color))}</span>` : wfEsc(getColorDisplay(item.color))}</td>
       <td style="${td}font-size:8px;font-weight:700;color:#1a1a2e;">${getSetPcs(item)}</td>
       <td style="${td}font-weight:800;font-size:9px;">${item.qty}</td>
-      <td style="${td}direction:ltr;white-space:nowrap;font-weight:700;font-size:8px;">${fmt(item.priceUSD)}</td>
-      <td style="${td}direction:ltr;white-space:nowrap;font-weight:800;color:#1a1a2e;font-size:8.5px;">${fmt(item.totalUSD)}</td>
+      <td style="${td}direction:ltr;white-space:nowrap;font-weight:700;font-size:8px;">${fmtTablePrice(item.priceUSD)}</td>
+      <td style="${td}direction:ltr;white-space:nowrap;font-weight:800;color:#1a1a2e;font-size:8.5px;">${fmtTablePrice(item.totalUSD)}</td>
       <td style="${td}font-size:8px;">${unitPkts}</td>
       <td style="${td}font-size:8px;font-weight:700;">${totPkts}</td>
       <td style="${td}direction:ltr;font-size:7.5px;">${wfPdfMeasure(unitCBM)}</td>
@@ -16148,7 +16475,7 @@ function buildInvoiceHTML(inv, lang, opts) {
       <td colspan="6" style="${tft}font-size:8.5px;font-weight:900;letter-spacing:.5px;text-align:center;">${totalPerLabel}</td>
       <td style="${tft}font-size:9px;text-align:center;">${totalQty}</td>
       <td style="${tft}"></td>
-      <td style="${tft}font-size:10px;text-align:center;">${fmt(inv.subtotalUSD||0)}</td>
+      <td style="${tft}font-size:9px;text-align:center;direction:ltr;">${fmtTablePrice(inv.subtotalUSD||0)}</td>
       <td style="${tft}"></td>
       <td style="${tft}font-size:8.5px;text-align:center;">${grandTotalPkts}</td>
       <td style="${tft}"></td>
@@ -16785,7 +17112,7 @@ const sellerSig = `
 
       <!-- ══ أسعار الصرف (مثبتة في الأسفل تماماً) ══ -->
             <!-- ══ أسعار الصرف ══ -->
-      ${opts.showRates ? `
+      ${(opts.showRates && rateLines.length) ? `
       <div style="
         border:1px solid #e0e0e0;border-radius:10px;
         padding:5px 10px;background:#fafafa;
@@ -16807,9 +17134,7 @@ const sellerSig = `
           line-height:1.55;text-align:center;direction:ltr;unicode-bidi:isolate;
           font-family:'Segoe UI',Arial,sans-serif;
         ">
-          1 USD = ₺${usdTry.toFixed(2)} &nbsp;|&nbsp;
-          1 USD = €${usdEur.toFixed(4)} &nbsp;|&nbsp;
-          1 EUR = ₺${(usdTry/usdEur).toFixed(2)}
+          ${rateLines.join(' &nbsp;|&nbsp; ')}
         </div>
       </div>` : ''}
 
@@ -19954,42 +20279,33 @@ function initBottomNav() {
 /* ============================================================
    PRINT OPTIONS MODAL — HEADER BUTTON
 ============================================================ */
-function openPrintOptionsModal() {
-  // مزامنة حالة checkboxes مع S.printOpts
+function openPrintOptionsModal(context='general') {
+  _printOptionsContext=context||'general';
+  if(_printOptionsContext==='preview'&&_lastPreviewInv){
+    S.printOpts={...WF_DEFAULT_PRINT_OPTS,...(_lastPreviewInv.printOpts||{})};
+    S.printLang=document.getElementById('pdfLangSel')?.value||_lastPreviewInv.printLang||S.printLang;
+  }
   syncPrintOptsToModal();
-  // مزامنة لغة الطباعة
   document.querySelectorAll('#printOptionsModal .print-lang-btn').forEach(b => {
     b.classList.toggle('sel', b.dataset.pl === S.printLang);
   });
-  // تحديث النصوص
+  const curSel=document.getElementById('poInvoiceCurrency');
+  if(curSel)curSel.value=(_printOptionsContext==='preview'&&_lastPreviewInv?.currency)||S.invCurrency||'USD';
+  const saveBtn=document.getElementById('poSaveActionBtn');
+  if(saveBtn)saveBtn.style.display=_printOptionsContext==='preview'?'none':'';
   updatePrintOptsModalTexts();
   openModal('printOptionsModal');
 }
 
 function syncPrintOptsToModal() {
-const map = {
-  dashboard:              0,
-  companies:              1,
-  products:               2,
-  invoices:               3,
-  'add-company':          4,
-  'select-client-type':   4,   // ← إضافة عميل
-  'add-product':          5,
-  'quick-barcode':        6,   // ← باركود سريع
-  'select-invoice-type':  7,   // ← إنشاء فاتورة
-  'create-invoice':       7,
-  'payment-management':   3,
-};
-
-  const labels = document.querySelectorAll('#printOptionsModal .print-opt-item');
-  Object.entries(map).forEach(([key, idx]) => {
-    const label = labels[idx];
-    if (!label) return;
-    const cb = label.querySelector('input[type=checkbox]');
-    if (!cb) return;
-    const val = S.printOpts[key] !== false; // default true
-    cb.checked = val;
-    label.classList.toggle('active', val);
+  const labels=document.querySelectorAll('#printOptionsModal .print-opt-item[data-print-key]');
+  labels.forEach(label=>{
+    const key=label.dataset.printKey;
+    const cb=label.querySelector('input[type=checkbox]');
+    if(!key||!cb)return;
+    const val=S.printOpts[key]!==false;
+    cb.checked=val;
+    label.classList.toggle('active',val);
   });
 }
 
@@ -19999,6 +20315,10 @@ function updatePrintOptsModalTexts() {
     modal:    { ar:'خيارات الطباعة والمشاركة', tr:'Yazdırma ve Paylaşım Seçenekleri', en:'Print & Share Options' },
     lang:     { ar:'🌐 لغة الطباعة والتنزيل',  tr:'🌐 Yazdırma Dili',                  en:'🌐 Print Language'     },
     showHide: { ar:'👁️ إظهار / إخفاء في الفاتورة', tr:'👁️ Faturada Göster / Gizle', en:'👁️ Show / Hide in Invoice' },
+    currency: { ar:'💱 عملة الفاتورة وأسعار الصرف', tr:'💱 Fatura Para Birimi ve Döviz Kurları', en:'💱 Invoice Currency & Exchange Rates' },
+    invCurrency:{ ar:'💵 عملة عرض الفاتورة', tr:'💵 Fatura Görüntüleme Para Birimi', en:'💵 Invoice Display Currency' },
+    rateCurrencies:{ ar:'العملات الظاهرة في أسعار الصرف', tr:'Kur bölümünde gösterilecek para birimleri', en:'Currencies shown in exchange rates' },
+    currencyHint:{ ar:'حدد العملات التي تريد ظهورها في قسم أسعار الصرف داخل PDF. أي عملة غير محددة تختفي من هذا القسم.', tr:'PDF içindeki döviz kuru bölümünde görmek istediğiniz para birimlerini seçin. Seçilmeyen para birimi gizlenir.', en:'Choose which currencies appear in the PDF exchange-rate section. Unselected currencies are hidden.' },
     preview:  { ar:'معاينة',   tr:'Önizle',    en:'Preview'  },
     save:     { ar:'حفظ',      tr:'Kaydet',    en:'Save'     },
     print:    { ar:'طباعة',    tr:'Yazdır',    en:'Print'    },
@@ -20007,6 +20327,10 @@ function updatePrintOptsModalTexts() {
   set('printOptionsModalTitle', titles.modal[lang]    || titles.modal.en);
   set('poLangTitle',            titles.lang[lang]     || titles.lang.en);
   set('poShowHideTitle',        titles.showHide[lang] || titles.showHide.en);
+  set('poCurrencyTitle',        titles.currency[lang] || titles.currency.en);
+  set('poInvoiceCurrencyLabel', titles.invCurrency[lang] || titles.invCurrency.en);
+  set('poRateCurrenciesTitle',  titles.rateCurrencies[lang] || titles.rateCurrencies.en);
+  set('poCurrencyHint',         titles.currencyHint[lang] || titles.currencyHint.en);
   set('poPreviewBtn',           titles.preview[lang]  || titles.preview.en);
   set('poSaveBtn',              titles.save[lang]     || titles.save.en);
   set('poPrintBtn',             titles.print[lang]    || titles.print.en);
@@ -22122,6 +22446,1389 @@ for(const name of ['savePr','saveCo','saveInvoice','saveSettings','addPaymentToI
    
    
 
+<style id="wf-excel-ui">#shareMenuPopup{max-height:65vh;overflow-y:auto;overscroll-behavior:contain}</style>
+<script id="wf-excel-export">
+/* WOW XLSX export. Native editable invoice cells, formulas and separate image assets.
+ * One portrait worksheet per PDF page; native editable cells; no page screenshots.
+ * Only the current rendered invoice is exported; no other records or app settings.
+ */
+const WF_EXCEL_MIME='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+const WF_EXCEL_TEXT={
+  ar:{download:'تنزيل Excel',share:'مشاركة Excel',view:'الفاتورة',data:'بيانات الفاتورة',preparing:'جارٍ تجهيز Excel بكامل صفحات الفاتورة…',ready:'ملف Excel جاهز للمشاركة',fallback:'تم تنزيل ملف Excel؛ يمكنك إرفاقه في التطبيق الذي تريده.',failed:'تعذّر تجهيز Excel. ',hint:'Excel بتنسيق صفحات PDF؛ كل صفحة في ورقة، بخلايا قابلة للتعديل ومجاميع تلقائية. راجع المبلغ كتابةً ورمز QR بعد التعديل؛ لا يتحدثان تلقائيًا.',close:'إغلاق',empty:'لا توجد فاتورة للتصدير.'},
+  tr:{download:'Excel İndir',share:'Excel Paylaş',view:'FATURA',data:'FATURA VERİLERİ',preparing:'Tüm fatura sayfaları Excel için hazırlanıyor…',ready:'Excel dosyası paylaşılmaya hazır',fallback:'Excel dosyası indirildi. İstediğiniz uygulamaya ekleyebilirsiniz.',failed:'Excel oluşturulamadı. ',hint:'Excel: PDF sayfa düzeni; her sayfa ayrı bir çalışma sayfasında, düzenlenebilir hücreler ve otomatik toplamlar. Değişiklikten sonra yazıyla tutarı ve QR kodunu kontrol edin; otomatik güncellenmezler.',close:'Kapat',empty:'Dışa aktarılacak fatura yok.'},
+  en:{download:'Download Excel',share:'Share Excel',view:'INVOICE',data:'INVOICE DATA',preparing:'Preparing Excel with all invoice pages…',ready:'Excel file is ready to share',fallback:'Excel downloaded. Attach it in your preferred application.',failed:'Excel could not be created. ',hint:'Excel: PDF page layout, one worksheet per page, editable cells and automatic totals. Review the amount in words and QR after edits; they do not update automatically.',close:'Close',empty:'No invoice to export.'}
+};
+function wfExcelText(key,lang){return (WF_EXCEL_TEXT[lang||S.lang]||WF_EXCEL_TEXT.en)[key]||key;}
+for(const lang of ['ar','tr','en']){
+  TR[lang].excel_download=WF_EXCEL_TEXT[lang].download;
+  TR[lang].excel_share=WF_EXCEL_TEXT[lang].share;
+  TR[lang].excel_hint=WF_EXCEL_TEXT[lang].hint;
+}
+function safeExcelFileName(invNo){
+  const base=String(invNo||'invoice').replace(/[\\/:*?"<>|\x00-\x1f]+/g,'-').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'')||'invoice';
+  return (/^WOW(?:[-_ ]|$)/i.test(base)?base:'WOW_'+base).slice(0,100)+'.xlsx';
+}
+function wfExcelXml(s){
+  return String(s??'').replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\ufffe\uffff]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
+}
+function wfExcelCol(n){let out='';for(n++;n;n=Math.floor((n-1)/26))out=String.fromCharCode(65+(n-1)%26)+out;return out;}
+function wfExcelNumeric(text,allowNumber=false){
+  text=String(text??'').trim();
+  const money=text.match(/^([$€₺])\s*(-?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)$/);
+  if(money)return {value:Number(money[2].replace(/,/g,'')),format:'"'+money[1]+'"#,##0.00'};
+  if(allowNumber&&/^-?(?:0|[1-9]\d*)(?:\.\d+)?$/.test(text)){
+    const digits=(text.split('.')[1]||'').length;
+    return {value:Number(text),format:digits?'0.'+'0'.repeat(digits):'0'};
+  }
+  return {value:text};
+}
+function wfExcelImageBytes(uri){
+  const match=String(uri).match(/^data:image\/(jpeg|jpg|png);base64,([\s\S]+)$/i);
+  if(!match)throw new Error('EXCEL_IMAGE_FORMAT');
+  const raw=atob(match[2]),bytes=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+  return {bytes,ext:match[1]==='png'?'png':'jpeg'};
+}
+let _wfExcelCrcTable;
+function wfExcelZip(files){
+  const enc=new TextEncoder(),parts=[],central=[];let offset=0;
+  if(!_wfExcelCrcTable)_wfExcelCrcTable=Uint32Array.from({length:256},(_,n)=>{for(let k=0;k<8;k++)n=n&1?0xedb88320^(n>>>1):n>>>1;return n>>>0;});
+  for(const [path,content] of files){
+    const name=enc.encode(path),data=typeof content==='string'?enc.encode(content):content;
+    if(offset+data.length>0xffffffff)throw new Error('EXCEL_FILE_TOO_LARGE');
+    let crc=0xffffffff;for(let i=0;i<data.length;i++)crc=_wfExcelCrcTable[(crc^data[i])&255]^(crc>>>8);crc=(crc^0xffffffff)>>>0;
+    const local=new Uint8Array(30),l=new DataView(local.buffer);
+    l.setUint32(0,0x04034b50,true);l.setUint16(4,20,true);l.setUint16(6,0x800,true);l.setUint16(12,33,true);l.setUint32(14,crc,true);l.setUint32(18,data.length,true);l.setUint32(22,data.length,true);l.setUint16(26,name.length,true);
+    const dir=new Uint8Array(46),d=new DataView(dir.buffer);
+    d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint16(8,0x800,true);d.setUint16(14,33,true);d.setUint32(16,crc,true);d.setUint32(20,data.length,true);d.setUint32(24,data.length,true);d.setUint16(28,name.length,true);d.setUint32(42,offset,true);
+    parts.push(local,name,data);central.push(dir,name);offset+=local.length+name.length+data.length;
+  }
+  if(files.length>65535)throw new Error('EXCEL_TOO_MANY_PARTS');
+  const centralSize=central.reduce((s,p)=>s+p.length,0),end=new Uint8Array(22),e=new DataView(end.buffer);
+  e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,centralSize,true);e.setUint32(16,offset,true);
+  return new Blob([...parts,...central,end],{type:WF_EXCEL_MIME});
+}
+function wfExcelDrawing(images){
+  const anchors=images.map((im,i)=>`<xdr:oneCellAnchor><xdr:from><xdr:col>${im.col||0}</xdr:col><xdr:colOff>${Math.round((im.x||0)*9525)}</xdr:colOff><xdr:row>${im.row||0}</xdr:row><xdr:rowOff>${Math.round((im.y||0)*9525)}</xdr:rowOff></xdr:from><xdr:ext cx="${Math.round(im.width*9525)}" cy="${Math.round(im.height*9525)}"/><xdr:pic><xdr:nvPicPr><xdr:cNvPr id="${i+1}" name="${wfExcelXml(im.name||'Invoice image '+(i+1))}"/><xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr></xdr:nvPicPr><xdr:blipFill><a:blip r:embed="rId${i+1}"/>${im.crop?`<a:srcRect l="${im.crop.l}" t="${im.crop.t}" r="${im.crop.r}" b="${im.crop.b}"/>`:""}<a:stretch><a:fillRect/></a:stretch></xdr:blipFill><xdr:spPr><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr></xdr:pic><xdr:clientData/></xdr:oneCellAnchor>`).join('');
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">${anchors}</xdr:wsDr>`;
+}
+function wfMakeExcelWorkbook(model){
+  if(model.sheets)return wfMakeExcelLayoutWorkbook(model);
+  if(!model.rows?.length)throw new Error('NO_INVOICE_ITEMS');
+  const xml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  const ns='http://schemas.openxmlformats.org/spreadsheetml/2006/main',rel='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  const rels=items=>xml+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+items.map((r,i)=>`<Relationship Id="rId${i+1}" Type="${rel}/${r.type}" Target="${wfExcelXml(r.target)}"/>`).join('')+'</Relationships>';
+  const files=[],formats=[],merges=[],N=model.columns||15,last=wfExcelCol(N-1),totalRows=model.rows.length;
+  if(totalRows>1048576||model.rows.length>1048576)throw new Error('EXCEL_TOO_MANY_ROWS');
+  function styleId(c){
+    if(c.header)return 1;if(c.title)return 2;
+    if(c.format){let i=formats.indexOf(c.format);if(i<0){i=formats.length;formats.push(c.format);}return 3+i;}
+    return 0;
+  }
+  const dataRows=model.rows.map((row,i)=>{
+    let col=0;
+    const cells=row.cells.map(c=>{
+      const at=wfExcelCol(col)+(i+1),span=Math.max(1,c.span||1);col+=span;
+      if(span>1)merges.push(`${at}:${wfExcelCol(col-1)}${i+1}`);
+      const style=styleId(c);
+      if(c.formula)return `<c r="${at}" s="${style}"${typeof c.value==='string'?' t="str"':''}><f>${wfExcelXml(c.formula)}</f><v>${typeof c.value==='string'?wfExcelXml(c.value):Number.isFinite(Number(c.value))?Number(c.value):0}</v></c>`;
+      if(typeof c.value==='number'&&Number.isFinite(c.value))return `<c r="${at}" s="${style}"><v>${c.value}</v></c>`;
+      const value=String(c.value??'');if(value.length>32767)throw new Error('EXCEL_CELL_TOO_LONG');
+      // inlineStr prevents invoice names/notes beginning with =, +, - or @ from becoming formulas.
+      const text=wfExcelXml(value.replace(/_x[0-9a-f]{4}_/gi,m=>'_x005F_'+m));
+      return `<c r="${at}" s="${style}" t="inlineStr"><is><t xml:space="preserve">${text}</t></is></c>`;
+    }).join('');
+    return `<row r="${i+1}" ht="${Math.min(409,Math.max(18,row.height||24))}" customHeight="1">${cells}</row>`;
+  }).join('');
+  const xf=(font=0,fill=0,border=1,numFmt=0)=>`<xf numFmtId="${numFmt}" fontId="${font}" fillId="${fill}" borderId="${border}" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyNumberFormat="1" applyAlignment="1"><alignment vertical="center" wrapText="1" readingOrder="${model.lang==='ar'?2:1}"/></xf>`;
+  files.push(['xl/styles.xml',xml+`<styleSheet xmlns="${ns}"><numFmts count="${formats.length}">${formats.map((f,i)=>`<numFmt numFmtId="${164+i}" formatCode="${wfExcelXml(f)}"/>`).join('')}</numFmts><fonts count="3"><font><sz val="11"/><name val="Arial"/><color rgb="FF202030"/></font><font><b/><sz val="11"/><name val="Arial"/><color rgb="FFFFFFFF"/></font><font><b/><sz val="14"/><name val="Arial"/><color rgb="FFC8A96E"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF54545C"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="2"><border/><border><left style="thin"><color rgb="FFE2E8F0"/></left><right style="thin"><color rgb="FFE2E8F0"/></right><top style="thin"><color rgb="FFE2E8F0"/></top><bottom style="thin"><color rgb="FFE2E8F0"/></bottom></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${3+formats.length}">${xf()}${xf(1,2)}${xf(2,2)}${formats.map((f,i)=>xf(0,0,1,164+i)).join('')}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`]);
+  const margins='<pageMargins left="0.2" right="0.2" top="0.2" bottom="0.2" header="0" footer="0"/>';
+  const freeze=model.firstItemRow?model.firstItemRow-1:1;
+  const widths=model.columns===17?[14,24,11,19,12,11,7,13,13,13,13,8,9,11,11,10,11]:[14,24,11,19,12,11,7,14,14,8,9,11,11,10,11];
+  const dataImages=model.images||[];
+  files.push(['xl/worksheets/sheet1.xml',xml+`<worksheet xmlns="${ns}" xmlns:r="${rel}"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><dimension ref="A1:${last}${model.rows.length}"/><sheetViews><sheetView workbookViewId="0" showGridLines="0" rightToLeft="${model.lang==='ar'?1:0}" zoomScale="85"><pane ySplit="${freeze}" topLeftCell="A${freeze+1}" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="24"/><cols>${widths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join('')}</cols><sheetData>${dataRows}</sheetData>${merges.length?`<mergeCells count="${merges.length}">${merges.map(r=>`<mergeCell ref="${r}"/>`).join('')}</mergeCells>`:''}${margins}<pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="0"/><headerFooter><oddFooter>${wfExcelXml('&L WOW '+model.invNo+' &R &P / &N')}</oddFooter></headerFooter>${dataImages.length?'<drawing r:id="rId1"/>':''}</worksheet>`]);
+  const drawings=[dataImages];
+  let media=0;const drawingIds=[];
+  drawings.forEach((images,index)=>{
+    if(!images.length)return;
+    const id=index+1;drawingIds.push(id);const links=[];
+    images.forEach(im=>{const image=wfExcelImageBytes(im.uri);const name='image'+(++media)+'.'+image.ext;files.push(['xl/media/'+name,image.bytes]);links.push({type:'image',target:'../media/'+name});});
+    files.push([`xl/drawings/drawing${id}.xml`,wfExcelDrawing(images)],[`xl/drawings/_rels/drawing${id}.xml.rels`,rels(links)],[`xl/worksheets/_rels/sheet${id}.xml.rels`,rels([{type:'drawing',target:`../drawings/drawing${id}.xml`}])]);
+  });
+  const view=wfExcelText('view',model.lang),data=wfExcelText('data',model.lang);
+  const quoted=s=>"'"+s.replace(/'/g,"''")+"'";
+  const sheetNames=[view];
+  files.push(['xl/workbook.xml',xml+`<workbook xmlns="${ns}" xmlns:r="${rel}"><bookViews><workbookView activeTab="0"/></bookViews><sheets>${sheetNames.map((name,i)=>`<sheet name="${wfExcelXml(name)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets><definedNames>${sheetNames.map((name,i)=>`<definedName name="_xlnm.Print_Area" localSheetId="${i}">${wfExcelXml(quoted(name)+('!$A$1:$'+last+'$'+model.rows.length))}</definedName>`).join('')}${model.productHeaderRow?`<definedName name="_xlnm.Print_Titles" localSheetId="0">${wfExcelXml(quoted(view)+'!$'+model.productHeaderRow+':$'+model.productHeaderRow)}</definedName>`:''}</definedNames><calcPr calcId="191029" fullCalcOnLoad="1" forceFullCalc="1" calcMode="auto"/></workbook>`],['xl/_rels/workbook.xml.rels',rels([...sheetNames.map((name,i)=>({type:'worksheet',target:'worksheets/sheet'+(i+1)+'.xml'})),{type:'styles',target:'styles.xml'}])],['_rels/.rels',rels([{type:'officeDocument',target:'xl/workbook.xml'}])]);
+  const overrides=[['/xl/workbook.xml','sheet.main'],...sheetNames.map((name,i)=>['/xl/worksheets/sheet'+(i+1)+'.xml','worksheet']),['/xl/styles.xml','styles']].map(([p,t])=>`<Override PartName="${p}" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.${t}+xml"/>`).join('');
+  files.push(['[Content_Types].xml',xml+`<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpeg" ContentType="image/jpeg"/><Default Extension="png" ContentType="image/png"/>${overrides}${drawingIds.map(id=>`<Override PartName="/xl/drawings/drawing${id}.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>`).join('')}</Types>`]);
+  return wfExcelZip(files);
+}
+function wfExcelRole(label){
+  const x=String(label||'').trim().toLocaleUpperCase('en-US').replace(/İ/g,'I').replace(/\s+/g,' ');
+  if(/^(GOODS TOTAL|MAL TOPLAM TUTARI|إجمالي السلع)$/.test(x))return 'subtotal';
+  if(/^(TOTAL DISCOUNT|TOPLAM ISKONTO|إجمالي الخصم)$/.test(x))return 'discount';
+  if(/^(CALCULATED VAT|HESAPLANAN KDV|ضريبة KDV)/.test(x))return 'vat';
+  if(/^(TOTAL INCLUDING TAXES|VERGILER DAHIL TOPLAM TUTAR|المجموع الشامل للضرائب|GRAND TOTAL|GENEL TOPLAM|المجموع النهائي)$/.test(x))return 'grand';
+  if(/^(DEPOSIT|DEPOZITO|العربون)$/.test(x))return 'deposit';
+  if(/^(TOTAL PAID|TOPLAM ÖDENEN|إجمالي المدفوع)$/.test(x))return 'paid';
+  if(/^(AMOUNT PAYABLE|ÖDENECEK TUTAR|المبلغ المستحق)$/.test(x))return 'remaining';
+  return '';
+}
+function wfExcelApplyFormulas(model,inv={}){
+  const items=[],totals=[],payments=[],paymentTotals=[],roles={};
+  model.rows.forEach((row,i)=>{
+    let col=0;
+    row.cells.forEach(c=>{if(!model.preserveRefs)c.ref=wfExcelCol(col)+(i+1);col+=c.span||1;if(c.role)roles[c.role]=c;});
+    if(row.kind==='item')items.push(row);
+    if(row.kind==='productTotal')totals.push(row);
+    if(row.kind==='payment')payments.push(row);
+    if(row.kind==='paymentTotal')paymentTotals.push(row);
+  });
+  const find=(r,source,variant=0)=>r.cells.find(c=>c.sourceColumn===source&&(c.variant||0)===variant);
+  const sum=refs=>{if(!refs.length)return '0';const groups=[];for(let i=0;i<refs.length;i+=200)groups.push('SUM('+refs.slice(i,i+200).join(',')+')');return groups.join('+');};
+  const selectedVariant=inv.currency==='EUR'&&model.columns===17?1:0;
+  const factor=inv.currency==='TRY'?Number(inv.usdTry||1):inv.currency==='EUR'?Number(inv.usdEur||1):1;
+  items.forEach((row,index)=>{
+    const item=inv.items?.[index];if(!item)return;
+    for(const c of row.cells){
+      const fx=model.columns===17?(c.variant===1?Number(inv.usdEur||1):1):factor;
+      const v={6:item.qty,7:Number(item.priceUSD||0)*fx,8:Number(item.totalUSD??Number(item.priceUSD||0)*Number(item.qty||0))*fx,9:item.packets||1,10:(item.packets||1)*item.qty,11:item.cbm||0,12:(item.cbm||0)*item.qty,13:item.weight||0,14:(item.weight||0)*item.qty}[c.sourceColumn];
+      if(v!==undefined&&Number.isFinite(Number(v)))c.value=Number(v);
+    }
+  });
+  if(roles.discount&&inv.discountUSD!==undefined)roles.discount.value=Number(inv.discountUSD)*factor;
+  if(roles.deposit&&inv.depositUSD!==undefined)roles.deposit.value=Number(inv.depositUSD)*factor;
+  payments.forEach((row,index)=>{const amount=find(row,3);if(amount&&inv.payments?.[index])amount.value=Number(inv.payments[index].amount||0)*factor;});
+  for(const r of items){
+    const qty=find(r,6);if(!qty)continue;
+    for(const [total,unit] of [[8,7],[10,9],[12,11],[14,13]]){
+      for(const variant of total===8&&model.columns===17?[0,1]:[0]){
+        const out=find(r,total,variant),input=find(r,unit,variant);
+        if(out&&input)out.formula=`${qty.ref}*${input.ref}`;
+      }
+    }
+  }
+  for(const r of totals)for(const c of r.cells){
+    if([6,8,10,12,14].includes(c.sourceColumn))c.formula=sum(items.map(row=>find(row,c.sourceColumn,c.variant||0)?.ref).filter(Boolean));
+  }
+  const subtotal=sum(items.map(r=>find(r,8,selectedVariant)?.ref).filter(Boolean));
+  const discount=roles.discount?.ref||String(Number(inv.discountUSD||0)*factor);
+  if(roles.subtotal)roles.subtotal.formula=subtotal;
+  const net=`MAX(0,${subtotal}-${discount})`;
+  const vat=inv.kdvEnabled?`${net}*${Number(inv.kdvRate||20)/100}`:'0';
+  if(roles.vat)roles.vat.formula=vat;
+  const grand=roles.grand?.ref||`(${net}+${roles.vat?.ref||vat})`;
+  if(roles.grand)roles.grand.formula=`${net}+${roles.vat?.ref||vat}`;
+  const deposit=roles.deposit?.ref||String(Number(inv.depositUSD||0)*factor);
+  const paymentRefs=payments.map(r=>find(r,3)?.ref).filter(Boolean);
+  // Payment rows can be separated by notes; explicit SUM arguments avoid including other amounts.
+  const paidExpr=paymentRefs.length?`SUM(${paymentRefs.join(',')})`:String((inv.payments||[]).reduce((s,p)=>s+Number(p.amount||0),0)*factor);
+  if(roles.paid)roles.paid.formula=`${deposit}+${paidExpr}`;
+  if(roles.remaining)roles.remaining.formula=`MAX(0,${grand}-${roles.paid?.ref||`(${deposit}+${paidExpr})`})`;
+  const allPaid=roles.paid?.ref||`(${deposit}+${paidExpr})`,allRemaining=roles.remaining?.ref||`MAX(0,${grand}-${allPaid})`;
+  paymentTotals.forEach(row=>{for(const column of [3,6]){const cell=find(row,column);if(cell)cell.formula=allPaid;}const remain=find(row,7);if(remain)remain.formula=allRemaining;});
+  if(roles.paymentOverview){
+    const symbol=inv.currency==='EUR'?'€':inv.currency==='TRY'?'₺':'$';
+    roles.paymentOverview.formula=`TEXT(${allPaid},"${symbol}#,##0.00")&" / "&TEXT(${grand},"${symbol}#,##0.00")&" · "&TEXT(IF(${grand}>0,MIN(1,${allPaid}/${grand}),0),"0%")`;
+  }
+  if(roles.paymentOverviewAmounts){const symbol=inv.currency==='EUR'?'€':inv.currency==='TRY'?'₺':'$';const separator=String(roles.paymentOverviewAmounts.value).includes('\n')?'&" / "&CHAR(10)&':'&" / "&';roles.paymentOverviewAmounts.formula=`TEXT(${allPaid},"${symbol}#,##0.00")${separator}TEXT(${grand},"${symbol}#,##0.00")`;}
+  if(roles.paymentOverviewPercent)roles.paymentOverviewPercent.formula=`IF(${grand}>0,MIN(1,${allPaid}/${grand}),0)`;
+  payments.forEach((row,i)=>{
+    const paid=find(row,6),remaining=find(row,7),running=`${deposit}+SUM(${paymentRefs.slice(0,i+1).join(',')})`;
+    if(paid)paid.formula=running;if(remaining)remaining.formula=`MAX(0,${grand}-(${running}))`;
+  });
+  model.firstItemRow=model.rows.findIndex(r=>r.kind==='item')+1;
+  model.productHeaderRow=model.rows.findIndex(r=>r.kind==='productHeader')+1;
+  return model;
+}
+function wfExcelReadPageData(set,lang,invNo,inv={}){
+  const euro=!!set.doc.querySelector('.invoice-chunk thead')?.innerText.includes('USD / EUR');
+  const N=euro?17:15,rows=[],images=[],seenImages=new Set();let itemCount=0,hasHeader=false;
+  function addText(text,title=false){
+    for(const line of String(text||'').split(/\n/).map(s=>s.trim()).filter(Boolean))
+      for(let at=0;at<line.length;at+=1000)rows.push({cells:[{value:line.slice(at,at+1000),span:N,title}],height:title?28:Math.max(20,Math.ceil(Math.min(1000,line.length-at)/(N*8))*15)});
+  }
+  function reserveImages(root){
+    const list=[...(root.querySelectorAll?.('img')||[])].filter(img=>!seenImages.has(img));
+    if(!list.length)return;
+    const perRow=4,span=Math.floor(N/perRow);
+    for(let i=0;i<list.length;i+=perRow){
+      const group=list.slice(i,i+perRow),r=rows.length;
+      rows.push({cells:[{value:'',span:N}],height:145});
+      group.forEach((img,k)=>{
+        seenImages.add(img);const w=img.naturalWidth||160,h=img.naturalHeight||160,scale=Math.min(170/w,180/h,1);
+        images.push({uri:img.src,row:r,col:k*span,width:w*scale,height:h*scale,x:5,y:5,name:img.alt||'Invoice image'});
+      });
+    }
+  }
+  function addHeader(element){
+    const panels=[...element.children];
+    if(panels.length!==3){reserveImages(element);for(const p of panels)visit(p);return;}
+    const seller=panels[0],middle=panels[1],buyer=panels[2];
+    const sellerImage=seller.querySelector('img'),buyerImages=[...buyer.querySelectorAll('img')];
+    const top=rows.length,leftSpan=5,rightSpan=4,midSpan=N-leftSpan-rightSpan;
+    rows.push({cells:[{value:'',span:leftSpan},{value:middle.firstElementChild?.innerText||wfExcelText('view',lang),span:midSpan,title:true},{value:'',span:rightSpan}],height:82});
+    if(sellerImage){seenImages.add(sellerImage);const w=sellerImage.naturalWidth||270,h=sellerImage.naturalHeight||90,k=Math.min(280/w,90/h);images.push({uri:sellerImage.src,row:top,col:0,width:w*k,height:h*k,x:5,y:6,name:sellerImage.alt||'WOW logo'});}
+    buyerImages.forEach((img,i)=>{seenImages.add(img);const w=img.naturalWidth||99,h=img.naturalHeight||99,k=Math.min(90/w,90/h);images.push({uri:img.src,row:top,col:N-rightSpan+i*2,width:w*k,height:h*k,x:3,y:6,name:img.alt||'Buyer image'});});
+    const sellerLines=seller.innerText.split('\n').map(x=>x.trim()).filter(Boolean),fields=[...middle.children].slice(1);
+    for(let i=0;i<Math.max(sellerLines.length,fields.length);i++){
+      const field=fields[i],parts=field?[...field.children]:[];
+      rows.push({cells:[{value:sellerLines[i]||'',span:leftSpan},{value:parts[0]?.innerText||'',span:3},{value:parts.slice(1).map(p=>p.innerText).join(' ')||field?.innerText||'',span:N-leftSpan-3}],height:25});
+    }
+  }
+  function addTable(table){
+    const product=!!table.closest('.invoice-chunk');
+    for(const tr of table.rows){
+      const isHeader=[...tr.cells].some(c=>c.tagName==='TH');
+      if(product&&isHeader&&hasHeader)continue;
+      if(product&&isHeader)hasHeader=true;
+      const out=[],pictures=[];let sourceCol=0,col=0;
+      const item=tr.hasAttribute('data-wf-item');if(item)itemCount++;
+      for(const cell of tr.cells){
+        const span=cell.colSpan||1,header=cell.tagName==='TH',expanded=product&&euro&&span===1&&(sourceCol===7||sourceCol===8);
+        const values=expanded?(header?['USD','EUR'].map(c=>cell.innerText.replace('USD / EUR',c)):cell.innerText.split(/\n/).map(s=>s.trim()).filter(Boolean)):[cell.innerText];
+        if(expanded&&values.length!==2&&cell.innerText.trim())throw new Error('EXCEL_CURRENCY_LAYOUT');
+        const normalized=expanded?[values[0]||'',values[1]||'']:values;
+        normalized.forEach((value,variant)=>{
+          const numeric=header||(product&&sourceCol<6)?{value}:wfExcelNumeric(value,product&&sourceCol>=6);
+          let mappedSpan=span;
+          if(product&&euro&&span>1)for(const c of [7,8])if(c>=sourceCol&&c<sourceCol+span)mappedSpan++;
+          out.push({...numeric,span:mappedSpan,header,sourceColumn:sourceCol,variant});
+          if(!expanded){const img=cell.querySelector('img');if(img){seenImages.add(img);pictures.push({uri:img.src,row:rows.length,col,width:80,height:55,x:4,y:4,name:'Product '+itemCount});}}
+          col+=mappedSpan;
+        });
+        sourceCol+=span;
+      }
+      if(!out.length)continue;
+      if(col<N)out.at(-1).span=(out.at(-1).span||1)+N-col;
+      const kind=item?'item':product?(isHeader?'productHeader':'productTotal'):tr.parentElement?.tagName==='TFOOT'?'paymentTotal':(!isHeader&&tr.cells.length===8?'payment':'table');
+      const lines=Math.max(...out.map(c=>String(c.value).split('\n').length));
+      rows.push({kind,cells:out,height:item?Math.max(50,Math.min(300,lines*14)):Math.max(28,Math.min(300,lines*14))});images.push(...pictures);
+    }
+  }
+  function visit(element){
+    if(element.classList?.contains('wf-invoice-header')){addHeader(element);return;}
+    if(element.tagName==='TABLE'){addTable(element);return;}
+    const children=[...(element.children||[])];
+    const pair=element.style?.display==='flex'&&element.style.flexDirection!=='column'&&children.length===2&&children.every(c=>c.innerText?.trim())&&!element.querySelector('table,img');
+    if(pair){
+      const label=children[0].innerText.trim(),raw=children[1].innerText.trim();
+      const role=wfExcelRole(label)||(/PAYMENT HISTORY|ÖDEME GEÇMİŞİ|سجل الدفعات/i.test(label)&&raw.includes('/')?'paymentOverview':'');
+      const amount=wfExcelNumeric(raw.replace(/^[+-]\s+(?=[$€₺])/,'').trim());
+      const value=role?amount:{value:raw};
+      rows.push({cells:[{value:label,span:N-4,header:role==='grand'||role==='subtotal'},{...value,role,span:4}],height:Math.max(26,raw.split('\n').length*15)});return;
+    }
+    if(!children.length||children.every(c=>!['DIV','TABLE','SECTION','P'].includes(c.tagName))){reserveImages(element);addText(element.innerText);return;}
+    for(const node of element.childNodes){if(node.nodeType===1)visit(node);else if(node.nodeType===3&&node.textContent.trim())addText(node.textContent);}
+  }
+  for(const [index,page] of set.pages.entries())for(const child of page.querySelector('.wf-page-body').children){
+    if(index>0&&child===page.querySelector('.wf-page-body').firstElementChild&&!child.querySelector('table')&&/INVOICE CONTINUED|FATURA DEVAMI|متابعة الفاتورة/i.test(child.innerText))continue;
+    visit(child);
+  }
+  if(itemCount!==set.itemCount)throw new Error('EXCEL_ITEM_COUNT_MISMATCH');
+  return wfExcelApplyFormulas({rows,images,columns:N,lang,invNo},inv);
+}
+
+/* Measured PDF layout -> editable SpreadsheetML. Coordinates are CSS pixels.
+ * Each PDF page stays a portrait worksheet. No invoice-page screenshots.
+ */
+function wfExcelColor(value,back='FFFFFF'){
+  if(!value||value==='transparent')return null;
+  if(/^#[\da-f]{6}$/i.test(value))return value.slice(1).toUpperCase();
+  if(/^#[\da-f]{3}$/i.test(value))return value.slice(1).split('').map(c=>c+c).join('').toUpperCase();
+  const m=value.match(/rgba?\(\s*([\d.]+)[, ]+([\d.]+)[, ]+([\d.]+)(?:\s*[,/]\s*([\d.]+))?/);
+  if(!m)return null;const a=m[4]===undefined?1:Number(m[4]);if(!a)return null;
+  return [1,2,3].map((n,i)=>Math.round(Number(m[n])*a+parseInt(back.slice(i*2,i*2+2),16)*(1-a)).toString(16).padStart(2,'0')).join('').toUpperCase();
+}
+function wfExcelLayoutGrid(page){
+  const snapX=n=>Math.max(0,Math.min(page.width,Math.round(n))),snapY=n=>Math.max(0,Math.min(page.height,Math.round(n*4)/4));
+  const xs=new Set([0,page.width]),ys=new Set([0,page.height]);
+  for(const a of [...page.decor,...page.atoms]){
+    a.right=snapX(a.x+a.w);a.bottom=snapY(a.y+a.h);a.x=snapX(a.x);a.y=snapY(a.y);
+    if(a.right<=a.x)a.right=Math.min(page.width,a.x+1);if(a.bottom<=a.y)a.bottom=Math.min(page.height,a.y+.25);
+    xs.add(a.x);xs.add(a.right);ys.add(a.y);ys.add(a.bottom);
+    const radius=Math.min(a.radius||0,a.w/2,a.h/2);
+    for(let t=1;t<radius;t+=2){xs.add(snapX(a.x+t));xs.add(snapX(a.right-t));ys.add(snapY(a.y+t));ys.add(snapY(a.bottom-t));}
+    for(const [side,b] of Object.entries(a.borders||{}))if(b.width){if(side==='left')xs.add(snapX(a.x+b.width));if(side==='right')xs.add(snapX(a.right-b.width));if(side==='top')ys.add(snapY(a.y+b.width));if(side==='bottom')ys.add(snapY(a.bottom-b.width));}
+  }
+  // Excel limits each row to 409 points, including blank space at the end of a page.
+  const base=[...ys].sort((a,b)=>a-b);for(let i=1;i<base.length;i++)for(let y=base[i-1]+400;y<base[i];y+=400)ys.add(y);
+  page.xs=[...xs].sort((a,b)=>a-b);page.ys=[...ys].sort((a,b)=>a-b);
+  const X=new Map(page.xs.map((v,i)=>[v,i])),Y=new Map(page.ys.map((v,i)=>[v,i]));
+  const W=page.xs.length-1,H=page.ys.length-1,occupied=new Int32Array(W*H);occupied.fill(-1);
+  for(const [i,a] of page.atoms.entries()){
+    a.col=X.get(a.x);a.row=Y.get(a.y);a.endCol=X.get(a.right);a.endRow=Y.get(a.bottom);
+    if(a.endCol<=a.col||a.endRow<=a.row)throw new Error('EXCEL_LAYOUT_EMPTY_TEXT');
+    a.localRef=wfExcelCol(a.col)+(a.row+1);a.ref="'"+page.name.replace(/'/g,"''")+"'!"+a.localRef;
+    for(let r=a.row;r<a.endRow;r++)for(let c=a.col;c<a.endCol;c++){
+      const p=r*W+c;if(occupied[p]!==-1)throw new Error('EXCEL_LAYOUT_TEXT_OVERLAP|'+String(a.value).slice(0,50));occupied[p]=i;
+    }
+  }
+  page.occupied=occupied;page.X=X;page.Y=Y;return page;
+}
+function wfExcelReadPageLayout(set,lang,invNo,inv={}){
+  const doc=set.doc,win=doc.defaultView,style=e=>win.getComputedStyle(e),semantic=[],sheets=[];
+  const euro=inv.currency==='EUR';let itemCount=0;
+  for(const [pageIndex,root] of set.pages.entries()){
+    const bounds=root.getBoundingClientRect(),page={name:({ar:'صفحة',tr:'SAYFA',en:'PAGE'}[lang]||'PAGE')+' '+(pageIndex+1),width:794,height:1139,atoms:[],decor:[],images:[]};
+    const seen=new Set(),atomByElement=new Map();
+    const rect=e=>{const r=e.getBoundingClientRect();return {x:r.left-bounds.left,y:r.top-bounds.top,w:r.width,h:r.height};};
+    function font(e){const s=style(e);return {font:s.fontFamily.split(',')[0].replace(/["']/g,'').trim()||'Arial',size:parseFloat(s.fontSize)*.75||6,bold:Number(s.fontWeight)>=600||s.fontWeight==='bold',italic:s.fontStyle==='italic',color:wfExcelColor(s.color)||'1A1A1A',strike:s.textDecorationLine.includes('line-through'),align:s.textAlign==='center'?'center':s.textAlign==='right'||s.textAlign==='end'&&s.direction!=='rtl'||s.textAlign==='start'&&s.direction==='rtl'?'right':'left',rtl:s.direction==='rtl'};}
+    function visible(e){const s=style(e),r=rect(e);return s.display!=='none'&&s.visibility!=='hidden'&&Number(s.opacity)!==0&&r.w>0&&r.h>0;}
+    function background(e){let v=e;while(v){const c=wfExcelColor(style(v).backgroundColor);if(c)return c;if(v===root)break;v=v.parentElement;}return 'FFFFFF';}
+    function runs(e){
+      const out=[];let previous=null;
+      function push(text,f){if(!text)return;const last=out.at(-1);if(last&&JSON.stringify(last.style)===JSON.stringify(f))last.text+=text;else out.push({text,style:f});}
+      function visit(n){
+        if(n.nodeType===3){
+          const f=font(n.parentElement),value=n.nodeValue,range=doc.createRange();
+          for(let i=0;i<value.length;i++){
+            range.setStart(n,i);range.setEnd(n,i+1);const r=range.getBoundingClientRect(),ch=value[i];
+            if(!r.width||!r.height)continue;
+            if(previous&&r.top>=previous.bottom-1&&r.top-previous.top>2)push('\n',f);
+            push(/\s/.test(ch)?' ':ch,f);if(ch.trim())previous=r;
+          }
+        }else if(n.nodeType===1){if(n.tagName==='BR'){push('\n',font(n.parentElement));previous=null;}else for(const c of n.childNodes)visit(c);}
+      }
+      visit(e);if(out.length){out[0].text=out[0].text.trimStart();out.at(-1).text=out.at(-1).text.trimEnd();}return out.filter(r=>r.text);
+    }
+    function emit(e,meta={},box){
+      const raw=e.innerText??e.textContent??'';if(!raw.trim())return null;
+      let r=box||rect(e),s=style(e),f=font(e);
+      if(!box){const left=parseFloat(s.paddingLeft)||0,right=parseFloat(s.paddingRight)||0,top=parseFloat(s.paddingTop)||0,bottom=parseFloat(s.paddingBottom)||0;
+        r={x:r.x+left,y:r.y+top,w:r.w-left-right,h:r.h-top-bottom};
+        // Excel cell padding is approximately two pixels on each side.
+        if(s.display==='inline'||s.display==='inline-block'){r.x-=2;r.w+=4;}
+      }
+      const rr=meta.numeric?[]:runs(e),text=rr.map(r=>r.text).join('')||raw.trim();
+      const numeric=meta.numeric?wfExcelNumeric(raw.trim().replace(/^[+-]\s+(?=[$€₺])/,'').trim(),true):{value:text};
+      if(/[+@]/.test(raw)&&!/[\u0600-\u06ff]/.test(raw))f.rtl=false;
+      const a={...r,...numeric,displayText:raw.trim(),style:f,...meta};
+      if(meta.role==='discount'&&a.format)a.format='"- "'+a.format;if(meta.role==='vat'&&a.format)a.format='"+ "'+a.format;
+      if(typeof a.value==='string'&&rr.length)a.runs=rr;
+      page.atoms.push(a);atomByElement.set(e,a);return a;
+    }
+    // Preserve all coloured panels and rules in their measured locations using native cell fills.
+    for(const e of [root,...root.querySelectorAll('*')]){
+      if(!visible(e))continue;const r=rect(e),s=style(e),fill=wfExcelColor(s.backgroundColor,background(e.parentElement||root)),borders={};
+      for(const side of ['Left','Right','Top','Bottom']){const w=parseFloat(s['border'+side+'Width'])||0,c=wfExcelColor(s['border'+side+'Color'],fill||background(e));if(w&&c&&s['border'+side+'Style']!=='none')borders[side.toLowerCase()]={width:w,color:c,dash:s['border'+side+'Style']};}
+      if(fill||Object.keys(borders).length)page.decor.push({...r,fill,borders,radius:parseFloat(s.borderTopLeftRadius)||0});
+    }
+    function image(e){const r=rect(e),s=style(e),nw=e.naturalWidth||r.w,nh=e.naturalHeight||r.h;let w=r.w,h=r.h,x=r.x,y=r.y,crop=null;
+      if(s.objectFit==='contain'||s.objectFit==='scale-down'){const k=Math.min(w/nw,h/nh,s.objectFit==='scale-down'?1:Infinity),ww=nw*k,hh=nh*k;const pos=s.objectPosition||'50% 50%';x+=/left|^0%/.test(pos)?0:/right|^100%/.test(pos)?w-ww:(w-ww)/2;y+=(h-hh)/2;w=ww;h=hh;}
+      if(s.objectFit==='cover'){const k=Math.max(w/nw,h/nh),cw=(nw*k-w)/(2*nw*k),ch=(nh*k-h)/(2*nh*k);crop={l:Math.round(cw*100000),r:Math.round(cw*100000),t:Math.round(ch*100000),b:Math.round(ch*100000)};}
+      page.images.push({uri:e.src,x,y,width:w,height:h,name:e.alt||'Invoice image',crop});
+    }
+    function table(t){
+      const product=!!t.closest('.invoice-chunk');
+      for(const tr of t.rows){
+        const header=[...tr.cells].some(c=>c.tagName==='TH'),item=tr.hasAttribute('data-wf-item');
+        if(item)itemCount++;
+        const row={kind:item?'item':product?(header?'productHeader':'productTotal'):tr.parentElement.tagName==='TFOOT'?'paymentTotal':header?'table':'payment',cells:[]};let col=0;
+        for(const cell of tr.cells){
+          const meta={sourceColumn:col,variant:0,numeric:!header&&(product?col>=6:[3,6,7].includes(col))};
+          if(product&&euro&&!header&&[7,8].includes(col)&&cell.colSpan===1){
+            const leaves=[...cell.querySelectorAll('div')].filter(e=>!e.children.length&&e.textContent.trim());
+            if(leaves.length!==2&&cell.textContent.trim())throw new Error('EXCEL_CURRENCY_LAYOUT');
+            for(const [v,e] of leaves.entries()){const a=emit(e,{...meta,variant:v});if(a)row.cells.push(a);}
+          }else if(cell.querySelector('img')){for(const e of cell.querySelectorAll('img'))image(e);}
+          else if(product&&col===3&&cell.querySelector('div')){for(const e of cell.children)walk(e);}
+          else {const a=emit(cell,meta);if(a)row.cells.push(a);}
+          col+=cell.colSpan||1;
+        }
+        semantic.push(row);
+      }
+    }
+    function walk(e){
+      if(seen.has(e)||!visible(e))return;seen.add(e);
+      if(e.tagName==='IMG'){image(e);return;}if(e.tagName==='TABLE'){table(e);return;}
+      const children=[...e.children],s=style(e);
+      if(s.display==='flex'&&s.flexDirection!=='column'&&children.length===2&&!e.querySelector('table,img')){
+        if(/PAYMENT HISTORY|ÖDEME GEÇMİŞİ|سجل الدفعات/i.test(children[0].innerText||'')){
+          const spans=[...children[1].querySelectorAll('span')];
+          if(spans.length>=2&&spans[0].innerText.includes('/')){
+            walk(children[0]);const a=emit(spans[0],{role:'paymentOverviewAmounts'}),p=emit(spans.at(-1),{role:'paymentOverviewPercent'});
+            if(p){p.value=parseFloat(spans.at(-1).innerText)/100;p.format='0%';delete p.runs;}
+            semantic.push({cells:[a,p].filter(Boolean)});return;
+          }
+        }
+        const role=wfExcelRole(children[0].innerText);
+        if(role){walk(children[0]);const a=emit(children[1],{role,numeric:true});if(a)semantic.push({cells:[a]});return;}
+      }
+      // A complete leaf block, including inline rich text, remains one editable field.
+      const hasBlocks=children.some(c=>{const d=style(c).display;return !['inline','inline-block','contents','none'].includes(d)&&c.tagName!=='BR';});
+      if(!e.querySelector('img,table')&&!hasBlocks&&!(s.display==='flex'&&children.length===2)) {emit(e);return;}
+      for(const node of e.childNodes){
+        if(node.nodeType===1)walk(node);
+        else if(node.nodeType===3&&node.textContent.trim()){
+          const range=doc.createRange();range.selectNodeContents(node);const r=range.getBoundingClientRect();
+          if(r.width&&r.height){const rr=runs(node),a={x:r.left-bounds.left-2,y:r.top-bounds.top,w:r.width+4,h:r.height,value:rr.map(r=>r.text).join('')||node.textContent.replace(/\s+/g,' ').trim(),style:font(e),runs:rr};page.atoms.push(a);}
+        }
+      }
+    }
+    walk(root);
+    // Inline fragments on the same rendered line belong to a single editable text field.
+    for(let i=0;i<page.atoms.length;i++){
+      const a=page.atoms[i];if(a.numeric||a.sourceColumn!==undefined||a.role)continue;
+      for(let j=i+1;j<page.atoms.length;j++){
+        const b=page.atoms[j];if(b.numeric||b.sourceColumn!==undefined||b.role)continue;
+        const sameLine=Math.abs((a.y+a.h/2)-(b.y+b.h/2))<Math.min(a.h,b.h)*.45;
+        const touches=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)>0;
+        if(!sameLine||!touches)continue;
+        if(String(a.value).includes('\n')||String(b.value).includes('\n')||a.style.align!==b.style.align){
+          const left=a.x<b.x?a:b,right=left===a?b:a,end=right.x+right.w,boundary=(left.x+left.w+right.x)/2;
+          left.w=boundary-left.x;right.x=boundary;right.w=end-boundary;continue;
+        }
+        const parts=[a,b].sort((x,y)=>a.style.rtl?y.x-x.x:x.x-y.x);
+        a.runs=parts.flatMap(p=>p.runs||[{text:String(p.value),style:p.style}]);a.value=parts.map(p=>p.value).join(' ');if(/[+@]/.test(a.value)&&!/[\u0600-\u06ff]/.test(a.value))a.style={...a.style,rtl:false};
+        const right=Math.max(a.x+a.w,b.x+b.w),bottom=Math.max(a.y+a.h,b.y+b.h);a.x=Math.min(a.x,b.x);a.y=Math.min(a.y,b.y);a.w=right-a.x;a.h=bottom-a.y;
+        page.atoms.splice(j--,1);
+      }
+    }
+    for(const a of page.atoms){
+      const lines=String(a.value).split('\n').length;
+      if(lines>1){const size=Math.min(a.style.size,(a.h*.75-1.5)/(lines*1.3)),ratio=size/a.style.size;a.style={...a.style,size};if(a.runs)a.runs=a.runs.map(r=>({...r,style:{...r.style,size:r.style.size*ratio}}));}
+    }
+    wfExcelLayoutGrid(page);sheets.push(page);
+  }
+  if(itemCount!==set.itemCount)throw new Error('EXCEL_ITEM_COUNT_MISMATCH');
+  wfExcelApplyFormulas({rows:semantic,columns:euro?17:15,preserveRefs:true},inv);
+  return {sheets,lang,invNo};
+}
+function wfMakeExcelLayoutWorkbook(model){
+  const xml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',ns='http://schemas.openxmlformats.org/spreadsheetml/2006/main',rel='http://schemas.openxmlformats.org/officeDocument/2006/relationships',files=[];
+  const esc=wfExcelXml,relations=links=>xml+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+links.map((l,i)=>`<Relationship Id="rId${i+1}" Type="${rel}/${l.type}" Target="${esc(l.target)}"/>`).join('')+'</Relationships>';
+  const fonts=[{font:'Calibri',size:11,color:'000000'}],fills=['',null],formats=[],xfs=[{font:0,fill:0,format:0}],fontMap=new Map(),fillMap=new Map(),xfMap=new Map();
+  function fontId(s){const v={font:s.font||'Arial',size:Math.max(1,s.size||6),bold:!!s.bold,italic:!!s.italic,color:s.color||'1A1A1A',strike:!!s.strike},key=JSON.stringify(v);if(!fontMap.has(key)){fontMap.set(key,fonts.length);fonts.push(v);}return fontMap.get(key);}
+  function fillId(s){if(!s||s==='FFFFFF')return 0;if(!fillMap.has(s)){fillMap.set(s,fills.length);fills.push(s);}return fillMap.get(s);}
+  function styleId(a,fill){const s=a?.style||{},v={font:a?fontId(s):0,fill:fillId(fill),format:0,align:s.align||'left',rtl:!!s.rtl,wrap:a?String(a.value).includes('\n'):false};
+    if(a?.format){let i=formats.indexOf(a.format);if(i<0){i=formats.length;formats.push(a.format);}v.format=164+i;}
+    const key=JSON.stringify(v);if(!xfMap.has(key)){xfMap.set(key,xfs.length);xfs.push(v);}return xfMap.get(key);
+  }
+  const fontXML=(f,run=false)=>`${f.bold?'<b/>':''}${f.italic?'<i/>':''}${f.strike?'<strike/>':''}<sz val="${f.size}"/><color rgb="FF${f.color}"/><${run?'rFont':'name'} val="${esc(f.font)}"/>`;
+  const literal=t=>esc(String(t).replace(/_x[\da-f]{4}_/gi,m=>'_x005F_'+m));
+  function cellXML(a,ref,id){if(!a)return `<c r="${ref}" s="${id}"/>`;
+    if(a.formula)return `<c r="${ref}" s="${id}"${typeof a.value==='string'?' t="str"':''}><f>${esc(a.formula)}</f><v>${typeof a.value==='string'?esc(a.value):Number(a.value)||0}</v></c>`;
+    if(typeof a.value==='number'&&Number.isFinite(a.value))return `<c r="${ref}" s="${id}"><v>${a.value}</v></c>`;
+    if(String(a.value).length>32767)throw new Error('EXCEL_CELL_TOO_LONG');
+    const rich=a.runs?.length?a.runs.map(r=>`<r><rPr>${fontXML(fonts[fontId(r.style)],true)}</rPr><t xml:space="preserve">${literal(r.text)}</t></r>`).join(''):`<t xml:space="preserve">${literal(a.value??'')}</t>`;
+    return `<c r="${ref}" s="${id}" t="inlineStr"><is>${rich}</is></c>`;
+  }
+  const palette=['FFFFFF'],colorMap=new Map([['FFFFFF',0]]);function colorId(v){if(!colorMap.has(v)){colorMap.set(v,palette.length);palette.push(v);}return colorMap.get(v);}
+  let media=0;const drawingIds=[];
+  for(const [si,page] of model.sheets.entries()){
+    if(!page.xs)wfExcelLayoutGrid(page);
+    const W=page.xs.length-1,H=page.ys.length-1,paint=new Uint16Array(W*H),merges=[],rowCells=Array.from({length:H},()=>[]);
+    function roundInside(x,y,d,inset=0){const l=d.x+inset,t=d.y+inset,r=d.right-inset,b=d.bottom-inset;if(x<l||x>r||y<t||y>b)return false;const rad=Math.max(0,Math.min((d.radius||0)-inset,(r-l)/2,(b-t)/2));if(!rad)return true;const cx=Math.max(l+rad,Math.min(r-rad,x)),cy=Math.max(t+rad,Math.min(b-rad,y));return (x-cx)**2+(y-cy)**2<=rad**2;}
+    for(const d of page.decor){const l=page.X.get(d.x),r=page.X.get(d.right),t=page.Y.get(d.y),b=page.Y.get(d.bottom),fill=d.fill?colorId(d.fill):null;
+      for(let y=t;y<b;y++)for(let x=l;x<r;x++){
+        const cx=(page.xs[x]+page.xs[x+1])/2,cy=(page.ys[y]+page.ys[y+1])/2;if(!roundInside(cx,cy,d))continue;
+        const at=y*W+x;if(fill!==null)paint[at]=fill;
+        for(const [side,line] of Object.entries(d.borders||{})){
+          const w=line.width,near=side==='left'?cx<d.x+w:side==='right'?cx>d.right-w:side==='top'?cy<d.y+w:cy>d.bottom-w;
+          const corner=d.radius&&Object.keys(d.borders).length===4&&!roundInside(cx,cy,d,w);
+          if((near||corner)&&(!/dashed|dotted/.test(line.dash)||Math.floor((side==='top'||side==='bottom'?cx:cy)/3)%2===0))paint[at]=colorId(line.color);
+        }
+      }
+    }
+    for(const a of page.atoms){const fill=palette[paint[Math.floor((a.row+a.endRow-1)/2)*W+Math.floor((a.col+a.endCol-1)/2)]],id=styleId(a,fill);rowCells[a.row].push({col:a.col,xml:cellXML(a,a.localRef,id)});
+      if(a.endCol-a.col>1||a.endRow-a.row>1)merges.push(`${a.localRef}:${wfExcelCol(a.endCol-1)}${a.endRow}`);
+      // Styles across merged cells preserve the panel fill in both Excel and LibreOffice.
+      for(let r=a.row;r<a.endRow;r++)for(let c=a.col;c<a.endCol;c++)if(r!==a.row||c!==a.col)if(fill&&fill!=='FFFFFF')rowCells[r].push({col:c,xml:cellXML(null,wfExcelCol(c)+(r+1),styleId(null,fill))});
+    }
+    for(let r=0;r<H;r++)for(let c=0;c<W;){
+      if(page.occupied[r*W+c]>=0||!paint[r*W+c]){c++;continue;}const start=c,color=paint[r*W+c];
+      while(c<W&&page.occupied[r*W+c]<0&&paint[r*W+c]===color)c++;
+      const id=styleId(null,palette[color]);for(let k=start;k<c;k++)rowCells[r].push({col:k,xml:cellXML(null,wfExcelCol(k)+(r+1),id)});
+    }
+    const rows=rowCells.map((cells,i)=>`<row r="${i+1}" ht="${((page.ys[i+1]-page.ys[i])*.75).toFixed(4)}" customHeight="1">${cells.sort((a,b)=>a.col-b.col).map(c=>c.xml).join('')}</row>`).join('');
+    const cols=page.xs.slice(1).map((x,i)=>`<col min="${i+1}" max="${i+1}" width="${Math.floor((x-page.xs[i])/7*256)/256}" customWidth="1"/>`).join('');
+    files.push([`xl/worksheets/sheet${si+1}.xml`,xml+`<worksheet xmlns="${ns}" xmlns:r="${rel}"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><dimension ref="A1:${wfExcelCol(W-1)}${H}"/><sheetViews><sheetView workbookViewId="0" showGridLines="0" showRowColHeaders="0" rightToLeft="0" zoomScale="100"/></sheetViews><sheetFormatPr defaultRowHeight="15"/><cols>${cols}</cols><sheetData>${rows}</sheetData>${merges.length?`<mergeCells count="${merges.length}">${merges.map(m=>`<mergeCell ref="${m}"/>`).join('')}</mergeCells>`:''}<printOptions horizontalCentered="1"/><pageMargins left="0" right="0" top="0" bottom="0" header="0" footer="0"/><pageSetup paperSize="9" orientation="portrait" fitToWidth="1" fitToHeight="1" horizontalDpi="96" verticalDpi="96"/>${page.images.length?'<drawing r:id="rId1"/>':''}</worksheet>`]);
+    if(page.images.length){const links=[];drawingIds.push(si+1);
+      const images=page.images.map(im=>{const raw=wfExcelImageBytes(im.uri),name='image'+(++media)+'.'+raw.ext;files.push(['xl/media/'+name,raw.bytes]);links.push({type:'image',target:'../media/'+name});let col=0,row=0;while(col+1<W&&page.xs[col+1]<=im.x)col++;while(row+1<H&&page.ys[row+1]<=im.y)row++;return {...im,col,row,x:im.x-page.xs[col],y:im.y-page.ys[row]};});
+      files.push([`xl/drawings/drawing${si+1}.xml`,wfExcelDrawing(images)],[`xl/drawings/_rels/drawing${si+1}.xml.rels`,relations(links)],[`xl/worksheets/_rels/sheet${si+1}.xml.rels`,relations([{type:'drawing',target:`../drawings/drawing${si+1}.xml`}])]);
+    }
+  }
+  files.push(['xl/styles.xml',xml+`<styleSheet xmlns="${ns}"><numFmts count="${formats.length}">${formats.map((f,i)=>`<numFmt numFmtId="${164+i}" formatCode="${esc(f)}"/>`).join('')}</numFmts><fonts count="${fonts.length}">${fonts.map(f=>`<font>${fontXML(f)}</font>`).join('')}</fonts><fills count="${fills.length}">${fills.map((f,i)=>i<2?`<fill><patternFill patternType="${i===0?'none':'gray125'}"/></fill>`:`<fill><patternFill patternType="solid"><fgColor rgb="FF${f}"/><bgColor indexed="64"/></patternFill></fill>`).join('')}</fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length}">${xfs.map(x=>`<xf numFmtId="${x.format}" fontId="${x.font}" fillId="${x.fill}" borderId="0" xfId="0" applyFont="1" applyFill="1" applyNumberFormat="1" applyAlignment="1"><alignment horizontal="${x.align||'left'}" vertical="center" readingOrder="${x.rtl?2:1}" wrapText="${x.wrap?1:0}" shrinkToFit="${x.wrap?0:1}"/></xf>`).join('')}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`]);
+  files.push(['xl/workbook.xml',xml+`<workbook xmlns="${ns}" xmlns:r="${rel}"><bookViews><workbookView activeTab="0"/></bookViews><sheets>${model.sheets.map((s,i)=>`<sheet name="${esc(s.name)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets><definedNames>${model.sheets.map((s,i)=>`<definedName name="_xlnm.Print_Area" localSheetId="${i}">${esc("'"+s.name.replace(/'/g,"''")+"'!$A$1:$"+wfExcelCol(s.xs.length-2)+'$'+(s.ys.length-1))}</definedName>`).join('')}</definedNames><calcPr calcId="191029" fullCalcOnLoad="1" forceFullCalc="1" calcMode="auto"/></workbook>`],['xl/_rels/workbook.xml.rels',relations([...model.sheets.map((s,i)=>({type:'worksheet',target:`worksheets/sheet${i+1}.xml`})),{type:'styles',target:'styles.xml'}])],['_rels/.rels',relations([{type:'officeDocument',target:'xl/workbook.xml'}])]);
+  const types=[['/xl/workbook.xml','sheet.main'],['/xl/styles.xml','styles'],...model.sheets.map((s,i)=>[`/xl/worksheets/sheet${i+1}.xml`,'worksheet'])];
+  files.push(['[Content_Types].xml',xml+`<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Default Extension="jpeg" ContentType="image/jpeg"/>${types.map(([p,t])=>`<Override PartName="${p}" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.${t}+xml"/>`).join('')}${drawingIds.map(i=>`<Override PartName="/xl/drawings/drawing${i}.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>`).join('')}</Types>`]);
+  return wfExcelZip(files);
+}
+
+let _wfExcelCache={key:'',file:null,promise:null},_wfExcelBusy=false;
+async function wfExportExcelSnapshot(html,invNo,lang,inv){
+  let set;
+  try{
+    set=await wfBuildPageSet(html,invNo,lang);
+    const data=wfExcelReadPageLayout(set,lang,invNo,inv);
+    const blob=wfMakeExcelWorkbook({...data,lang,invNo});
+    return new File([blob],safeExcelFileName(invNo),{type:WF_EXCEL_MIME,lastModified:Date.now()});
+  }finally{set?.dispose();}
+}
+function createInvoiceExcelFile(){
+  const wrap=document.getElementById('invoicePaperWrap');
+  if(!_lastPreviewInv||!wrap?.innerHTML.trim())return Promise.reject(new Error('NO_INVOICE_PREVIEW'));
+  const key=getInvoicePdfRenderKey();
+  if(_wfExcelCache.key===key){if(_wfExcelCache.file)return Promise.resolve(_wfExcelCache.file);if(_wfExcelCache.promise)return _wfExcelCache.promise;}
+  const html=wrap.innerHTML,invNo=_lastPreviewInv.invNo||'invoice',lang=document.getElementById('pdfLangSel')?.value||S.printLang||'en';
+  const entry={key,file:null,promise:null};
+  const inv=JSON.parse(JSON.stringify({..._lastPreviewInv,usdTry:_lastPreviewInv.usdTry||S.usdTry,usdEur:_lastPreviewInv.usdEur||S.usdEur}));
+  const job=_wfExportTail.catch(()=>{}).then(()=>wfExportExcelSnapshot(html,invNo,lang,inv));
+  _wfExportTail=job.then(()=>{},()=>{});
+  entry.promise=job.then(file=>{entry.file=file;entry.promise=null;return file;},err=>{if(_wfExcelCache===entry)_wfExcelCache={key:'',file:null,promise:null};throw err;});
+  _wfExcelCache=entry;return entry.promise;
+}
+function triggerExcelFileDownload(file){
+  if(!file||file.type!==WF_EXCEL_MIME||file.size<1000)throw new Error('EMPTY_EXCEL');
+  const url=URL.createObjectURL(file),a=document.createElement('a');a.href=url;a.download=file.name;a.rel='noopener';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+function wfReportExcelError(error){
+  console.error('WOW Excel:',error);
+  const message=String(error?.message||error);
+  showToast(wfExcelText('failed')+(/NO_INVOICE/.test(message)?wfExcelText('empty'):/IMAGE_|QR_|TOO_TALL|OVERFLOW|CANVAS|RASTER|EMPTY_PAGE/.test(message)?wfPdfMessage(message.startsWith('IMAGE_')?'image':/QR_/.test(message)?'qr':/TOO_TALL|OVERFLOW/.test(message)?'long':'unsupported'):message),'er');
+}
+async function downloadExcel(){
+  if(_wfExcelBusy)return null;
+  try{_wfExcelBusy=true;wfRefreshCurrentPreview();showToast(wfExcelText('preparing'),'in');const file=await createInvoiceExcelFile();triggerExcelFileDownload(file);return file;}
+  catch(err){wfReportExcelError(err);return null;}finally{_wfExcelBusy=false;}
+}
+function wfExcelCanShare(file){try{return !!(navigator.share&&navigator.canShare?.({files:[file]}));}catch{return false;}}
+function wfShowExcelShareReady(file,title){
+  document.getElementById('wfExcelShareReady')?.remove();
+  const overlay=document.createElement('div');overlay.id='wfExcelShareReady';overlay.className='modal-ov open';overlay.style.zIndex='1000001';
+  const box=document.createElement('div');box.className='modal';box.style.maxWidth='440px';
+  const heading=document.createElement('h3');heading.textContent=wfExcelText('ready');
+  const name=document.createElement('p');name.textContent=file.name;name.style.cssText='margin:14px 0;overflow-wrap:anywhere;direction:ltr';
+  const bar=document.createElement('div');bar.style.cssText='display:flex;gap:8px;flex-wrap:wrap';
+  function button(label,fn){const b=document.createElement('button');b.type='button';b.className='btn btn-s';b.textContent=label;b.onclick=fn;bar.append(b);return b;}
+  button(wfExcelText('share'),async function(){
+    this.disabled=true;
+    try{await navigator.share({files:[file],title});overlay.remove();}
+    catch(err){if(err.name!=='AbortError'){showToast(wfNativeShareText('unsupported'),'er');}}
+    finally{this.disabled=false;}
+  });
+  button(wfExcelText('close'),()=>overlay.remove());
+  box.append(heading,name,bar);overlay.append(box);document.body.append(overlay);bar.firstElementChild.focus();
+}
+async function shareExcel(){
+  if(_wfExcelBusy)return false;
+  let file,title;
+  try{
+    _wfExcelBusy=true;wfRefreshCurrentPreview();title=pdfShareText();
+    const key=getInvoicePdfRenderKey();file=_wfExcelCache.key===key?_wfExcelCache.file:null;
+    if(!file){showToast(wfExcelText('preparing'),'in');file=await createInvoiceExcelFile();}
+    if(!wfExcelCanShare(file)){showToast(wfNativeShareText('unsupported'),'er');return false;}
+    if(navigator.userActivation&&!navigator.userActivation.isActive){wfShowExcelShareReady(file,title);return false;}
+    await navigator.share({files:[file],title});return true;
+  }catch(err){
+    if(err?.name==='AbortError')return false;
+    if(err?.name==='NotAllowedError'&&file){wfShowExcelShareReady(file,title);return false;}
+    wfReportExcelError(err);return false;
+  }finally{_wfExcelBusy=false;}
+}
+async function downloadSavedExcel(id){if(!S.invoices.some(i=>i.id===id)){showToast(wfExcelText('empty'),'er');return null;}previewSaved(id);return downloadExcel();}
+async function shareSavedExcel(id){if(!S.invoices.some(i=>i.id===id)){showToast(wfExcelText('empty'),'er');return false;}previewSaved(id);return shareExcel();}
+
+</script>
+<script id="wf-excel-pdf-exact-editable-v3">
+/* ============================================================
+   WOW EXCEL — PDF EXACT EDITABLE V3
+   Visual invoice pages are rebuilt as editable DrawingML objects
+   in the same measured PDF coordinates. No full-page screenshot is used.
+   ============================================================ */
+(function(){
+  'use strict';
+
+  if (typeof wfExcelZip !== 'function' || typeof wfExcelXml !== 'function') return;
+
+  const PX_EMU = 9525;
+  const XML_HEAD = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  const SS_NS = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+  const REL_NS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  const PKG_REL_NS = 'http://schemas.openxmlformats.org/package/2006/relationships';
+  const XDR_NS = 'http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing';
+  const A_NS = 'http://schemas.openxmlformats.org/drawingml/2006/main';
+
+  const oldLayoutBuilder = typeof wfMakeExcelLayoutWorkbook === 'function' ? wfMakeExcelLayoutWorkbook : null;
+
+  function esc(v){ return wfExcelXml(v); }
+  function emu(px){ return Math.max(1, Math.round(Math.max(0, Number(px)||0) * PX_EMU)); }
+  function clamp(n,min,max){ n=Number(n)||0; return Math.max(min,Math.min(max,n)); }
+  function boxOf(o){
+    const x=clamp(o.x,0,794), y=clamp(o.y,0,1139);
+    const right=clamp(Number.isFinite(o.right)?o.right:x+(Number(o.w)||0),x,794);
+    const bottom=clamp(Number.isFinite(o.bottom)?o.bottom:y+(Number(o.h)||0),y,1139);
+    return {x,y,w:Math.max(.2,right-x),h:Math.max(.2,bottom-y)};
+  }
+  function rels(items){
+    return XML_HEAD+'<Relationships xmlns="'+PKG_REL_NS+'">'+items.map((r,i)=>
+      '<Relationship Id="rId'+(i+1)+'" Type="'+REL_NS+'/'+r.type+'" Target="'+esc(r.target)+'"/>'
+    ).join('')+'</Relationships>';
+  }
+  function solid(color){ return '<a:solidFill><a:srgbClr val="'+esc(color||'000000')+'"/></a:solidFill>'; }
+  function noLine(){ return '<a:ln><a:noFill/></a:ln>'; }
+  function shapeXfrm(b){
+    return '<a:xfrm><a:off x="'+emu(b.x)+'" y="'+emu(b.y)+'"/><a:ext cx="'+emu(b.w)+'" cy="'+emu(b.h)+'"/></a:xfrm>';
+  }
+  function absoluteAnchor(b,inner){
+    return '<xdr:absoluteAnchor><xdr:pos x="'+emu(b.x)+'" y="'+emu(b.y)+'"/><xdr:ext cx="'+emu(b.w)+'" cy="'+emu(b.h)+'"/>'+inner+'<xdr:clientData fLocksWithSheet="0" fPrintsWithSheet="1"/></xdr:absoluteAnchor>';
+  }
+  function fillShape(id,b,color,name){
+    return absoluteAnchor(b,
+      '<xdr:sp macro="" textlink=""><xdr:nvSpPr><xdr:cNvPr id="'+id+'" name="'+esc(name||('Panel '+id))+'"/><xdr:cNvSpPr/></xdr:nvSpPr><xdr:spPr>'+shapeXfrm(b)+'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'+solid(color)+noLine()+'</xdr:spPr></xdr:sp>'
+    );
+  }
+  function lineShape(id,x1,y1,x2,y2,line,name){
+    const w=Math.max(.15,Math.abs(x2-x1)), h=Math.max(.15,Math.abs(y2-y1));
+    const b={x:Math.min(x1,x2),y:Math.min(y1,y2),w,h};
+    const widthPx=Math.max(.4,Number(line?.width)||1);
+    const dash=/dotted/i.test(line?.dash||'')?'dot':/dashed/i.test(line?.dash||'')?'dash':null;
+    const ln='<a:ln w="'+Math.max(1270,Math.round(widthPx*PX_EMU))+'" cmpd="sng">'+solid(line?.color||'D9DEE7')+(dash?'<a:prstDash val="'+dash+'"/>':'')+'</a:ln>';
+    return absoluteAnchor(b,
+      '<xdr:sp macro="" textlink=""><xdr:nvSpPr><xdr:cNvPr id="'+id+'" name="'+esc(name||('Rule '+id))+'"/><xdr:cNvSpPr/></xdr:nvSpPr><xdr:spPr>'+shapeXfrm(b)+'<a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:noFill/>'+ln+'</xdr:spPr></xdr:sp>'
+    );
+  }
+  function drawDecor(idRef,d){
+    const out=[], b=boxOf(d);
+    if(d.fill) out.push(fillShape(idRef.n++,b,d.fill,'PDF panel'));
+    const borders=d.borders||{};
+    if(borders.top?.width) out.push(lineShape(idRef.n++,b.x,b.y+borders.top.width/2,b.x+b.w,b.y+borders.top.width/2,borders.top,'PDF top border'));
+    if(borders.bottom?.width) out.push(lineShape(idRef.n++,b.x,b.y+b.h-borders.bottom.width/2,b.x+b.w,b.y+b.h-borders.bottom.width/2,borders.bottom,'PDF bottom border'));
+    if(borders.left?.width) out.push(lineShape(idRef.n++,b.x+borders.left.width/2,b.y,b.x+borders.left.width/2,b.y+b.h,borders.left,'PDF left border'));
+    if(borders.right?.width) out.push(lineShape(idRef.n++,b.x+b.w-borders.right.width/2,b.y,b.x+b.w-borders.right.width/2,b.y+b.h,borders.right,'PDF right border'));
+    return out.join('');
+  }
+  function runLines(atom){
+    const source=atom.runs?.length?atom.runs:[{text:String(atom.value??''),style:atom.style||{}}];
+    const lines=[[]];
+    for(const run of source){
+      const pieces=String(run.text??'').split('\n');
+      pieces.forEach((p,i)=>{
+        if(p) lines[lines.length-1].push({text:p,style:run.style||atom.style||{}});
+        if(i<pieces.length-1) lines.push([]);
+      });
+    }
+    return lines.length?lines:[[]];
+  }
+  function fontRunXml(run,lang){
+    const s=run.style||{}, size=clamp(s.size||6,1,4000), family=(s.font||'Segoe UI').replace(/[<>"&]/g,'');
+    const attrs=['lang="'+(s.rtl?'ar-SA':lang==='tr'?'tr-TR':'en-US')+'"','sz="'+Math.round(size*100)+'"'];
+    if(s.bold)attrs.push('b="1"'); if(s.italic)attrs.push('i="1"'); if(s.strike)attrs.push('strike="sngStrike"');
+    return '<a:r><a:rPr '+attrs.join(' ')+'>'+solid(s.color||'1A1A1A')+'<a:latin typeface="'+esc(family)+'"/><a:ea typeface="'+esc(family)+'"/><a:cs typeface="'+esc(family)+'"/></a:rPr><a:t xml:space="preserve">'+esc(run.text)+'</a:t></a:r>';
+  }
+  function textShape(id,atom,lang){
+    const b=boxOf(atom), s=atom.style||{};
+    const align=s.align==='center'?'ctr':s.align==='right'?'r':'l';
+    const lines=runLines(atom);
+    const paragraphs=lines.map(line=>{
+      const runs=line.length?line.map(r=>fontRunXml(r,lang)).join(''):'';
+      const base=line[0]?.style||s, family=(base.font||'Segoe UI').replace(/[<>"&]/g,'');
+      const end='<a:endParaRPr lang="'+(base.rtl?'ar-SA':lang==='tr'?'tr-TR':'en-US')+'" sz="'+Math.round(clamp(base.size||6,1,4000)*100)+'">'+solid(base.color||'1A1A1A')+'<a:latin typeface="'+esc(family)+'"/><a:ea typeface="'+esc(family)+'"/><a:cs typeface="'+esc(family)+'"/></a:endParaRPr>';
+      return '<a:p><a:pPr algn="'+align+'"'+(s.rtl?' rtl="1"':'')+'><a:buNone/></a:pPr>'+runs+end+'</a:p>';
+    }).join('');
+    const tx='<xdr:txBody><a:bodyPr wrap="square" vertOverflow="clip" horzOverflow="clip" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr" anchorCtr="0" rtlCol="'+(s.rtl?'1':'0')+'"><a:noAutofit/></a:bodyPr><a:lstStyle/>'+paragraphs+'</xdr:txBody>';
+    return absoluteAnchor(b,
+      '<xdr:sp macro="" textlink=""><xdr:nvSpPr><xdr:cNvPr id="'+id+'" name="Editable invoice text '+id+'"/><xdr:cNvSpPr txBox="1"/></xdr:nvSpPr><xdr:spPr>'+shapeXfrm(b)+'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/>'+noLine()+'</xdr:spPr>'+tx+'</xdr:sp>'
+    );
+  }
+  function imageAnchor(id,im,rid){
+    const b={x:clamp(im.x,0,794),y:clamp(im.y,0,1139),w:Math.max(.2,Number(im.width)||1),h:Math.max(.2,Number(im.height)||1)};
+    const crop=im.crop?'<a:srcRect l="'+(im.crop.l||0)+'" t="'+(im.crop.t||0)+'" r="'+(im.crop.r||0)+'" b="'+(im.crop.b||0)+'"/>':'';
+    const pic='<xdr:pic><xdr:nvPicPr><xdr:cNvPr id="'+id+'" name="'+esc(im.name||('Invoice image '+id))+'"/><xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr></xdr:nvPicPr><xdr:blipFill><a:blip r:embed="rId'+rid+'"/>'+crop+'<a:stretch><a:fillRect/></a:stretch></xdr:blipFill><xdr:spPr>'+shapeXfrm(b)+'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'+noLine()+'</xdr:spPr></xdr:pic>';
+    return absoluteAnchor(b,pic);
+  }
+  function drawingForPage(page,files,state){
+    const id={n:1}, chunks=[], imageRels=[];
+    for(const d of page.decor||[]) chunks.push(drawDecor(id,d));
+    for(const im of page.images||[]){
+      const raw=wfExcelImageBytes(im.uri), file='image'+(++state.media)+'.'+raw.ext;
+      files.push(['xl/media/'+file,raw.bytes]); imageRels.push({type:'image',target:'../media/'+file});
+      chunks.push(imageAnchor(id.n++,im,imageRels.length));
+    }
+    for(const a of page.atoms||[]) chunks.push(textShape(id.n++,a,state.lang));
+    return {
+      xml:XML_HEAD+'<xdr:wsDr xmlns:xdr="'+XDR_NS+'" xmlns:a="'+A_NS+'" xmlns:r="'+REL_NS+'">'+chunks.join('')+'</xdr:wsDr>',
+      rels:imageRels
+    };
+  }
+  function minimalStyles(){
+    return XML_HEAD+'<styleSheet xmlns="'+SS_NS+'"><fonts count="1"><font><sz val="11"/><name val="Calibri"/><family val="2"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+  }
+  function sheetXml(page){
+    const COLS=20, ROWS=80, colPx=page.width/COLS, rowPx=page.height/ROWS;
+    const colWidth=(colPx/7).toFixed(4), rowHeight=(rowPx*.75).toFixed(4);
+    const cols=Array.from({length:COLS},(_,i)=>'<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+colWidth+'" customWidth="1"/>').join('');
+    const rows=Array.from({length:ROWS},(_,i)=>'<row r="'+(i+1)+'" ht="'+rowHeight+'" customHeight="1">'+(i===0?'<c r="A1"/>':'')+'</row>').join('');
+    const last=wfExcelCol(COLS-1)+ROWS;
+    return XML_HEAD+'<worksheet xmlns="'+SS_NS+'" xmlns:r="'+REL_NS+'"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><dimension ref="A1:'+last+'"/><sheetViews><sheetView workbookViewId="0" showGridLines="0" showRowColHeaders="0" zoomScale="85" zoomScaleNormal="85"/></sheetViews><sheetFormatPr defaultRowHeight="'+rowHeight+'"/><cols>'+cols+'</cols><sheetData>'+rows+'</sheetData><printOptions horizontalCentered="1"/><pageMargins left="0.19685" right="0.19685" top="0.19685" bottom="0.19685" header="0" footer="0"/><pageSetup paperSize="9" orientation="portrait" fitToWidth="1" fitToHeight="1" horizontalDpi="96" verticalDpi="96"/><drawing r:id="rId1"/></worksheet>';
+  }
+  function exactWorkbook(model){
+    if(!model?.sheets?.length) throw new Error('NO_EXCEL_PAGES');
+    const files=[], state={media:0,lang:model.lang||'en'}, sheetRels=[], drawingOverrides=[];
+    model.sheets.forEach((page,i)=>{
+      const n=i+1, d=drawingForPage(page,files,state);
+      files.push(['xl/worksheets/sheet'+n+'.xml',sheetXml(page)]);
+      files.push(['xl/worksheets/_rels/sheet'+n+'.xml.rels',rels([{type:'drawing',target:'../drawings/drawing'+n+'.xml'}])]);
+      files.push(['xl/drawings/drawing'+n+'.xml',d.xml]);
+      if(d.rels.length) files.push(['xl/drawings/_rels/drawing'+n+'.xml.rels',rels(d.rels)]);
+      sheetRels.push({type:'worksheet',target:'worksheets/sheet'+n+'.xml'}); drawingOverrides.push(n);
+    });
+    files.push(['xl/styles.xml',minimalStyles()]);
+    const safeName=n=>String(n||'PAGE').replace(/[\\\/?*\[\]:]/g,' ').trim().slice(0,31)||'PAGE';
+    const sheetNames=model.sheets.map((s,i)=>safeName(s.name||('PAGE '+(i+1))));
+    const workbook=XML_HEAD+'<workbook xmlns="'+SS_NS+'" xmlns:r="'+REL_NS+'"><bookViews><workbookView activeTab="0"/></bookViews><sheets>'+sheetNames.map((n,i)=>'<sheet name="'+esc(n)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join('')+'</sheets><definedNames>'+sheetNames.map((n,i)=>'<definedName name="_xlnm.Print_Area" localSheetId="'+i+'">'+esc("'"+n.replace(/'/g,"''")+"'!$A$1:$T$80")+'</definedName>').join('')+'</definedNames><calcPr calcId="191029" calcMode="auto"/></workbook>';
+    files.push(['xl/workbook.xml',workbook]);
+    files.push(['xl/_rels/workbook.xml.rels',rels([...sheetRels,{type:'styles',target:'styles.xml'}])]);
+    files.push(['_rels/.rels',rels([{type:'officeDocument',target:'xl/workbook.xml'}])]);
+    const overrides=['<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>','<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'];
+    model.sheets.forEach((_,i)=>overrides.push('<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'));
+    drawingOverrides.forEach(n=>overrides.push('<Override PartName="/xl/drawings/drawing'+n+'.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>'));
+    files.push(['[Content_Types].xml',XML_HEAD+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Default Extension="jpeg" ContentType="image/jpeg"/>'+overrides.join('')+'</Types>']);
+    return wfExcelZip(files);
+  }
+
+  /* Later global assignment intentionally replaces only the XLSX page builder.
+     PDF generation, invoice HTML, download/share UI and app data are untouched. */
+  wfMakeExcelLayoutWorkbook = function(model){
+    try { return exactWorkbook(model); }
+    catch (err) {
+      console.error('WOW Excel exact-layout fallback:', err);
+      if(oldLayoutBuilder) return oldLayoutBuilder(model);
+      throw err;
+    }
+  };
+
+  if(typeof WF_EXCEL_TEXT==='object'){
+    if(WF_EXCEL_TEXT.ar) WF_EXCEL_TEXT.ar.hint='Excel مطابق لصفحة PDF: النصوص والأرقام والجداول عناصر مستقلة قابلة للتحرير داخل صفحة الفاتورة، وليست صورة واحدة.';
+    if(WF_EXCEL_TEXT.tr) WF_EXCEL_TEXT.tr.hint='Excel, PDF sayfasının görünümünü korur. Metinler, sayılar ve tablolar tek bir resim değil; ayrı ayrı düzenlenebilir nesnelerdir.';
+    if(WF_EXCEL_TEXT.en) WF_EXCEL_TEXT.en.hint='Excel keeps the PDF page appearance. Text, numbers and table content are separate editable objects, not one flattened page image.';
+    for(const lang of ['ar','tr','en']) if(window.TR?.[lang]) TR[lang].excel_hint=WF_EXCEL_TEXT[lang].hint;
+  }
+  window.WF_EXCEL_EXACT_EDITABLE_V3=true;
+})();
+</script>
+
+
 <!-- WOW Tablet Fast/Storage V7: internal performance patch; UI/PDF layout unchanged -->
+<script id="wf-excel-pdf-exact-editable-v4">
+/* ============================================================
+   WOW EXCEL — PDF EXACT EDITABLE V4
+   - preserves the V3 editable DrawingML invoice objects
+   - calibrates worksheet print geometry to the 794x1139 PDF page
+   - renders solid borders as exact strips (no diagonal line drift)
+   - keeps dashed rules, images, logos, QR and all editable text objects
+   - does not change PDF, app data, download/share UI or invoice logic
+   ============================================================ */
+(function(){
+  'use strict';
+  if (typeof wfExcelZip !== 'function' || typeof wfExcelXml !== 'function' || typeof wfExcelImageBytes !== 'function') return;
+
+  const PX_EMU=9525;
+  const XML='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  const SS='http://schemas.openxmlformats.org/spreadsheetml/2006/main';
+  const REL='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  const PKG='http://schemas.openxmlformats.org/package/2006/relationships';
+  const XDR='http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing';
+  const A='http://schemas.openxmlformats.org/drawingml/2006/main';
+  const fallback=typeof wfMakeExcelLayoutWorkbook==='function'?wfMakeExcelLayoutWorkbook:null;
+
+  const esc=v=>wfExcelXml(v);
+  const emu=v=>Math.max(1,Math.round(Math.max(0,Number(v)||0)*PX_EMU));
+  const clamp=(n,a,b)=>Math.max(a,Math.min(b,Number(n)||0));
+  function box(o){
+    const x=clamp(o.x,0,794),y=clamp(o.y,0,1139);
+    const r=clamp(Number.isFinite(o.right)?o.right:x+(Number(o.w)||0),x,794);
+    const b=clamp(Number.isFinite(o.bottom)?o.bottom:y+(Number(o.h)||0),y,1139);
+    return {x,y,w:Math.max(.15,r-x),h:Math.max(.15,b-y)};
+  }
+  function rels(items){return XML+'<Relationships xmlns="'+PKG+'">'+items.map((r,i)=>'<Relationship Id="rId'+(i+1)+'" Type="'+REL+'/'+r.type+'" Target="'+esc(r.target)+'"/>').join('')+'</Relationships>';}
+  function solid(c){return '<a:solidFill><a:srgbClr val="'+esc(c||'000000')+'"/></a:solidFill>';}
+  function noFill(){return '<a:noFill/>';}
+  function noLine(){return '<a:ln><a:noFill/></a:ln>';}
+  function xfrm(b){return '<a:xfrm><a:off x="'+emu(b.x)+'" y="'+emu(b.y)+'"/><a:ext cx="'+emu(b.w)+'" cy="'+emu(b.h)+'"/></a:xfrm>';}
+  function anchor(b,inner){return '<xdr:absoluteAnchor><xdr:pos x="'+emu(b.x)+'" y="'+emu(b.y)+'"/><xdr:ext cx="'+emu(b.w)+'" cy="'+emu(b.h)+'"/>'+inner+'<xdr:clientData fLocksWithSheet="0" fPrintsWithSheet="1"/></xdr:absoluteAnchor>';}
+  function rectShape(id,b,fill,name){
+    return anchor(b,'<xdr:sp macro="" textlink=""><xdr:nvSpPr><xdr:cNvPr id="'+id+'" name="'+esc(name||('Panel '+id))+'"/><xdr:cNvSpPr/></xdr:nvSpPr><xdr:spPr>'+xfrm(b)+'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'+(fill?solid(fill):noFill())+noLine()+'</xdr:spPr></xdr:sp>');
+  }
+  function lineShape(id,x1,y1,x2,y2,line,name){
+    const b={x:Math.min(x1,x2),y:Math.min(y1,y2),w:Math.max(.15,Math.abs(x2-x1)),h:Math.max(.15,Math.abs(y2-y1))};
+    const width=Math.max(1270,Math.round(Math.max(.4,Number(line?.width)||1)*PX_EMU));
+    const dash=/dotted/i.test(line?.dash||'')?'dot':/dashed/i.test(line?.dash||'')?'dash':null;
+    const ln='<a:ln w="'+width+'" cmpd="sng">'+solid(line?.color||'D9DEE7')+(dash?'<a:prstDash val="'+dash+'"/>':'')+'</a:ln>';
+    return anchor(b,'<xdr:sp macro="" textlink=""><xdr:nvSpPr><xdr:cNvPr id="'+id+'" name="'+esc(name||('Rule '+id))+'"/><xdr:cNvSpPr/></xdr:nvSpPr><xdr:spPr>'+xfrm(b)+'<a:prstGeom prst="line"><a:avLst/></a:prstGeom>'+noFill()+ln+'</xdr:spPr></xdr:sp>');
+  }
+  function borderStrip(id,b,side,spec){
+    const w=Math.max(.35,Number(spec?.width)||1);let r;
+    if(side==='top')r={x:b.x,y:b.y,w:b.w,h:w};
+    else if(side==='bottom')r={x:b.x,y:b.y+b.h-w,w:b.w,h:w};
+    else if(side==='left')r={x:b.x,y:b.y,w:w,h:b.h};
+    else r={x:b.x+b.w-w,y:b.y,w:w,h:b.h};
+    return rectShape(id,r,spec?.color||'D9DEE7','PDF '+side+' border');
+  }
+  function decorXml(id,d){
+    const out=[],b=box(d),borders=d.borders||{};
+    if(d.fill)out.push(rectShape(id.n++,b,d.fill,'PDF panel'));
+    for(const side of ['top','bottom','left','right']){
+      const spec=borders[side];if(!spec?.width)continue;
+      if(/dashed|dotted/i.test(spec.dash||'')){
+        if(side==='top')out.push(lineShape(id.n++,b.x,b.y+spec.width/2,b.x+b.w,b.y+spec.width/2,spec,'PDF dashed border'));
+        else if(side==='bottom')out.push(lineShape(id.n++,b.x,b.y+b.h-spec.width/2,b.x+b.w,b.y+b.h-spec.width/2,spec,'PDF dashed border'));
+        else if(side==='left')out.push(lineShape(id.n++,b.x+spec.width/2,b.y,b.x+spec.width/2,b.y+b.h,spec,'PDF dashed border'));
+        else out.push(lineShape(id.n++,b.x+b.w-spec.width/2,b.y,b.x+b.w-spec.width/2,b.y+b.h,spec,'PDF dashed border'));
+      }else out.push(borderStrip(id.n++,b,side,spec));
+    }
+    return out.join('');
+  }
+  function linesOf(atom){
+    const src=atom.runs?.length?atom.runs:[{text:String(atom.displayText??atom.value??''),style:atom.style||{}}],lines=[[]];
+    for(const run of src){const p=String(run.text??'').split('\n');p.forEach((v,i)=>{if(v)lines.at(-1).push({text:v,style:run.style||atom.style||{}});if(i<p.length-1)lines.push([]);});}
+    return lines.length?lines:[[]];
+  }
+  function runXml(run,lang){
+    const s=run.style||{},size=clamp(s.size||6,1,4000),font=(s.font||'Segoe UI').replace(/[<>"&]/g,'');
+    const at=['lang="'+(s.rtl?'ar-SA':lang==='tr'?'tr-TR':'en-US')+'"','sz="'+Math.round(size*100)+'"'];
+    if(s.bold)at.push('b="1"');if(s.italic)at.push('i="1"');if(s.strike)at.push('strike="sngStrike"');
+    return '<a:r><a:rPr '+at.join(' ')+'>'+solid(s.color||'1A1A1A')+'<a:latin typeface="'+esc(font)+'"/><a:ea typeface="'+esc(font)+'"/><a:cs typeface="'+esc(font)+'"/></a:rPr><a:t xml:space="preserve">'+esc(run.text)+'</a:t></a:r>';
+  }
+  function textShape(id,atom,lang){
+    const b=box(atom),s=atom.style||{},align=s.align==='center'?'ctr':s.align==='right'?'r':'l';
+    const paragraphs=linesOf(atom).map(line=>{
+      const base=line[0]?.style||s,font=(base.font||'Segoe UI').replace(/[<>"&]/g,'');
+      const end='<a:endParaRPr lang="'+(base.rtl?'ar-SA':lang==='tr'?'tr-TR':'en-US')+'" sz="'+Math.round(clamp(base.size||6,1,4000)*100)+'">'+solid(base.color||'1A1A1A')+'<a:latin typeface="'+esc(font)+'"/><a:ea typeface="'+esc(font)+'"/><a:cs typeface="'+esc(font)+'"/></a:endParaRPr>';
+      return '<a:p><a:pPr algn="'+align+'"'+(s.rtl?' rtl="1"':'')+'><a:buNone/></a:pPr>'+(line.length?line.map(r=>runXml(r,lang)).join(''):'')+end+'</a:p>';
+    }).join('');
+    const tx='<xdr:txBody><a:bodyPr wrap="square" vertOverflow="clip" horzOverflow="clip" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr" anchorCtr="0" rtlCol="'+(s.rtl?'1':'0')+'"><a:noAutofit/></a:bodyPr><a:lstStyle/>'+paragraphs+'</xdr:txBody>';
+    return anchor(b,'<xdr:sp macro="" textlink=""><xdr:nvSpPr><xdr:cNvPr id="'+id+'" name="Editable invoice text '+id+'"/><xdr:cNvSpPr txBox="1"/></xdr:nvSpPr><xdr:spPr>'+xfrm(b)+'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'+noFill()+noLine()+'</xdr:spPr>'+tx+'</xdr:sp>');
+  }
+  function imageShape(id,im,rid){
+    const b={x:clamp(im.x,0,794),y:clamp(im.y,0,1139),w:Math.max(.2,Number(im.width)||1),h:Math.max(.2,Number(im.height)||1)};
+    const crop=im.crop?'<a:srcRect l="'+(im.crop.l||0)+'" t="'+(im.crop.t||0)+'" r="'+(im.crop.r||0)+'" b="'+(im.crop.b||0)+'"/>':'';
+    return anchor(b,'<xdr:pic><xdr:nvPicPr><xdr:cNvPr id="'+id+'" name="'+esc(im.name||('Invoice image '+id))+'"/><xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr></xdr:nvPicPr><xdr:blipFill><a:blip r:embed="rId'+rid+'"/>'+crop+'<a:stretch><a:fillRect/></a:stretch></xdr:blipFill><xdr:spPr>'+xfrm(b)+'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'+noLine()+'</xdr:spPr></xdr:pic>');
+  }
+  function drawing(page,files,state){
+    const id={n:1},out=[],imageRels=[];
+    for(const d of page.decor||[])out.push(decorXml(id,d));
+    for(const im of page.images||[]){
+      const raw=wfExcelImageBytes(im.uri),name='image'+(++state.media)+'.'+raw.ext;files.push(['xl/media/'+name,raw.bytes]);imageRels.push({type:'image',target:'../media/'+name});out.push(imageShape(id.n++,im,imageRels.length));
+    }
+    for(const a of page.atoms||[])out.push(textShape(id.n++,a,state.lang));
+    return {xml:XML+'<xdr:wsDr xmlns:xdr="'+XDR+'" xmlns:a="'+A+'" xmlns:r="'+REL+'">'+out.join('')+'</xdr:wsDr>',rels:imageRels};
+  }
+  function styles(){return XML+'<styleSheet xmlns="'+SS+'"><fonts count="1"><font><sz val="11"/><name val="Calibri"/><family val="2"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';}
+
+  // Convert an intended pixel width to Excel's character width model.
+  // For normal-width columns Excel uses approximately px = floor(width*7 + .5) + 5.
+  function colWidthFromPx(px){return Math.max(.1,(Math.max(6,px)-5)/7);}
+  function sheetXml(page){
+    const COLS=20,ROWS=80;
+    const baseCol=Math.floor(page.width/COLS),extraCol=Math.round(page.width-baseCol*COLS);
+    const cols=Array.from({length:COLS},(_,i)=>{
+      const px=baseCol+(i<extraCol?1:0),w=colWidthFromPx(px);
+      return '<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w.toFixed(5)+'" customWidth="1"/>';
+    }).join('');
+    const baseRow=Math.floor(page.height/ROWS),extraRow=Math.round(page.height-baseRow*ROWS);
+    const rows=Array.from({length:ROWS},(_,i)=>{
+      const px=baseRow+(i<extraRow?1:0),pt=px*.75;
+      return '<row r="'+(i+1)+'" ht="'+pt.toFixed(3)+'" customHeight="1">'+(i===0?'<c r="A1"/>':'')+'</row>';
+    }).join('');
+    const last=wfExcelCol(COLS-1)+ROWS;
+    return XML+'<worksheet xmlns="'+SS+'" xmlns:r="'+REL+'"><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><dimension ref="A1:'+last+'"/><sheetViews><sheetView workbookViewId="0" showGridLines="0" showRowColHeaders="0" zoomScale="90" zoomScaleNormal="90"/></sheetViews><sheetFormatPr defaultRowHeight="10.5"/><cols>'+cols+'</cols><sheetData>'+rows+'</sheetData><printOptions horizontalCentered="0" verticalCentered="0"/><pageMargins left="0" right="0" top="0" bottom="0" header="0" footer="0"/><pageSetup paperSize="9" orientation="portrait" fitToWidth="1" fitToHeight="1" horizontalDpi="96" verticalDpi="96"/><drawing r:id="rId1"/></worksheet>';
+  }
+  function makeWorkbook(model){
+    if(!model?.sheets?.length)throw new Error('NO_EXCEL_PAGES');
+    const files=[],state={media:0,lang:model.lang||'en'},sheetRels=[];
+    model.sheets.forEach((page,i)=>{
+      const n=i+1,d=drawing(page,files,state);
+      files.push(['xl/worksheets/sheet'+n+'.xml',sheetXml(page)]);
+      files.push(['xl/worksheets/_rels/sheet'+n+'.xml.rels',rels([{type:'drawing',target:'../drawings/drawing'+n+'.xml'}])]);
+      files.push(['xl/drawings/drawing'+n+'.xml',d.xml]);
+      if(d.rels.length)files.push(['xl/drawings/_rels/drawing'+n+'.xml.rels',rels(d.rels)]);
+      sheetRels.push({type:'worksheet',target:'worksheets/sheet'+n+'.xml'});
+    });
+    files.push(['xl/styles.xml',styles()]);
+    const safe=n=>String(n||'PAGE').replace(/[\\\/?*\[\]:]/g,' ').trim().slice(0,31)||'PAGE';
+    const names=model.sheets.map((s,i)=>safe(s.name||('PAGE '+(i+1))));
+    const workbook=XML+'<workbook xmlns="'+SS+'" xmlns:r="'+REL+'"><bookViews><workbookView activeTab="0"/></bookViews><sheets>'+names.map((n,i)=>'<sheet name="'+esc(n)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join('')+'</sheets><definedNames>'+names.map((n,i)=>'<definedName name="_xlnm.Print_Area" localSheetId="'+i+'">'+esc("'"+n.replace(/'/g,"''")+"'!$A$1:$T$80")+'</definedName>').join('')+'</definedNames><calcPr calcId="191029" fullCalcOnLoad="1" forceFullCalc="1" calcMode="auto"/></workbook>';
+    files.push(['xl/workbook.xml',workbook]);
+    files.push(['xl/_rels/workbook.xml.rels',rels([...sheetRels,{type:'styles',target:'styles.xml'}])]);
+    files.push(['_rels/.rels',rels([{type:'officeDocument',target:'xl/workbook.xml'}])]);
+    const over=['<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>','<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'];
+    model.sheets.forEach((_,i)=>{over.push('<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>');over.push('<Override PartName="/xl/drawings/drawing'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>');});
+    files.push(['[Content_Types].xml',XML+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Default Extension="jpeg" ContentType="image/jpeg"/>'+over.join('')+'</Types>']);
+    return wfExcelZip(files);
+  }
+
+  wfMakeExcelLayoutWorkbook=function(model){
+    try{return makeWorkbook(model);}catch(err){console.error('WOW Excel V4 fallback:',err);if(fallback)return fallback(model);throw err;}
+  };
+
+  if(typeof WF_EXCEL_TEXT==='object'){
+    if(WF_EXCEL_TEXT.ar)WF_EXCEL_TEXT.ar.hint='Excel مطابق لصفحة PDF بدقة أعلى: نفس القياس A4، الحدود والصور واللوجو وQR، وكل النصوص والأرقام عناصر مستقلة قابلة للتحرير بدون تحويل الصفحة إلى صورة.';
+    if(WF_EXCEL_TEXT.tr)WF_EXCEL_TEXT.tr.hint='Excel PDF sayfasına daha hassas ölçekte uyar; A4, kenarlıklar, görseller, logo ve QR korunur. Metin ve sayılar ayrı düzenlenebilir nesnelerdir.';
+    if(WF_EXCEL_TEXT.en)WF_EXCEL_TEXT.en.hint='Excel now matches the PDF page at a more accurately calibrated A4 scale. Borders, images, logo and QR are preserved, while text and numbers remain separately editable.';
+    for(const l of ['ar','tr','en'])if(window.TR?.[l])TR[l].excel_hint=WF_EXCEL_TEXT[l].hint;
+  }
+  window.WF_EXCEL_EXACT_EDITABLE_V4=true;
+  window.WF_EXCEL_CURRENCY_SYMBOL_FIX_V5=true;
+})();
+</script>
+
+
+<!-- ============================================================
+     WOW UNIFIED SHARE — PDF / EXCEL -> NATIVE SYSTEM SHARE ONLY
+     ============================================================ -->
+<div id="wfUnifiedShareOverlay" class="wf-share-overlay" aria-hidden="true" onclick="if(event.target===this)closeUnifiedShareModal()">
+  <div class="wf-share-panel" role="dialog" aria-modal="true" aria-labelledby="wfShareTitle">
+    <div class="wf-share-handle"></div>
+    <div class="wf-share-head">
+      <div class="wf-share-head-icon">📤</div>
+      <div class="wf-share-head-copy">
+        <div class="wf-share-title" id="wfShareTitle">مشاركة الفاتورة</div>
+        <div class="wf-share-sub" id="wfShareSub">اختر نوع الملف ثم شاركه من نافذة النظام</div>
+      </div>
+      <button type="button" class="wf-share-close" onclick="closeUnifiedShareModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="wf-share-invoice-chip" id="wfShareInvoiceChip">—</div>
+    <div class="wf-share-choices">
+      <button type="button" class="wf-share-choice" id="wfSharePdfChoice" onclick="wfSharePreparedFile('pdf')" disabled>
+        <span class="wf-share-choice-icon pdf">PDF</span>
+        <span class="wf-share-choice-copy">
+          <strong>PDF</strong>
+          <small id="wfSharePdfDesc">جاهز للإرسال والطباعة</small>
+          <em id="wfSharePdfState">جاري التجهيز…</em>
+        </span>
+        <span class="wf-share-choice-arrow">›</span>
+      </button>
+      <button type="button" class="wf-share-choice" id="wfShareExcelChoice" onclick="wfSharePreparedFile('excel')" disabled>
+        <span class="wf-share-choice-icon xls">XLSX</span>
+        <span class="wf-share-choice-copy">
+          <strong>Excel</strong>
+          <small id="wfShareExcelDesc">قابل للتعديل بالكامل</small>
+          <em id="wfShareExcelState">جاري التجهيز…</em>
+        </span>
+        <span class="wf-share-choice-arrow">›</span>
+      </button>
+    </div>
+    <div class="wf-share-note" id="wfShareNote">لن يتم تنزيل الملف. سيُفتح مربع مشاركة النظام مباشرة.</div>
+  </div>
+</div>
+
+<style id="wf-unified-share-style">
+#shareMenuPopup{display:none!important}
+.wf-share-overlay{position:fixed;inset:0;z-index:10000050;background:rgba(8,12,24,.58);display:none;align-items:center;justify-content:center;padding:18px;opacity:0;transition:opacity .2s ease}
+.wf-share-overlay.open{display:flex;opacity:1}
+.wf-share-panel{width:min(520px,100%);background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:0 28px 90px rgba(0,0,0,.32);padding:18px;transform:translateY(14px) scale(.985);transition:transform .24s cubic-bezier(.34,1.56,.64,1)}
+.wf-share-overlay.open .wf-share-panel{transform:translateY(0) scale(1)}
+.wf-share-handle{display:none;width:44px;height:4px;border-radius:999px;background:var(--border);margin:0 auto 12px}
+.wf-share-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.wf-share-head-icon{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:var(--gold-light);border:1px solid rgba(200,169,110,.28);font-size:20px;flex-shrink:0}
+.wf-share-head-copy{flex:1;min-width:0}.wf-share-title{font-size:17px;font-weight:900;color:var(--text);margin-bottom:2px}.wf-share-sub{font-size:11px;color:var(--muted);line-height:1.5}
+.wf-share-close{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--input);color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;flex-shrink:0}
+.wf-share-close:hover{background:rgba(229,62,62,.1);border-color:rgba(229,62,62,.3);color:var(--red)}
+.wf-share-invoice-chip{display:inline-flex;align-items:center;max-width:100%;padding:5px 10px;border-radius:9px;background:var(--input);border:1px solid var(--border);font-size:10px;font-weight:800;color:var(--text2);margin-bottom:12px;direction:ltr;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wf-share-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wf-share-choice{appearance:none;border:1.5px solid var(--border);background:var(--input);border-radius:16px;padding:14px;display:flex;align-items:center;gap:11px;text-align:start;cursor:pointer;font-family:inherit;color:var(--text);transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;min-height:92px}
+.wf-share-choice:not(:disabled):hover{border-color:var(--gold);background:var(--gold-light);transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,169,110,.14)}
+.wf-share-choice:disabled{cursor:wait;opacity:.62}.wf-share-choice.ready{opacity:1}.wf-share-choice.error{opacity:1;border-color:rgba(229,62,62,.3)}
+.wf-share-choice-icon{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:1000;letter-spacing:.5px;flex-shrink:0;color:#fff;box-shadow:0 5px 14px rgba(0,0,0,.12)}
+.wf-share-choice-icon.pdf{background:linear-gradient(135deg,#e53e3e,#c53030)}.wf-share-choice-icon.xls{background:linear-gradient(135deg,#38a169,#276749)}
+.wf-share-choice-copy{display:flex;flex-direction:column;min-width:0;flex:1}.wf-share-choice-copy strong{font-size:14px;font-weight:900;margin-bottom:2px}.wf-share-choice-copy small{font-size:10px;color:var(--muted);line-height:1.35}.wf-share-choice-copy em{font-style:normal;font-size:9.5px;font-weight:800;color:var(--gold2);margin-top:5px}
+.wf-share-choice.ready .wf-share-choice-copy em{color:var(--green)}.wf-share-choice.error .wf-share-choice-copy em{color:var(--red)}
+.wf-share-choice-arrow{font-size:22px;color:var(--border);font-weight:800;flex-shrink:0}.wf-share-choice.ready .wf-share-choice-arrow{color:var(--gold2)}
+.wf-share-note{margin-top:12px;padding:9px 11px;border-radius:11px;background:rgba(49,130,206,.06);border:1px solid rgba(49,130,206,.13);font-size:10.5px;color:var(--muted);line-height:1.55;text-align:center}
+@media(max-width:600px){.wf-share-overlay{align-items:flex-end;padding:0}.wf-share-panel{width:100%;border-radius:24px 24px 0 0;padding:14px 16px max(18px,env(safe-area-inset-bottom));transform:translateY(100%);}.wf-share-overlay.open .wf-share-panel{transform:translateY(0)}.wf-share-handle{display:block}.wf-share-choices{grid-template-columns:1fr}.wf-share-choice{min-height:78px}.wf-share-choice-icon{width:44px;height:44px}}
+</style>
+<!-- ============================================================
+     WOW V10 — XLSX-ONLY SHARE
+     Never converts Excel sharing to HTML or CSV.
+     ============================================================ -->
+
+<style id="wf-share-v10-style">
+#wfShareExcelChoice .wf-share-choice-icon{position:relative}
+#wfShareExcelChoice[data-wf-mode="xlsx"] .wf-share-choice-icon.xls::after{
+  content:'XLSX';position:absolute;right:-5px;bottom:-5px;background:#fff;border-radius:8px;padding:1px 4px;
+  font-size:7px;font-weight:1000;border:1px solid rgba(39,103,73,.25);box-shadow:0 2px 6px rgba(0,0,0,.12);color:#276749
+}
+</style>
+<script id="wf-native-share-v10-xlsx-only">
+(function(){
+'use strict';
+const WF10={token:0,key:'',pdf:null,excelCandidates:[],excelIndex:0,sharing:false,lastExcelError:null};
+function q(id){return document.getElementById(id)}
+function lang(){return (typeof S!=='undefined'&&S.lang)||document.documentElement.lang||'ar'}
+function t(key){
+  const D={
+    ar:{title:'مشاركة الفاتورة',sub:'اختر PDF أو Excel ثم اختر التطبيق من نافذة الجهاز',pdf:'PDF الأصلي — جاهز للإرسال والطباعة',xlsx:'Excel XLSX الأصلي — قابل للتعديل بالكامل',prep:'جاري تجهيز الملف…',ready:'XLSX جاهز للمشاركة',unsupported:'Chrome على هذا الجهاز يمنع مشاركة ملف XLSX مباشرة. لم يتم تحويل الملف إلى HTML أو CSV.',tryNext:'جاري تجربة توافق XLSX آخر…',fail:'تعذر تجهيز ملف XLSX',note:'Excel هنا XLSX حقيقي فقط. لا يوجد تحويل إلى HTML أو CSV ولا تنزيل تلقائي.',noInvoice:'لا توجد فاتورة جاهزة للمشاركة.'},
+    tr:{title:'Faturayı paylaş',sub:'PDF veya Excel seçin, sonra cihazın paylaşım penceresinden uygulamayı seçin',pdf:'Orijinal PDF — gönderme ve yazdırma için hazır',xlsx:'Orijinal XLSX — tamamen düzenlenebilir',prep:'Dosya hazırlanıyor…',ready:'XLSX paylaşmaya hazır',unsupported:'Bu cihazdaki Chrome XLSX dosyasını doğrudan paylaşmayı engelliyor. Dosya HTML veya CSV biçimine dönüştürülmedi.',tryNext:'Başka bir XLSX uyumluluğu deneniyor…',fail:'XLSX hazırlanamadı',note:'Excel yalnızca gerçek XLSX olarak paylaşılır. HTML/CSV dönüşümü ve otomatik indirme yoktur.',noInvoice:'Paylaşılacak hazır fatura yok.'},
+    en:{title:'Share invoice',sub:'Choose PDF or Excel, then select an app in the device share sheet',pdf:'Original PDF — ready to send or print',xlsx:'Original XLSX — fully editable',prep:'Preparing file…',ready:'XLSX ready to share',unsupported:'Chrome on this device blocks direct XLSX file sharing. The file was not converted to HTML or CSV.',tryNext:'Trying another XLSX compatibility mode…',fail:'Could not prepare XLSX',note:'Excel is shared as a real XLSX only. No HTML/CSV conversion and no automatic download.',noInvoice:'No invoice is ready to share.'}
+  };
+  const L=D[lang()]||D.ar;return L[key]||key;
+}
+function setChoice(kind,state,label,mode){
+  const btn=q(kind==='pdf'?'wfSharePdfChoice':'wfShareExcelChoice');
+  const st=q(kind==='pdf'?'wfSharePdfState':'wfShareExcelState');
+  if(!btn||!st)return;
+  btn.classList.remove('ready','error');
+  if(kind==='excel'){btn.dataset.wfMode='xlsx'}
+  if(state==='ready'){btn.disabled=false;btn.classList.add('ready');st.textContent=label||t('ready')}
+  else if(state==='error'){btn.disabled=false;btn.classList.add('error');st.textContent=label||t('unsupported')}
+  else{btn.disabled=true;st.textContent=label||t('prep')}
+}
+function show(){const ov=q('wfUnifiedShareOverlay');if(!ov)return;ov.style.display='flex';requestAnimationFrame(()=>ov.classList.add('open'));ov.setAttribute('aria-hidden','false')}
+function hide(){const ov=q('wfUnifiedShareOverlay');if(!ov)return;ov.classList.remove('open');ov.setAttribute('aria-hidden','true');setTimeout(()=>{if(!ov.classList.contains('open'))ov.style.display='none'},220)}
+function setStaticText(){
+  if(q('wfShareTitle'))q('wfShareTitle').textContent=t('title');
+  if(q('wfShareSub'))q('wfShareSub').textContent=t('sub');
+  if(q('wfSharePdfDesc'))q('wfSharePdfDesc').textContent=t('pdf');
+  if(q('wfShareExcelDesc'))q('wfShareExcelDesc').textContent=t('xlsx');
+  if(q('wfShareNote'))q('wfShareNote').textContent=t('note');
+}
+function stem(){const no=(typeof _lastPreviewInv!=='undefined'&&_lastPreviewInv&&_lastPreviewInv.invNo)||'INVOICE';return 'WOW_'+String(no).replace(/[^A-Za-z0-9_.-]+/g,'_').replace(/^_+|_+$/g,'')}
+function previewKey(){try{return typeof getInvoicePdfRenderKey==='function'?getInvoicePdfRenderKey():stem()}catch(_){return stem()}}
+function exactCanShare(file){if(!file||!navigator.share)return false;try{return typeof navigator.canShare==='function'?!!navigator.canShare({files:[file]}):true}catch(_){return false}}
+async function xlsxVariants(original){
+  const bytes=await original.arrayBuffer();
+  const name=(original.name&&/\.xlsx$/i.test(original.name))?original.name:(stem()+'.xlsx');
+  const lm=Date.now();
+  return [
+    {mode:'xlsx',file:new File([bytes],name,{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',lastModified:lm})},
+    {mode:'xlsx',file:new File([bytes],name,{type:'application/vnd.ms-excel',lastModified:lm})},
+    {mode:'xlsx',file:new File([bytes],name,{type:'application/octet-stream',lastModified:lm})}
+  ];
+}
+async function prepPdf(token){setChoice('pdf','prep');try{const f=await createInvoicePdfFile();if(token!==WF10.token)return;WF10.pdf=f;if(exactCanShare(f))setChoice('pdf','ready',t('ready'));else setChoice('pdf','error',t('unsupported'))}catch(e){console.error('WOW V10 PDF prepare',e);if(token===WF10.token)setChoice('pdf','error',t('fail'))}}
+async function prepExcel(token){
+  setChoice('excel','prep');WF10.excelCandidates=[];WF10.excelIndex=0;WF10.lastExcelError=null;
+  try{
+    const xlsx=await createInvoiceExcelFile();if(token!==WF10.token)return;
+    WF10.excelCandidates=await xlsxVariants(xlsx);if(token!==WF10.token)return;
+    const shareable=WF10.excelCandidates.findIndex(c=>exactCanShare(c.file));
+    WF10.excelIndex=shareable>=0?shareable:0;
+    if(navigator.share)setChoice('excel','ready',t('ready'),'xlsx');
+    else setChoice('excel','error',t('unsupported'),'xlsx');
+  }catch(e){console.error('WOW V10 XLSX prepare',e);WF10.lastExcelError=e;if(token===WF10.token)setChoice('excel','error',t('fail'),'xlsx')}
+}
+function ensurePreview(){
+  try{if(typeof wfRefreshCurrentPreview==='function')wfRefreshCurrentPreview()}catch(_){ }
+  if(typeof _lastPreviewInv!=='undefined'&&_lastPreviewInv)return _lastPreviewInv;
+  try{if(typeof S!=='undefined'&&S.invItems&&S.invItems.length&&typeof previewInvoice==='function'){previewInvoice(false);if(_lastPreviewInv)return _lastPreviewInv}}catch(_){ }
+  return null;
+}
+window.openUnifiedShareModal=function(e){
+  try{e&&e.preventDefault&&e.preventDefault();e&&e.stopPropagation&&e.stopPropagation()}catch(_){ }
+  const ov=q('wfUnifiedShareOverlay');if(ov&&ov.classList.contains('open'))return true;
+  const inv=ensurePreview();if(!inv){if(typeof showToast==='function')showToast(t('noInvoice'),'er');return false}
+  setStaticText();const chip=q('wfShareInvoiceChip');if(chip)chip.textContent=(inv.invNo||'Invoice')+(inv.companyName?'  •  '+inv.companyName:'');
+  WF10.token++;WF10.key=previewKey();WF10.pdf=null;WF10.excelCandidates=[];WF10.excelIndex=0;WF10.sharing=false;const token=WF10.token;
+  setChoice('pdf','prep');setChoice('excel','prep');show();prepPdf(token);prepExcel(token);return true;
+};
+window.closeUnifiedShareModal=function(){hide();return true};
+function nativeBridgeShare(file){
+  try{
+    if(typeof window.WOW_NATIVE_SHARE_XLSX==='function'){window.WOW_NATIVE_SHARE_XLSX(file);return true}
+  }catch(e){console.warn('WOW native XLSX bridge',e)}
+  return false;
+}
+function excelBlocked(){show();setChoice('excel','error',t('unsupported'),'xlsx');if(typeof showToast==='function')showToast(t('unsupported'),'er');return false}
+async function shareExcelCandidate(index){
+  const c=WF10.excelCandidates[index];if(!c)return excelBlocked();
+  if(nativeBridgeShare(c.file)){hide();return true}
+  try{await navigator.share({files:[c.file]});hide();return true}
+  catch(e){
+    if(e&&e.name==='AbortError')return false;
+    console.warn('WOW V10 XLSX share candidate',index,e);
+    if(index+1<WF10.excelCandidates.length){
+      setChoice('excel','ready',t('tryNext'),'xlsx');
+      return shareExcelCandidate(index+1);
+    }
+    return excelBlocked();
+  }
+}
+window.wfSharePreparedFile=function(kind){
+  if(WF10.sharing)return false;
+  if(kind==='pdf'){
+    if(!WF10.pdf||!navigator.share){setChoice('pdf','error',t('unsupported'));return false}
+    WF10.sharing=true;Promise.resolve(navigator.share({files:[WF10.pdf]})).then(()=>{WF10.sharing=false;hide()},e=>{WF10.sharing=false;if(e&&e.name==='AbortError')return;show();setChoice('pdf','error',t('unsupported'))});return true;
+  }
+  if(!WF10.excelCandidates.length){setChoice('excel','error',t('fail'),'xlsx');return false}
+  if(!navigator.share&&!nativeBridgeShare(WF10.excelCandidates[0].file))return excelBlocked();
+  WF10.sharing=true;shareExcelCandidate(WF10.excelIndex).finally(()=>{WF10.sharing=false});return true;
+};
+window.toggleShareMenu=function(e){return window.openUnifiedShareModal(e)};
+window.closeShareMenu=function(){return window.closeUnifiedShareModal()};
+window.shareExcel=function(e){return window.openUnifiedShareModal(e)};
+window.shareWA=function(e){return window.openUnifiedShareModal(e)};
+window.shareEmail=function(e){return window.openUnifiedShareModal(e)};
+window.wfShareSavedInvoice=function(id,e){try{e&&e.preventDefault&&e.preventDefault();e&&e.stopPropagation&&e.stopPropagation()}catch(_){ }const inv=(typeof S!=='undefined'&&Array.isArray(S.invoices))?S.invoices.find(i=>i.id===id):null;if(!inv)return false;previewSaved(id,false);return window.openUnifiedShareModal(e)};
+window.shareSavedExcel=function(id,e){return window.wfShareSavedInvoice(id,e)};
+window.WF_SHARE_DIAGNOSTICS=function(){return {version:'V10-XLSX-ONLY',invoice:typeof _lastPreviewInv!=='undefined'&&_lastPreviewInv?_lastPreviewInv.invNo:null,pdfReady:!!WF10.pdf,excelCandidates:WF10.excelCandidates.map((c,i)=>({xlsx:true,shareable:exactCanShare(c.file),selected:i===WF10.excelIndex,name:c.file&&c.file.name,type:c.file&&c.file.type,size:c.file&&c.file.size})),navigatorShare:!!navigator.share,navigatorCanShare:typeof navigator.canShare==='function',htmlFallback:false,csvFallback:false}};
+})();
+</script>
+
+<!-- ============================================================
+     WOW V12 — PREMIUM TECH NOTICE + EXCEL DOWNLOAD
+     - PDF keeps native system share
+     - Excel downloads directly to Downloads (no share attempt)
+     - Excel workbook always starts with a professional WOW notice sheet
+     - Invoice pages remain unchanged after the notice sheet
+     ============================================================ -->
+<style id="wf-v11-share-download-style">
+#wfShareExcelChoice[data-wf-mode="download"] .wf-share-choice-icon.xls{
+  background:linear-gradient(135deg,#3f8d61,#2f6f4d)!important;
+  color:#fff!important;
+}
+#wfShareExcelChoice[data-wf-mode="download"] .wf-share-choice-arrow{
+  font-size:22px!important;
+  transform:none!important;
+}
+#wfShareExcelChoice[data-wf-mode="download"].downloading{opacity:.72;pointer-events:none}
+#wfShareExcelChoice[data-wf-mode="download"].downloaded{
+  border-color:#4f9d6c!important;
+  box-shadow:0 6px 22px rgba(79,157,108,.18)!important;
+}
+</style>
+<script id="wf-v11-excel-download-notice">
+(function(){
+'use strict';
+
+/* ---------- 1) FIRST WORKSHEET: WOW SOURCE / EDITING NOTICE ---------- */
+const _wf11LayoutBuilder = (typeof wfMakeExcelLayoutWorkbook==='function') ? wfMakeExcelLayoutWorkbook : null;
+
+function wf11Lang(){
+  try{return (typeof S!=='undefined'&&S.lang)||document.documentElement.lang||'ar'}catch(_){return 'ar'}
+}
+function wf11Logo(){
+  const candidates=[];
+  try{if(typeof S!=='undefined'&&S.settings?.logo)candidates.push(S.settings.logo)}catch(_){ }
+  try{if(typeof DEFAULT_WOW_LOGO!=='undefined')candidates.push(DEFAULT_WOW_LOGO)}catch(_){ }
+  return candidates.find(v=>/^data:image\/(?:png|jpe?g);base64,/i.test(String(v||'')))||null;
+}
+function wf11Atom(value,x,y,w,h,size,color,bold,align,rtl,font){
+  return {
+    value:String(value??''),x,y,w,h,
+    style:{font:font||'Segoe UI',size:size||11,color:color||'1A1A2E',bold:!!bold,italic:false,strike:false,align:align||'left',rtl:!!rtl}
+  };
+}
+function wf11NoticePage(model){
+  const lang=(model?.lang||wf11Lang()).toLowerCase();
+  const invNo=String(model?.invNo||'—');
+  const logo=wf11Logo();
+  const now=new Date();
+  const date=now.toLocaleDateString(lang==='tr'?'tr-TR':lang==='ar'?'ar-SA':'en-GB',{year:'numeric',month:'2-digit',day:'2-digit'});
+  const y=String(now.getFullYear());
+  const m=String(now.getMonth()+1).padStart(2,'0');
+  const d=String(now.getDate()).padStart(2,'0');
+  const cleanInv=invNo.replace(/[^A-Za-z0-9_-]/g,'').slice(0,28)||'PROFORMA';
+  const refId='WOW-XLSX-'+cleanInv+'-'+y+m+d;
+
+  const arTitle='تنبيه رسمي بشأن نسخة Excel القابلة للتعديل';
+  const arBody='هذه نسخة Excel قابلة للتعديل من فاتورة WOW Furniture الأولية (Proforma Invoice)، تم إنشاؤها لتسهيل المراجعة والعمل على البيانات. أي تعديل لاحق على الأسعار أو الصور أو الكميات أو المواصفات أو بيانات العميل أو أي معلومات أخرى يتم من طرف المستلم فقط، ولا يُعد معتمداً أو مصدقاً من WOW Furniture، ولا يتم تحديثه أو تثبيته تلقائياً في أنظمة الشركة. المرجع المعتمد هو النسخة الأصلية الخام الصادرة مباشرة من WOW Furniture والمحفوظة ضمن أنظمتنا.';
+  const enTitle='OFFICIAL NOTICE — EDITABLE EXCEL COPY';
+  const enBody='This workbook is an editable copy of the WOW Furniture Proforma Invoice, generated for review and data work. Any later change to prices, images, quantities, specifications, customer details or other information is made solely by the recipient and is not approved, certified or automatically recorded by WOW Furniture. The reference copy is the original raw Proforma issued directly by WOW Furniture and stored in our systems.';
+  const trTitle='RESMÎ BİLGİ — DÜZENLENEBİLİR EXCEL KOPYASI';
+  const trBody='Bu çalışma kitabı, inceleme ve veri düzenleme amacıyla oluşturulan WOW Furniture Proforma Faturasının düzenlenebilir bir kopyasıdır. Fiyatlar, görseller, adetler, teknik bilgiler, müşteri bilgileri veya diğer veriler üzerinde sonradan yapılan değişiklikler yalnızca alıcı tarafından yapılmış sayılır; WOW Furniture tarafından onaylanmış, tasdik edilmiş veya şirket sistemlerine otomatik olarak kaydedilmiş sayılmaz. Esas alınacak nüsha, WOW Furniture tarafından doğrudan düzenlenen ve sistemlerimizde kayıtlı olan orijinal ham Proforma nüshasıdır.';
+
+  const decor=[
+    {x:0,y:0,w:794,h:1139,fill:'FFFFFF'},
+    {x:0,y:0,w:794,h:16,fill:'1A1A2E'},
+    {x:0,y:16,w:794,h:4,fill:'C8A96E'},
+
+    /* Premium brand header */
+    {x:54,y:42,w:686,h:214,fill:'FAFBFD',radius:20,borders:{top:{width:1,color:'E7EAF0'},bottom:{width:1,color:'E7EAF0'},left:{width:1,color:'E7EAF0'},right:{width:1,color:'E7EAF0'}}},
+    {x:72,y:62,w:8,h:174,fill:'C8A96E',radius:4},
+    {x:652,y:72,w:62,h:62,fill:'C8A96E',radius:16},
+    {x:676,y:148,w:38,h:7,fill:'1A1A2E',radius:3},
+    {x:664,y:164,w:50,h:7,fill:'D7DCE6',radius:3},
+    {x:686,y:180,w:28,h:7,fill:'C8A96E',radius:3},
+
+    /* Three-language notice card */
+    {x:54,y:286,w:686,h:492,fill:'FCF8EF',radius:20,borders:{top:{width:1.4,color:'C8A96E'},bottom:{width:1.4,color:'C8A96E'},left:{width:1.4,color:'C8A96E'},right:{width:1.4,color:'C8A96E'}}},
+    {x:78,y:334,w:64,h:24,fill:'1A1A2E',radius:12},
+    {x:78,y:486,w:64,h:24,fill:'1A1A2E',radius:12},
+    {x:78,y:638,w:64,h:24,fill:'1A1A2E',radius:12},
+    {x:78,y:466,w:638,h:1.2,fill:'E4D5B4'},
+    {x:78,y:618,w:638,h:1.2,fill:'E4D5B4'},
+
+    /* Technical engine footer */
+    {x:54,y:810,w:686,h:272,fill:'1A1A2E',radius:20},
+    {x:54,y:810,w:686,h:6,fill:'C8A96E',radius:3},
+    {x:80,y:836,w:178,h:31,fill:'C8A96E',radius:15},
+    {x:80,y:906,w:196,h:62,fill:'23233B',radius:13,borders:{top:{width:1,color:'34344E'},bottom:{width:1,color:'34344E'},left:{width:1,color:'34344E'},right:{width:1,color:'34344E'}}},
+    {x:292,y:906,w:196,h:62,fill:'23233B',radius:13,borders:{top:{width:1,color:'34344E'},bottom:{width:1,color:'34344E'},left:{width:1,color:'34344E'},right:{width:1,color:'34344E'}}},
+    {x:504,y:906,w:210,h:62,fill:'23233B',radius:13,borders:{top:{width:1,color:'34344E'},bottom:{width:1,color:'34344E'},left:{width:1,color:'34344E'},right:{width:1,color:'34344E'}}},
+    {x:80,y:990,w:634,h:1,fill:'39394F'},
+
+    /* Small circuit / system mark */
+    {x:642,y:835,w:14,h:14,fill:'C8A96E',radius:3},
+    {x:666,y:835,w:14,h:14,fill:'FFFFFF',radius:3},
+    {x:690,y:835,w:14,h:14,fill:'C8A96E',radius:3},
+    {x:649,y:856,w:55,h:2,fill:'4A4A61'},
+    {x:649,y:866,w:34,h:2,fill:'C8A96E'}
+  ];
+  const images=[];
+  if(logo)images.push({uri:logo,x:208,y:58,width:338,height:124,name:'WOW Furniture logo'});
+  const atoms=[
+    wf11Atom('W',652,77,62,48,27,'FFFFFF',true,'center',false,'Arial'),
+    wf11Atom('WOW FURNITURE',162,187,470,30,20,'1A1A2E',true,'center',false,'Segoe UI'),
+    wf11Atom('PROFORMA  ·  EDITABLE EXCEL COPY',162,219,470,24,13.5,'C8A96E',true,'center',false,'Segoe UI'),
+    wf11Atom('CONTROLLED WORKING COPY',162,245,470,18,8.8,'687386',true,'center',false,'Segoe UI'),
+
+    wf11Atom('01  العربية',84,338,54,16,8.5,'FFFFFF',true,'center',true,'Segoe UI'),
+    wf11Atom(arTitle,154,326,548,32,14,'1A1A2E',true,'right',true,'Segoe UI'),
+    wf11Atom(arBody,84,370,618,82,10.4,'343A46',false,'right',true,'Segoe UI'),
+
+    wf11Atom('02  EN',84,490,54,16,8.5,'FFFFFF',true,'center',false,'Segoe UI'),
+    wf11Atom(enTitle,154,478,548,28,10.8,'1A1A2E',true,'left',false,'Segoe UI'),
+    wf11Atom(enBody,84,518,618,84,9.3,'343A46',false,'left',false,'Segoe UI'),
+
+    wf11Atom('03  TR',84,642,54,16,8.5,'FFFFFF',true,'center',false,'Segoe UI'),
+    wf11Atom(trTitle,154,630,548,28,10.8,'1A1A2E',true,'left',false,'Segoe UI'),
+    wf11Atom(trBody,84,670,618,88,9.3,'343A46',false,'left',false,'Segoe UI'),
+
+    wf11Atom('SYSTEM GENERATED',96,843,146,17,9.5,'1A1A2E',true,'center',false,'Segoe UI'),
+    wf11Atom('WOW DIGITAL DOCUMENT ENGINE',80,876,520,24,15.8,'FFFFFF',true,'left',false,'Segoe UI'),
+    wf11Atom('TECHNICAL EXPORT MODULE  •  XLSX DOCUMENT PIPELINE',80,898,520,16,8.2,'AEB4C2',true,'left',false,'Segoe UI'),
+
+    wf11Atom('DOCUMENT REFERENCE',94,916,168,15,8,'9CA3B5',true,'left',false,'Segoe UI'),
+    wf11Atom(refId,94,938,168,19,9.2,'FFFFFF',true,'left',false,'Consolas'),
+
+    wf11Atom('EXPORT STATUS',306,916,168,15,8,'9CA3B5',true,'left',false,'Segoe UI'),
+    wf11Atom('SOURCE DATA  →  XLSX',306,938,168,19,9.2,'D9C08B',true,'left',false,'Segoe UI'),
+
+    wf11Atom('PROFORMA / DATE',518,916,182,15,8,'9CA3B5',true,'left',false,'Segoe UI'),
+    wf11Atom(invNo+'  •  '+date,518,938,182,19,9.2,'FFFFFF',true,'left',false,'Segoe UI'),
+
+    wf11Atom('GENERATED BY WOW TECH SYSTEM',80,1004,634,18,10.2,'C8A96E',true,'center',false,'Segoe UI'),
+    wf11Atom('Digital document export • Editable XLSX • Source-controlled proforma workflow',80,1027,634,18,8.5,'B8BECA',false,'center',false,'Segoe UI'),
+    wf11Atom('NEXT WORKSHEET  →  EDITABLE INVOICE',80,1052,634,18,9.6,'FFFFFF',true,'center',false,'Segoe UI')
+  ];
+  return {name:'WOW NOTICE',width:794,height:1139,decor,images,atoms};
+}
+
+if(_wf11LayoutBuilder){
+  wfMakeExcelLayoutWorkbook=function(model){
+    if(!model?.sheets?.length)return _wf11LayoutBuilder(model);
+    if(model.sheets[0]?.__wf11Notice===true)return _wf11LayoutBuilder(model);
+    const notice=wf11NoticePage(model);notice.__wf11Notice=true;
+    const next={...model,sheets:[notice,...model.sheets]};
+    return _wf11LayoutBuilder(next);
+  };
+}
+
+/* ---------- 2) SHARE UI: PDF SHARE / EXCEL DIRECT DOWNLOAD ---------- */
+const WF11={token:0,pdf:null,busyExcel:false,busyPdf:false};
+function wf11Q(id){return document.getElementById(id)}
+function wf11Text(key){
+  const D={
+    ar:{title:'مشاركة وحفظ الفاتورة',sub:'PDF للمشاركة مباشرة — Excel يتم تنزيله إلى الجهاز',pdfDesc:'PDF الأصلي — مشاركة مباشرة من نافذة الجهاز',pdfPrep:'جاري تجهيز PDF…',pdfReady:'جاهز للمشاركة',pdfFail:'تعذر فتح مشاركة PDF على هذا الجهاز',excelDesc:'Excel XLSX قابل للتعديل — تنزيل مباشر',excelReady:'اضغط لتنزيله إلى مجلد التنزيلات',excelPrep:'جاري تجهيز ملف Excel الكبير…',excelDone:'تم تنزيل ملف Excel في مجلد التنزيلات (Downloads)',note:'لضمان ثبات ملف Excel الكبير على الكمبيوتر والتابلت والهاتف، يتم تنزيل XLSX الحقيقي مباشرة. PDF يبقى للمشاركة النظامية.',noInvoice:'لا توجد فاتورة جاهزة.',downloadToast:'تم تنزيل ملف Excel في مجلد التنزيلات (Downloads). الصفحة الأولى تحتوي على تنبيه WOW الرسمي، والفاتورة تبدأ من الورقة التالية.',excelFail:'تعذر تنزيل ملف Excel.'},
+    tr:{title:'Faturayı paylaş / kaydet',sub:'PDF doğrudan paylaşılır — Excel cihaza indirilir',pdfDesc:'Orijinal PDF — cihaz paylaşım penceresiyle doğrudan paylaşım',pdfPrep:'PDF hazırlanıyor…',pdfReady:'Paylaşıma hazır',pdfFail:'Bu cihazda PDF paylaşımı açılamadı',excelDesc:'Düzenlenebilir gerçek XLSX — doğrudan indirme',excelReady:'Downloads klasörüne indirmek için dokunun',excelPrep:'Büyük Excel dosyası hazırlanıyor…',excelDone:'Excel dosyası Downloads klasörüne indirildi',note:'Büyük Excel dosyasının bilgisayar, tablet ve telefonda güvenilir olması için gerçek XLSX doğrudan indirilir. PDF sistem paylaşımıyla açılır.',noInvoice:'Hazır fatura yok.',downloadToast:'Excel dosyası Downloads klasörüne indirildi. İlk sayfada WOW resmî bilgi notu vardır; fatura sonraki çalışma sayfasından başlar.',excelFail:'Excel dosyası indirilemedi.'},
+    en:{title:'Share / Save invoice',sub:'PDF shares directly — Excel downloads to the device',pdfDesc:'Original PDF — direct system share',pdfPrep:'Preparing PDF…',pdfReady:'Ready to share',pdfFail:'PDF sharing is unavailable on this device',excelDesc:'Editable real XLSX — direct download',excelReady:'Tap to download to Downloads',excelPrep:'Preparing the large Excel file…',excelDone:'Excel downloaded to the Downloads folder',note:'For reliable use of the large Excel file on desktop, tablet and phone, the real XLSX is downloaded directly. PDF continues to use the system share sheet.',noInvoice:'No invoice is ready.',downloadToast:'Excel was downloaded to the Downloads folder. The first worksheet contains the WOW official notice; the editable invoice starts on the next worksheet.',excelFail:'Excel could not be downloaded.'}
+  };
+  const L=D[wf11Lang()]||D.ar;return L[key]||key;
+}
+function wf11EnsurePreview(){
+  try{if(typeof wfRefreshCurrentPreview==='function')wfRefreshCurrentPreview()}catch(_){ }
+  if(typeof _lastPreviewInv!=='undefined'&&_lastPreviewInv)return _lastPreviewInv;
+  try{if(typeof S!=='undefined'&&S.invItems?.length&&typeof previewInvoice==='function'){previewInvoice(false);if(_lastPreviewInv)return _lastPreviewInv}}catch(_){ }
+  return null;
+}
+function wf11Show(){
+  const ov=wf11Q('wfUnifiedShareOverlay');if(!ov)return;
+  ov.style.display='flex';requestAnimationFrame(()=>ov.classList.add('open'));ov.setAttribute('aria-hidden','false');
+}
+function wf11Hide(){
+  const ov=wf11Q('wfUnifiedShareOverlay');if(!ov)return;
+  ov.classList.remove('open');ov.setAttribute('aria-hidden','true');setTimeout(()=>{if(!ov.classList.contains('open'))ov.style.display='none'},220);
+}
+function wf11SetStatic(inv){
+  const set=(id,val)=>{const el=wf11Q(id);if(el)el.textContent=val};
+  set('wfShareTitle',wf11Text('title'));set('wfShareSub',wf11Text('sub'));
+  set('wfSharePdfDesc',wf11Text('pdfDesc'));set('wfShareExcelDesc',wf11Text('excelDesc'));set('wfShareNote',wf11Text('note'));
+  set('wfShareInvoiceChip',(inv.invNo||'Invoice')+(inv.companyName?'  •  '+inv.companyName:''));
+  const eb=wf11Q('wfShareExcelChoice');if(eb){eb.disabled=false;eb.dataset.wfMode='download';eb.classList.remove('error','downloading','downloaded');eb.classList.add('ready')}
+  const ea=eb?.querySelector('.wf-share-choice-arrow');if(ea)ea.textContent='↓';
+  set('wfShareExcelState',wf11Text('excelReady'));
+}
+async function wf11PreparePdf(token){
+  const pb=wf11Q('wfSharePdfChoice'),ps=wf11Q('wfSharePdfState');
+  if(pb){pb.disabled=true;pb.classList.remove('ready','error')}if(ps)ps.textContent=wf11Text('pdfPrep');
+  try{
+    const file=await createInvoicePdfFile();if(token!==WF11.token)return;WF11.pdf=file;
+    const ok=!!(navigator.share && (typeof navigator.canShare!=='function'||navigator.canShare({files:[file]})));
+    if(pb){pb.disabled=!ok;pb.classList.toggle('ready',ok);pb.classList.toggle('error',!ok)}
+    if(ps)ps.textContent=ok?wf11Text('pdfReady'):wf11Text('pdfFail');
+  }catch(e){console.error('WOW V11 PDF',e);if(token!==WF11.token)return;if(pb){pb.disabled=true;pb.classList.add('error')}if(ps)ps.textContent=wf11Text('pdfFail')}
+}
+
+window.openUnifiedShareModal=function(e){
+  try{e?.preventDefault?.();e?.stopPropagation?.()}catch(_){ }
+  const inv=wf11EnsurePreview();if(!inv){if(typeof showToast==='function')showToast(wf11Text('noInvoice'),'er');return false}
+  WF11.token++;WF11.pdf=null;WF11.busyExcel=false;WF11.busyPdf=false;const token=WF11.token;
+  wf11SetStatic(inv);wf11Show();wf11PreparePdf(token);return true;
+};
+window.closeUnifiedShareModal=function(){wf11Hide();return true};
+window.toggleShareMenu=function(e){return window.openUnifiedShareModal(e)};
+window.closeShareMenu=function(){return window.closeUnifiedShareModal()};
+window.shareWA=function(e){return window.openUnifiedShareModal(e)};
+window.shareEmail=function(e){return window.openUnifiedShareModal(e)};
+window.shareExcel=function(e){return window.openUnifiedShareModal(e)};
+window.wfShareSavedInvoice=function(id,e){
+  try{e?.preventDefault?.();e?.stopPropagation?.()}catch(_){ }
+  const inv=(typeof S!=='undefined'&&Array.isArray(S.invoices))?S.invoices.find(i=>i.id===id):null;if(!inv)return false;
+  previewSaved(id,false);return window.openUnifiedShareModal(e);
+};
+window.shareSavedExcel=function(id,e){return window.wfShareSavedInvoice(id,e)};
+
+window.wfSharePreparedFile=function(kind){
+  if(kind==='pdf'){
+    if(WF11.busyPdf||!WF11.pdf||!navigator.share)return false;WF11.busyPdf=true;
+    Promise.resolve(navigator.share({files:[WF11.pdf]})).then(()=>wf11Hide(),err=>{if(err?.name!=='AbortError'&&typeof showToast==='function')showToast(wf11Text('pdfFail'),'er')}).finally(()=>{WF11.busyPdf=false});
+    return true;
+  }
+  if(WF11.busyExcel)return false;WF11.busyExcel=true;
+  const eb=wf11Q('wfShareExcelChoice'),es=wf11Q('wfShareExcelState');
+  if(eb){eb.classList.add('downloading');eb.classList.remove('downloaded');eb.disabled=true}if(es)es.textContent=wf11Text('excelPrep');
+  Promise.resolve().then(()=>createInvoiceExcelFile()).then(file=>{
+    triggerExcelFileDownload(file);
+    if(eb){eb.classList.remove('downloading');eb.classList.add('downloaded');eb.disabled=false}if(es)es.textContent=wf11Text('excelDone');
+    if(typeof showToast==='function')showToast(wf11Text('downloadToast'),'ok');
+    setTimeout(()=>wf11Hide(),1100);
+    return file;
+  }).catch(err=>{
+    console.error('WOW V11 Excel download',err);if(eb){eb.classList.remove('downloading');eb.classList.add('error');eb.disabled=false}if(es)es.textContent=wf11Text('excelFail');
+    if(typeof showToast==='function')showToast(wf11Text('excelFail'),'er');
+  }).finally(()=>{WF11.busyExcel=false});
+  return true;
+};
+
+/* Direct Excel download calls also use the new cover sheet and success message. */
+window.downloadExcel=async function(){
+  if(WF11.busyExcel)return null;WF11.busyExcel=true;
+  try{
+    wf11EnsurePreview();if(typeof showToast==='function')showToast(wf11Text('excelPrep'),'in');
+    const file=await createInvoiceExcelFile();triggerExcelFileDownload(file);
+    if(typeof showToast==='function')showToast(wf11Text('downloadToast'),'ok');return file;
+  }catch(err){console.error('WOW V11 direct Excel download',err);if(typeof showToast==='function')showToast(wf11Text('excelFail'),'er');return null}
+  finally{WF11.busyExcel=false}
+};
+window.downloadSavedExcel=async function(id){
+  const inv=(typeof S!=='undefined'&&Array.isArray(S.invoices))?S.invoices.find(i=>i.id===id):null;if(!inv){if(typeof showToast==='function')showToast(wf11Text('noInvoice'),'er');return null}
+  previewSaved(id,false);return window.downloadExcel();
+};
+
+try{
+  if(typeof WF_EXCEL_TEXT==='object'){
+    if(WF_EXCEL_TEXT.ar){WF_EXCEL_TEXT.ar.hint='Excel XLSX قابل للتعديل بالكامل. الصفحة الأولى تنبيه WOW رسمي، ثم تبدأ الفاتورة من الورقة التالية. يتم تنزيل Excel مباشرة إلى مجلد التنزيلات.';WF_EXCEL_TEXT.ar.fallback='تم تنزيل ملف Excel في مجلد التنزيلات (Downloads).';}
+    if(WF_EXCEL_TEXT.tr){WF_EXCEL_TEXT.tr.hint='Excel tamamen düzenlenebilir gerçek XLSX dosyasıdır. İlk çalışma sayfasında WOW resmî bilgi notu bulunur; fatura sonraki sayfadan başlar. Excel doğrudan Downloads klasörüne indirilir.';WF_EXCEL_TEXT.tr.fallback='Excel dosyası Downloads klasörüne indirildi.';}
+    if(WF_EXCEL_TEXT.en){WF_EXCEL_TEXT.en.hint='Excel remains a fully editable real XLSX. The first worksheet is the WOW official notice, followed by the invoice worksheets. Excel downloads directly to Downloads.';WF_EXCEL_TEXT.en.fallback='Excel downloaded to the Downloads folder.';}
+  }
+}catch(_){ }
+window.WF_SHARE_DIAGNOSTICS=function(){return {version:'V12-PREMIUM-TECH-NOTICE',pdfShare:true,excelShare:false,excelDownload:true,firstSheet:'WOW NOTICE',htmlFallback:false,csvFallback:false}};
+window.WF_EXCEL_NOTICE_V11=true;
+window.WF_EXCEL_NOTICE_V12=true;
+})();
+</script>
+
 </body>
 </html>
