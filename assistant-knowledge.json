@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "languages": [
+    "ar",
+    "tr",
+    "en"
+  ],
+  "description": "Editable seed examples. Learned entity aliases are stored separately in settings.assistantMemory and included in normal backups. This is contextual memory, not model retraining.",
+  "examples": {
+    "ar": [
+      "فاتورة لهوم سنتر، 3 قطع LUNA وعربون 200 دولار وبعدين معاينة",
+      "سجّل فاتورة لهوم سنتر، ضيف 3 قطع من موديل LUNA وعربون 200 دولار",
+      "ضيف دفعة 100 دولار على الفاتورة A5000",
+      "اعرض كشف حساب هوم سنتر",
+      "ضيف عميل جديد اسمه أحمد ورقمه 0500000000",
+      "افتح إعدادات الطباعة"
+    ],
+    "tr": [
+      "Home Centre için LUNA modelinden 3 adet ve 200 dolar kapora ile fatura hazırla",
+      "A5000 faturasına 100 dolar ödeme ekle",
+      "Home Centre hesap özetini göster",
+      "Ahmet adlı yeni müşteri ekle",
+      "Yazdırma ayarlarını aç"
+    ],
+    "en": [
+      "Create an invoice for Home Centre with 3 LUNA units and a $200 deposit",
+      "Add a $100 payment to invoice A5000",
+      "Show Home Centre account statement",
+      "Add a new customer named Ahmed",
+      "Open print settings"
+    ]
+  },
+  "memoryPolicy": "Explicit entity choices, approved phrases and per-language pronunciations are stored in app settings and included in backups. Conversation retains 60 messages and current task, never audio or credentials. No automatic replay after reload.",
+  "contextVersion": 2,
+  "learningFile": "assistant-learning.json"
+}
