@@ -1,0 +1,79 @@
+/* Scoped to the statement; invoice/PDF styles and the rest of WOW are unchanged. */
+#wfsa[hidden],#wfsaPreview[hidden]{display:none!important}
+#wfsa,#wfsaPreview{position:fixed;inset:0;z-index:200100;background:var(--bg,#f5f5f7);color:var(--text,#222);font:14px 'Segoe UI',Arial,sans-serif;overflow:auto;overscroll-behavior:contain}
+#wfsa * ,#wfsaPreview *{box-sizing:border-box}
+#wfsa .wsa-shell{max-width:1540px;margin:auto;padding:22px 26px 34px}
+#wfsa .wsa-head{display:flex;gap:18px;align-items:center;justify-content:space-between;margin-bottom:18px}
+#wfsa .wsa-brand{display:flex;gap:14px;align-items:center;min-width:0}
+#wfsa .wsa-mark{border:1px solid var(--gold,#b59664);color:var(--gold2,#8b6937);background:var(--card,#fff);font-size:17px;font-weight:900;letter-spacing:1px;padding:13px 12px;border-radius:12px}
+#wfsa h1{margin:0;font-size:24px;font-weight:800;line-height:1.45}
+#wfsa .wsa-muted{color:var(--text2,#667085);font-size:12px;line-height:1.7}
+#wfsa .wsa-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+#wfsa button,#wfsaPreview button{border:1px solid var(--border,#ddd);border-radius:9px;background:var(--card,#fff);color:var(--text,#222);padding:9px 13px;min-height:38px;line-height:1.35;font:600 12px 'Segoe UI',Arial,sans-serif;cursor:pointer;transition:background .15s}
+#wfsa button:hover,#wfsaPreview button:hover{background:var(--input,#efefef)}
+#wfsa button:disabled,#wfsaPreview button:disabled{opacity:.5;cursor:wait}
+#wfsa button.wsa-primary{background:var(--gold,#b99a69);color:#171714;border-color:var(--gold,#b99a69)}
+#wfsa button:focus-visible,#wfsa select:focus-visible,#wfsa input:focus-visible,#wfsaPreview button:focus-visible{outline:3px solid var(--gold,#b99a69);outline-offset:2px}
+#wfsa .wsa-filters{display:grid;grid-template-columns:minmax(190px,2fr) repeat(5,minmax(120px,1fr));gap:12px;padding:17px;background:var(--card,#fff);border:1px solid var(--border,#e6e6e9);border-radius:14px}
+#wfsa label{font-size:11px;font-weight:700;color:var(--text2,#667085);display:flex;flex-direction:column;gap:7px;min-width:0}
+#wfsa select,#wfsa input{border:1px solid var(--border,#ddd);background:var(--input,#fafafa);color:var(--text,#222);border-radius:8px;height:39px;min-width:0;width:100%;padding:7px 10px;font:13px 'Segoe UI',Arial,sans-serif}
+#wfsa .wsa-options{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:12px 0 16px}
+#wfsa .wsa-check{flex-direction:row;align-items:center;font-size:12px;cursor:pointer}
+#wfsa .wsa-check input{width:16px;height:16px;accent-color:var(--gold,#b99a69)}
+#wfsa .wsa-client{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 2px 18px}
+#wfsa .wsa-client strong{font-size:20px;word-break:break-word}
+#wfsa .wsa-badge{display:inline-block;border:1px solid var(--border,#ddd);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--text2,#667085)}
+#wfsa .wsa-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:17px}
+#wfsa .wsa-kpi{padding:17px;border:1px solid var(--border,#e2e2e6);border-radius:13px;background:var(--card,#fff);min-width:0}
+#wfsa .wsa-kpi.emphasis{border-color:var(--gold,#b99a69);background:var(--gold-light,#fbf5e8)}
+#wfsa .wsa-kpi .label{font-size:11px;color:var(--text2,#667085);font-weight:700;margin-bottom:8px;line-height:1.5}
+#wfsa .wsa-kpi .value{font-size:24px;font-weight:800;letter-spacing:-.6px;direction:ltr;unicode-bidi:isolate;overflow-wrap:anywhere}
+#wfsa .wsa-kpi .hint{font-size:10px;margin-top:7px;color:var(--text2,#667085)}
+#wfsa .wsa-tabs{display:flex;gap:6px;border-bottom:1px solid var(--border,#ddd);padding-bottom:11px;overflow:auto}
+#wfsa .wsa-tabs button{white-space:nowrap;border-color:transparent;background:transparent}
+#wfsa .wsa-tabs button[aria-selected=true]{background:var(--card,#fff);border-color:var(--gold,#b99a69);color:var(--gold2,#927242)}
+#wfsa .wsa-content{margin-top:14px;background:var(--card,#fff);border:1px solid var(--border,#e2e2e6);border-radius:13px;overflow:hidden}
+#wfsa .wsa-scroll{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+#wfsa table{width:100%;border-collapse:collapse;font-size:12px;line-height:1.5}
+#wfsa th{color:var(--text2,#667085);background:var(--input,#fafafa);font-size:10px;text-align:start;font-weight:800;padding:12px 13px;white-space:nowrap;border-bottom:1px solid var(--border,#ddd)}
+#wfsa td{padding:12px 13px;border-bottom:1px solid var(--border,#eee);vertical-align:top;min-width:75px;max-width:390px;overflow-wrap:anywhere}
+#wfsa tbody tr:last-child td{border-bottom:0}
+#wfsa .num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;white-space:nowrap;text-align:end;min-width:110px}
+#wfsa .wsa-ledger{min-width:820px}
+#wfsa .wsa-payment-table{min-width:1020px}
+#wfsa .wsa-small{font-size:10px;color:var(--text2,#667085);white-space:normal;margin-top:4px;max-width:360px}
+#wfsa .wsa-sign-credit{color:var(--green,#287656)}
+#wfsa .wsa-notice{margin:12px 0;padding:12px 15px;border:1px solid var(--gold,#b99a69);border-radius:10px;background:var(--gold-light,#fff9ec);font-size:12px;line-height:1.8}
+#wfsa .wsa-notice:empty{display:none}
+#wfsa .wsa-notice summary{cursor:pointer;font-weight:700}
+#wfsa .wsa-warning{padding:7px 0;border-bottom:1px solid var(--border,#e3ded3)}
+#wfsa .wsa-warning:last-child{border-bottom:0}
+#wfsa .wsa-pager{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 15px;border-top:1px solid var(--border,#ddd);font-size:11px;color:var(--text2,#667085)}
+#wfsa .wsa-empty{text-align:center;padding:52px 18px;color:var(--text2,#667085)}
+#wfsa .wsa-invoice{border-bottom:1px solid var(--border,#ddd);padding:0 16px}
+#wfsa .wsa-invoice:last-child{border:0}
+#wfsa .wsa-invoice summary{cursor:pointer;display:flex;justify-content:space-between;gap:12px;padding:17px 0;align-items:center;list-style:none}
+#wfsa .wsa-invoice summary::-webkit-details-marker{display:none}
+#wfsa .wsa-invoice summary:after{content:'+';font-size:22px;color:var(--gold2,#927242)}
+#wfsa .wsa-invoice[open] summary:after{content:'−'}
+#wfsa .wsa-inv-head{flex:1;min-width:0}
+#wfsa .wsa-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 18px}
+#wfsa .wsa-grid>div{padding:10px 12px;border:1px solid var(--border,#eee);border-radius:8px;min-width:0;overflow-wrap:anywhere}
+#wfsa .wsa-grid span{display:block;font-size:10px;color:var(--text2,#667085);margin-bottom:4px}
+#wfsa .wsa-grid strong{font-size:12px}
+#wfsa .wsa-note-text{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.8;padding:12px 0 18px}
+#wfsa .wsa-section-pad{padding:18px}
+#wfsa .wsa-section-pad h3{font-size:15px;margin:0 0 14px}
+#wfsa .wsa-foot{padding:13px 2px;font-size:11px;line-height:1.8;color:var(--text2,#667085)}
+#wfsaPreview{z-index:200120;display:flex;flex-direction:column}
+#wfsaPreview .wsa-previewbar{padding:10px 16px;background:var(--card,#fff);display:flex;gap:9px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--border,#ddd)}
+#wfsaPreview iframe{border:0;flex:1;width:100%;min-height:0;background:#777}
+#wfsa .wsa-progress{position:sticky;bottom:8px;z-index:2;border:1px solid var(--gold,#b99a69);border-radius:10px;background:var(--card,#fff);padding:12px 16px;box-shadow:0 5px 25px #0002;line-height:1.8}
+#wfsa .wsa-progress[hidden]{display:none}
+@media(max-width:1100px){#wfsa .wsa-head{align-items:flex-start;flex-direction:column}#wfsa .wsa-filters{grid-template-columns:repeat(3,minmax(0,1fr))}#wfsa .wsa-kpi .value{font-size:20px}#wfsa .wsa-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){#wfsa .wsa-shell{padding:14px 12px 28px}#wfsa h1{font-size:20px}#wfsa .wsa-filters{grid-template-columns:repeat(2,minmax(0,1fr));padding:12px;gap:10px}#wfsa .wsa-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#wfsa .wsa-kpi:last-child{grid-column:span 2}#wfsa .wsa-kpi{padding:14px}#wfsa .wsa-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#wfsa .wsa-actions{width:100%}#wfsa .wsa-actions button{flex:1 0 auto}#wfsa .wsa-mark{padding:10px;font-size:15px}#wfsa .wsa-client strong{font-size:18px}#wfsa .wsa-pager{flex-wrap:wrap}#wfsa .wsa-options{align-items:flex-start}#wfsa button{min-height:40px}}
+@media(prefers-reduced-motion:reduce){#wfsa *{transition:none!important;scroll-behavior:auto!important}}
+
+/* The additional statement entry stays inside the existing customer toolbar. */
+#page-companies .co-toolbar-row{flex-wrap:wrap}
+@media(max-width:700px){#page-companies .co-toolbar-row #coSearch{order:5;flex:1 1 100%;max-width:none}}
