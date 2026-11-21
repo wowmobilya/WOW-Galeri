@@ -1,6 +1,8 @@
 <!DOCTYPE html> 
 <html lang="ar" dir="rtl" data-wf-account-state="checking">
 <head>
+<script src="./modules/customer-auth/workspace.js?v=1"></script>
+<link rel="stylesheet" href="./modules/customer-auth/styles.css?v=1">
 <!-- WOW V22: read-only statement model and scoped UI; no database migration. -->
 <link rel="stylesheet" href="./account-statement.css?v=25">
 <script src="./account-statement-core.js?v=25"></script>
@@ -35,12 +37,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script src="ui-icons.js?v=49" defer></script>
-<title>WOW FURNITURE — Business Workspace</title>
+<title>مارك ربوت | WOW FURNITURE</title>
 
 <!-- ربط ملف الـ Manifest -->
-<link rel="manifest" href="manifest.json?v=5">
-<meta name="application-name" content="WOW FURNITURE">
-<meta name="apple-mobile-web-app-title" content="WOW FURNITURE">
+<link rel="manifest" href="manifest.json?v=6">
+<meta name="application-name" content="مارك ربوت">
+<meta name="apple-mobile-web-app-title" content="مارك ربوت">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=198">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -6434,13 +6436,16 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
      <link rel="stylesheet" href="ui-identity.css?v=34">
      <link rel="stylesheet" href="accounts-access.css?v=1">
 <link rel="stylesheet" href="accounts-settings.css?v=1">
-<script src="accounts-policy.js?v=1" defer></script>
+<script src="accounts-policy.js?v=2" defer></script>
 <script src="accounts-data-policy.js?v=1" defer></script>
-<script src="accounts-core.js?v=2" defer></script>
+<script src="accounts-core.js?v=3" defer></script>
 <script src="accounts-local-provider.js?v=1" defer></script>
-<script src="accounts-access.js?v=2" defer></script>
+<script src="modules/platform/cloud/wow-cloud-config.js?v=1" defer></script>
+<script src="modules/platform/cloud/wow-cloud-client.js?v=1" defer></script>
+<script src="modules/platform/cloud/wow-cloud-sync.js?v=1" defer></script>
+<script src="accounts-access.js?v=4" defer></script>
 <script src="cart-page.js?v=1" defer></script>
-<script src="operations-workspace.js?v=7" defer></script>
+<script src="operations-workspace.js?v=8" defer></script>
 <script src="ui-navigation.js?v=33" defer></script>
 <script src="bottomnav-fit.js?v=2" defer></script>
 <script src="context-nav.js?v=14" defer></script>
@@ -6448,15 +6453,17 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
      <script src="ui-logo.js?v=3" defer></script>
 <script src="ui-settings.js?v=2" defer></script>
 <script src="product-categories.js?v=4" defer></script>
-<script src="install-identity.js?v=2" defer></script>
-<script src="app-identity.js?v=3" defer></script>
+<script src="install-identity.js?v=3" defer></script>
+<script src="app-identity.js?v=4" defer></script>
 <script src="voice-loudness.js?v=1" defer></script>
 <script src="offline-voice.js?v=11" defer></script>
 <script src="reference-voice-assets.js?v=1" defer></script>
 <script src="reference-voice.js?v=5" defer></script>
 <script src="robot-settings.js?v=12" defer></script>
 <script src="smart-card-settings.js?v=2" defer></script>
-<script src="accounts-settings.js?v=2" defer></script>
+<script src="accounts-settings.js?v=3" defer></script>
+<script src="modules/platform/cloud/wow-cloud-settings.js?v=1" defer></script>
+<link rel="stylesheet" href="modules/platform/cloud/wow-cloud-settings.css?v=1">
 <script src="settings-navigation.js?v=21" defer></script>
 <script src="branding-settings.js?v=4" defer></script>
 <script src="company-identity.js?v=5" defer></script>
@@ -6466,7 +6473,7 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
 <script src="currency-bank-catalog.js?v=1" defer></script>
 <script src="currency-sources.js?v=3" defer></script>
 <script src="rate-refresh.js?v=9" defer></script>
-<script src="settings-actions.js?v=2" defer></script>
+<script src="settings-actions.js?v=3" defer></script>
 <script src="product-workspace.js?v=3" defer></script>
 <script src="vendor/JsBarcode.code128.min.js?v=3.11.5" defer></script>
 <script src="product-label-core.js?v=2" defer></script>
@@ -6501,6 +6508,43 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
 <script src="robot-face.js?v=14" defer></script>
 <script src="program-speech.js?v=5" defer></script>
 <script src="notifications-workspace.js?v=2" defer></script>
+<script src="modules/platform/push/wow-push-device.js?v=2" defer></script>
+<script src="modules/platform/push/wow-push-client.js?v=2" defer></script>
+<script src="modules/platform/push/wow-push-settings.js?v=2" defer></script>
+<link rel="stylesheet" href="modules/platform/push/wow-push-settings.css?v=1">
+<!-- Modular Mark Robot sections: one shared identity, local cache and API. -->
+<script src="modules/platform/delta.js?v=1" defer></script>
+<script src="modules/platform/offline/store.js?v=1" defer></script>
+<script src="modules/platform/offline/grant.js?v=1" defer></script>
+<script src="modules/platform/offline/transport.js?v=1" defer></script>
+<script src="modules/platform/offline/status.js?v=1" defer></script>
+<link rel="stylesheet" href="modules/platform/offline/styles.css?v=1">
+<script src="modules/platform/registry.js?v=1" defer></script>
+<link rel="stylesheet" href="modules/platform/styles.css?v=1">
+<script src="modules/files/core.js?v=1" defer></script>
+<script src="modules/chat/core.js?v=1" defer></script>
+<script src="modules/gallery/core.js?v=1" defer></script>
+<script src="modules/gallery/exports.js?v=1" defer></script>
+<script src="modules/gallery/public-share.js?v=1" defer></script>
+<script src="modules/gallery/music.js?v=1" defer></script>
+<script src="modules/gallery/workspace.js?v=2" defer></script>
+<link rel="stylesheet" href="modules/gallery/styles.css?v=2">
+<script src="modules/files/workspace.js?v=1" defer></script>
+<link rel="stylesheet" href="modules/files/styles.css?v=1">
+<script src="modules/chat/workspace.js?v=1" defer></script>
+<link rel="stylesheet" href="modules/chat/styles.css?v=1">
+<script src="modules/communications/core.js?v=1" defer></script>
+<script src="modules/communications/workspace.js?v=1" defer></script>
+<link rel="stylesheet" href="modules/communications/styles.css?v=1">
+<script src="modules/finance/core.js?v=1" defer></script>
+<script src="modules/finance/workspace.js?v=1" defer></script>
+<link rel="stylesheet" href="modules/finance/styles.css?v=1">
+<script src="modules/server/core.js?v=1" defer></script>
+<script src="modules/server/workspace.js?v=1" defer></script>
+<link rel="stylesheet" href="modules/server/styles.css?v=1">
+<script src="modules/assistant/core.js?v=1" defer></script>
+<script src="modules/assistant/workspace.js?v=1" defer></script>
+<link rel="stylesheet" href="modules/assistant/styles.css?v=1">
 <script src="screen-awake.js?v=2" defer></script>
 <script src="speech-media.js?v=2" defer></script>
 <script src="speech-controls.js?v=5" defer></script>
@@ -6513,7 +6557,7 @@ button,.btn,.icon-btn,.nav-item,.tab-btn,.tg-opt,.pay-method-card{touch-action:m
 <script src="barcode-workspace.js?v=1" defer></script>
 <script src="touch-keyboard.js?v=2" defer></script>
 <script src="developer-profile.js?v=2" defer></script>
-<script src="app-updates.js?v=3" defer data-release="210"></script>
+<script src="app-updates.js?v=4" defer data-release="211"></script>
 <link rel="stylesheet" href="currency-calculator.css?v=11">
 <link rel="stylesheet" href="business-ui.css?v=1">
 <link rel="stylesheet" href="settings-responsive.css?v=6">
@@ -9723,7 +9767,8 @@ document.addEventListener('wheel', function(e) {
 /* ============================================================
    INDEXEDDB
 ============================================================ */
-const DB_NAME='WowFurnitureDB',DB_VER=7;let db;
+const DB_NAME='WowFurnitureDB',DB_VER=8;let db;
+function wfBusinessDBName(){return window.WFCloudClient?.isRemoteMode()?window.WFCloud.cacheName():DB_NAME;}
 
 /* ============================================================
    STORAGE ENGINE V7 — MEDIA DEDUP + PERSISTENT INDEXEDDB
@@ -9838,7 +9883,7 @@ function wfDehydrateClone(value,mediaRows,seen,forceMedia){
 // A tablet may suspend/close a connection while leaving this page open.
 // Reuse one opener, preserve the existing database and repair missing stores.
 let WF_DB_OPENING=null;
-const WF_DB_STORES=['companies','products','invoices','settings','payments',WF_MEDIA_STORE];
+const WF_DB_STORES=['companies','products','invoices','settings','payments',WF_MEDIA_STORE,'wf_cloud_outbox','wf_cloud_meta','wf_cloud_conflicts'];
 function initDB(){
   if(WF_DB_OPENING)return WF_DB_OPENING;
   if(db){
@@ -9853,7 +9898,7 @@ function initDB(){
     };
     const open=version=>{
       let request;
-      try{request=version===undefined?indexedDB.open(DB_NAME):indexedDB.open(DB_NAME,version);}
+      try{const name=wfBusinessDBName();request=version===undefined?indexedDB.open(name):indexedDB.open(name,version);}
       catch(err){fail(err);return;}
       request.onupgradeneeded=()=>{
         const connection=request.result;
@@ -9920,6 +9965,10 @@ async function wfReadRaw(store,method,id){
 const dbGetRaw=(s,id)=>wfReadRaw(s,'get',id);
 const dbGetAllRaw=async s=>(await wfReadRaw(s,'getAll'))||[];
 function wfStorageWriteError(err){
+  if(err?.code&&window.WFCloudSettings?.describeError){
+    const message=window.WFCloudSettings.describeError(err);
+    if(message&&typeof showToast==='function')showToast(message,'er');
+  }
   if(err&&(err.name==='QuotaExceededError'||String(err).includes('QuotaExceeded'))){
     try{
       const msg=({ar:'وصل تخزين Chrome إلى الحد المتاح. صدّر نسخة احتياطية ووفّر مساحة على الجهاز.',tr:'Chrome depolama kotası doldu. Yedek alın ve cihazda boş alan açın.',en:'Chrome storage quota is full. Export a backup and free device space.',fr:"Le stockage Chrome est plein. Exportez une sauvegarde et libérez de l’espace.",ru:"Хранилище Chrome заполнено. Экспортируйте копию и освободите место."})[S.lang];
@@ -9940,7 +9989,9 @@ async function wfWriteBatch(operations){
   const prepared=operations.map(op=>({...op,value:op.type==='delete'?undefined:
     (op.store===WF_MEDIA_STORE?op.value:wfDehydrateClone(op.value,mediaRows,undefined,true))}));
   const costSource=operations.some(op=>window.WFAccountAccess?.needsInvoiceCosts(op));
-  const stores=[...new Set(prepared.map(op=>op.store).concat(mediaRows.size?[WF_MEDIA_STORE]:[],costSource?['products']:[]))];
+  const sync=window.WFCloudSyncEngine?.linkedScope?.()?window.WFCloudSyncEngine:null;
+  const baseStores=[...new Set(prepared.map(op=>op.store).concat(mediaRows.size?[WF_MEDIA_STORE]:[],costSource?['products']:[]))];
+  const stores=sync?sync.writeStores(baseStores):baseStores;
   for(let attempt=0;attempt<2;attempt++){
     if(!db)await initDB();
     if(window.WF_RESTORE_WRITE_LOCK)throw new Error('Restore in progress');
@@ -9948,13 +9999,22 @@ async function wfWriteBatch(operations){
     const connection=db;
     try{return await new Promise((resolve,reject)=>{
     let tx,failed;
-    const results=[];
+    const results=[],finalOperations=[];
+    let remaining=prepared.length+mediaRows.size;
+    const written=(store,kind,id,value)=>{
+      if(!sync)return;
+      finalOperations.push(kind==='delete'?{store,kind,id}:{store,kind,id,value});
+      if(--remaining)return;
+      try{sync.enqueue(tx,finalOperations,{onError:error=>{failed=error;try{tx.abort();}catch(_){}}});}
+      catch(error){failed=error;tx.abort();}
+    };
     try{
       tx=connection.transaction(stores,'readwrite');
       tx.oncomplete=()=>{
         for(const id of mediaRows.keys())WF_MEDIA_PERSISTED.add(id);
         try{resolve(results.map((value,index)=>value&&typeof value==='object'&&window.WFAccountAccess?window.WFAccountAccess.projectRead(operations[index].store,value):value));}catch(error){reject(error);}
         try{window.WFAccountAccess?.recordCommit(operations);}catch(_){}
+        try{sync?.afterCommit();}catch(_){}
         // Drive backup is scheduled only after the IndexedDB transaction is fully committed.
         try{if(typeof wfDriveOnDatabaseCommit==='function')wfDriveOnDatabaseCommit(stores);}catch(_){ }
       };
@@ -9968,7 +10028,7 @@ async function wfWriteBatch(operations){
         if(op.type==='merge'){
           const read=os.get(op.id);
           read.onerror=()=>{failed=read.error;};
-          read.onsuccess=()=>{try{const next=op.merge(read.result,op.value);const put=os.put(next);put.onsuccess=()=>{results[i]=next;};put.onerror=()=>{failed=put.error;};}catch(err){failed=err;tx.abort();}};
+          read.onsuccess=()=>{try{const next=op.merge(read.result,op.value);const put=os.put(next);put.onsuccess=()=>{results[i]=next;written(op.store,'put',next.id,next);};put.onerror=()=>{failed=put.error;};}catch(err){failed=err;tx.abort();}};
           return;
         }
         // Older full-row writers do not own the new independent workspaces.
@@ -9987,7 +10047,7 @@ async function wfWriteBatch(operations){
               else delete next[section];
             }
             if(window.WFAccountAccess)next=window.WFAccountAccess.finalizeWrite(op,latest??null,next);
-            const persist=()=>{const put=os.put(next);put.onsuccess=()=>{results[i]=op.returnRecord?next:put.result;};put.onerror=()=>{failed=put.error;};};
+            const persist=()=>{const put=os.put(next);put.onsuccess=()=>{results[i]=op.returnRecord?next:put.result;written(op.store,'put',next.id,next);};put.onerror=()=>{failed=put.error;};};
             if(window.WFAccountAccess?.needsInvoiceCosts(op)){
               // Read costing privately in this transaction. The staff-facing result
               // is projected after commit; new invoices retain accurate cost history.
@@ -9999,12 +10059,12 @@ async function wfWriteBatch(operations){
           return;
         }
         const r=op.type==='delete'?os.delete(op.id):os.put(op.value);
-        r.onsuccess=()=>{results[i]=op.returnRecord&&op.type!=='delete'?op.value:r.result;};
+        r.onsuccess=()=>{results[i]=op.returnRecord&&op.type!=='delete'?op.value:r.result;written(op.store,op.type==='delete'?'delete':'put',op.type==='delete'?op.id:op.value.id,op.value);};
         r.onerror=()=>{failed=r.error;};
       });
       if(mediaRows.size){
         const os=tx.objectStore(WF_MEDIA_STORE);
-        for(const row of mediaRows.values())os.put(row);
+        for(const row of mediaRows.values()){const put=os.put(row);put.onsuccess=()=>written(WF_MEDIA_STORE,'put',row.id,row);put.onerror=()=>{failed=put.error;};}
       }
     }catch(err){
       failed=err;
@@ -10080,6 +10140,7 @@ async function wfHydrateDBValue(value){
 async function wfPutMediaRows(mediaRows){
   window.WFAccountAccess?.assert('data.edit');
   if(!mediaRows||!mediaRows.size)return;
+  if(window.WFCloudSyncEngine?.linkedScope?.()){await wfWriteBatch([...mediaRows.values()].map(value=>({store:WF_MEDIA_STORE,value})));for(const id of mediaRows.keys())WF_MEDIA_PERSISTED.add(id);return;}
   await new Promise((res,rej)=>{
     const tx=db.transaction(WF_MEDIA_STORE,'readwrite');
     const os=tx.objectStore(WF_MEDIA_STORE);
@@ -10200,6 +10261,8 @@ function wfCollectStoredMediaRefs(value,refs,seen){
 }
 
 async function wfMediaGC(){
+  // Cloud media can still be referenced by another device or a pending batch.
+  if(window.WFCloudSyncEngine?.linkedScope?.())return;
   if(!db||!db.objectStoreNames.contains(WF_MEDIA_STORE))return;
   const stores=['companies','products','invoices','payments','settings'];
   const dead=await new Promise((resolve,reject)=>{
@@ -10438,6 +10501,9 @@ function wfValidateBackup(b){
 
 function wfReplaceStoresFromBackup(b){
   window.WFAccountAccess?.assert('data.edit');
+  if(window.WFCloudSyncEngine?.linkedScope?.()){
+    const error=new Error('CLOUD_RESTORE_REQUIRES_RECONCILIATION');error.code='CLOUD_RESTORE_REQUIRES_RECONCILIATION';throw error;
+  }
   if(!wfValidateBackup(b))return Promise.reject(new Error('Invalid backup data'));
   const mediaRows=new Map();
   const prepare=row=>wfDehydrateClone(row,mediaRows,undefined,true);
@@ -10706,6 +10772,10 @@ async function wfDriveDownloadLatest(interactive=true,onProgress=()=>{},requeste
   }finally{clearTimeout(timer);}
 }
 function wfBackupOpenRestoreModal({source='drive',backup=null,input=null,fileName='',fileSize=0,fileId='',meta=null}={}){
+  if(window.WFCloudSyncEngine?.linkedScope?.()){
+    const message={ar:'هذا الجهاز مرتبط بالسحابة. الاستبدال الكامل بنسخة قديمة يحتاج مراجعة البيانات المتزامنة أولًا. يمكنك تصدير نسخة دون تغيير البيانات.',en:'This device is linked to the cloud. Replacing all data with an older backup requires reviewing the synced records first. You can still export a backup.',tr:'Bu cihaz buluta bağlı. Eski bir yedekle tüm verileri değiştirmeden önce eşitlenen kayıtlar incelenmelidir. Yedek dışa aktarabilirsiniz.',fr:'Cet appareil est lié au cloud. Le remplacement complet par une ancienne sauvegarde nécessite une vérification des données synchronisées. Vous pouvez toujours exporter une sauvegarde.',ru:'Устройство связано с облаком. Перед полной заменой старой копией нужно проверить синхронизированные записи. Экспорт резервной копии доступен.'};
+    showToast(message[S.lang]||message.en,'er');if(input)input.value='';return false;
+  }
   if(!wfRecoveryFrame(source))return;
   Object.assign(WF_RESTORE_PENDING,{backup,input,fileName,fileSize,fileId,meta});
   if(source==='drive'&&!wfRecoveryGet())wfRecoverySet(fileId?{state:'found',fileId,meta}:{state:'check'});
@@ -18246,7 +18316,6 @@ async function wfRasterizePage(page,scale=2) {
   canvas.width=canvas.height=1;
   return result;
 }
-const WF_PDF_OWNER_PASSWORD='WOWMUTEZBELLAH3294';
 // MAX PDF protection while keeping normal opening password-free:
 // AES-256 / Standard Security Handler V=5, Revision=6 (AESV3).
 // Full-quality printing + accessibility remain available; modification, annotations,
@@ -18267,7 +18336,7 @@ function wfPdfRandomBytes(n){
 function wfPdfHex(bytes){return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();}
 function wfPdfHexBytes(hex){const out=new Uint8Array(hex.length/2);for(let i=0;i<out.length;i++)out[i]=parseInt(hex.slice(i*2,i*2+2),16);return out;}
 function wfPdfPreparePassword(password){
-  // Both passwords used by this app are ASCII (blank user password + fixed owner password),
+  // Both passwords used by this app are ASCII (blank user password + fresh random owner password),
   // so UTF-8 + the ISO 127-byte cap is equivalent to the required preparation here.
   return new TextEncoder().encode(String(password??'')).slice(0,127);
 }
@@ -18338,97 +18407,15 @@ async function wfPdfEncryptAESV3(fileKey,plainBytes){
 }
 function wfPdfRandomId(){return wfPdfRandomBytes(16);}
 
-// WOW CERTIFIED PDF SEAL — DocMDP P=1.
-// This is tamper-evident protection on top of AES-256 permissions: compliant PDF viewers
-// can validate that the bytes have not changed after export. The invisible signature widget
-// is locked/read-only and the certification transform allows no document changes.
-const WF_PDF_CERT_DER_B64='MIIEfzCCAuegAwIBAgIUBYddzIjavSObMgztryWGgOiYvJQwDQYJKoZIhvcNAQELBQAwTzELMAkGA1UEBhMCVFIxFjAUBgNVBAoMDVdPVyBGdXJuaXR1cmUxKDAmBgNVBAMMH1dPVyBGdXJuaXR1cmUgUERGIENlcnRpZmljYXRpb24wHhcNMjYwOTIxMTUzMjU0WhcNMzYwOTE4MTUzMjU0WjBPMQswCQYDVQQGEwJUUjEWMBQGA1UECgwNV09XIEZ1cm5pdHVyZTEoMCYGA1UEAwwfV09XIEZ1cm5pdHVyZSBQREYgQ2VydGlmaWNhdGlvbjCCAaIwDQYJKoZIhvcNAQEBBQADggGPADCCAYoCggGBALgyULYPUJIwY+6N55zHnfMVpdr8NMlPjdqt9Zdncf071r4gXrDA0Hkbfpx9Yxmd15hGvURd/Aw3d2RQuXTcxLrgXGhZOE2wR6aU8DjRHlkN7jhluSlpd8kSASMH5Fw4GcEhDZUK1m8bodey91bCoc3rFp1TuDozs3lD2BzAKlXktLo41MRx+3cI8qebSKKJOBq+25ztSIlKbIytVYfu4tZGRLqiLG0Yol8koFez+/n5vcc1VEn3sq5dNj1dDKdVY86DtKrV5rrwR7Q+1QtnkGs0VafTXs/2BzheeOo7mKTPrhUSMT+6GIU7YNvc4MPx9jb9vJzUEZ5Vl7Jc5ncvbZhyWmOEtEHkwYqYnXP4LjMysJqwWzNlJOJKxvBrabRp12p5QkRYFjg1jyn6OnF85pYVMXenaZsPSkzk8xTJprq7oCE8bMouu2upvNHZL6p9WNJDJlUqo+hQN8rbEZ0UaFuW6kj1KEEgenNIFNtR4GtPH5oGSqidqia0cRLXk1b1XwIDAQABo1MwUTAdBgNVHQ4EFgQUzHdEL3mfNy26ZK6138Q+B+JiaAswHwYDVR0jBBgwFoAUzHdEL3mfNy26ZK6138Q+B+JiaAswDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAYEAjywxC7pjUH8o78FFmgcEDE5rqnABzJsXEYu2S49xkeFihHjeYMXkloiRuS5ej1NeRQr61YWw9Vsp45igteImrCWOFJcxTHEKYunh7mCJFeF4VWTrD1ykEKsSF49kX0eesy60I7o3faxOsb5/bzrotT4+vuxHL3x3/7kT3Lq3lG7RZPbzV/63L9EYuW7NMCZktTiV84PuMnz7WEwQtCHUwfUa2umEjRtrW5+NfqysPwrPxbit9kaYtVXTAOfQaboc2Tllqoze7AT8LTsI73QxXT9afRyWP2rA6t0LFJ4UHWveyPWcjOkSkdGwJAWIiK5k4E8Y4XyHlOptF79wFVbl0usDiRx3sITVrC18ZKylAyMJe14ulCOGAYIktYgIIHgY3NL6youd9gucPysTIVfu6SnVQ5of3IHThC4dlllOtxPYJK09d3iH2JnTL0N9QXPMdMlbl5ykLaqKV1R6/nlY8Dfevl+8MFoBs6cp6ZJHupMBKGnHAK7e0kCyAqOsFtcq';
-const WF_PDF_CERT_KEY_PKCS8_B64='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';
-const WF_PDF_CERT_ISSUER_HEX='304F310B300906035504061302545231163014060355040A0C0D574F57204675726E69747572653128302606035504030C1F574F57204675726E6974757265205044462043657274696669636174696F6E';
-const WF_PDF_CERT_SERIAL_HEX='05875DCC88DABD239B320CEDAF258680E898BC94';
-const WF_PDF_SIGNATURE_HEX_LENGTH=16384;
-let _wfPdfSigningKeyPromise=null;
-
-function wfPdfB64Bytes(s){
-  const raw=atob(s),out=new Uint8Array(raw.length);
-  for(let i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);
-  return out;
-}
-function wfDerLength(n){
-  if(n<128)return Uint8Array.of(n);
-  const b=[];while(n){b.unshift(n&255);n>>>=8;}
-  return Uint8Array.of(0x80|b.length,...b);
-}
-function wfDerTLV(tag,content){return wfPdfConcatBytes(Uint8Array.of(tag),wfDerLength(content.length),content);}
-function wfDerSeq(...items){return wfDerTLV(0x30,wfPdfConcatBytes(...items));}
-function wfDerSet(...items){return wfDerTLV(0x31,wfPdfConcatBytes(...items));}
-function wfDerNull(){return Uint8Array.of(0x05,0x00);}
-function wfDerOctet(bytes){return wfDerTLV(0x04,bytes);}
-function wfDerCtx0(bytes){return wfDerTLV(0xA0,bytes);}
-function wfDerIntegerNumber(n){
-  const b=[];while(n){b.unshift(n&255);n>>>=8;}
-  if(!b.length)b.push(0);if(b[0]&0x80)b.unshift(0);
-  return wfDerTLV(0x02,Uint8Array.from(b));
-}
-function wfDerIntegerBytes(bytes){
-  let b=bytes;
-  while(b.length>1&&b[0]===0&&!(b[1]&0x80))b=b.slice(1);
-  if(b[0]&0x80)b=wfPdfConcatBytes(Uint8Array.of(0),b);
-  return wfDerTLV(0x02,b);
-}
-function wfDerOid(oid){
-  const p=oid.split('.').map(Number),out=[40*p[0]+p[1]];
-  for(const n0 of p.slice(2)){let n=n0,stack=[n&127];n>>>=7;while(n){stack.unshift(0x80|(n&127));n>>>=7;}out.push(...stack);}
-  return wfDerTLV(0x06,Uint8Array.from(out));
-}
-async function wfPdfGetSigningKey(){
-  if(!_wfPdfSigningKeyPromise){
-    const der=wfPdfB64Bytes(WF_PDF_CERT_KEY_PKCS8_B64);
-    _wfPdfSigningKeyPromise=crypto.subtle.importKey('pkcs8',der,{name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['sign']);
-  }
-  return _wfPdfSigningKeyPromise;
-}
-async function wfPdfBuildCmsDetachedSignature(signedBytes){
-  if(!globalThis.crypto?.subtle)throw new Error('PDF_SIGNATURE_UNAVAILABLE');
-  const cert=wfPdfB64Bytes(WF_PDF_CERT_DER_B64);
-  const issuer=wfPdfHexBytes(WF_PDF_CERT_ISSUER_HEX);
-  const serial=wfPdfHexBytes(WF_PDF_CERT_SERIAL_HEX);
-  const key=await wfPdfGetSigningKey();
-  const signature=new Uint8Array(await crypto.subtle.sign({name:'RSASSA-PKCS1-v1_5'},key,signedBytes));
-  const algSha256=wfDerSeq(wfDerOid('2.16.840.1.101.3.4.2.1'),wfDerNull());
-  const algSha256Rsa=wfDerSeq(wfDerOid('1.2.840.113549.1.1.11'),wfDerNull());
-  const sid=wfDerSeq(issuer,wfDerIntegerBytes(serial));
-  const signerInfo=wfDerSeq(wfDerIntegerNumber(1),sid,algSha256,algSha256Rsa,wfDerOctet(signature));
-  const signedData=wfDerSeq(
-    wfDerIntegerNumber(1),
-    wfDerSet(algSha256),
-    wfDerSeq(wfDerOid('1.2.840.113549.1.7.1')),
-    wfDerCtx0(cert),
-    wfDerSet(signerInfo)
-  );
-  return wfDerSeq(wfDerOid('1.2.840.113549.1.7.2'),wfDerCtx0(signedData));
-}
-function wfPdfFindAscii(bytes,text){
-  const needle=new TextEncoder().encode(text);
-  outer:for(let i=0;i<=bytes.length-needle.length;i++){
-    for(let j=0;j<needle.length;j++)if(bytes[i+j]!==needle[j])continue outer;
-    return i;
-  }
-  return -1;
-}
-function wfPdfWriteAscii(bytes,start,text){
-  for(let i=0;i<text.length;i++)bytes[start+i]=text.charCodeAt(i);
-}
+// Company signing credentials must remain server-side; public exports contain no identity seal.
 
 async function wfMakePdf(images,title) {
   if(!images.length)throw new Error('EMPTY_PDF');
   const enc=new TextEncoder(),parts=[],offsets=[0];let length=0;
   const infoId=3+images.length*3;
-  const sigFieldId=infoId+1;
-  const sigId=infoId+2;
-  const encryptId=infoId+3;
+  const encryptId=infoId+1;
   const fileId=wfPdfRandomId();
-  const security=await wfPdfBuildSecurityR6(WF_PDF_OWNER_PASSWORD,WF_PDF_PERMISSIONS);
+  const security=await wfPdfBuildSecurityR6(wfPdfHex(wfPdfRandomBytes(32)),WF_PDF_PERMISSIONS);
   const push=value=>{const b=typeof value==='string'?enc.encode(value):value;parts.push(b);length+=b.length;};
   const object=(id,content)=>{offsets[id]=length;push(`${id} 0 obj\n`);push(content);push('\nendobj\n');};
   const stream=async(id,dict,bytes)=>{
@@ -18437,7 +18424,7 @@ async function wfMakePdf(images,title) {
   };
 
   push('%PDF-1.7\n%');push(new Uint8Array([226,227,207,211]));push('\n');
-  object(1,`<< /Type /Catalog /Pages 2 0 R /Extensions << /ADBE << /BaseVersion /1.7 /ExtensionLevel 8 >> >> /AcroForm << /Fields [${sigFieldId} 0 R] /SigFlags 3 >> /Perms << /DocMDP ${sigId} 0 R >> >>`);
+  object(1,`<< /Type /Catalog /Pages 2 0 R /Extensions << /ADBE << /BaseVersion /1.7 /ExtensionLevel 8 >> >> >>`);
   const pages=images.map((_,i)=>5+i*3);
   object(2,`<< /Type /Pages /Count ${images.length} /Kids [${pages.map(n=>n+' 0 R').join(' ')}] >>`);
 
@@ -18450,26 +18437,13 @@ async function wfMakePdf(images,title) {
     await stream(imageId,` /Type /XObject /Subtype /Image /Width ${im.width} /Height ${im.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode`,bytes);
     const w=200/25.4*72,h=w*1139/794,x=5/25.4*72,y=841.889764-x-h;
     await stream(contentId,'',enc.encode(`q\n${w.toFixed(6)} 0 0 ${h.toFixed(6)} ${x.toFixed(6)} ${y.toFixed(6)} cm\n/InvoicePage Do\nQ\n`));
-    const annots=i===0?` /Annots [${sigFieldId} 0 R]`:'';
-    object(pageId,`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.275591 841.889764] /Resources << /XObject << /InvoicePage ${imageId} 0 R >> >> /Contents ${contentId} 0 R${annots} >>`);
+    object(pageId,`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.275591 841.889764] /Resources << /XObject << /InvoicePage ${imageId} 0 R >> >> /Contents ${contentId} 0 R >>`);
   }
 
   const titleHex='FEFF'+Array.from(String(title||'Invoice')).map(c=>{const cp=c.codePointAt(0);if(cp<=65535)return cp.toString(16).padStart(4,'0');const p=cp-65536;return (55296+(p>>10)).toString(16)+(56320+(p&1023)).toString(16);}).join('');
-  const producerBytes=await wfPdfEncryptAESV3(security.fileKey,enc.encode(`WOW Native PDF ${WF_PDF_VERSION} AES-256 CERTIFIED`));
+  const producerBytes=await wfPdfEncryptAESV3(security.fileKey,enc.encode(`WOW Native PDF ${WF_PDF_VERSION} AES-256`));
   const titleBytes=await wfPdfEncryptAESV3(security.fileKey,wfPdfHexBytes(titleHex));
   object(infoId,`<< /Producer <${wfPdfHex(producerBytes)}> /Title <${wfPdfHex(titleBytes)}> >>`);
-
-  const sigNameBytes=await wfPdfEncryptAESV3(security.fileKey,enc.encode('WOW-CERTIFIED'));
-  object(sigFieldId,`<< /Type /Annot /Subtype /Widget /FT /Sig /T <${wfPdfHex(sigNameBytes)}> /Ff 1 /V ${sigId} 0 R /P 5 0 R /Rect [0 0 0 0] /F 196 /Lock << /Type /SigFieldLock /Action /All >> >>`);
-
-  // Keep fixed-width ByteRange and Contents placeholders so xref offsets never move after signing.
-  const byteRangeMarker='[0 0000000000 0000000000 0000000000]';
-  offsets[sigId]=length;
-  push(`${sigId} 0 obj\n<< /Type /Sig /Filter /Adobe.PPKLite /SubFilter /adbe.pkcs7.detached /ByteRange ${byteRangeMarker} /Contents <`);
-  const signatureHexStart=length;
-  push('0'.repeat(WF_PDF_SIGNATURE_HEX_LENGTH));
-  const signatureHexEnd=length;
-  push(`> /Reference [<< /Type /SigRef /TransformMethod /DocMDP /DigestMethod /SHA256 /TransformParams << /Type /TransformParams /P 1 /V /1.2 >> >>] >>\nendobj\n`);
 
   object(encryptId,`<< /Filter /Standard /V 5 /R 6 /Length ${WF_PDF_AES_BITS} /O <${wfPdfHex(security.O)}> /U <${wfPdfHex(security.U)}> /OE <${wfPdfHex(security.OE)}> /UE <${wfPdfHex(security.UE)}> /P ${WF_PDF_PERMISSIONS} /Perms <${wfPdfHex(security.Perms)}> /EncryptMetadata true /CF << /StdCF << /CFM /AESV3 /AuthEvent /DocOpen /Length 32 >> >> /StmF /StdCF /StrF /StdCF >>`);
 
@@ -18478,24 +18452,9 @@ async function wfMakePdf(images,title) {
   const idHex=wfPdfHex(fileId);
   push(`trailer\n<< /Size ${encryptId+1} /Root 1 0 R /Info ${infoId} 0 R /Encrypt ${encryptId} 0 R /ID [<${idHex}> <${idHex}>] >>\nstartxref\n${xref}\n%%EOF\n`);
 
-  let pdfBytes=wfPdfConcatBytes(...parts);
-  const byteRangePos=wfPdfFindAscii(pdfBytes,byteRangeMarker);
-  if(byteRangePos<0)throw new Error('PDF_SIGNATURE_BYTERANGE');
-  const range1Len=signatureHexStart-1; // exclude the '<' delimiter
-  const range2Start=signatureHexEnd+1; // resume after the '>' delimiter
-  const range2Len=pdfBytes.length-range2Start;
-  const byteRange=`[0 ${String(range1Len).padStart(10,'0')} ${String(range2Start).padStart(10,'0')} ${String(range2Len).padStart(10,'0')}]`;
-  if(byteRange.length!==byteRangeMarker.length)throw new Error('PDF_SIGNATURE_RANGE_SIZE');
-  wfPdfWriteAscii(pdfBytes,byteRangePos,byteRange);
-
-  const bytesToSign=wfPdfConcatBytes(pdfBytes.slice(0,range1Len),pdfBytes.slice(range2Start));
-  const cms=await wfPdfBuildCmsDetachedSignature(bytesToSign);
-  const cmsHex=wfPdfHex(cms);
-  if(cmsHex.length>WF_PDF_SIGNATURE_HEX_LENGTH)throw new Error('PDF_SIGNATURE_TOO_LARGE');
-  wfPdfWriteAscii(pdfBytes,signatureHexStart,cmsHex.padEnd(WF_PDF_SIGNATURE_HEX_LENGTH,'0'));
-
+  const pdfBytes=wfPdfConcatBytes(...parts);
   const blob=new Blob([pdfBytes],{type:'application/pdf'});
-  if(blob.size<8000)throw new Error('EMPTY_PDF');
+  if(blob.size<1000)throw new Error('EMPTY_PDF');
   return blob;
 }
 async function wfExportSnapshot(html,invNo,lang) {
@@ -18542,12 +18501,12 @@ async function createInvoicePdfFile() {
 }
 function scheduleInvoicePdfPreparation() {
   clearTimeout(_pdfPrepareTimer);
-  // Preview only measures paper. Rasterization, signing and PDF generation run
+  // Preview only measures paper. Rasterization and PDF generation run
   // when the user opens sharing or requests an export, never on every preview.
   window.WFInvoicePreview?.prepare();
 }
 function triggerPdfFileDownload(file) {
-  if(!file||file.type!=='application/pdf'||file.size<8000)throw new Error('EMPTY_PDF');
+  if(!file||file.type!=='application/pdf'||file.size<1000)throw new Error('EMPTY_PDF');
   const url=URL.createObjectURL(file),a=document.createElement('a');a.href=url;a.download=file.name||'invoice.pdf';a.rel='noopener';document.body.append(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),60000);
 }
@@ -20953,6 +20912,76 @@ window.addEventListener('pagehide',()=>{
   try{if(typeof closeScanner==='function')closeScanner();}catch(_){}
 },{passive:true});
 
+// The local owner opens the existing database. Remote sessions open only their
+// authenticated, isolated cache, and must finish their first authorized pull.
+let WF_CLOUD_INITIALIZING=null,WF_CLOUD_BOOT_READY=false,WF_CLOUD_REFRESH_TIMER=null;
+const WF_CLOUD_REFRESH_STORES=new Set();
+async function wfInitializeCloudSync(){
+  if(WF_CLOUD_INITIALIZING)return WF_CLOUD_INITIALIZING;
+  WF_CLOUD_INITIALIZING=(async()=>{
+    const remote=!!window.WFCloudClient?.isRemoteMode();
+    if(!window.WFCloudSync||!window.WFCloud){if(remote)throw new Error('CLOUD_UNAVAILABLE');return null;}
+    await initDB();
+    if(!window.WFCloudSyncEngine){
+      window.WFCloudSyncEngine=window.WFCloudSync.create({getDB:()=>initDB(),client:window.WFCloud,onRemoteCommit:wfApplyCloudChanges});
+      window.dispatchEvent(new CustomEvent('wf-cloud-engine-ready'));
+    }
+    await window.WFCloudSyncEngine.start({seedExisting:!remote,initialPull:remote});
+    return window.WFCloudSyncEngine;
+  })().finally(()=>{WF_CLOUD_INITIALIZING=null;});
+  return WF_CLOUD_INITIALIZING;
+}
+function wfApplyCloudChanges({stores=[],changes=[],delay=150,projectionReset=false}={}){
+  if(projectionReset){
+    WF_MEDIA_CACHE.clear();WF_MEDIA_REVERSE.clear();WF_MEDIA_PERSISTED.clear();
+    for(const store of ['companies','products','invoices','payments'])S[store]=[];
+    S.settings={};
+  }
+  for(const store of stores)WF_CLOUD_REFRESH_STORES.add(store);
+  for(const change of changes){
+    if(change.store!=='media')continue;
+    const id=String(change.id),old=WF_MEDIA_CACHE.get(id);
+    if(old&&WF_MEDIA_REVERSE.get(old)===id)WF_MEDIA_REVERSE.delete(old);
+    WF_MEDIA_CACHE.delete(id);WF_MEDIA_PERSISTED.delete(id);
+  }
+  if(!WF_CLOUD_BOOT_READY)return;
+  if(WF_CLOUD_REFRESH_TIMER!==null)clearTimeout(WF_CLOUD_REFRESH_TIMER);
+  WF_CLOUD_REFRESH_TIMER=setTimeout(()=>{WF_CLOUD_REFRESH_TIMER=null;wfRefreshCloudView().catch(()=>{});},delay);
+}
+function wfCloudViewBlocked(){
+  if(!WF_CLOUD_BOOT_READY||(window.WFAccountAccess?.hasAccounts?.()&&!window.WFAccountAccess.actor?.()))return true;
+  const safety=window.WFAppUpdates?.getSafety?.();
+  return !!(safety&&(safety.dirty||safety.editing||safety.dialog||safety.busy||!safety.visible));
+}
+async function wfRefreshCloudView(){
+  if(!WF_CLOUD_REFRESH_STORES.size)return;
+  if(wfCloudViewBlocked()){wfApplyCloudChanges({delay:1200});return;}
+  const stores=new Set(WF_CLOUD_REFRESH_STORES);WF_CLOUD_REFRESH_STORES.clear();
+  try{
+    const business=['companies','products','invoices','payments'];
+    const refresh=stores.has('media')?business:business.filter(store=>stores.has(store));
+    const rows=await Promise.all(refresh.map(store=>dbGetAll(store)));
+    const settings=stores.has('settings')?await Promise.all([dbGet('settings','main'),dbGet('settings','nextInvNo'),dbGet('settings','usdTry')]):null;
+    if(wfCloudViewBlocked()){for(const store of stores)WF_CLOUD_REFRESH_STORES.add(store);wfApplyCloudChanges();return;}
+    refresh.forEach((store,index)=>{S[store]=rows[index];});
+    if(settings){
+      if(settings[0])S.settings=window.WFAccountAccess.projectRead('settings',settings[0])||{};
+      if(settings[1])S.nextInvNo=settings[1].value||5001;
+      if(window.WFCurrencySources)Object.assign(S,window.WFCurrencySources.initialRates(S.settings,settings[2]));
+      updateRateUI();updateInvNumDisplay();
+    }
+    updateDash();
+    const page=document.querySelector('.page.active')?.id;
+    if(page==='page-companies')renderCo();
+    else if(page==='page-products')renderPr();
+    else if(page==='page-invoices')renderInvList();
+    window.dispatchEvent(new CustomEvent('wf-cloud-data-change',{detail:{stores:[...stores]}}));
+  }catch(error){
+    for(const store of stores)WF_CLOUD_REFRESH_STORES.add(store);
+    wfApplyCloudChanges();throw error;
+  }
+}
+
 /* ============================================================
    INIT
 ============================================================ */
@@ -20961,6 +20990,7 @@ async function init(){
   if(!window.WFAccountAccess)throw new Error('IDENTITY_MODULES');
   await window.WFAccountAccess.beforeInit();
   await initDB();
+  await wfInitializeCloudSync();
   // load settings
   const stRow=await dbGet('settings','main');
   if(stRow)Object.assign(S.settings,stRow);
@@ -21002,7 +21032,7 @@ startGreetingRotation();
   }
   // handle hash routing
   const hash=window.WFAccountAccess.initialRoute(window.location.hash.replace('#',''));
-const validPages=['dashboard','companies','products','cart','invoices','add-company','add-product','create-invoice','select-client-type','select-invoice-type','payment-management','reports','exchange','settings','quick-barcode','notifications','package-labels','product-costs','invoice-archive','manufacturing','material-library','cost-analysis','print-history','review-center','daily-tasks','global-search','purchase-planner','purchase-followup'];
+const validPages=['dashboard','companies','products','cart','invoices','add-company','add-product','create-invoice','select-client-type','select-invoice-type','payment-management','reports','exchange','settings','quick-barcode','notifications','package-labels','product-costs','invoice-archive','manufacturing','material-library','cost-analysis','print-history','review-center','daily-tasks','global-search','purchase-planner','purchase-followup','gallery','gallery-orders','my-orders','gallery-studio','chat','files','finance','payroll','metals','assistant','server-admin'];
   if(hash&&validPages.includes(hash)){
     if(hash==='settings')loadSettingsToForm();
     showPage(hash,false);history.replaceState({page:hash},'','#'+hash);
@@ -21026,6 +21056,9 @@ const validPages=['dashboard','companies','products','cart','invoices','add-comp
   wfRefreshStorageTelemetry();
   try{if(window.WFAccountAccess.can('data.export')){wfDriveInitOnboarding();wfDriveInitAutoBackup();}}catch(err){console.warn('Drive auto-backup init skipped:',err);}
 initBottomNav();
+  WF_CLOUD_BOOT_READY=true;
+  if(WF_CLOUD_REFRESH_STORES.size)wfApplyCloudChanges();
+  if(window.WFCloudClient?.isRemoteMode()&&new URLSearchParams(location.search).get('wf-accounts')==='cloud')window.WFAccounts?.open?.();
 
 }
 
@@ -26364,6 +26397,7 @@ function imgViewerEscHandler(e) {
 /* SAVE GUARDS: keep input on failure and ignore repeat taps while writing. */
 let WF_LAST_SAVE_ERROR=null;
 function wfSaveErrorMessage(err){
+  if(err?.code&&window.WFCloudSettings?.describeError)return window.WFCloudSettings.describeError(err);
   const lang=S.lang||'ar',name=err?.name||'Error';
   const reasons={
     QuotaExceededError:{ar:'المساحة المسموح بها لهذا البرنامج ممتلئة. صدّر نسخة احتياطية ووفّر مساحة على الجهاز.',tr:'Uygulamanın depolama kotası doldu. Yedek alıp cihazda yer açın.',en:'App storage is full. Export a backup and free device space.',

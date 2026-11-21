@@ -7,7 +7,7 @@
   const MANIFEST='/manifest.json';
   const MAX_IMAGE=2100000;
   const ICON_PATHS=new Set(['/app-icon-192.png','/app-icon-512.png','/app-icon-maskable-512.png','/apple-touch-icon.png']);
-  const DEFAULTS={name:'WOW FURNITURE',id:'/',start_url:'/',scope:'/',display:'standalone',display_override:['standalone','minimal-ui'],background_color:'#f3f7fa',theme_color:'#153847',icons:[
+  const DEFAULTS={name:'مارك ربوت',id:'/',start_url:'/',scope:'/',display:'standalone',display_override:['standalone','minimal-ui'],background_color:'#f3f7fa',theme_color:'#153847',icons:[
     {src:'/app-icon-192.png?v=198',sizes:'192x192',type:'image/png',purpose:'any'},
     {src:'/app-icon-512.png?v=198',sizes:'512x512',type:'image/png',purpose:'any'},
     {src:'/app-icon-maskable-512.png?v=198',sizes:'512x512',type:'image/png',purpose:'maskable'}
@@ -22,7 +22,7 @@
     const value=settings?.appIdentity?.version===1?settings.appIdentity:{};
     const savedName=typeof value.name==='string'?Array.from(value.name.replace(/[\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/g,'').trim()).slice(0,60).join(''):'';
     if(legacyName(savedName))return {name:DEFAULTS.name,mode:'default',source:'',custom:false};
-    const name=savedName;
+    const name=/^(?:wow furniture|galeri)$/i.test(savedName)?DEFAULTS.name:savedName;
     const mode=['app','custom'].includes(value.installIconMode)?value.installIconMode:'default';
     const source=mode==='app'?cleanImage(value.logo):mode==='custom'?cleanImage(value.installIcon):'';
     return {name:name||DEFAULTS.name,mode,source,custom:(name||DEFAULTS.name)!==DEFAULTS.name||!!source};

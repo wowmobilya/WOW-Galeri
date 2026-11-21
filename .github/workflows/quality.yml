@@ -1,0 +1,83 @@
+name: Mark Robot quality
+on:
+  pull_request:
+  push:
+    branches: [main, feat/wow-cloud-211]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  source-and-transactions:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6, verified 2026-11-21
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            supabase/package-lock.json
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: tests/requirements-pdf.txt
+      - name: Install pinned dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Install server verification dependencies
+        run: npm ci --prefix supabase --ignore-scripts --no-audit --no-fund
+      - name: Install PDF parser for real export checks
+        run: python -m pip install -r tests/requirements-pdf.txt
+      - name: Verify assets, syntax, identity and client credential boundary
+        run: node scripts/verify-release.mjs
+      - name: Run client and PostgreSQL transaction gates
+        run: node --test --test-concurrency=2 tests/*.test.cjs tests/*.test.mjs
+      - name: Audit production server dependencies
+        run: npm audit --prefix supabase --omit=dev --audit-level=high
+  chromium-fixtures:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6, verified 2026-11-21
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install pinned dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Install Chromium and its system dependencies
+        timeout-minutes: 5
+        run: npx playwright install --with-deps chromium
+      - name: Select the installed Playwright Chromium
+        id: browser_ready
+        run: node -e "require('node:fs').appendFileSync(process.env.GITHUB_ENV, 'CHROMIUM_PATH=' + require('playwright').chromium.executablePath() + '\n')"
+      - name: Verify synthetic gallery controls, RTL layout and PDF download
+        if: ${{ !cancelled() && steps.browser_ready.outcome == 'success' }}
+        timeout-minutes: 2
+        # The fixture aborts every request outside gallery-fixture.invalid.
+        run: node tests/gallery.browser.cjs
+      - name: Verify synthetic closed-app push with a native service worker
+        if: ${{ !cancelled() && steps.browser_ready.outcome == 'success' }}
+        timeout-minutes: 2
+        # Loopback server and DevTools events only; no push provider or credentials.
+        run: node tests/wow-push.browser.cjs
+      - name: Verify native gallery music playback and lifecycle
+        if: ${{ !cancelled() && steps.browser_ready.outcome == 'success' }}
+        timeout-minutes: 2
+        # Routed gallery-music-fixture.invalid assets only; no live application.
+        run: node tests/gallery-music.browser.cjs
+      - name: Verify installed service worker music playback offline
+        if: ${{ !cancelled() && steps.browser_ready.outcome == 'success' }}
+        timeout-minutes: 2
+        # Allowlisted loopback assets and the actual worker; no live application.
+        run: node tests/gallery-music-offline.browser.cjs

@@ -16,7 +16,7 @@
   const MAX_FAILURES = 5;
   const AUDIT_LIMIT = 500;
   const OWNER_RESUME_LIMIT = 8;
-  const ROLES = new Set(['owner', 'manager', 'sales', 'carpentry', 'assembly', 'warehouse', 'custom']);
+  const ROLES = new Set(['owner', 'manager', 'sales', 'carpentry', 'assembly', 'warehouse', 'customer', 'custom']);
   const STATUSES = new Set(['active', 'suspended', 'revoked', 'deleted']);
   const PROFILE_FIELDS = new Set(['name', 'username', 'role', 'permissions', 'department', 'note', 'expiresAt']);
   const DUMMY_CREDENTIAL = Object.freeze({algorithm: 'PBKDF2-HMAC-SHA256', iterations: ITERATIONS,

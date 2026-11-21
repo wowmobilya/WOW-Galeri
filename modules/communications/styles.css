@@ -1,0 +1,22 @@
+.wf-mail{display:grid;gap:1rem;color:var(--text);min-width:0}
+.wf-mail-header,.wf-mail-card,.wf-mail-form,.wf-mail-dialog-body,.wf-mail-recipient,.wf-mail-prepared{display:grid;gap:.7rem;min-width:0}
+.wf-mail :is(h2,h3,h4,p),.wf-mail-dialog :is(h3,h4,p){margin:0;overflow-wrap:anywhere}
+.wf-mail-actions,.wf-mail-card-head,.wf-mail-dialog-head,.wf-mail-filters{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.wf-mail-actions small{flex-basis:100%}.wf-mail-filters{align-items:end}.wf-mail-filters>label:first-child{flex:1 1 15rem}
+.wf-mail-list{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,21rem),1fr))}
+.wf-mail-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg,16px);padding:1rem;align-content:start}
+.wf-mail-card-head{justify-content:space-between}.wf-mail-card-head h3{font-size:1.05rem;flex:1 1 10rem}
+.wf-mail-badge{border:1px solid var(--border);border-radius:99rem;padding:.2rem .5rem;font-size:.78rem;background:var(--business-soft,var(--bg));max-width:100%;overflow-wrap:anywhere}
+.wf-mail-badge.delivered{border-color:var(--ui-accent);font-weight:600}.wf-mail-badge:is(.uncertain,.failed,.bounced,.complained),.wf-mail-warning{color:var(--danger,#b42318)}
+.wf-mail-muted,.wf-mail-status,.wf-mail-excerpt,.wf-mail-empty{color:var(--text2);font-size:.9rem;white-space:pre-wrap;overflow-wrap:anywhere}
+.wf-mail-field{display:grid;gap:.35rem;font-size:.9rem;color:var(--text2);min-width:0}
+:is(.wf-mail,.wf-mail-dialog) :is(input:not([type=checkbox]),select,textarea){box-sizing:border-box;max-width:100%;width:100%;min-height:42px;background:var(--card);color:var(--text);font:inherit;border:1px solid var(--border);border-radius:var(--r-md,10px);padding:.5rem .7rem}
+.wf-mail input[type=checkbox]{accent-color:var(--brand-primary);width:1.1rem;height:1.1rem}
+.wf-mail-button{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;min-height:40px;padding:.45rem .8rem;border:1px solid var(--border);border-radius:var(--r-md,10px);background:var(--card);color:var(--text);font:inherit;font-size:.9rem;text-decoration:none;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.wf-mail-primary{background:var(--brand-primary);border-color:var(--brand-primary);color:var(--on-primary,#fff)}.wf-mail-danger{color:var(--danger,#b42318)}
+.wf-mail-button:disabled{opacity:.55;cursor:default}:is(.wf-mail,.wf-mail-dialog) :is(button,input,select,textarea,a):focus-visible{outline:2px solid var(--ui-accent);outline-offset:2px}
+.wf-mail-dialog{box-sizing:border-box;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:var(--r-lg,16px);padding:0;width:min(94vw,44rem);max-height:90dvh;overflow:auto}
+.wf-mail-dialog::backdrop{background:rgb(12 25 37 / .55)}.wf-mail-dialog-head{justify-content:space-between;position:sticky;inset-block-start:0;background:var(--card);padding:.8rem 1rem;border-bottom:1px solid var(--border);z-index:1}
+.wf-mail-dialog-body{padding:1rem}.wf-mail-message{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.6;margin:0}
+.wf-mail-recipient{background:var(--business-soft,var(--bg));border-radius:var(--r-md,10px);padding:.7rem}.wf-mail-recipient:empty,.wf-mail-status:empty,.wf-mail-prepared:empty{display:none}
+@media(max-width:600px){.wf-mail-actions>.wf-mail-button{flex:1 1 9rem}.wf-mail-filters>label{flex:1 1 10rem}.wf-mail-dialog{width:96vw}.wf-mail-card{padding:.8rem}}

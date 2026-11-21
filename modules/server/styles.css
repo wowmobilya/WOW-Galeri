@@ -1,0 +1,15 @@
+.wf-server{display:grid;gap:18px;max-width:1200px;margin:auto;color:var(--text)}
+.wf-server-summary,.wf-server-panel,.wf-server-card{background:var(--ops-panel,var(--bg2));border:1px solid var(--ops-line,var(--bdr));border-radius:var(--ops-radius,14px);padding:20px}
+.wf-server-heading,.wf-server-actions,.wf-server-service{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.wf-server-heading h2{font-size:1.35rem;margin:0}.wf-server p{line-height:1.7}.wf-server-actions{justify-content:flex-start}
+.wf-server-badge{border:1px solid currentColor;border-radius:24px;font-size:.82rem;padding:5px 12px;color:var(--ops-accent,var(--gold))}
+.wf-server-badge.critical,.wf-server-badge.failed{color:var(--danger,#df7474)}
+.wf-server-badge.healthy,.wf-server-confirmed{color:var(--success,#62b88c)}
+.wf-server-muted,.wf-server-note{color:var(--text2)}.wf-server-warning{border-inline-start:3px solid var(--gold);padding-inline-start:12px}
+.wf-server-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.wf-server-card{display:grid;gap:10px}.wf-server-card strong{font-size:1.9rem;color:var(--ops-accent,var(--gold))}.wf-server-card span{font-size:.88rem;color:var(--text2)}
+.wf-server-panel h3{font-size:1.1rem;margin:0 0 18px}.wf-server-service{padding:12px 0;border-bottom:1px solid var(--ops-line,var(--bdr))}.wf-server-panel>a{display:inline-flex;margin-top:16px}
+.wf-server-incident,.wf-server-run{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 0;border-bottom:1px solid var(--ops-line,var(--bdr));overflow-wrap:anywhere}
+.wf-server-incident.critical{border-inline-start:3px solid var(--danger,#df7474);padding-inline-start:12px}.wf-server-incident.resolved{opacity:.7}.wf-server-run{font-size:.9rem}
+.wf-server-note{font-size:.88rem;padding:0 8px}
+@media(max-width:700px){.wf-server-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.wf-server-summary,.wf-server-panel,.wf-server-card{padding:15px}.wf-server-actions>.btn{flex:1 1 auto}.wf-server-service>span:last-child{font-size:.82rem}}

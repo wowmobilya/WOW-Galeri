@@ -3,13 +3,17 @@
   "private": true,
   "scripts": {
     "test": "node --test tests/locales.test.cjs",
+    "verify:release": "node scripts/verify-release.mjs",
+    "test:release": "node --test --test-concurrency=2 tests/*.test.cjs tests/*.test.mjs",
     "test:browser": "node tests/locales.browser.cjs",
     "test:scanner": "node tests/scanner.browser.cjs",
     "test:icons": "node tests/icons.browser.cjs"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.17",
     "acorn": "^8.17.0",
     "acorn-walk": "^8.3.5",
+    "fake-indexeddb": "6.2.4",
     "playwright": "^1.61.1"
   }
 }

@@ -1,9 +1,9 @@
-/* Local password sessions and application gates. A future remote provider must
-   enforce the same permissions on its server; browser controls are not a vault. */
+/* Local owner access and explicitly selected cloud employee workspaces. */
 (function(root){
   'use strict';
   const doc=root.document,policy=root.WFAccountPolicy,dataPolicy=root.WFAccountDataPolicy;
   if(!doc||root.WFAccountAccess)return;
+  const remoteMode=!!root.WFCloudClient?.isRemoteMode?.()||/(?:^|[?&])wf-cloud=employee(?:&|$)/.test(root.location?.search||'');
   const locales=['ar','en','tr','fr','ru'];
   const words={
     title:['تسجيل الدخول','Sign in','Giriş yap','Connexion','Вход'],
@@ -12,7 +12,10 @@
     password:['كلمة المرور','Password','Parola','Mot de passe','Пароль'],
     show:['إظهار','Show','Göster','Afficher','Показать'],hide:['إخفاء','Hide','Gizle','Masquer','Скрыть'],
     entering:['جارٍ التحقق…','Checking…','Kontrol ediliyor…','Vérification…','Проверка…'],
-    local:['حسابات هذا الجهاز. الربط عن بُعد غير مفعّل بعد.','Accounts on this device. Remote access is not connected yet.','Bu cihazdaki hesaplar. Uzaktan erişim henüz bağlı değil.','Comptes de cet appareil. L’accès distant n’est pas encore connecté.','Учётные записи на этом устройстве. Удалённый доступ ещё не подключён.'],
+    local:['حسابات هذا الجهاز. إدارة الربط السحابي متاحة في الإعدادات.','Accounts on this device. Manage the cloud connection in Settings.','Bu cihazdaki hesaplar. Bulut bağlantısını Ayarlar bölümünde yönetin.','Comptes de cet appareil. Gérez la connexion cloud dans les paramètres.','Учётные записи этого устройства. Облачное подключение настраивается в параметрах.'],
+    cloud:['هذه مساحة حساب سحابي. يُتحقق من حسابك وصلاحياتك على خادم WOW.','This is a cloud account workspace. WOW verifies your account and permissions on the server.','Bu bir bulut hesabı çalışma alanıdır. WOW, hesabınızı ve izinlerinizi sunucuda doğrular.','Cet espace utilise un compte cloud. WOW vérifie le compte et ses droits sur le serveur.','Это рабочее пространство облачной учётной записи. WOW проверяет учётную запись и права на сервере.'],
+    network:['تعذّر الاتصال بخادم WOW. تحقق من الإنترنت ثم أعد المحاولة.','Could not connect to WOW. Check your connection and retry.','WOW sunucusuna bağlanılamadı. Bağlantınızı kontrol edip yeniden deneyin.','Connexion à WOW impossible. Vérifiez Internet et réessayez.','Не удалось подключиться к WOW. Проверьте Интернет и повторите попытку.'],
+    cloudUnavailable:['الربط السحابي غير جاهز على هذه النسخة. أعد تحميل البرنامج أو راجع المالك.','Cloud access is not ready in this version. Reload the app or contact the owner.','Bu sürümde bulut erişimi hazır değil. Uygulamayı yenileyin veya işletme sahibine başvurun.','L’accès cloud n’est pas prêt dans cette version. Rechargez l’application ou contactez le propriétaire.','Облачный доступ в этой версии не готов. Обновите приложение или обратитесь к владельцу.'],
     session:['جلسة الأدمن تبقى مفتوحة أثناء الخمول وتحديث الصفحة في هذه النافذة. حساب العامل يُقفل بعد 30 دقيقة دون استخدام وعند تحديث الصفحة.','The owner stays signed in during inactivity and page reloads in this tab. Employee accounts lock after 30 idle minutes and on reload.','Sahip bu sekmede işlem yapmadığında ve sayfa yenilendiğinde oturumunu korur. Çalışan hesapları 30 dakika kullanılmadığında ve sayfa yenilendiğinde kilitlenir.','Le propriétaire reste connecté dans cet onglet pendant l’inactivité et au rechargement. Les comptes employés se verrouillent après 30 minutes d’inactivité et au rechargement.','Владелец остаётся в системе при бездействии и перезагрузке этой вкладки. Учётные записи сотрудников блокируются после 30 минут бездействия и при перезагрузке.'],
     failed:['اسم الدخول أو كلمة المرور غير صحيحين، أو الحساب غير متاح.','The username or password is incorrect, or the account is unavailable.','Kullanıcı adı veya parola yanlış ya da hesap kullanılamıyor.','Identifiant ou mot de passe incorrect, ou compte indisponible.','Неверное имя или пароль, либо учётная запись недоступна.'],
     storage:['تعذّر قراءة حسابات الجهاز. أعد المحاولة؛ لم تُفتح البيانات.','Device accounts could not be read. Retry; business data remains locked.','Cihaz hesapları okunamadı. Yeniden deneyin; veriler kilitli kalır.','Impossible de lire les comptes. Réessayez ; les données restent verrouillées.','Не удалось прочитать учётные записи. Данные остаются заблокированы.'],
@@ -33,11 +36,12 @@
   let service,ready,booted=false,checking=true,refreshing=null,reloading=false,loginBusy=false,loginResolve,loginWait;
   let explicitLockPending=false,resumeChecking=false;
   let lockSurface,loginForm,username,password,submit,status,showPassword,loginTitle,loginIntro,localNote,sessionNote,langSelect,sessionButton;
+  let customerAuthSurface;
   let lastSnapshot=null,lastUIKey='',controlsQueued=false,channel=null;
   const auditActions=new WeakMap();
   const hiddenDisplays=new WeakMap();
   function snapshot(){return service?.getSnapshot()||lastSnapshot||{configured:true,currentAccount:null,revision:0};}
-  function can(key){if(checking||resumeChecking||explicitLockPending)return false;const state=snapshot();return !state.configured||policy.can(state.currentAccount,key);}
+  function can(key){if(checking||resumeChecking||explicitLockPending)return false;const state=snapshot();return !state.configured||(key==='@route:notifications'?policy.canNotifications?.(state.currentAccount)===true:policy.can(state.currentAccount,key));}
   function canRoute(route){if(checking||resumeChecking||explicitLockPending)return false;const state=snapshot();return !state.configured||policy.canRoute(state.currentAccount,route);}
   function denied(){root.showToast?.(text('denied'),'er');return false;}
   function assert(key){if(!can(key)){const error=new Error('ACCESS_DENIED');error.code='ACCESS_DENIED';throw error;}return snapshot().currentAccount;}
@@ -64,8 +68,9 @@
     password.parentElement.previousElementSibling.textContent=text('password');
     submit.textContent=text(loginBusy?'entering':'title');showPassword.textContent=text(password.type==='password'?'show':'hide');
     showPassword.setAttribute('aria-label',text(password.type==='password'?'show':'hide')+' '+text('password'));
-    localNote.textContent=text('local');sessionNote.textContent=text('session');
+    localNote.textContent=text(remoteMode?'cloud':'local');sessionNote.textContent=text('session');
     langSelect.setAttribute('aria-label',text('language'));langSelect.value=locale();
+    customerAuthSurface?.updateLanguage?.(locale());
   }
   function buildLock(){
     if(lockSurface)return;
@@ -90,20 +95,22 @@
     status=make('p','wf-account-login-status');status.id='wfAccountLoginStatus';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
     password.setAttribute('aria-describedby',status.id);sessionNote=make('p');localNote=make('small','wf-account-login-local');
     loginForm.append(userLabel,passwordLabel,submit);card.append(languages,brand,loginTitle,loginIntro,loginForm,status,sessionNote,localNote);lockSurface.append(card);doc.body.append(lockSurface);
+    if(remoteMode)customerAuthSurface=root.WFCustomerAuth?.mountVisitor?.({container:card,client:service,loginForm,lang:locale(),
+      onComplete:(value,message)=>{username.value=value||'';status.textContent=message;password.focus();}});
     loginForm.addEventListener('submit',async event=>{
       event.preventDefault();if(loginBusy||!loginForm.reportValidity())return;
       loginBusy=true;submit.disabled=true;status.textContent='';translateLock();
       const value=password.value;password.value='';password.type='password';showPassword.setAttribute('aria-pressed','false');
       try{await service.signIn({username:username.value,password:value});const account=snapshot().currentAccount;if(!policy.safeHome(account)){status.textContent=text('noAccess');await service.signOut();}else{setLocked(false);loginResolve?.();loginResolve=null;}}
-      catch(error){status.textContent=text(['IDENTITY_STORAGE','STORAGE_ERROR','IDENTITY_STATE_INVALID','CONFLICT'].includes(error?.code)?'storage':'failed');password.focus();}
+      catch(error){status.textContent=text(error?.code==='NETWORK'?'network':error?.code==='CLOUD_UNCONFIGURED'?'cloudUnavailable':['IDENTITY_STORAGE','STORAGE_ERROR','IDENTITY_STATE_INVALID','CONFLICT'].includes(error?.code)?'storage':'failed');password.focus();}
       finally{loginBusy=false;submit.disabled=false;translateLock();}
     });
     translateLock();
   }
   function showLogin(error){
     buildLock();setLocked(true);
-    if(error){loginForm.hidden=true;status.textContent=text('storage');const retry=make('button','btn btn-p wf-account-login-submit',text('retry'));retry.type='button';retry.addEventListener('click',()=>root.location.reload());status.after(retry);}
-    else{loginForm.hidden=false;status.textContent='';username.focus({preventScroll:true});}
+    if(error){loginForm.hidden=true;status.textContent=text(error?.code==='CLOUD_UNCONFIGURED'?'cloudUnavailable':remoteMode?'network':'storage');const retry=make('button','btn btn-p wf-account-login-submit',text('retry'));retry.type='button';retry.addEventListener('click',()=>root.location.reload());status.after(retry);}
+    else{loginForm.hidden=false;status.textContent='';customerAuthSurface?.updateLanguage?.(locale());username.focus({preventScroll:true});}
   }
   function fresh(){
     if(refreshing)return refreshing;
@@ -119,12 +126,14 @@
     });
   }
   function invalidate(){
+    if(!remoteMode)root.WFCloud?.lockLocalAccess?.();
     if(reloading)return;reloading=true;buildLock();setLocked(true);
     // Reload drops all account-specific drafts, generated previews, JS caches and
     // in-memory records; no employee inherits the previous user's open state.
     root.location.reload();
   }
   function onSnapshot(state){
+    if(!remoteMode)root.WFCloud?.localIdentityChanged?.();
     const previous=lastSnapshot;lastSnapshot=state;
     if(booted&&state.configured&&!state.currentAccount){if(!explicitLockPending)invalidate();return;}
     if(previous?.currentAccount&&state.currentAccount&&previous.currentAccount.id!==state.currentAccount.id&&booted){invalidate();return;}
@@ -152,7 +161,10 @@
     explicitLockPending=true;buildLock();setLocked(true);loginBusy=true;submit.disabled=true;translateLock();
     // signOut publishes a locked session before committing its audit event.
     // Keep the page alive until that transaction settles, then clear all state.
-    try{await service.signOut();}finally{explicitLockPending=false;invalidate();}
+    try{
+      try{await root.WFPush?.beforeSignOut?.();}catch(_){}
+      await service.signOut();
+    }finally{explicitLockPending=false;invalidate();}
   }
   function updateSession(){
     const sidebar=doc.getElementById('sidebar');if(!sidebar)return;
@@ -173,7 +185,7 @@
   };
   const functionMatchers=Object.entries(functionPermissions).map(([name,key])=>[new RegExp('(?:^|[^\\w])'+name+'\\s*\\('),key]);
   const selectorPermissions={
-    '#headerSettingsBtn':'settings.view','#wfNotificationsButton':'reports.view','#wfHomeEdit':'settings.edit',
+    '#headerSettingsBtn':'settings.view','#wfNotificationsButton':'@route:notifications','#wfHomeEdit':'settings.edit',
     '#wfProductCostsOpen,[data-wf-cost-action]':'costs.view',
     '#wfProductLabelsOpen,.wf-label-card-action':'products.print','.wf-label-print':'products.print',
     '#wfPackageLabelsOpen,[data-wf-package-action]':'labels.view','#wfPackagePrint':'labels.print',
@@ -188,7 +200,7 @@
     for(const [selector,key]of Object.entries(selectorPermissions))if(element.matches?.(selector))return key;
     const handler=element.getAttribute?.('onclick')||'';
     const route=element.dataset?.page||handler.match(/showPage\(\s*['"]([^'"]+)['"]/)?.[1];
-    if(route)return policy.permissionForRoute(route)||'unknown.view';
+    if(route)return route.replace(/^#/,'')==='notifications'?'@route:notifications':policy.permissionForRoute(route)||'unknown.view';
     for(const [pattern,key]of functionMatchers)if(pattern.test(handler))return key;
     if(/switchTab\(/.test(handler))return 'settings.view';
     return null;
@@ -275,7 +287,7 @@
     const section={companies:'customers',products:'products',invoices:'invoices',payments:'payments'}[store];
     return section&&can(section+'.view')?keys:[];
   }
-  function cartKey(){const account=snapshot().currentAccount;return account&&account.role!=='owner'?'wf_qbl_cart_account_'+account.id:'wf_qbl_cart';}
+  function cartKey(){const account=snapshot().currentAccount;if(remoteMode&&account)return 'wf_qbl_cart_cloud_'+(snapshot().workspaceId||'')+'_'+account.id;return account&&account.role!=='owner'?'wf_qbl_cart_account_'+account.id:'wf_qbl_cart';}
   function actor(){const account=snapshot().currentAccount;return account?{id:account.id,name:account.name,username:account.username}:null;}
   function writeAction(operation,before,after){
     if(operation.store==='settings'){
@@ -301,6 +313,8 @@
     return policy.permissionForWrite(operation);
   }
   function recordCommit(operations){
+    // The cloud batch transaction records authoritative activity after acceptance.
+    if(remoteMode)return;
     if(!snapshot().configured||!snapshot().currentAccount||!service.recordActivity)return;
     const first=operations[0];if(!first)return;
     const action=auditActions.get(first)||writeAction(first);
@@ -308,7 +322,15 @@
     service.recordActivity({action,targetType:first.store,targetId:String(first.id??first.value?.id??''),details:{store:first.store,id:String(first.id??first.value?.id??''),count:operations.length}}).catch(()=>{root.showToast?.(text('auditFailed'),'er');});
   }
   try{
-    if(!policy||!dataPolicy||!root.WFAccountsCore||!root.WFAccountsLocalProvider)throw new Error('IDENTITY_MODULES');
+    if(!policy||!dataPolicy)throw new Error('IDENTITY_MODULES');
+    if(remoteMode){
+      // This entry is a separate cloud identity, including when a browser clones
+      // sessionStorage from an owner tab. It must not carry the local owner back.
+      try{root.sessionStorage?.removeItem('wf_owner_session_v1');}catch(_){}
+      service=root.WFCloudClient?.getClient?.();
+      if(!service?.isConfigured?.())throw Object.assign(new Error('CLOUD_UNCONFIGURED'),{code:'CLOUD_UNCONFIGURED'});
+    }else{
+    if(!root.WFAccountsCore||!root.WFAccountsLocalProvider)throw new Error('IDENTITY_MODULES');
     const provider=root.WFAccountsLocalProvider.create();
     try{if(root.BroadcastChannel)channel=new root.BroadcastChannel('wow-local-accounts-v1');}catch(_){}
     // Only a verified owner receives a continuation capability. Keep it in this
@@ -320,13 +342,14 @@
       clear(){root.sessionStorage?.removeItem(ownerSessionKey);}
     };
     service=root.WFAccountsCore.createService({read:provider.read,commit:async(revision,state)=>{await provider.commit(revision,state);channel?.postMessage({revision:state.revision});},crypto:root.crypto,policy,sessionStore});
+    }
     service.subscribe(onSnapshot);
-    ready=service.refresh().then(state=>{checking=false;lastSnapshot=service.getSnapshot();if(!lastSnapshot.configured)setLocked(false);scheduleControls();return state;});
+    ready=service.refresh().then(state=>{checking=false;lastSnapshot=service.getSnapshot();if(!remoteMode)root.WFCloud?.localIdentityChanged?.();if(!lastSnapshot.configured)setLocked(false);scheduleControls();return state;});
   }catch(error){ready=Promise.reject(error);}
   // Keep a rejected initialization visible without turning it into a new owner setup.
-  ready.catch(error=>{showLogin(error);});
+  ready.catch(error=>{if(!remoteMode)root.WFCloud?.lockLocalAccess?.();showLogin(error);});
   root.WFAccountAccess={ready,service,beforeInit,can,canRoute,allow,assert,initialRoute,requestLock,prepareWrites,assertCurrentSession,finalizeWrite,needsInvoiceCosts,captureInvoiceCosts,projectRead,projectKeys,cartKey,actor,recordCommit,requiredForElement,
-    hasAccounts:()=>snapshot().configured,refresh:fresh,syncControls:scheduleControls};
+    hasAccounts:()=>snapshot().configured,isRemote:()=>remoteMode,refresh:fresh,syncControls:scheduleControls};
   if(channel)channel.onmessage=()=>fresh().catch(()=>{if(booted)invalidate();});
   const observer=new MutationObserver(records=>{if(records.some(record=>record.type==='childList'&&(record.addedNodes.length||record.removedNodes.length)||record.type==='attributes'))scheduleControls();});
   for(const node of [doc.getElementById('sidebar'),doc.getElementById('mainContent'),doc.getElementById('bottomNav')])if(node)observer.observe(node,{subtree:true,childList:true,attributes:true,attributeFilter:['data-page','data-wf-permission','onclick']});

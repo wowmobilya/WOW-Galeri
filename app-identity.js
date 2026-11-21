@@ -1,7 +1,7 @@
 /* Application identity is independent from the company identity on documents. */
 (() => {
   'use strict';
-  const DEFAULT_NAME = 'WOW FURNITURE';
+  const DEFAULT_NAME = 'مارك ربوت';
   const DEFAULT_LOGO = './assets/wow-furniture-logo.svg';
   const DEFAULT_ICON = './app-icon-512.png?v=198';
   const MAX_IMAGE_LENGTH = 2100000;
@@ -18,7 +18,8 @@
     const legacyDefault = /^(?:infinity|إنفنتي|انفنتي)$/i.test(savedName);
     // Resolve the retired stock identity on read, including its uploaded
     // artwork. Unrelated custom identities and stored company data stay intact.
-    const name = legacyDefault ? DEFAULT_NAME : savedName;
+    const defaultAlias = /^(?:wow furniture|galeri)$/i.test(savedName);
+    const name = legacyDefault || defaultAlias ? DEFAULT_NAME : savedName;
     const logo = legacyDefault ? '' : cleanImage(raw.logo) || '';
     const installIcon = legacyDefault ? '' : cleanImage(raw.installIcon) || '';
     let installIconMode = !legacyDefault && modes.includes(raw.installIconMode) ? raw.installIconMode : 'default';

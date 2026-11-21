@@ -142,6 +142,26 @@ test('editable presets normalize dependencies and submit precisely the selected 
   assert.equal(f.snapshot().accounts.find(row=>row.username==='new.carpenter').name,'New carpenter');
 });
 
+test('the customer editor offers personal grants and disables the staff and administration controls',async()=>{
+  const f=fixture();await f.open();f.byId('wfAccountsAdd').click();
+  const roles=f.byId('wfAccount-role').options;
+  assert(roles.some(option=>option.value==='customer'&&option.textContent==='Customer'));
+  f.input('wfAccount-role','customer','change');
+  for(const id of ['gallery-edit','orders-view','reports-view','finance-view','server-view']){
+    const input=f.byId('wfAccountPermission-'+id);assert.equal(input.disabled,true);assert.equal(input.checked,false);
+  }
+  const fileExport=f.byId('wfAccountPermission-files-export');assert(!fileExport.disabled);assert(!fileExport.checked);
+  assert.equal(f.byId('wfAccountPermission-myorders-edit').checked,true);
+});
+
+test('a protected customer promotion explains the separate managed login requirement',async()=>{
+  const f=fixture();await f.open();f.change('worker-1',{role:'customer',permissions:policy.presets('customer')});
+  f.openDetail('worker-1');f.byId('wfAccountEdit').click();f.input('wfAccount-role','owner','change');
+  f.failNext('CUSTOMER_PRINCIPAL_ROLE_FIXED');f.api.getSettingsActions().save.click();await f.settle();
+  assert(f.byId('stab-accounts').textContent.includes('Create a separate managed login for staff or owner access.'));
+  assert.equal(f.snapshot().accounts.find(account=>account.id==='worker-1').role,'customer');
+});
+
 test('snapshot notifications preserve dirty controls and reject a stale edit until cancelled',async()=>{
   const f=fixture();await f.open();f.openDetail('worker-1');f.byId('wfAccountEdit').click();
   const name=f.input('wfAccount-name','Unsaved employee name');

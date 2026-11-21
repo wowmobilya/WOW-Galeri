@@ -52,19 +52,31 @@ test('every installed local reference asset matches its published bytes and hash
 
 function serviceWorker({offline=false}={}){
   const handlers={},network=[],cached=[],entries=new Map(),shellEntries=new Map();
-  const cacheKey=request=>new URL(request.url||String(request),'https://example.test/').href;
+  // WorkerLocation includes the worker script URL; relative imports and shell
+  // entries resolve against that URL, not against an origin-only placeholder.
+  const workerURL=new URL('https://example.test/sw.js');
+  const location=Object.freeze(Object.fromEntries(['href','origin','protocol','host','hostname','port','pathname','search','hash'].map(key=>[key,workerURL[key]])));
+  const cacheKey=request=>new URL(request.url||String(request),location.href).href;
   const makeCache=items=>({
     match:async request=>items.get(cacheKey(request))?.clone(),
     add:async request=>{cached.push(request.url);items.set(cacheKey(request),new Response('cached shell asset'));},
-    put:async(request,response)=>{items.set(cacheKey(request),response.clone());}
+    put:async(request,response)=>{items.set(cacheKey(request),response.clone());},
+    delete:async request=>items.delete(cacheKey(request))
   });
   const cache=makeCache(entries),shell=makeCache(shellEntries);
-  const self={location:{origin:'https://example.test'},addEventListener:(name,handler)=>handlers[name]=handler,skipWaiting(){},clients:{claim:async()=>{}}};
-  class LocalRequest extends Request{constructor(input,options){super(new URL(input,'https://example.test/'),options);}}
+  const self={location,addEventListener:(name,handler)=>handlers[name]=handler,skipWaiting(){},clients:{claim:async()=>{}}};
+  class LocalRequest extends Request{constructor(input,options){super(new URL(input,location.href),options);}}
   vm.runInNewContext(fs.readFileSync(path.join(root,'sw.js'),'utf8'),{
-    self,URL,Request:LocalRequest,Response,Promise,importScripts(){},
+    self,URL,Request:LocalRequest,Response,Headers,Uint8Array,crypto:crypto.webcrypto,Promise,importScripts(){},
     caches:{open:async name=>name==='infinity-offline-voice-v1'?cache:shell,match:async request=>(await cache.match(request))||(await shell.match(request)),keys:async()=>[],delete:async()=>true},
-    fetch:async request=>{network.push(request.url);if(offline)throw new Error('offline');return new Response('network bytes');}
+    fetch:async request=>{
+      network.push(request.url);if(offline)throw new Error('offline');
+      if(request.url==='https://example.test/assets/gallery/wow-ambient-v1.mp3'){
+        const bytes=fs.readFileSync(path.join(root,'assets/gallery/wow-ambient-v1.mp3'));
+        return new Response(bytes,{headers:{'Content-Type':'audio/mpeg','Content-Length':String(bytes.length)}});
+      }
+      return new Response('network bytes');
+    }
   });
   return {handlers,network,cached,entries,shellEntries,async get(url,options){let result;handlers.fetch({request:new Request(url,options),respondWith(promise){result=promise;}});return result;}};
 }
@@ -88,6 +100,10 @@ test('the application shell installs reference metadata needed by cold offline w
   assert(f.cached.includes('https://example.test/reference-voice.js?v=1'));
   assert(f.cached.includes('https://example.test/reference-voice.js?v=2'));
   assert(!f.cached.some(url=>/shard-\d+\.bin/.test(url)),'opening the program must not download large voice shards');
+  const musicURL='https://example.test/assets/gallery/wow-ambient-v1.mp3';
+  assert.equal(f.network.filter(url=>url===musicURL).length,1,'the bounded bundled track uses its verified full fetch');
+  assert.equal(sha(Buffer.from(await f.shellEntries.get(musicURL).clone().arrayBuffer())),
+    sha(fs.readFileSync(path.join(root,'assets/gallery/wow-ambient-v1.mp3'))));
 });
 
 test('an offline app update uses the new speech host without reinstalling the model pack',async()=>{

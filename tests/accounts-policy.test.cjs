@@ -7,8 +7,8 @@ const policy = require('../accounts-policy.js');
 const actor = (role, permissions = policy.presets(role), extra = {}) => ({role, permissions, status:'active', ...extra});
 
 test('the capability catalog names each actual action in all five UI languages', () => {
-  assert.equal(policy.version, 1);
-  assert.deepEqual(policy.roles.map(role => role.id), ['owner','manager','sales','carpentry','assembly','warehouse','custom']);
+  assert.equal(policy.version, 2);
+  assert.deepEqual(policy.roles.map(role => role.id), ['owner','manager','sales','carpentry','assembly','warehouse','customer','custom']);
   assert.equal(new Set(policy.sections.map(section => section.id)).size, policy.sections.length);
   assert.equal(new Set(policy.permissionKeys).size, policy.permissionKeys.length);
   for (const item of [...policy.roles, ...policy.actions, ...policy.sections]) {
@@ -41,9 +41,35 @@ test('removing view removes all dependent actions, including export, delete and 
   assert.equal(policy.can(actor('custom', grants), 'products.print'), true);
 });
 
+test('customers can only receive buyer and personal permissions, including when checking an unnormalized account', () => {
+  const allowed = ['gallery.view','gallery.export','myorders.view','myorders.edit','myorders.print','myorders.export',
+    'chat.view','chat.edit','chat.delete','files.view','files.edit','files.delete','files.export'];
+  const raw = actor('customer', policy.permissionKeys);
+  assert.deepEqual(policy.normalizePermissions('customer', raw.permissions), allowed);
+  for (const key of policy.permissionKeys) assert.equal(policy.can(raw, key), allowed.includes(key), key);
+  const buyer = actor('customer');
+  assert.deepEqual(buyer.permissions, ['gallery.view','myorders.view','myorders.edit','chat.view','chat.edit','files.view','files.edit']);
+  assert.equal(policy.safeHome(buyer), 'gallery');
+  for (const route of ['gallery','my-orders','chat','files','notifications']) assert(policy.canRoute(buyer, route), route);
+  for (const route of ['gallery-studio','gallery-orders','finance','assistant','server-admin','reports']) assert(!policy.canRoute(raw, route), route);
+  assert.deepEqual(policy.normalizePermissions('customer', ['files.export','myorders.print','chat.edit']), []);
+});
+
+test('the notification bell uses module grants independently of access to financial reports', () => {
+  for (const permission of ['reports.view','chat.view','gallery.view','orders.view','myorders.view']) {
+    const user = actor('custom', [permission]);
+    assert(policy.canNotifications(user));
+    assert(policy.canRoute(user, '#notifications'));
+    assert.equal(policy.canRoute(user, 'reports'), permission === 'reports.view');
+    assert.equal(policy.canNotifications({...user,status:'suspended'}), false);
+  }
+  assert(policy.canNotifications(actor('owner', [])));
+  for (const user of [null,actor('custom', ['files.view']),actor('unknown', ['reports.view'])]) assert(!policy.canNotifications(user));
+});
+
 test('only an active owner has account, settings and whole-data administration', () => {
   const reserved = policy.sections.filter(section => section.ownerOnly).map(section => section.id);
-  assert.deepEqual(reserved, ['settings','accounts','data']);
+  assert.deepEqual(reserved, ['server','settings','accounts','data']);
   for (const role of policy.roles.map(role => role.id).filter(role => role !== 'owner')) {
     const normalized = policy.normalizePermissions(role, policy.permissionKeys);
     for (const id of reserved) {

@@ -1,2 +1,8 @@
 node_modules/
 test-results/
+tmp/
+.env
+.env.*
+!.env.example
+supabase/.temp/
+*.private.jwk

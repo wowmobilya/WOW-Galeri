@@ -25,6 +25,16 @@
   const groupNames = {ar:'الأدوات والمتابعة',tr:'Araçlar ve takip',en:'Tools and follow-up',fr:'Outils et suivi',ru:'Инструменты и контроль'};
   const backNames = {ar:'رجوع',tr:'Geri',en:'Back',fr:'Retour',ru:'Назад'};
   const icons = {
+    folder:'<path d="M3 7V5h6l2 2h10v13H3Z"/>',
+    'message-circle':'<path d="M21 11a9 9 0 0 1-9 9H4l-2 2 1-7a9 9 0 1 1 18-4Z"/><path d="M7 10h10M7 14h6"/>',
+    wallet:'<path d="M4 6V4h15v4M3 8h18v12H3Z"/><path d="M21 12h-6v5h6M17 14h1"/>',
+    users:'<circle cx="9" cy="7" r="3"/><path d="M3 21v-4a6 6 0 0 1 12 0v4M16 4a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 5v2"/>',
+    coins:'<ellipse cx="9" cy="6" rx="6" ry="3"/><path d="M3 6v8c0 4 12 4 12 0V6M3 10c0 4 12 4 12 0M17 10c5 0 5 6 0 6m4-3v5c0 3-8 4-11 2"/>',
+    settings:'<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="10" cy="18" r="2"/>',
+    images:'<rect x="5" y="3" width="16" height="15" rx="2"/><path d="M2 7v14h15M5 14l5-5 4 4 3-3 4 4"/><circle cx="16" cy="7" r="1"/>',
+    'clipboard-list':'<rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 11h6M9 15h6"/>',
+    'package-open':'<path d="m3 8 9-4 9 4-9 4Zm0 0-2 4 9 4 2-4 2 4 9-4-2-4M4 14v6l8 3 8-3v-6M12 12v11"/>',
+    'sliders-horizontal':'<path d="M3 6h18M3 12h18M3 18h18M8 3v6M16 9v6M9 15v6"/>',
     package:'<path d="m3 7 9-4 9 4v10l-9 4-9-4Zm0 0 9 5 9-5M12 12v9M7.5 5l9 4"/>',
     label:'<path d="M3 3h8l10 10-8 8L3 11Z"/><circle cx="7" cy="7" r="1"/>',
     cost:'<rect x="5" y="2" width="14" height="20" rx="3"/><path d="M8 6h8M8 11h1m4 0h3m-8 4h1m4 0h3m-8 4h1m4 0h3"/>',
@@ -102,7 +112,11 @@
   }
   function register(definition) {
     const id = definition.id;
-    if (!Object.hasOwn(names, id)) throw new Error('Unknown operations page');
+    if (!Object.hasOwn(names, id)) {
+      if (!/^[a-z][a-z0-9-]{1,50}$/.test(id) || !root.WFAccountPolicy?.permissionForRoute(id) ||
+          !definition.title || typeof definition.title.en !== 'string') throw new Error('Unknown operations page');
+      names[id]=definition.title;
+    }
     if (registry.has(id)) return registry.get(id);
     const page = make('section', 'page wf-ops-page'); page.id = 'page-' + id;
     const header = make('header', 'sct-sticky-header wf-heading-row');

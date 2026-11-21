@@ -206,7 +206,7 @@
   window.addEventListener('wf-robot-speaking',()=>render());window.addEventListener('wf-offline-voice-change',()=>render());
   new MutationObserver(()=>render()).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   new MutationObserver(records=>{for(const {target} of records)if((target.id==='stab-app-identity'||target.id==='stab-product-categories')&&target.getAttribute('aria-busy')!=='true')drafts.settled(target);}).observe(document.body,{subtree:true,attributes:true,attributeFilter:['aria-busy']});
-  window.WFAppUpdates={release,check:()=>check(true),status:()=>coordinator.status(),refresh:()=>coordinator.attempt(true),markClean:root=>drafts.clean(typeof root==='string'?document.querySelector(root):root),registerGuard:(name,guard)=>{if(typeof guard==='function')guards.set(name,guard);return()=>guards.delete(name);}};
+  window.WFAppUpdates={release,getSafety:safety,check:()=>check(true),status:()=>coordinator.status(),refresh:()=>coordinator.attempt(true),markClean:root=>drafts.clean(typeof root==='string'?document.querySelector(root):root),registerGuard:(name,guard)=>{if(typeof guard==='function')guards.set(name,guard);return()=>guards.delete(name);}};
   aboutVersion();render();
   function start(){ready=true;register().then(()=>{render();scheduleAuto();clearTimeout(checkTimer);if(!suspended&&document.visibilityState==='visible')checkTimer=setTimeout(checkVisible,INTERVAL);});}
   if(document.readyState==='complete')start();else window.addEventListener('load',start,{once:true});

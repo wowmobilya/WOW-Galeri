@@ -25,6 +25,13 @@ function fixtureIdentity() {
   const role = ['owner','carpentry','sales'].includes(requested) ? requested : 'carpentry';
   const locale = ['ar','en','tr','fr','ru'].includes(query.get('lang')) ? query.get('lang') : 'ar';
   const preferences = new Map([['wf_lang',locale],['wf_theme',query.get('theme') === 'dark' ? 'dark' : 'light']]);
+  const tabPreferences = new Map();
+  Object.defineProperty(window,'sessionStorage',{configurable:true,value:{
+    getItem:key=>tabPreferences.get(String(key)) ?? null,
+    setItem:(key,value)=>tabPreferences.set(String(key),String(value)),
+    removeItem:key=>tabPreferences.delete(String(key)),
+    clear:()=>tabPreferences.clear()
+  }});
   Object.defineProperty(window,'localStorage',{configurable:true,value:{
     getItem:key=>preferences.get(String(key)) ?? null,
     setItem:(key,value)=>preferences.set(String(key),String(value)),
@@ -109,7 +116,9 @@ function build(source, target) {
   const fixtureSource = '/* GENERATED PREVIEW ONLY. Synthetic in-memory accounts; never deploy as the app. */\n(' + fixtureIdentity.toString() + ')();\n';
   fs.writeFileSync(path.join(directory,fixtureName),fixtureSource);
   const generated = [fixtureName];
-  html = html.replace(matches[0][0],'<script src="' + fixtureName + '" defer></script>\n' + matches[0][0]);
+  const cloudScript=html.match(/<script\b(?=[^>]*\bsrc=["'](?:\.\/)?modules/platform/cloud/wow-cloud-config\.js(?:\?[^"']*)?["'])[^>]*>\s*<\/script\s*>/i)?.[0];
+  const fixtureAnchor=cloudScript||matches[0][0];
+  html = html.replace(fixtureAnchor,'<script src="' + fixtureName + '" defer></script>\n' + fixtureAnchor);
   // The preview host uses external script assets. Preserve each original
   // script's attributes and execution order while giving it a unique QA name.
   html = html.replace(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi,(whole,attributes,body) => {

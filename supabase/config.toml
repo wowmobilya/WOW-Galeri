@@ -1,0 +1,5 @@
+[functions.wow-cloud]
+# Enrollment/password/refresh require a public transport. Every protected
+# action validates the bearer with Auth and a live wow_sessions row itself.
+verify_jwt = false
+entrypoint = "./functions/wow-cloud/index.ts"

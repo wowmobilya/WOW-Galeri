@@ -38,6 +38,17 @@
     section('history', titles('سجل الطباعة', 'Print history', 'Yazdırma geçmişi', 'Historique d’impression', 'История печати'), ['view','edit']),
     section('search', titles('البحث الشامل', 'Global search', 'Genel arama', 'Recherche globale', 'Общий поиск'), ['view']),
     section('review', titles('مركز المراجعة', 'Review center', 'İnceleme merkezi', 'Centre de vérification', 'Центр проверки'), ['view']),
+    section('gallery', titles('المعرض', 'Gallery', 'Galeri', 'Galerie', 'Галерея'), ['view','edit','delete','print','export']),
+    section('orders', titles('طلبات المعرض', 'Gallery orders', 'Galeri siparişleri', 'Commandes de la galerie', 'Заказы галереи'), ['view','edit','delete','print','export']),
+    section('myorders', titles('طلباتي ومبيعاتي', 'My orders and sales', 'Siparişlerim ve satışlarım', 'Mes commandes et ventes', 'Мои заказы и продажи'), ['view','edit','print','export']),
+    section('chat', titles('المحادثات', 'Conversations', 'Sohbetler', 'Conversations', 'Переписка'), ['view','edit','delete']),
+    section('communications', titles('مراسلات العملاء', 'Customer communications', 'Müşteri yazışmaları', 'Correspondance client', 'Сообщения клиентам'), ['view','edit','delete','export']),
+    section('files', titles('ملفاتي', 'My files', 'Dosyalarım', 'Mes fichiers', 'Мои файлы'), ['view','edit','delete','export']),
+    section('finance', titles('المحاسبة', 'Accounting', 'Muhasebe', 'Comptabilité', 'Бухгалтерия'), ['view','edit','delete','print','export']),
+    section('payroll', titles('الرواتب والحضور', 'Payroll and attendance', 'Maaş ve devam', 'Paie et présence', 'Зарплата и посещаемость'), ['view','edit','delete','print','export']),
+    section('metals', titles('الذهب والفضة', 'Gold and silver', 'Altın ve gümüş', 'Or et argent', 'Золото и серебро'), ['view','edit','delete','print','export']),
+    section('assistant', titles('مساعد مارك ربوت', 'Mark Robot assistant', 'Mark Robot asistanı', 'Assistant Mark Robot', 'Помощник Mark Robot'), ['view']),
+    section('server', titles('إدارة مارك ربوت', 'Mark Robot administration', 'Mark Robot yönetimi', 'Administration Mark Robot', 'Управление Mark Robot'), ['view','edit'], true),
     section('settings', titles('إعدادات البرنامج', 'App settings', 'Uygulama ayarları', 'Paramètres de l’application', 'Настройки приложения'), ['view','edit'], true),
     section('accounts', titles('الحسابات والصلاحيات', 'Accounts and permissions', 'Hesaplar ve izinler', 'Comptes et autorisations', 'Учётные записи и права'), ['view','edit','delete'], true),
     section('data', titles('النسخ الاحتياطي وبيانات البرنامج', 'Backups and app data', 'Yedekler ve uygulama verileri', 'Sauvegardes et données', 'Копии и данные приложения'), ['view','edit','delete','export'], true)
@@ -49,13 +60,24 @@
     {id:'carpentry', titles:titles('النجارة', 'Carpentry', 'Marangozhane', 'Menuiserie', 'Столярный цех')},
     {id:'assembly', titles:titles('التركيب والتجميع', 'Assembly / installation', 'Montaj', 'Assemblage', 'Сборка')},
     {id:'warehouse', titles:titles('المستودع', 'Warehouse', 'Depo', 'Entrepôt', 'Склад')},
+    {id:'customer', titles:titles('عميل', 'Customer', 'Müşteri', 'Client', 'Клиент')},
     {id:'custom', titles:titles('مخصص', 'Custom', 'Özel', 'Personnalisé', 'Настраиваемая роль')}
   ].map(Object.freeze));
   const roleIds = new Set(roles.map(role => role.id));
   const sectionById = new Map(sections.map(entry => [entry.id, entry]));
   const permissionKeys = Object.freeze(sections.flatMap(entry => entry.actions.map(action => entry.id + '.' + action)));
   const knownPermissions = new Set(permissionKeys);
+  const customerPermissions = new Set([
+    'gallery.view','gallery.export','myorders.view','myorders.edit','myorders.print','myorders.export',
+    'chat.view','chat.edit','chat.delete','files.view','files.edit','files.delete','files.export'
+  ]);
   const own = (value, key) => Object.prototype.hasOwnProperty.call(value, key);
+
+  function permittedForRole(role, key) {
+    if (!roleIds.has(role) || !knownPermissions.has(key)) return false;
+    return role === 'owner' || (!sectionById.get(key.split('.')[0]).ownerOnly &&
+      (role !== 'customer' || customerPermissions.has(key)));
+  }
 
   function normalizePermissions(role, permissions) {
     if (!roleIds.has(role)) return [];
@@ -64,7 +86,7 @@
     const requested = new Set(permissions.filter(key => typeof key === 'string' && knownPermissions.has(key)));
     return permissionKeys.filter(key => {
       const sectionId = key.slice(0, key.indexOf('.'));
-      return !sectionById.get(sectionId).ownerOnly && requested.has(sectionId + '.view') && requested.has(key);
+      return permittedForRole(role, key) && requested.has(sectionId + '.view') && requested.has(key);
     });
   }
 
@@ -87,6 +109,7 @@
       'manufacturing.view','manufacturing.print','tasks.view','tasks.edit',
       'labels.view','labels.print','history.view','history.edit'
     ]),
+    customer:Object.freeze(['gallery.view','myorders.view','myorders.edit','chat.view','chat.edit','files.view','files.edit']),
     custom:Object.freeze([])
   });
   function presets(role) {
@@ -94,11 +117,11 @@
   }
 
   function can(account, key) {
-    if (!account || typeof account !== 'object' || !roleIds.has(account.role) || !knownPermissions.has(key)) return false;
+    if (!account || typeof account !== 'object' || !permittedForRole(account.role, key)) return false;
     if ((own(account, 'status') && account.status !== 'active') || account.enabled === false || account.disabled === true) return false;
     if (account.role === 'owner') return true;
     const sectionId = key.slice(0, key.indexOf('.'));
-    if (sectionById.get(sectionId).ownerOnly || !Array.isArray(account.permissions)) return false;
+    if (!Array.isArray(account.permissions)) return false;
     return account.permissions.includes(sectionId + '.view') && account.permissions.includes(key);
   }
 
@@ -134,7 +157,19 @@
     'daily-tasks':'tasks.view',
     'global-search':'search.view',
     'purchase-planner':'purchasing.view',
-    'purchase-followup':'purchasing.view'
+    'purchase-followup':'purchasing.view',
+    gallery:'gallery.view',
+    'gallery-orders':'orders.view',
+    'my-orders':'myorders.view',
+    'gallery-studio':'gallery.edit',
+    chat:'chat.view',
+    communications:'communications.view',
+    files:'files.view',
+    finance:'finance.view',
+    payroll:'payroll.view',
+    metals:'metals.view',
+    assistant:'assistant.view',
+    'server-admin':'server.view'
   });
   function permissionForRoute(route) {
     if (typeof route !== 'string') return null;
@@ -142,15 +177,20 @@
     return own(routePermissions, id) ? routePermissions[id] : null;
   }
   function canRoute(account, route) {
+    if (route === 'notifications' || route === '#notifications') return canNotifications(account);
     const key = permissionForRoute(route);
     return key !== null && can(account, key);
   }
+  function canNotifications(account) {
+    return ['reports.view','chat.view','gallery.view','orders.view','myorders.view'].some(key => can(account, key));
+  }
 
-  const preferredHomes = Object.freeze({owner:'dashboard', manager:'dashboard', sales:'invoices', carpentry:'manufacturing', assembly:'manufacturing', warehouse:'package-labels'});
+  const preferredHomes = Object.freeze({owner:'dashboard', manager:'dashboard', sales:'invoices', carpentry:'manufacturing', assembly:'manufacturing', warehouse:'package-labels', customer:'gallery'});
   const homeRoutes = Object.freeze([
     'dashboard','invoices','manufacturing','package-labels','daily-tasks','companies','products',
     'material-library','purchase-planner','product-costs','payment-management','invoice-archive',
-    'print-history','global-search','review-center','settings'
+    'print-history','global-search','review-center','gallery','my-orders','gallery-orders',
+    'chat','communications','files','finance','payroll','metals','assistant','server-admin','settings'
   ]);
   function safeHome(account) {
     const preferred = account && own(preferredHomes, account.role) ? preferredHomes[account.role] : null;
@@ -171,6 +211,6 @@
     return writeSections[operation.store] + (type === 'delete' ? '.delete' : '.edit');
   }
 
-  return Object.freeze({version:1, actions, sections, roles, permissionKeys, presets, normalizePermissions, can,
-    permissionForRoute, canRoute, safeHome, permissionForWrite});
+  return Object.freeze({version:2, actions, sections, roles, permissionKeys, presets, normalizePermissions, permittedForRole, can,
+    permissionForRoute, canRoute, canNotifications, safeHome, permissionForWrite});
 });

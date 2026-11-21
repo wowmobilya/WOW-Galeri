@@ -122,6 +122,10 @@
       document.getElementById('qaAccountsLanguage').value=locale;
       document.getElementById('qaAccountsTheme').value=document.documentElement.dataset.theme;
       const preferences=new Map();
+      const tabPreferences=new Map();
+      Object.defineProperty(window,'sessionStorage',{configurable:true,value:{
+        getItem:key=>tabPreferences.get(String(key))??null,setItem:(key,value)=>tabPreferences.set(String(key),String(value)),removeItem:key=>tabPreferences.delete(String(key)),clear:()=>tabPreferences.clear()
+      }});
       Object.defineProperty(window,'localStorage',{configurable:true,value:{
         getItem:key=>preferences.get(String(key))??null,setItem:(key,value)=>preferences.set(String(key),String(value)),removeItem:key=>preferences.delete(String(key))
       }});

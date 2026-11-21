@@ -11,7 +11,7 @@ function fakeCaches(){
   };},async keys(){return [...buckets.keys()];},async match(key,options){const url=typeof key==='string'?key:key.url;for(const entries of buckets.values())for(const [saved,response] of entries){if(saved===url||(options?.ignoreSearch&&saved.split('?')[0]===url.split('?')[0]))return response.clone();}}};return api;
 }
 test('default install identity is independent of business settings and uploaded app logo',()=>{
-  assert.deepEqual(normalize({companyName:'Business',branding:{logo:png}}),{name:'WOW FURNITURE',mode:'default',source:'',custom:false});
+  assert.deepEqual(normalize({companyName:'Business',branding:{logo:png}}),{name:'مارك ربوت',mode:'default',source:'',custom:false});
   assert.equal(normalize({appIdentity:{version:1,logo:png,installIconMode:'default'}}).source,'');
   assert.equal(normalize({appIdentity:{version:1,logo:png,installIconMode:'app'}}).source,png);
   assert.equal(normalize({appIdentity:{version:1,logo:png,installIcon:png,installIconMode:'custom'}}).source,png);
@@ -20,7 +20,7 @@ test('retired stock names discard installation artwork while other custom brands
   for(const name of ['INFINITY',' infinity ','إنفنتي','انفنتي']){
     const settings={companyName:'Unchanged invoice company',appIdentity:{version:1,name,logo:png,installIcon:png,installIconMode:'custom'}};
     const before=structuredClone(settings);
-    assert.deepEqual(normalize(settings),{name:'WOW FURNITURE',mode:'default',source:'',custom:false});
+    assert.deepEqual(normalize(settings),{name:'مارك ربوت',mode:'default',source:'',custom:false});
     assert.deepEqual(settings,before);
   }
   assert.deepEqual(normalize({appIdentity:{version:1,name:'Custom Store',logo:png,installIconMode:'app'}}),{name:'Custom Store',mode:'app',source:png,custom:true});
@@ -39,7 +39,7 @@ test('every local manifest preserves the existing app identity, route and scope'
 test('icon writes must succeed before a manifest can expose the new identity',async()=>{
   const caches=fakeCaches(),store=createStore({caches,origin});const old=buildManifest({},normalize({}),[]);await store.publish(old);
   caches.fail='wf-identity';await assert.rejects(store.publish({...old,name:'New'},[{url:'/app-icon-512.png?wf-identity=0123456789abcdef',blob:new Blob(['x'])}]),/QuotaExceededError/);
-  const response=await(await caches.open(CACHE)).match(origin+'/manifest.json');assert.equal((await response.json()).name,'WOW FURNITURE');
+  const response=await(await caches.open(CACHE)).match(origin+'/manifest.json');assert.equal((await response.json()).name,'مارك ربوت');
 });
 test('worker retires an old personalized stock manifest before app settings initialize',async()=>{
   for(const name of ['INFINITY','إنفنتي','انفنتي']){
@@ -47,7 +47,7 @@ test('worker retires an old personalized stock manifest before app settings init
     await store.publish({...DEFAULTS,name,icons:[{src:'/app-icon-512.png?wf-identity=0123456789abcdef'}]},[{url:'/app-icon-512.png?wf-identity=0123456789abcdef',blob:new Blob(['old-stock-artwork'])}]);
     const responder=createResponder({caches,origin,fetch:async()=>new Response(JSON.stringify(DEFAULTS),{headers:{'Content-Type':'application/manifest+json'}})});
     const result=await responder.respond(new Request(origin+'/manifest.json?v=5'));
-    assert.equal((await result.json()).name,'WOW FURNITURE');
+    assert.equal((await result.json()).name,'مارك ربوت');
     assert.equal(await(await caches.open(CACHE)).match(origin+'/manifest.json'),undefined);
   }
 });
@@ -72,7 +72,7 @@ test('reset changes only derived installation metadata and retains the offline p
   const caches=fakeCaches(),store=createStore({caches,origin});await store.publish({...DEFAULTS,name:'Personal'});
   await(await caches.open('wow-furniture-release')).put(origin+'/manifest.json',new Response(JSON.stringify(DEFAULTS)));
   await store.clear();const responder=createResponder({caches,origin,fetch:async()=>{throw new Error('offline');}});
-  const result=await responder.respond(new Request(origin+'/manifest.json?v=5'));assert.equal((await result.json()).name,'WOW FURNITURE');
+  const result=await responder.respond(new Request(origin+'/manifest.json?v=5'));assert.equal((await result.json()).name,'مارك ربوت');
 });
 test('platform status recognizes Android and iPad desktop user agents without claiming OS changes',()=>{
   assert.equal(platform({userAgent:'Mozilla Android'}),'android');assert.equal(platform({userAgent:'iPhone'}),'ios');assert.equal(platform({platform:'MacIntel',maxTouchPoints:5}),'ios');assert.equal(platform({platform:'Win32'}),'desktop');

@@ -1,0 +1,14 @@
+{
+  "name": "wow-supabase-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test ../tests/wow-cloud-server*.mjs"
+  },
+  "dependencies": {
+    "web-push": "4.0.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.17"
+  }
+}

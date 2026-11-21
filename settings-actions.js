@@ -30,7 +30,7 @@
   const text=key=>(words[key]||words.clean)[Math.max(0,locales.indexOf(root.lang))];
   const owners={company:'WFCompanyIdentity',bank:'WFCompanyIdentity',invoice:'WFCompanyIdentity',
     currency:'WFCurrencySources','smart-card':'WFSmartCardSettings','app-identity':'WFAppIdentity',
-    'product-categories':'WFProductCategories',robot:'WFRobotSettings',accounts:'WFAccounts'};
+    'product-categories':'WFProductCategories',robot:'WFRobotSettings',accounts:'WFAccounts',cloud:'WFCloudSettings'};
   const status=document.createElement('span');
   status.id='wfSettingsActionStatus';status.className='wf-settings-dock-status';
   status.setAttribute('role','status');status.setAttribute('aria-live','polite');status.setAttribute('aria-atomic','true');

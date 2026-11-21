@@ -1,0 +1,32 @@
+{
+  "version": 211,
+  "name": "مارك ربوت",
+  "projectRef": "sldthbnigivpsqixccah",
+  "productionOrigin": "https://markrobot.wowfurniture.com.tr",
+  "previousOrigin": "https://galeri.wowfurniture.com.tr",
+  "entrypoint": "functions/wow-cloud/index.ts",
+  "migrations": [
+    "wow-schema.sql",
+    "modules/files.sql",
+    "modules/chat.sql",
+    "modules/finance.sql",
+    "modules/gallery.sql",
+    "modules/assistant.sql",
+    "modules/operations.sql",
+    "modules/notifications.sql",
+    "modules/maintenance.sql",
+    "modules/customer-auth.sql",
+    "modules/public-share.sql",
+    "modules/communications.sql"
+  ],
+  "liveAcceptanceRequired": [
+    "authorized-target-inventory-and-backup",
+    "auth-and-session-revocation",
+    "private-storage-and-restore",
+    "server-cron-and-external-monitor",
+    "two-device-offline-reconciliation",
+    "closed-app-web-push",
+    "verified-smtp-delivery",
+    "owner-origin-data-handover"
+  ]
+}

@@ -1,0 +1,17 @@
+@media screen {
+  .wf-push-card, .wf-push-inbox { box-sizing: border-box; min-inline-size: 0; padding: clamp(16px, 3vw, 26px); margin-block: 16px; border: 1px solid var(--border); border-radius: var(--wf-workspace-radius, 18px); background: var(--card); color: var(--text); }
+  .wf-push-card :is(h2, h3), .wf-push-inbox h2 { margin: 0 0 10px; font-size: 19px; line-height: 1.5; }
+  .wf-push-card p, .wf-push-inbox p { margin: 6px 0; color: var(--text2); font-size: 15px; line-height: 1.75; overflow-wrap: anywhere; }
+  .wf-push-card .wf-push-status { color: var(--text); }
+  .wf-push-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-block-start: 12px; }
+  .wf-push-actions:empty { display: none; }
+  .wf-push-actions .btn { min-block-size: 44px; max-inline-size: 100%; white-space: normal; line-height: 1.5; }
+  .wf-push-actions .btn:focus-visible { outline: 2px solid var(--brand-primary, #21566b); outline-offset: 3px; }
+  .wf-push-actions [hidden], .wf-push-inbox[hidden], .wf-push-inbox [hidden] { display: none !important; }
+  .wf-push-inbox ol { list-style: none; margin: 0; padding: 0; }
+  .wf-push-inbox li { padding-block: 14px; border-block-start: 1px solid var(--border); overflow-wrap: anywhere; }
+  .wf-push-inbox li[aria-current] { padding-inline-start: 12px; border-inline-start: 3px solid var(--brand-primary, #21566b); }
+  .wf-push-inbox li h3 { margin: 3px 0; font-size: 16px; }
+  .wf-push-inbox li time { color: var(--text2); font-size: 13px; }
+  .wf-push-inbox li p { white-space: pre-line; }
+}

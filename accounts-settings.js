@@ -1,4 +1,4 @@
-/* Local employee accounts use the existing settings editor and action dock. */
+/* Scoped employee accounts use the existing settings editor and action dock. */
 (function (root, factory) {
   'use strict';
   if (typeof module === 'object' && module.exports) module.exports = factory;
@@ -12,7 +12,7 @@
   const locales = ['ar', 'en', 'tr', 'fr', 'ru'];
   const copy = {
     title:['الحسابات والصلاحيات','Accounts and permissions','Hesaplar ve izinler','Comptes et autorisations','Учётные записи и права'],
-    local:['الحسابات محفوظة على هذا الجهاز. الربط عن بعد لاحقًا.','Accounts are saved on this device. Remote access will come later.','Hesaplar bu cihazda saklanır. Uzaktan bağlantı daha sonra eklenecek.','Les comptes sont enregistrés sur cet appareil. L’accès à distance viendra plus tard.','Учётные записи хранятся на этом устройстве. Удалённый доступ появится позже.'],
+    local:['هذه حسابات هذا الجهاز. حسابات العمال المتصلين تُدار من قسم السحابة.','These accounts belong to this device. Manage remote employees in the Cloud section.','Bunlar bu cihazın hesaplarıdır. Uzaktan çalışan hesaplarını Bulut bölümünden yönetin.','Ces comptes appartiennent à cet appareil. Gérez les employés à distance dans la rubrique Cloud.','Эти учётные записи относятся к этому устройству. Удалёнными сотрудниками управляйте в разделе «Облако».'],
     loading:['جارٍ تحميل الحسابات…','Loading accounts…','Hesaplar yükleniyor…','Chargement des comptes…','Загрузка учётных записей…'],
     unavailable:['تعذّر تحميل الحسابات. أعد المحاولة.','Could not load accounts. Please try again.','Hesaplar yüklenemedi. Tekrar deneyin.','Impossible de charger les comptes. Réessayez.','Не удалось загрузить учётные записи. Повторите попытку.'],
     retry:['إعادة المحاولة','Retry','Yeniden dene','Réessayer','Повторить'],
@@ -40,7 +40,7 @@
     expired:['انتهت مدة الوصول','Access expired','Erişim süresi doldu','Accès expiré','Доступ истёк'],
     none:['لا توجد حسابات مطابقة.','No matching accounts.','Eşleşen hesap yok.','Aucun compte correspondant.','Подходящих учётных записей нет.'],
     showAll:['عرض كل الحسابات','Show all accounts','Tüm hesapları göster','Afficher tous les comptes','Показать все записи'],
-    name:['اسم الموظف','Employee name','Çalışanın adı','Nom de l’employé','Имя сотрудника'],
+    name:['اسم صاحب الحساب','Account holder name','Hesap sahibinin adı','Nom du titulaire du compte','Имя владельца учётной записи'],
     username:['اسم الدخول','Login name','Giriş adı','Nom de connexion','Имя для входа'],
     usernameHint:['من 3 إلى 64 حرفًا؛ حروف وأرقام و . _ - @ دون مسافات.','3–64 characters; letters, numbers and . _ - @, without spaces.','3–64 karakter; harf, rakam ve . _ - @; boşluk kullanmayın.','3 à 64 caractères : lettres, chiffres et . _ - @, sans espaces.','3–64 символа: буквы, цифры и . _ - @, без пробелов.'],
     password:['كلمة المرور','Password','Parola','Mot de passe','Пароль'],
@@ -56,7 +56,7 @@
     resetHint:['سيُطلب تسجيل الدخول مجددًا من الجلسات المحلية الأخرى لهذا الحساب.','Other local sessions for this account will need to sign in again.','Bu hesabın diğer yerel oturumlarında yeniden giriş gerekir.','Les autres sessions locales de ce compte devront se reconnecter.','В других локальных сеансах этой учётной записи потребуется новый вход.'],
     passwordSaved:['تم تغيير كلمة المرور.','Password changed.','Parola değiştirildi.','Mot de passe modifié.','Пароль изменён.'],
     role:['قالب الصلاحيات','Permission preset','İzin şablonu','Modèle d’autorisations','Шаблон прав'],
-    presetHint:['اختر قالبًا ثم عدّل الصلاحيات حسب عمل الموظف. تغيير القالب يستبدل اختيارات الصلاحيات.','Choose a preset, then adjust the permissions for this employee. Changing the preset replaces the selected permissions.','Bir şablon seçip çalışanın izinlerini düzenleyin. Şablonu değiştirmek izin seçimlerini yeniler.','Choisissez un modèle puis adaptez les autorisations. Changer de modèle remplace les autorisations sélectionnées.','Выберите шаблон и настройте права сотрудника. Смена шаблона заменяет выбранные права.'],
+    presetHint:['اختر قالبًا ثم عدّل صلاحيات الحساب. تغيير القالب يستبدل اختيارات الصلاحيات.','Choose a preset, then adjust the permissions for this account. Changing the preset replaces the selected permissions.','Bir şablon seçip hesabın izinlerini düzenleyin. Şablonu değiştirmek izin seçimlerini yeniler.','Choisissez un modèle puis adaptez les autorisations du compte. Changer de modèle remplace les autorisations sélectionnées.','Выберите шаблон и настройте права учётной записи. Смена шаблона заменяет выбранные права.'],
     customized:['صلاحيات مخصّصة','Customized permissions','Özelleştirilmiş izinler','Autorisations personnalisées','Права настроены вручную'],
     department:['القسم / المهنة','Department / job','Bölüm / görev','Service / métier','Отдел / должность'],
     note:['ملاحظة إدارية','Administrative note','Yönetim notu','Note administrative','Административное примечание'],
@@ -74,7 +74,7 @@
     print:['طباعة','Print','Yazdır','Imprimer','Печать'],
     export:['تصدير','Export','Dışa aktar','Exporter','Экспорт'],
     notAvailable:['غير متاح لهذا القسم','Not available for this section','Bu bölümde kullanılamaz','Indisponible pour cette rubrique','Недоступно в этом разделе'],
-    preview:['ما يستطيع هذا الموظف فعله','What this employee can do','Bu çalışanın yapabilecekleri','Ce que cet employé peut faire','Что доступно сотруднику'],
+    preview:['الإجراءات المتاحة للحساب','Actions available to this account','Bu hesaba açık işlemler','Actions autorisées pour ce compte','Действия, доступные этой учётной записи'],
     noPermissions:['لا توجد صلاحيات مفعّلة.','No permissions enabled.','Etkin izin yok.','Aucune autorisation activée.','Права не предоставлены.'],
     hiddenSections:['الأقسام غير المسموحة','Sections without access','Erişilemeyen bölümler','Rubriques sans accès','Разделы без доступа'],
     noHidden:['يمكنه عرض جميع الأقسام.','Can view every section.','Tüm bölümleri görüntüleyebilir.','Peut voir toutes les rubriques.','Доступны все разделы.'],
@@ -122,6 +122,7 @@
     duplicate:['اسم الدخول مستخدم بالفعل. اختر اسمًا آخر.','This login name is already in use. Choose another.','Bu giriş adı kullanılıyor. Başka bir ad seçin.','Ce nom de connexion est déjà utilisé. Choisissez-en un autre.','Это имя для входа уже занято. Выберите другое.'],
     invalidExpiry:['اختر تاريخ انتهاء صالحًا.','Choose a valid access end date.','Geçerli bir erişim bitiş tarihi seçin.','Choisissez une date de fin d’accès valide.','Выберите допустимую дату окончания доступа.'],
     invalidRole:['اختر قالب صلاحيات صالحًا.','Choose a valid permission preset.','Geçerli bir izin şablonu seçin.','Choisissez un modèle d’autorisations valide.','Выберите допустимый шаблон прав.'],
+    customerPrincipalRoleFixed:['يبقى حساب الزبون المؤكّد بالبريد حساب زبون. أنشئ له حساب دخول منفصلًا للعمل أو الإدارة.','An email-verified customer login must remain a customer. Create a separate managed login for staff or owner access.','E-postayla doğrulanan müşteri girişi müşteri olarak kalır. Çalışan veya sahip erişimi için ayrı bir yönetilen hesap açın.','Un compte client vérifié par courriel reste un compte client. Créez un accès géré distinct pour un employé ou un propriétaire.','Подтверждённый по почте аккаунт покупателя остаётся аккаунтом покупателя. Для сотрудника или владельца создайте отдельную управляемую учётную запись.'],
     passwordIncorrect:['تعذّر التحقق من كلمة المرور الحالية.','Could not verify the current password.','Mevcut parola doğrulanamadı.','Impossible de vérifier le mot de passe actuel.','Не удалось проверить текущий пароль.'],
     missing:['لم يعد هذا الحساب متاحًا.','This account is no longer available.','Bu hesap artık kullanılamıyor.','Ce compte n’est plus disponible.','Эта учётная запись больше недоступна.'],
     failed:['تعذّر الحفظ. راجع البيانات وأعد المحاولة.','Could not save. Review the information and try again.','Kaydedilemedi. Bilgileri kontrol edip tekrar deneyin.','Enregistrement impossible. Vérifiez les informations et réessayez.','Не удалось сохранить. Проверьте данные и повторите попытку.'],
@@ -144,8 +145,16 @@
     event_session_expired:['انتهاء الجلسة المحلية','Local session expired','Yerel oturum süresi doldu','Session locale expirée','Локальный сеанс истёк'],
     event_unknown:['نشاط الحساب','Account activity','Hesap işlemi','Activité du compte','Действие учётной записи']
   };
+  const cloudCopy={
+    title:['حسابات السحابة وصلاحياتها','Cloud accounts and permissions','Bulut hesapları ve izinleri','Comptes cloud et autorisations','Облачные учётные записи и права'],
+    local:['هذه حسابات WOW السحابية. يتحقق السيرفر من صلاحيات كل طلب وتُطبّق تغييرات الوصول على الجلسات المتصلة.','These are WOW cloud accounts. The server checks each request and applies access changes to connected sessions.','Bunlar WOW bulut hesaplarıdır. Sunucu her isteğin izinlerini denetler ve erişim değişikliklerini bağlı oturumlara uygular.','Il s’agit des comptes cloud WOW. Le serveur vérifie chaque requête et applique les changements d’accès aux sessions connectées.','Это облачные учётные записи WOW. Сервер проверяет каждый запрос и применяет изменения доступа к подключённым сеансам.'],
+    endSessions:['إنهاء الجلسات السحابية','End cloud sessions','Bulut oturumlarını sonlandır','Fermer les sessions cloud','Завершить облачные сеансы'],
+    resetHint:['سيُطلب تسجيل الدخول مجددًا من الجلسات السحابية الأخرى لهذا الحساب.','Other cloud sessions for this account will need to sign in again.','Bu hesabın diğer bulut oturumlarında yeniden giriş gerekir.','Les autres sessions cloud de ce compte devront se reconnecter.','В других облачных сеансах потребуется новый вход.'],
+    revokeHint:['سيُسحب الدخول السحابي. تبقى بيانات الحساب وسجل نشاطه.','Cloud access will be revoked. The account and its activity history are kept.','Bulut erişimi kaldırılır. Hesap ve işlem geçmişi korunur.','L’accès cloud sera révoqué. Le compte et son historique sont conservés.','Доступ к облаку будет отозван. Учётная запись и история сохранятся.'],
+    sessionsHint:['تتطلب الجلسات السحابية لهذا الحساب تسجيل الدخول مجددًا. تبقى صلاحياته كما هي.','Cloud sessions for this account must sign in again. Its permissions remain the same.','Bu hesabın bulut oturumlarında yeniden giriş gerekir. İzinler değişmez.','Les sessions cloud devront se reconnecter. Les autorisations restent identiques.','Облачным сеансам потребуется новый вход. Права остаются прежними.']
+  };
   const lang = () => locales.includes(document.documentElement.lang) ? document.documentElement.lang : 'ar';
-  const t = key => (copy[key] || copy.event_unknown)[locales.indexOf(lang())];
+  const t = key => ((root.WFCloudClient?.isRemoteMode()&&cloudCopy[key]) || copy[key] || copy.event_unknown)[locales.indexOf(lang())];
   const policy = () => root.WFAccountPolicy;
   const sections = () => policy()?.sections || [];
   const actions = () => policy()?.actions || ['view','edit','delete','print','export'].map(id => ({id}));
@@ -241,6 +250,7 @@
   function setMessage(key, failed = false) { message = key; error = failed; noticeText(); announce(); }
   const errorKeys = {
     INVALID_NAME:'invalidName',INVALID_USERNAME:'invalidUsername',INVALID_PASSWORD:'passwordLength',INVALID_ROLE:'invalidRole',
+    CUSTOMER_PRINCIPAL_ROLE_FIXED:'customerPrincipalRoleFixed',
     INVALID_EXPIRY:'invalidExpiry',USERNAME_EXISTS:'duplicate',ALREADY_CONFIGURED:'conflict',AUTH_REQUIRED:'locked',
     PERMISSION_DENIED:'denied',ACCOUNT_NOT_FOUND:'missing',SELF_PROTECTION:'selfProtected',LAST_OWNER:'selfProtected',
     CONFLICT:'conflict',LOGIN_FAILED:'passwordIncorrect',CURRENT_PASSWORD_REQUIRED:'passwordIncorrect',INVALID_CURRENT_PASSWORD:'passwordIncorrect',
@@ -427,7 +437,8 @@
         } else {
           const input=make('input'); input.type='checkbox'; input.id='wfAccountPermission-'+section.id+'-'+action.id;
           input.checked=draft.permissions.includes(key);
-          input.disabled=owner || !!section.ownerOnly || (action.id!=='view'&&!draft.permissions.includes(section.id+'.view'));
+          input.disabled=owner || !!section.ownerOnly || policy()?.permittedForRole?.(draft.role,key)===false ||
+            (action.id!=='view'&&!draft.permissions.includes(section.id+'.view'));
           input.setAttribute('aria-label',caption(section)+' · '+actionText(action.id)); input.dataset.permission=key;
           input.addEventListener('change',() => {
             const values=new Set(draft.permissions); input.checked?values.add(key):values.delete(key);

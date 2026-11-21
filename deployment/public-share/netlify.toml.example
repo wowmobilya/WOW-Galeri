@@ -1,0 +1,10 @@
+# Merge into the verified frontend host configuration at deployment time.
+# This file does not change the current GitHub Pages deployment or DNS.
+[build]
+  edge_functions = "deployment/public-share/netlify/edge-functions"
+
+# Set these in the host dashboard, Functions scope, and redeploy:
+# WOW_PUBLIC_SHARE_API_ORIGIN=https://sldthbnigivpsqixccah.supabase.co
+# WOW_PUBLIC_SHARE_SITE_ORIGIN=https://markrobot.wowfurniture.com.tr
+# Also set WOW_PUBLIC_APP_ORIGIN to that exact approved origin in Supabase Edge.
+# Do not put API keys or secrets in this file; this adapter needs none.
